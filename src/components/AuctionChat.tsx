@@ -20,6 +20,18 @@ export function AuctionChat({ auctionId }: { auctionId: string }) {
       setUser(session?.user ?? null);
     });
 
+    // Pre-populate with some fictitious messages
+    const initialMessages = Array.from({ length: 5 }).map(() => ({
+      id: Math.random().toString(36).substring(7),
+      message: FICTITIOUS_CHAT_PHRASES[Math.floor(Math.random() * FICTITIOUS_CHAT_PHRASES.length)],
+      profile: {
+        username: FICTITIOUS_PARTICIPANTS[Math.floor(Math.random() * FICTITIOUS_PARTICIPANTS.length)],
+        avatar_url: null
+      },
+      created_at: new Date().toISOString()
+    }));
+    setMessages(initialMessages);
+
     fetchMessages();
 
     const channel = supabase
