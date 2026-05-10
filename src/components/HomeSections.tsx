@@ -144,6 +144,10 @@ export function AuctionCard({ auction: initialAuction }: { auction: any }) {
         alert(result.message);
       } else {
         setIsNewBid(true);
+        if (timeLeft < 15) {
+          setShowBonus(true);
+          setTimeout(() => setShowBonus(false), 1000);
+        }
         setTimeout(() => setIsNewBid(false), 500);
       }
     } catch (error: any) {
