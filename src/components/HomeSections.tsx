@@ -8,7 +8,7 @@ import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AuctionChat } from "./AuctionChat";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import confetti from "canvas-confetti";
+// confetti will be imported dynamically on the client
 import { useTimeSync } from "@/hooks/useTimeSync";
 
 export function Hero() {
@@ -110,11 +110,14 @@ export function AuctionCard({ auction: initialAuction }: { auction: any }) {
       
       if (remaining <= 0 && auction.status === 'live') {
         if (!confettiFired.current) {
-          confetti({
-            particleCount: 150,
-            spread: 70,
-            origin: { y: 0.6 },
-            colors: ['#00F2FF', '#9D00FF', '#FF00E5']
+          import("canvas-confetti").then((m) => {
+            const confetti = m.default || m;
+            confetti({
+              particleCount: 150,
+              spread: 70,
+              origin: { y: 0.6 },
+              colors: ['#00F2FF', '#9D00FF', '#FF00E5']
+            });
           });
           confettiFired.current = true;
         }
