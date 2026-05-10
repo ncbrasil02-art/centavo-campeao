@@ -263,8 +263,6 @@ function AuctionPage() {
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
-  const isFinished = timeLeft <= 0 || auction.status === 'finished';
-  const discount = Math.round((1 - (auction.current_price / auction.product?.market_value)) * 100);
 
   return (
     <div className="min-h-screen bg-background text-white selection:bg-primary selection:text-primary-foreground">
