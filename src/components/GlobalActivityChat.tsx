@@ -25,7 +25,7 @@ export function GlobalActivityChat() {
 
     // Subscribe to general chat messages
     const chatChannel = supabase
-      .channel('global_chat')
+      .channel(channelRef.current)
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'chat_messages' },
