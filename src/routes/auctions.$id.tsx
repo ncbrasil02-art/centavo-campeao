@@ -350,7 +350,13 @@ function AuctionPage() {
                     <span className="text-[10px] text-white/40 font-black uppercase tracking-widest flex items-center gap-2">
                       <Clock className="w-3 h-3 text-primary" /> Cronômetro
                     </span>
-                    <div className={`text-4xl font-mono font-black ${timeLeft < 10 && !isFinished ? 'text-red-500 animate-pulse' : 'text-white'}`}>
+                    <div className={`text-4xl font-mono font-black transition-all duration-300 ${
+                      timeLeft <= 5 && !isFinished 
+                        ? 'text-red-500 animate-pulse scale-110 drop-shadow-[0_0_15px_rgba(239,68,68,0.7)]' 
+                        : timeLeft <= 10 && !isFinished
+                        ? 'text-orange-500'
+                        : isFinished ? 'text-white/20' : 'text-white'
+                    }`}>
                       {isFinished ? "00:00" : formatTime(timeLeft)}
                     </div>
                   </div>
