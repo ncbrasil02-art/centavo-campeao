@@ -176,11 +176,6 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
-  const isFinished = timeLeft <= 0 || auction.status === 'finished';
-  const discount = auction.product?.market_value 
-    ? Math.round((1 - (auction.current_price / auction.product.market_value)) * 100)
-    : 0;
-
   return (
     <Card className="group relative flex flex-col h-full overflow-hidden rounded-[32px] border-white/10 bg-white/5 transition-all duration-500 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/20">
       {/* Product Image Section */}
