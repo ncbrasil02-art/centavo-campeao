@@ -33,17 +33,19 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   }, []);
 
   useEffect(() => {
-    confettiFired.current = false;
     const calculateTimeLeft = () => {
       if (!auction.end_time) return 0;
       const end = new Date(auction.end_time).getTime();
       const now = getAdjustedNow();
-      const diff = Math.max(0, Math.floor((end - now) / 1000));
+      // Using Math.ceil so it shows 01 until it actually hits 0
+      const diff = Math.max(0, Math.ceil((end - now) / 1000));
       return diff;
     };
 
     setTimeLeft(calculateTimeLeft());
 
+    // Update more frequently (100ms) for better responsiveness, 
+    // though we still only display whole seconds.
     const timer = setInterval(() => {
       const remaining = calculateTimeLeft();
       setTimeLeft(remaining);
@@ -61,9 +63,10 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           });
           confettiFired.current = true;
         }
-        clearInterval(timer);
+        // Don't clear immediately, wait for status to actually update from DB
+        // or just let it keep checking until remaining is 0.
       }
-    }, 1000);
+    }, 200);
 
     return () => clearInterval(timer);
   }, [auction.end_time, auction.status, getAdjustedNow]);
