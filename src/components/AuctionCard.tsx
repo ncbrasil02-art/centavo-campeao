@@ -17,7 +17,7 @@ interface AuctionCardProps {
 
 export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   const [auction, setAuction] = useState(initialAuction);
-  const [timeLeft, setTimeLeft] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(30); // Fictitious mode: starts at 30s
   const [isNewBid, setIsNewBid] = useState(false);
   const [showBonus, setShowBonus] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -34,46 +34,46 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   }, []);
 
   useEffect(() => {
-    const calculateTimeLeft = () => {
-      if (!auction.end_time) return 0;
-      const end = new Date(auction.end_time).getTime();
-      const now = getAdjustedNow();
-      // Using Math.ceil so it shows 01 until it actually hits 0
-      const diff = Math.max(0, Math.ceil((end - now) / 1000));
-      return diff;
-    };
-
-    setTimeLeft(calculateTimeLeft());
-
-    // Update more frequently (100ms) for better responsiveness, 
-    // though we still only display whole seconds.
+    // Fictitious timer logic
     const timer = setInterval(() => {
-      const remaining = calculateTimeLeft();
-      setTimeLeft(remaining);
-      
-      if (remaining <= 0 && auction.status === 'live') {
-        if (!confettiFired.current) {
-          import("canvas-confetti").then((m) => {
-            const confetti = m.default || m;
-            confetti({
-              particleCount: 150,
-              spread: 70,
-              origin: { y: 0.6 },
-              colors: ['#00F2FF', '#9D00FF', '#FF00E5']
+      setTimeLeft((prev) => {
+        if (prev <= 0) {
+          if (!confettiFired.current) {
+            import("canvas-confetti").then((m) => {
+              const confetti = m.default || m;
+              confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#00F2FF', '#9D00FF', '#FF00E5']
+              });
             });
-          });
-          confettiFired.current = true;
+            confettiFired.current = true;
+          }
+          return 0;
         }
-        // Don't clear immediately, wait for status to actually update from DB
-        // or just let it keep checking until remaining is 0.
-      }
-    }, 200);
+        return prev - 1;
+      });
+    }, 1000);
 
     return () => clearInterval(timer);
-  }, [auction.end_time, auction.status, getAdjustedNow]);
+  }, [auction.id]);
 
   const handleBid = async () => {
     setLoading(true);
+    // Simulate bid for fictitious mode
+    setTimeout(() => {
+      setIsNewBid(true);
+      setTimeLeft(30); // Reset to 30s as per fictitious mode
+      setShowBonus(true);
+      setTimeout(() => setShowBonus(false), 1000);
+      setIsNewBid(false);
+      setLoading(false);
+      toast.success("Lance realizado! (Simulado)");
+    }, 300);
+    
+    /* 
+    // Real DB code commented out for fictitious mode
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
@@ -105,6 +105,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
     } finally {
       setLoading(false);
     }
+    */
   };
 
   const formatTime = (seconds: number) => {
