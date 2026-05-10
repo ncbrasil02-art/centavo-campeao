@@ -44,7 +44,7 @@ function AuctionPage() {
     fetchBids();
 
     const auctionChannel = supabase
-      .channel(`auction_${id}`)
+      .channel(channelRef.current)
       .on(
         'postgres_changes',
         { event: 'UPDATE', schema: 'public', table: 'auctions', filter: `id=eq.${id}` },
