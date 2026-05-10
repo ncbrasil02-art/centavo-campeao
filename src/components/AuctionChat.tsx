@@ -13,6 +13,7 @@ export function AuctionChat({ auctionId }: { auctionId: string }) {
   const [newMessage, setNewMessage] = useState("");
   const [user, setUser] = useState<any>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const channelRef = useRef<string>(`auction_chat_${auctionId}_${Math.random().toString(36).substring(7)}`);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
