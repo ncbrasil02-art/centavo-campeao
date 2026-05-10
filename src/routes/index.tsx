@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { FALLBACK_USER_IMAGE } from "@/lib/constants";
+import { FALLBACK_USER_IMAGE, getFallbackAvatarUrl } from "@/lib/constants";
 
 export const Route = createFileRoute("/")({
   component: Index,
