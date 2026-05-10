@@ -159,7 +159,7 @@ function AuthPage() {
                   <Label htmlFor="reg-email">E-mail</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-3 h-4 w-4 text-white/40" />
-                    <Input id="reg-email" type="email" placeholder="seu@email.com" className="pl-10 bg-white/5 border-white/10" value={email} onChange={e => setEmail(e.target.value)} required />
+                    <Input id="reg-email" type="email" placeholder="seu@email.com" className="pl-10 bg-white/5 border-white/10 placeholder:text-primary/40 placeholder:drop-shadow-[0_0_5px_rgba(var(--color-primary),0.5)]" value={email} onChange={e => setEmail(e.target.value)} required />
                   </div>
                 </div>
 
