@@ -465,7 +465,7 @@ function AuctionPage() {
             </Card>
 
             <div className="h-[500px] rounded-[40px] overflow-hidden border border-white/10">
-              <AuctionChat auctionId={id} />
+              {mounted && <AuctionChat auctionId={id} />}
             </div>
           </div>
         </div>
