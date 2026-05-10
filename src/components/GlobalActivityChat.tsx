@@ -6,6 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Send, MessageSquare, Zap } from "lucide-react";
 import { toast } from "sonner";
+import { getFallbackAvatarUrl } from "@/lib/constants";
 
 export function GlobalActivityChat() {
   const [items, setItems] = useState<any[]>([]);
@@ -142,9 +143,9 @@ export function GlobalActivityChat() {
               {item.type === 'chat' ? (
                 <div className="flex gap-3">
                   <Avatar className="w-8 h-8 border border-white/10 shrink-0">
-                    <AvatarImage src={item.profile?.avatar_url} />
+                    <AvatarImage src={item.profile?.avatar_url || getFallbackAvatarUrl(item.profile?.username)} />
                     <AvatarFallback className="bg-primary/20 text-primary text-[10px]">
-                      {item.profile?.username?.substring(0, 2).toUpperCase()}
+                      {item.profile?.username?.substring(0, 2).toUpperCase() || "U"}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col">

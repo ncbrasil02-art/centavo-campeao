@@ -9,7 +9,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Clock, User, MessageSquare, Zap, Eye } from "lucide-react";
 import { AuctionChat } from "./AuctionChat";
 import { toast } from "sonner";
-import { FALLBACK_PRODUCT_IMAGE } from "@/lib/constants";
+import { FALLBACK_PRODUCT_IMAGE, getFallbackAvatarUrl } from "@/lib/constants";
 
 interface AuctionCardProps {
   auction: any;
@@ -229,16 +229,12 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
 
         <div className="flex items-center gap-3 py-1">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-primary/20 bg-primary/10">
-            {auction.last_bidder?.avatar_url ? (
-              <img 
-                src={auction.last_bidder.avatar_url} 
-                className="h-full w-full object-cover" 
-                alt="Bidder" 
-                onError={(e) => (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${auction.last_bidder?.username || 'User'}&background=random`}
-              />
-            ) : (
-              <User className="h-5 w-5 text-primary/40" />
-            )}
+            <img 
+              src={auction.last_bidder?.avatar_url || getFallbackAvatarUrl(auction.last_bidder?.username)} 
+              className="h-full w-full object-cover" 
+              alt="Bidder" 
+              onError={(e) => (e.target as HTMLImageElement).src = getFallbackAvatarUrl(auction.last_bidder?.username)}
+            />
           </div>
           <div className="flex flex-col overflow-hidden">
             <span className="text-[9px] font-black uppercase tracking-widest text-white/30">Último Lance</span>

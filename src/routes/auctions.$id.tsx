@@ -12,7 +12,7 @@ import { AuctionChat } from "@/components/AuctionChat";
 import { useTimeSync } from "@/hooks/useTimeSync";
 // confetti will be imported dynamically on the client
 import { toast } from "sonner";
-import { FALLBACK_PRODUCT_IMAGE } from "@/lib/constants";
+import { FALLBACK_PRODUCT_IMAGE, getFallbackAvatarUrl } from "@/lib/constants";
 
 export const Route = createFileRoute("/auctions/$id")({
   component: AuctionPage,
@@ -366,11 +366,12 @@ function AuctionPage() {
                 <div className="p-6 rounded-[28px] bg-primary/5 border border-primary/20 flex items-center justify-between group/bidder transition-all hover:bg-primary/10">
                   <div className="flex items-center gap-4">
                     <div className="w-14 h-14 rounded-full bg-white/5 border-2 border-primary/20 flex items-center justify-center overflow-hidden shrink-0 shadow-lg">
-                      {auction.last_bidder?.avatar_url ? (
-                        <img src={auction.last_bidder.avatar_url} className="w-full h-full object-cover" onError={(e) => (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${auction.last_bidder?.username || 'User'}&background=random`} />
-                      ) : (
-                        <User className="w-7 h-7 text-white/20" />
-                      )}
+                      <img 
+                        src={auction.last_bidder?.avatar_url || getFallbackAvatarUrl(auction.last_bidder?.username)} 
+                        className="w-full h-full object-cover" 
+                        alt="Bidder"
+                        onError={(e) => (e.target as HTMLImageElement).src = getFallbackAvatarUrl(auction.last_bidder?.username)}
+                      />
                     </div>
                     <div>
                       <span className="block text-[9px] text-white/30 font-black uppercase tracking-[0.2em] mb-1 leading-none">Vantagem Atual</span>
@@ -427,9 +428,9 @@ function AuctionPage() {
                         <div className="flex items-center gap-4">
                           <div className="relative">
                             <Avatar className={`w-10 h-10 border-2 transition-all ${idx === 0 ? 'border-primary scale-110 shadow-lg' : 'border-white/10'}`}>
-                              <AvatarImage src={bid.profile?.avatar_url} />
+                              <AvatarImage src={bid.profile?.avatar_url || getFallbackAvatarUrl(bid.profile?.username)} />
                               <AvatarFallback className="bg-primary/10 text-primary font-bold text-xs">
-                                {bid.profile?.username?.substring(0, 2).toUpperCase()}
+                                {bid.profile?.username?.substring(0, 2).toUpperCase() || "U"}
                               </AvatarFallback>
                             </Avatar>
                             {idx === 0 && (

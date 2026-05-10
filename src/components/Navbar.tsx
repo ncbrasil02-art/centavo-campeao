@@ -3,6 +3,8 @@ import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { User, LogOut, Wallet, Gavel, LayoutDashboard } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getFallbackAvatarUrl } from "@/lib/constants";
 
 export function Navbar() {
   const [user, setUser] = useState<any>(null);
@@ -70,9 +72,14 @@ export function Navbar() {
                   <span>{profile?.bid_balance || 0} Lances</span>
                 </div>
               </div>
-              <Button variant="outline" size="icon" className="rounded-full border-white/10 bg-white/5 hover:bg-white/10" asChild>
+              <Button variant="outline" size="icon" className="rounded-full border-white/10 bg-white/5 hover:bg-white/10 overflow-hidden" asChild>
                 <Link to="/">
-                  <LayoutDashboard className="h-4 w-4" />
+                  <Avatar className="h-full w-full">
+                    <AvatarImage src={profile?.avatar_url || getFallbackAvatarUrl(profile?.username)} />
+                    <AvatarFallback className="bg-primary/20 text-primary text-[10px]">
+                      {profile?.username?.substring(0, 2).toUpperCase() || "U"}
+                    </AvatarFallback>
+                  </Avatar>
                 </Link>
               </Button>
               <Button onClick={handleLogout} variant="ghost" size="icon" className="text-white/50 hover:text-red-400">
