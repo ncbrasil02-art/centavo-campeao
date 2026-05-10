@@ -126,15 +126,17 @@ export function GlobalActivityChat() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-black/60 border-l border-white/10 backdrop-blur-3xl">
-      <div className="p-4 border-b border-white/10 flex items-center justify-between">
+    <div className="flex flex-col h-full bg-black/40 backdrop-blur-3xl overflow-hidden">
+      <div className="p-3 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
         <div className="flex items-center gap-2">
-          <MessageSquare className="w-4 h-4 text-primary" />
-          <h3 className="font-bold text-xs uppercase tracking-widest italic">Atividade <span className="text-primary">Global</span></h3>
+          <div className="p-1.5 bg-primary/10 rounded-lg">
+            <MessageSquare className="w-3.5 h-3.5 text-primary" />
+          </div>
+          <h3 className="font-black text-[10px] uppercase tracking-[0.2em] text-white/80">Atividade <span className="text-primary">Global</span></h3>
         </div>
         <div className="flex items-center gap-1.5">
-          <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-          <span className="text-[10px] text-white/40 font-bold uppercase">Live</span>
+          <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+          <span className="text-[8px] font-black text-white/30 uppercase">LIVE</span>
         </div>
       </div>
       
