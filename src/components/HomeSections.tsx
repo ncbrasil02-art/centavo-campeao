@@ -284,6 +284,3 @@ export function AuctionCard({ auction: initialAuction }: { auction: any }) {
     </Card>
   );
 }
-    </Card>
-  );
-}
