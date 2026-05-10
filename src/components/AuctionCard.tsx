@@ -134,6 +134,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       playBidSound();
       setIsNewBid(true);
       setTimeLeft(30); // Reset to 30s as per fictitious mode
+      confettiFired.current = false;
       setShowBonus(true);
       setAuction((prev: any) => ({
         ...prev,
