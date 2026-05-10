@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
@@ -9,7 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Bot, Settings2, Power, AlertCircle, LayoutDashboard, Users, Gavel } from "lucide-react";
+import { Bot, Settings2, Power, AlertCircle, LayoutDashboard, Users, Gavel, PlayCircle, StopCircle } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/robots")({
@@ -18,56 +18,76 @@ export const Route = createFileRoute("/admin/robots")({
 
 function AdminRobotsPage() {
   const [auctions, setAuctions] = useState<any[]>([]);
+  const [robots, setRobots] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [automationActive, setAutomationActive] = useState(false);
+  const automationRef = useRef<boolean>(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     checkAdmin();
     fetchAuctionsWithRobots();
+    fetchRobotUsers();
   }, []);
 
-  async function checkAdmin() {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      navigate({ to: "/auth" });
-      return;
+  useEffect(() => {
+    automationRef.current = automationActive;
+    if (automationActive) {
+      const interval = setInterval(runAutomation, 1000);
+      return () => clearInterval(interval);
     }
-    // Simplistic admin check - in real app use roles table
-    setIsAdmin(true);
+  }, [automationActive]);
+
+  async function fetchRobotUsers() {
+    const { data } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("is_bot", true);
+    if (data) setRobots(data);
   }
 
-  async function fetchAuctionsWithRobots() {
-    const { data, error } = await supabase
-      .from("auctions")
-      .select(`
-        *,
-        product:products(name),
-        robot_settings(*)
-      `)
-      .eq("status", "live");
+  async function runAutomation() {
+    if (!automationRef.current) return;
     
-    if (data) {
-      // Create settings if missing for any live auction
-      for (const auction of data) {
-        if (!auction.robot_settings || auction.robot_settings.length === 0) {
-          await supabase.from("robot_settings").insert({ auction_id: auction.id });
+    // For each active auction with robot settings enabled
+    for (const auction of auctions) {
+      const settings = auction.robot_settings?.[0];
+      if (!settings?.active) continue;
+
+      // Calculate time left
+      const end = new Date(auction.end_time).getTime();
+      const now = new Date().getTime();
+      const diff = Math.max(0, Math.floor((end - now) / 1000));
+
+      // Strategy: 
+      // - Higher chance to bid as time gets lower
+      // - Random delay within the configured range
+      let bidChance = 0.05; // 5% chance every second normally
+      if (diff < 10) bidChance = 0.3; // 30% chance in last 10s
+      if (diff < 3) bidChance = 0.6; // 60% chance in last 3s
+
+      if (Math.random() < bidChance) {
+        // Choose a random robot
+        const randomRobot = robots[Math.floor(Math.random() * robots.length)];
+        if (randomRobot && auction.last_bidder_id !== randomRobot.id) {
+          triggerRobotBid(auction.id, randomRobot.id);
         }
       }
-      // Re-fetch to get new settings
-      const { data: updatedData } = await supabase
-        .from("auctions")
-        .select(`
-          *,
-          product:products(name),
-          robot_settings(*)
-        `)
-        .eq("status", "live");
-      
-      if (updatedData) setAuctions(updatedData);
     }
-    setLoading(false);
   }
+
+  const triggerRobotBid = async (auctionId: string, robotId: string) => {
+    const { data, error } = await supabase.rpc('place_robot_bid', {
+      p_auction_id: auctionId,
+      p_robot_id: robotId
+    });
+    
+    if (!error && (data as any)?.success) {
+      // Refresh local data to show new bid
+      fetchAuctionsWithRobots();
+    }
+  };
 
   const toggleRobot = async (auctionId: string, currentStatus: boolean, settingsId: string) => {
     const { error } = await supabase
