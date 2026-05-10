@@ -317,7 +317,7 @@ function AuctionPage() {
                       <Clock className="w-3 h-3 text-primary" /> Tempo Restante
                     </span>
                     <div className={`text-3xl font-mono font-black ${timeLeft < 10 && !isFinished ? 'text-red-500 animate-pulse' : 'text-white'}`}>
-                      00:{timeLeft.toString().padStart(2, '0')}
+                      {isFinished ? "00:00" : formatTime(timeLeft)}
                     </div>
                   </div>
                   <div className="flex flex-col gap-2 p-6 rounded-3xl bg-white/5 border border-white/10">
