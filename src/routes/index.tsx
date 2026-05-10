@@ -18,11 +18,11 @@ function WinnerCard({ name, product, price, saving, avatarUrl }: { name: string,
   return (
     <div className="p-6 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-4 hover:border-primary/50 transition-all group">
       <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center overflow-hidden shrink-0 border-2 border-primary/20 group-hover:border-primary transition-all">
-        {avatarUrl ? (
-          <img src={avatarUrl} className="w-full h-full object-cover" onError={(e) => (e.target as HTMLImageElement).src = FALLBACK_USER_IMAGE} />
-        ) : (
-          <User className="w-8 h-8 text-white/40" />
-        )}
+        <img 
+          src={avatarUrl || getFallbackAvatarUrl(name)} 
+          className="w-full h-full object-cover" 
+          onError={(e) => (e.target as HTMLImageElement).src = getFallbackAvatarUrl(name)} 
+        />
       </div>
       <div>
         <h4 className="font-bold text-white group-hover:text-primary transition-colors">{name}</h4>
