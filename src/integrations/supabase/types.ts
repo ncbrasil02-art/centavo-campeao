@@ -14,7 +14,204 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      auctions: {
+        Row: {
+          bid_count: number | null
+          created_at: string
+          current_price: number | null
+          end_time: string | null
+          id: string
+          last_bidder_id: string | null
+          product_id: string | null
+          start_time: string | null
+          status: string | null
+        }
+        Insert: {
+          bid_count?: number | null
+          created_at?: string
+          current_price?: number | null
+          end_time?: string | null
+          id?: string
+          last_bidder_id?: string | null
+          product_id?: string | null
+          start_time?: string | null
+          status?: string | null
+        }
+        Update: {
+          bid_count?: number | null
+          created_at?: string
+          current_price?: number | null
+          end_time?: string | null
+          id?: string
+          last_bidder_id?: string | null
+          product_id?: string | null
+          start_time?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auctions_last_bidder_id_fkey"
+            columns: ["last_bidder_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "auctions_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bids: {
+        Row: {
+          auction_id: string | null
+          created_at: string
+          id: string
+          price_at_bid: number | null
+          user_id: string | null
+        }
+        Insert: {
+          auction_id?: string | null
+          created_at?: string
+          id?: string
+          price_at_bid?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          auction_id?: string | null
+          created_at?: string
+          id?: string
+          price_at_bid?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bids_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: false
+            referencedRelation: "auctions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bids_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_messages: {
+        Row: {
+          auction_id: string | null
+          created_at: string
+          id: string
+          message: string
+          user_id: string | null
+        }
+        Insert: {
+          auction_id?: string | null
+          created_at?: string
+          id?: string
+          message: string
+          user_id?: string | null
+        }
+        Update: {
+          auction_id?: string | null
+          created_at?: string
+          id?: string
+          message?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: false
+            referencedRelation: "auctions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_messages_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          category: string | null
+          created_at: string
+          description: string | null
+          id: string
+          images: string[] | null
+          market_value: number
+          name: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          images?: string[] | null
+          market_value: number
+          name: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          images?: string[] | null
+          market_value?: number
+          name?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bid_balance: number | null
+          city: string | null
+          cpf: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          phone: string | null
+          state: string | null
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bid_balance?: number | null
+          city?: string | null
+          cpf?: string | null
+          created_at?: string
+          full_name?: string | null
+          id: string
+          phone?: string | null
+          state?: string | null
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bid_balance?: number | null
+          city?: string | null
+          cpf?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          state?: string | null
+          username?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
