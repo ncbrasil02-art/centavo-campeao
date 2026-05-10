@@ -72,12 +72,23 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           if (!confettiFired.current) {
             import("canvas-confetti").then((m) => {
               const confetti = m.default || m;
-              confetti({
-                particleCount: 150,
-                spread: 70,
-                origin: { y: 0.6 },
-                colors: ['#00F2FF', '#9D00FF', '#FF00E5']
-              });
+              const duration = 3 * 1000;
+              const animationEnd = Date.now() + duration;
+              const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0, colors: ['#00F2FF', '#9D00FF', '#FF00E5'] };
+
+              const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
+
+              const interval: any = setInterval(function() {
+                const timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) {
+                  return clearInterval(interval);
+                }
+
+                const particleCount = 50 * (timeLeft / duration);
+                confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+                confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+              }, 250);
             });
             confettiFired.current = true;
           }
@@ -102,6 +113,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         playBidSound();
         setIsNewBid(true);
         setTimeLeft(30);
+        confettiFired.current = false;
         setAuction((prev: any) => ({
           ...prev,
           current_price: (prev.current_price || 0) + 0.01,
@@ -122,6 +134,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       playBidSound();
       setIsNewBid(true);
       setTimeLeft(30); // Reset to 30s as per fictitious mode
+      confettiFired.current = false;
       setShowBonus(true);
       setAuction((prev: any) => ({
         ...prev,
