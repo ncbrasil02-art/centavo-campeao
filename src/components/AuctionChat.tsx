@@ -106,6 +106,17 @@ export function AuctionChat({ auctionId }: { auctionId: string }) {
     if (error) {
       toast.error("Erro ao enviar mensagem.");
     } else {
+      // For fictitious mode, we add it locally immediately
+      const userMessage = {
+        id: Math.random().toString(36).substring(7),
+        message: newMessage.trim(),
+        profile: {
+          username: user?.email?.split('@')[0] || "Você",
+          avatar_url: null
+        },
+        created_at: new Date().toISOString()
+      };
+      setMessages(prev => [...prev, userMessage].slice(-50));
       setNewMessage("");
     }
   };
