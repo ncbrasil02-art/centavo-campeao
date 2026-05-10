@@ -31,9 +31,37 @@ function AuctionPage() {
   const [isNewBid, setIsNewBid] = useState(false);
   const [showBonus, setShowBonus] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const confettiFired = useRef(false);
   const navigate = useNavigate();
   const { getAdjustedNow } = useTimeSync();
+
+  useEffect(() => {
+    audioRef.current = new Audio(BID_SOUND_URL);
+    audioRef.current.load();
+  }, []);
+
+  const playBidSound = useCallback(() => {
+    if (audioRef.current && !isMuted) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().catch(err => console.error("Error playing sound:", err));
+    }
+  }, [isMuted]);
+
+  // Play sound when auction updates (e.g. real-time bid from others)
+  useEffect(() => {
+    if (mounted && auction?.current_price > initialAuction?.current_price) {
+      playBidSound();
+    }
+  }, [auction?.current_price, playBidSound, mounted]);
+
+  const initialAuction = useRef<any>(null);
+  useEffect(() => {
+    if (auction && !initialAuction.current) {
+      initialAuction.current = auction;
+    }
+  }, [auction]);
   const channelRef = useRef<string>(`auction_detail_${id}_${Math.random().toString(36).substring(7)}`);
   const bidsChannelRef = useRef<string>(`bids_detail_${id}_${Math.random().toString(36).substring(7)}`);
 
