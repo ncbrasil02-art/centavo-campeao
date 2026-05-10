@@ -11,6 +11,7 @@ export const FICTITIOUS_PARTICIPANTS = [
   "Lucas Pereira", "Julia Rodrigues", "Thiago Lima", "Fernanda Souza",
   "Gabriel Martins", "Camila Ferreira", "Bruno Alves", "Larissa Gomes",
   "Rafael Ribeiro", "Mariana Carvalho", "Diego Lopes", "Vanessa Teixeira"
+];
 
 export const FICTITIOUS_CHAT_PHRASES = [
   "Vou levar essa!",
