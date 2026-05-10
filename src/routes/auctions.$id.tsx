@@ -477,7 +477,7 @@ function AuctionPage() {
 
                 <div className={`p-6 rounded-[28px] flex items-center justify-between group/bidder transition-all duration-500 border ${
                   isNewBid 
-                    ? 'bg-primary/20 border-primary/50 shadow-[0_0_30px_rgba(var(--color-primary),0.3)]' 
+                    ? 'bg-primary/30 border-primary shadow-[0_0_30px_rgba(var(--color-primary),0.6)] animate-pulse' 
                     : 'bg-white/5 border-white/10 hover:bg-white/10'
                 }`}>
                   <div className="flex items-center gap-4">
