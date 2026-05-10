@@ -9,7 +9,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Clock, User, MessageSquare, Zap, Eye } from "lucide-react";
 import { AuctionChat } from "./AuctionChat";
 import { toast } from "sonner";
-import { FALLBACK_PRODUCT_IMAGE } from "@/lib/constants";
+import { FALLBACK_PRODUCT_IMAGE, getFallbackAvatarUrl } from "@/lib/constants";
 
 interface AuctionCardProps {
   auction: any;
