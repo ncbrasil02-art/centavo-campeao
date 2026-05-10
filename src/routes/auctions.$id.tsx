@@ -479,8 +479,8 @@ function AuctionPage() {
                       />
                     </div>
                     <div>
-                      <span className="block text-[9px] text-white/30 font-black uppercase tracking-[0.2em] mb-1 leading-none">Vantagem Atual</span>
-                      <span className="text-xl font-black text-white group-hover/bidder:text-primary transition-colors tracking-tight italic uppercase">{auction.last_bidder?.username || "Nenhum lance"}</span>
+                      <span className={`block text-[9px] font-black uppercase tracking-[0.2em] mb-1 leading-none transition-colors ${isNewBid ? 'text-primary' : 'text-white/30'}`}>Vantagem Atual</span>
+                      <span className={`text-xl font-black transition-all italic uppercase ${isNewBid ? 'text-primary scale-105 origin-left' : 'text-white group-hover/bidder:text-primary'}`}>{auction.last_bidder?.username || "Nenhum lance"}</span>
                     </div>
                   </div>
                   {showBonus && (
