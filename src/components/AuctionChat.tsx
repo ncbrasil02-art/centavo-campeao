@@ -23,7 +23,7 @@ export function AuctionChat({ auctionId }: { auctionId: string }) {
     fetchMessages();
 
     const channel = supabase
-      .channel(`chat:${auctionId}`)
+      .channel(channelRef.current)
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `auction_id=eq.${auctionId}` },
