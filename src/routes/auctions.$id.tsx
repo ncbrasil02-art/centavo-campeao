@@ -74,7 +74,7 @@ function AuctionPage() {
       if (!auction.end_time) return 0;
       const end = new Date(auction.end_time).getTime();
       const now = getAdjustedNow();
-      return Math.max(0, Math.floor((end - now) / 1000));
+      return Math.max(0, Math.ceil((end - now) / 1000));
     };
 
     setTimeLeft(calculateTimeLeft());
@@ -96,12 +96,11 @@ function AuctionPage() {
           });
           confettiFired.current = true;
         }
-        clearInterval(timer);
       }
-    }, 1000);
+    }, 200);
 
     return () => clearInterval(timer);
-  }, [auction?.end_time, auction?.status]);
+  }, [auction?.end_time, auction?.status, getAdjustedNow]);
 
   async function fetchAuction() {
     const { data, error } = await supabase
