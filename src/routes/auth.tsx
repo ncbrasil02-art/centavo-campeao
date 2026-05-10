@@ -166,7 +166,7 @@ function AuthPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="reg-cpf">CPF</Label>
-                    <Input id="reg-cpf" placeholder="000.000.000-00" className="bg-white/5 border-white/10" value={cpf} onChange={e => setCpf(e.target.value)} required />
+                    <Input id="reg-cpf" placeholder="000.000.000-00" className="bg-white/5 border-white/10 placeholder:text-primary/40 placeholder:drop-shadow-[0_0_5px_rgba(var(--color-primary),0.5)]" value={cpf} onChange={e => setCpf(e.target.value)} required />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="reg-phone">Telefone</Label>
