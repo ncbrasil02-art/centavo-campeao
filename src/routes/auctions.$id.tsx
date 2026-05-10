@@ -397,33 +397,56 @@ function AuctionPage() {
               </div>
             </Card>
 
-            <Card className="bg-white/5 border-white/10 rounded-3xl overflow-hidden">
-              <div className="p-6 border-b border-white/10 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <History className="w-4 h-4 text-primary" />
-                  <h3 className="font-bold text-xs uppercase tracking-widest">Histórico de <span className="text-primary">Lances</span></h3>
+            <Card className="bg-white/5 border-white/10 rounded-[32px] overflow-hidden shadow-xl backdrop-blur-xl group/history">
+              <div className="p-8 border-b border-white/10 flex items-center justify-between bg-white/5">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <History className="w-5 h-5 text-primary" />
+                  </div>
+                  <h3 className="font-black text-sm uppercase tracking-[0.2em] text-white">Histórico de <span className="text-primary">Lances</span></h3>
                 </div>
-                <Badge variant="outline" className="text-[10px] border-white/10 text-white/40">ÚLTIMOS 10</Badge>
+                <Badge variant="outline" className="text-[10px] border-white/10 text-white/40 font-bold px-3">LIVE FEED</Badge>
               </div>
-              <div className="p-2">
+              <div className="p-4">
                 {bids.length > 0 ? (
-                  <div className="space-y-1">
+                  <div className="space-y-2">
                     {bids.map((bid, idx) => (
-                      <div key={bid.id} className={`flex items-center justify-between p-3 rounded-2xl transition-colors ${idx === 0 ? 'bg-primary/10 border border-primary/20' : 'hover:bg-white/5'}`}>
-                        <div className="flex items-center gap-3">
-                          <span className={`text-[10px] font-bold w-4 ${idx === 0 ? 'text-primary' : 'text-white/20'}`}>#{bids.length - idx}</span>
-                          <div className="flex items-center gap-2">
-                            <span className={`font-bold text-sm ${idx === 0 ? 'text-white' : 'text-white/60'}`}>{bid.profile?.username}</span>
-                            {idx === 0 && <Badge className="h-4 px-1.5 text-[8px] bg-primary text-primary-foreground">LIDERANDO</Badge>}
+                      <div key={bid.id} className={`flex items-center justify-between p-4 rounded-2xl transition-all duration-300 animate-in fade-in slide-in-from-right-2 ${idx === 0 ? 'bg-primary/20 border border-primary/30 shadow-[0_0_20px_rgba(var(--color-primary),0.1)]' : 'hover:bg-white/5 border border-transparent'}`}>
+                        <div className="flex items-center gap-4">
+                          <div className="relative">
+                            <Avatar className={`w-10 h-10 border-2 transition-all ${idx === 0 ? 'border-primary scale-110 shadow-lg' : 'border-white/10'}`}>
+                              <AvatarImage src={bid.profile?.avatar_url} />
+                              <AvatarFallback className="bg-primary/10 text-primary font-bold text-xs">
+                                {bid.profile?.username?.substring(0, 2).toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                            {idx === 0 && (
+                              <div className="absolute -top-1 -right-1 bg-primary text-primary-foreground p-0.5 rounded-full ring-2 ring-background">
+                                <Trophy className="w-3 h-3" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex flex-col">
+                            <div className="flex items-center gap-2">
+                              <span className={`font-black text-sm uppercase italic tracking-tighter ${idx === 0 ? 'text-white' : 'text-white/60'}`}>{bid.profile?.username}</span>
+                              {idx === 0 && <Badge className="h-4 px-1.5 text-[8px] font-black bg-primary text-primary-foreground animate-pulse">LIDERANDO</Badge>}
+                            </div>
+                            <span className="text-[10px] text-white/30 font-bold uppercase">{new Date(bid.created_at).toLocaleTimeString()}</span>
                           </div>
                         </div>
-                        <span className={`font-mono text-sm font-bold ${idx === 0 ? 'text-primary' : 'text-white/40'}`}>R$ {bid.price_at_bid?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                        <div className="text-right">
+                          <span className={`font-mono text-lg font-black block ${idx === 0 ? 'text-primary' : 'text-white/40'}`}>R$ {bid.price_at_bid?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                          <span className="text-[9px] text-white/20 font-black uppercase tracking-widest">Lance #{bids.length - idx}</span>
+                        </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="py-12 text-center text-white/20 italic text-sm">
-                    Nenhum lance efetuado ainda.
+                  <div className="py-20 text-center space-y-4">
+                    <div className="inline-flex p-4 rounded-full bg-white/5 text-white/10">
+                      <Zap className="w-12 h-12" />
+                    </div>
+                    <p className="text-white/20 font-black uppercase tracking-[0.2em] italic text-sm">Aguardando lance inicial...</p>
                   </div>
                 )}
               </div>
