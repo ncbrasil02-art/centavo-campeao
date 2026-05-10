@@ -261,13 +261,13 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             isFinished 
               ? 'cursor-not-allowed border border-white/5 bg-white/5 text-white/20' 
               : timeLeft <= 5
-              ? 'bg-red-600 text-white shadow-[0_0_20px_rgba(220,38,38,0.5)] animate-bounce hover:bg-red-700'
+              ? 'bg-red-600 text-white shadow-[0_0_30px_rgba(220,38,38,0.8)] animate-[pulse_0.5s_ease-in-out_infinite] hover:bg-red-700'
               : 'bg-primary text-primary-foreground shadow-[0_8px_25px_rgba(var(--color-primary),0.3)] hover:scale-[1.02] hover:bg-primary/90 active:scale-95'
           }`}
         >
           {loading ? "..." : isFinished ? "ENCERRADO" : (
             <span className="flex items-center gap-2">
-              {timeLeft <= 5 ? "LANCE AGORA!" : "Dar Lance"} <Zap className={`h-5 w-5 fill-current ${timeLeft <= 5 ? 'animate-pulse' : ''}`} />
+              {timeLeft <= 5 ? "VAI PERDER! LANCE AGORA" : "Dar Lance"} <Zap className={`h-5 w-5 fill-current ${timeLeft <= 5 ? 'animate-bounce' : ''}`} />
             </span>
           )}
         </Button>
