@@ -202,8 +202,36 @@ function Index() {
         </div>
 
         {/* Desktop Sidebar Chat */}
-        <aside className="hidden lg:block w-80 xl:w-96 border-l border-white/10 shrink-0">
-          {mounted && <GlobalActivityChat />}
+        <aside className={`hidden lg:flex flex-col border-l border-white/10 shrink-0 transition-all duration-500 relative bg-black/40 backdrop-blur-xl ${isChatExpanded ? 'w-80 xl:w-96' : 'w-20'}`}>
+          {!isChatExpanded ? (
+            <div className="flex flex-col items-center py-8 gap-6 h-full">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={() => setIsChatExpanded(true)}
+                className="w-12 h-12 rounded-2xl bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all animate-pulse"
+              >
+                <MessageSquare className="w-6 h-6" />
+              </Button>
+              <div className="flex-1 flex items-center justify-center">
+                <p className="vertical-text font-black text-[10px] tracking-[0.5em] text-white/20 uppercase italic whitespace-nowrap">
+                  CHAT GLOBAL
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col h-full w-full">
+              <div className="p-4 border-b border-white/10 flex items-center justify-between bg-white/5">
+                <span className="font-black text-xs text-primary italic uppercase tracking-widest">Chat Ativo</span>
+                <Button variant="ghost" size="icon" onClick={() => setIsChatExpanded(false)} className="h-8 w-8 text-white/40 hover:text-white">
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+              <div className="flex-1 overflow-hidden">
+                {mounted && <GlobalActivityChat />}
+              </div>
+            </div>
+          )}
         </aside>
 
         {/* Mobile Chat Drawer Overlay */}
