@@ -241,6 +241,7 @@ function AuctionPage() {
       playBidSound();
       setIsNewBid(true);
       setTimeLeft(30); // Reset to 30s
+      confettiFired.current = false;
       setShowBonus(true);
       setTimeout(() => setShowBonus(false), 1000);
       setIsNewBid(false);
