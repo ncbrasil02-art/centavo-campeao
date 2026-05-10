@@ -83,7 +83,30 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [auction.id]);
+  useEffect(() => {
+    if (isFinished) return;
+
+    const fictitiousBidInterval = setInterval(() => {
+      // Logic: If time is low (e.g. < 10s), there's a higher chance of a bot bidding
+      const chance = timeLeft < 10 ? 0.3 : 0.05;
+      if (Math.random() < chance) {
+        const randomUser = FICTITIOUS_PARTICIPANTS[Math.floor(Math.random() * FICTITIOUS_PARTICIPANTS.length)];
+        
+        playBidSound();
+        setIsNewBid(true);
+        setTimeLeft(30);
+        setAuction(prev => ({
+          ...prev,
+          current_price: (prev.current_price || 0) + 0.01,
+          last_bidder: { username: randomUser, avatar_url: null }
+        }));
+        
+        setTimeout(() => setIsNewBid(false), 500);
+      }
+    }, 2000);
+
+    return () => clearInterval(fictitiousBidInterval);
+  }, [timeLeft, isFinished, playBidSound]);
 
   const handleBid = async () => {
     setLoading(true);
@@ -93,8 +116,13 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       setIsNewBid(true);
       setTimeLeft(30); // Reset to 30s as per fictitious mode
       setShowBonus(true);
+      setAuction(prev => ({
+        ...prev,
+        current_price: (prev.current_price || 0) + 0.01,
+        last_bidder: { username: "Você", avatar_url: null }
+      }));
       setTimeout(() => setShowBonus(false), 1000);
-      setIsNewBid(false);
+      setTimeout(() => setIsNewBid(false), 500);
       setLoading(false);
       toast.success("Lance realizado! (Simulado)");
     }, 300);
