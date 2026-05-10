@@ -1,0 +1,10 @@
+CREATE OR REPLACE FUNCTION public.get_server_time()
+RETURNS TIMESTAMP WITH TIME ZONE
+LANGUAGE plpgsql
+SECURITY INVOKER
+SET search_path = public
+AS $$
+BEGIN
+  RETURN now();
+END;
+$$;

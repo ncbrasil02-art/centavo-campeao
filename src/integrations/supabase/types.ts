@@ -402,6 +402,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_server_time: { Args: never; Returns: string }
       place_bid: {
         Args: { p_auction_id: string; p_user_id: string }
         Returns: Json

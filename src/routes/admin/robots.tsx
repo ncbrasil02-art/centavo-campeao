@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Bot, Settings2, Power, AlertCircle, LayoutDashboard, Users, Gavel, PlayCircle, StopCircle } from "lucide-react";
 import { toast } from "sonner";
+import { useTimeSync } from "@/hooks/useTimeSync";
 
 export const Route = createFileRoute("/admin/robots")({
   component: AdminRobotsPage,
@@ -24,6 +25,7 @@ function AdminRobotsPage() {
   const [automationActive, setAutomationActive] = useState(false);
   const automationRef = useRef<boolean>(false);
   const navigate = useNavigate();
+  const { getAdjustedNow } = useTimeSync();
 
   useEffect(() => {
     checkAdmin();
@@ -94,7 +96,7 @@ function AdminRobotsPage() {
       if (!settings?.active) continue;
 
       const end = new Date(auction.end_time).getTime();
-      const now = new Date().getTime();
+      const now = getAdjustedNow();
       const diff = Math.max(0, Math.floor((end - now) / 1000));
 
       let bidChance = 0.1; 
