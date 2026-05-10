@@ -60,9 +60,18 @@ export function GlobalActivityChat() {
       )
       .subscribe();
 
+    // Periodic status updates for fictitious users
+    const statusInterval = setInterval(() => {
+      setOnlineUsers(prev => prev.map(u => ({
+        ...u,
+        status: Math.random() > 0.2 ? 'online' : 'away'
+      })));
+    }, 15000);
+
     return () => {
       supabase.removeChannel(chatChannel);
       supabase.removeChannel(bidChannel);
+      clearInterval(statusInterval);
     };
   }, []);
 
