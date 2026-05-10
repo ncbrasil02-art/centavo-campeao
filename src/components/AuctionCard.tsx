@@ -20,6 +20,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   const [isNewBid, setIsNewBid] = useState(false);
   const [showBonus, setShowBonus] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const confettiFired = useRef(false);
   const { getAdjustedNow } = useTimeSync();
 
