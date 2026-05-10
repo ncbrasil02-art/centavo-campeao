@@ -462,9 +462,15 @@ function AuctionPage() {
                   )}
                 </div>
 
-                <div className="p-6 rounded-[28px] bg-primary/5 border border-primary/20 flex items-center justify-between group/bidder transition-all hover:bg-primary/10">
+                <div className={`p-6 rounded-[28px] flex items-center justify-between group/bidder transition-all duration-500 border ${
+                  isNewBid 
+                    ? 'bg-primary/20 border-primary/50 shadow-[0_0_30px_rgba(var(--color-primary),0.3)]' 
+                    : 'bg-white/5 border-white/10 hover:bg-white/10'
+                }`}>
                   <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-full bg-white/5 border-2 border-primary/20 flex items-center justify-center overflow-hidden shrink-0 shadow-lg">
+                    <div className={`w-14 h-14 rounded-full bg-white/5 flex items-center justify-center overflow-hidden shrink-0 shadow-lg border-2 transition-all duration-500 ${
+                      isNewBid ? 'border-primary scale-110' : 'border-primary/20'
+                    }`}>
                       <img 
                         src={auction.last_bidder?.avatar_url || getFallbackAvatarUrl(auction.last_bidder?.username)} 
                         className="w-full h-full object-cover" 
