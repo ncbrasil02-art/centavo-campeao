@@ -2,10 +2,12 @@ import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { Users, Star, Trophy, ArrowRight, Play, Clock, Sparkles, User } from "lucide-react";
+import { Users, Star, Trophy, ArrowRight, Play, Clock, Sparkles, User, MessageSquare } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { AuctionChat } from "./AuctionChat";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 export function Hero() {
   const [onlineUsers, setOnlineUsers] = useState(128);
