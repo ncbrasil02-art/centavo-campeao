@@ -202,7 +202,7 @@ function Index() {
 
         {/* Desktop Sidebar Chat */}
         <aside className="hidden lg:block w-80 xl:w-96 border-l border-white/10 shrink-0">
-          <GlobalActivityChat />
+          {mounted && <GlobalActivityChat />}
         </aside>
 
         {/* Mobile Chat Drawer Overlay */}
