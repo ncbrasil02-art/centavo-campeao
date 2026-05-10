@@ -209,12 +209,17 @@ export function AuctionCard({ auction: initialAuction }: { auction: any }) {
               R$ {auction.current_price?.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) || "0,01"}
             </span>
           </div>
-          <div className="flex flex-col items-end">
+          <div className="flex flex-col items-end relative">
             <span className="text-xs text-white/40 uppercase font-bold tracking-tighter">Tempo</span>
             <div className={`flex items-center gap-1 font-mono text-2xl font-bold ${timeLeft < 10 && !isFinished ? 'text-red-500 animate-pulse' : isFinished ? 'text-white/20' : 'text-white'}`}>
               <Clock className="w-4 h-4" />
               {isFinished ? "--:--" : `00:${timeLeft.toString().padStart(2, '0')}`}
             </div>
+            {showBonus && (
+              <div className="absolute -top-6 right-0 text-primary font-black text-xs animate-bounce bg-primary/20 px-2 py-0.5 rounded-full border border-primary/30">
+                +15s BÔNUS
+              </div>
+            )}
           </div>
         </div>
 
