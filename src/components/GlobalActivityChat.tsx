@@ -171,7 +171,7 @@ export function GlobalActivityChat() {
       <form onSubmit={handleSendMessage} className="p-4 border-t border-white/10 flex gap-2">
         <Input 
           placeholder="Mensagem para todos..." 
-          className="bg-white/5 border-white/10 h-10 text-xs"
+          className="bg-white/5 border-white/10 h-10 text-xs placeholder:text-primary/40 placeholder:italic placeholder:drop-shadow-[0_0_5px_rgba(var(--color-primary),0.5)]"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
         />
