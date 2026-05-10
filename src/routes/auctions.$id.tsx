@@ -461,13 +461,14 @@ function AuctionPage() {
       </main>
       
       {/* Trust Badges */}
-      <section className="py-20 border-t border-white/5 bg-black/20">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <TrustItem icon={<ShieldCheck className="w-8 h-8 text-primary" />} title="Seguro" desc="Transações 100% protegidas" />
-            <TrustItem icon={<Zap className="w-8 h-8 text-primary" />} title="Rápido" desc="Lances em tempo real" />
-            <TrustItem icon={<Info className="w-8 h-8 text-primary" />} title="Suporte" desc="Atendimento 24/7" />
-            <TrustItem icon={<History className="w-8 h-8 text-primary" />} title="Histórico" desc="Auditoria de lances" />
+      <section className="py-24 border-t border-white/5 bg-black/40 relative overflow-hidden">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[120px]" />
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 md:gap-8">
+            <TrustItem icon={<ShieldCheck className="w-10 h-10 text-primary" />} title="Compra Segura" desc="Certificação SSL & Pagamentos PIX" />
+            <TrustItem icon={<Zap className="w-10 h-10 text-primary" />} title="Real-Time" desc="Lances processados em 10ms" />
+            <TrustItem icon={<Info className="w-10 h-10 text-primary" />} title="Suporte VIP" desc="Atendimento especializado 24/7" />
+            <TrustItem icon={<History className="w-10 h-10 text-primary" />} title="Transparência" desc="Auditoria pública de cada lance" />
           </div>
         </div>
       </section>
@@ -477,13 +478,15 @@ function AuctionPage() {
 
 function TrustItem({ icon, title, desc }: { icon: React.ReactNode, title: string, desc: string }) {
   return (
-    <div className="flex flex-col items-center text-center gap-3 group">
-      <div className="p-4 rounded-2xl bg-white/5 border border-white/10 transition-transform group-hover:scale-110">
-        {icon}
+    <div className="flex flex-col items-center text-center gap-4 group/trust cursor-default">
+      <div className="p-6 rounded-[24px] bg-white/5 border border-white/5 transition-all duration-500 group-hover/trust:bg-primary/10 group-hover/trust:border-primary/20 group-hover/trust:-translate-y-2 shadow-lg">
+        <div className="transition-transform duration-500 group-hover/trust:scale-110">
+          {icon}
+        </div>
       </div>
-      <div>
-        <h4 className="font-bold text-white uppercase tracking-widest text-xs mb-1">{title}</h4>
-        <p className="text-white/40 text-[10px]">{desc}</p>
+      <div className="space-y-1">
+        <h4 className="font-black text-white uppercase tracking-[0.2em] text-[10px] italic">{title}</h4>
+        <p className="text-white/30 text-[10px] font-bold uppercase tracking-widest leading-tight max-w-[120px]">{desc}</p>
       </div>
     </div>
   );
