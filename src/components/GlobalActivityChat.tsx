@@ -39,7 +39,7 @@ export function GlobalActivityChat() {
 
     // Subscribe to ALL bids for activity feed
     const bidChannel = supabase
-      .channel('global_bids')
+      .channel(bidChannelRef.current)
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'bids' },
