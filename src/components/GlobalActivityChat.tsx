@@ -23,6 +23,14 @@ export function GlobalActivityChat() {
       setUser(session?.user ?? null);
     });
 
+    // Populate fictitious online users
+    const shuffled = [...FICTITIOUS_PARTICIPANTS].sort(() => 0.5 - Math.random());
+    setOnlineUsers(shuffled.slice(0, 12).map(name => ({
+      name,
+      status: Math.random() > 0.3 ? 'online' : 'away',
+      id: Math.random().toString(36).substring(7)
+    })));
+
     fetchInitialData();
 
     // Subscribe to general chat messages
