@@ -174,7 +174,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
               </SheetTitle>
             </SheetHeader>
             <div className="h-[calc(100vh-80px)]">
-              {/* AuctionChat disabled for debugging */}
+              {mounted && <AuctionChat auctionId={auction.id} />}
             </div>
           </SheetContent>
         </Sheet>
