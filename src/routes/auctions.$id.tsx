@@ -75,42 +75,35 @@ function AuctionPage() {
   }, [id]);
 
   useEffect(() => {
-    if (!auction) return;
-
-    confettiFired.current = false;
-    const calculateTimeLeft = () => {
-      if (!auction.end_time) return 0;
-      const end = new Date(auction.end_time).getTime();
-      const now = getAdjustedNow();
-      return Math.max(0, Math.ceil((end - now) / 1000));
-    };
-
-    setTimeLeft(calculateTimeLeft());
+    // Fictitious mode: Always start at 30s
+    setTimeLeft(30);
 
     const timer = setInterval(() => {
-      const remaining = calculateTimeLeft();
-      setTimeLeft(remaining);
-
-      if (remaining <= 0 && auction.status === 'live') {
-        if (!confettiFired.current) {
-          import("canvas-confetti").then((m) => {
-            const confetti = m.default || m;
-            confetti({
-              particleCount: 150,
-              spread: 70,
-              origin: { y: 0.6 },
-              colors: ['#00F2FF', '#9D00FF', '#FF00E5']
+      setTimeLeft((prev) => {
+        if (prev <= 0) {
+          if (!confettiFired.current) {
+            import("canvas-confetti").then((m) => {
+              const confetti = m.default || m;
+              confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#00F2FF', '#9D00FF', '#FF00E5']
+              });
             });
-          });
-          confettiFired.current = true;
+            confettiFired.current = true;
+          }
+          return 0;
         }
-      }
-    }, 200);
+        return prev - 1;
+      });
+    }, 1000);
 
     return () => clearInterval(timer);
-  }, [auction?.end_time, auction?.status, getAdjustedNow]);
+  }, []);
 
   async function fetchAuction() {
+    // Mock data for fictitious mode if wanted, but we'll try to fetch first
     const { data, error } = await supabase
       .from("auctions")
       .select(`
@@ -121,9 +114,22 @@ function AuctionPage() {
       .eq("id", id)
       .single();
 
-    if (error) {
-      console.error("Error fetching auction:", error);
-      navigate({ to: "/" });
+    if (error || !data) {
+      // Fallback to mock data for fictitious mode
+      setAuction({
+        id,
+        current_price: 15.20,
+        bid_count: 142,
+        status: "live",
+        product: {
+          name: "iPhone 15 Pro Max",
+          description: "O smartphone mais avançado com o novo processador A17 Pro.",
+          market_value: 8999.00,
+          category: "Eletrônicos",
+          images: ["https://images.unsplash.com/photo-1696446701796-da61225697cc?auto=format&fit=crop&q=80&w=800"]
+        },
+        last_bidder: { username: "Arrematador99", avatar_url: null }
+      });
     } else {
       setAuction(data);
     }
@@ -138,44 +144,37 @@ function AuctionPage() {
       .order("created_at", { ascending: false })
       .limit(10);
     
-    if (data) setBids(data);
+    if (data && data.length > 0) {
+      setBids(data);
+    } else {
+      // Mock bids for fictitious mode
+      setBids([
+        { id: "1", profile: { username: "Arrematador99" }, price_at_bid: 15.20, created_at: new Date().toISOString() },
+        { id: "2", profile: { username: "GamerPro" }, price_at_bid: 15.19, created_at: new Date().toISOString() },
+        { id: "3", profile: { username: "TechLover" }, price_at_bid: 15.18, created_at: new Date().toISOString() }
+      ]);
+    }
   }
 
   const handleBid = async () => {
     setBidLoading(true);
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast.error("Você precisa estar logado para dar um lance!");
-        navigate({ to: "/auth" });
-        return;
-      }
-
-      const { data, error } = await supabase.rpc('place_bid', {
-        p_auction_id: id,
-        p_user_id: session.user.id
-      });
-
-      if (error) throw error;
-      
-      const result = data as any;
-      if (!result.success) {
-        toast.error(result.message);
-      } else {
-        setIsNewBid(true);
-        if (timeLeft < 15) {
-          setShowBonus(true);
-          setTimeout(() => setShowBonus(false), 1000);
-        }
-        setTimeout(() => setIsNewBid(false), 500);
-        toast.success("Lance confirmado!");
-      }
-    } catch (error: any) {
-      console.error("Erro ao dar lance:", error);
-      toast.error("Ocorreu um erro ao processar seu lance.");
-    } finally {
+    // Simulate bid
+    setTimeout(() => {
+      setIsNewBid(true);
+      setTimeLeft(30); // Reset to 30s
+      setShowBonus(true);
+      setTimeout(() => setShowBonus(false), 1000);
+      setIsNewBid(false);
       setBidLoading(false);
-    }
+      toast.success("Lance confirmado! (Simulado)");
+      
+      // Update bid count and price locally
+      setAuction((prev: any) => ({
+        ...prev,
+        current_price: prev.current_price + 0.01,
+        bid_count: (prev.bid_count || 0) + 1
+      }));
+    }, 400);
   };
 
   if (loading) return (
