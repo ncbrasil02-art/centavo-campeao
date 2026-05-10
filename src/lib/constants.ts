@@ -5,3 +5,10 @@ export const getFallbackAvatarUrl = (name?: string) => {
   if (!name) return FALLBACK_USER_IMAGE;
   return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&color=fff&bold=true`;
 };
+
+export const FICTITIOUS_PARTICIPANTS = [
+  "Marcos Silva", "Ana Oliveira", "Ricardo Santos", "Beatriz Costa", 
+  "Lucas Pereira", "Julia Rodrigues", "Thiago Lima", "Fernanda Souza",
+  "Gabriel Martins", "Camila Ferreira", "Bruno Alves", "Larissa Gomes",
+  "Rafael Ribeiro", "Mariana Carvalho", "Diego Lopes", "Vanessa Teixeira"
+];
