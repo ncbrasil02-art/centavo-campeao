@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as PackagesRouteImport } from './routes/packages'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRobotsRouteImport } from './routes/admin/robots'
 
 const PackagesRoute = PackagesRouteImport.update({
   id: '/packages',
@@ -28,35 +29,44 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRobotsRoute = AdminRobotsRouteImport.update({
+  id: '/admin/robots',
+  path: '/admin/robots',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/packages': typeof PackagesRoute
+  '/admin/robots': typeof AdminRobotsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/packages': typeof PackagesRoute
+  '/admin/robots': typeof AdminRobotsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/packages': typeof PackagesRoute
+  '/admin/robots': typeof AdminRobotsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/packages'
+  fullPaths: '/' | '/auth' | '/packages' | '/admin/robots'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/packages'
-  id: '__root__' | '/' | '/auth' | '/packages'
+  to: '/' | '/auth' | '/packages' | '/admin/robots'
+  id: '__root__' | '/' | '/auth' | '/packages' | '/admin/robots'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
   PackagesRoute: typeof PackagesRoute
+  AdminRobotsRoute: typeof AdminRobotsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -82,6 +92,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/robots': {
+      id: '/admin/robots'
+      path: '/admin/robots'
+      fullPath: '/admin/robots'
+      preLoaderRoute: typeof AdminRobotsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -89,6 +106,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   PackagesRoute: PackagesRoute,
+  AdminRobotsRoute: AdminRobotsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
