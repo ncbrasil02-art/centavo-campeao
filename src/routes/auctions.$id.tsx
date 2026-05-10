@@ -304,81 +304,96 @@ function AuctionPage() {
 
           {/* Right Column: Bidding Controls & History */}
           <div className="lg:col-span-5 space-y-8">
-            <Card className="bg-white/5 border-primary/20 p-8 rounded-[40px] relative overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
-              <div className="absolute top-0 right-0 p-8 text-primary/10">
-                <Gavel className="w-32 h-32 rotate-12" />
+            <Card className="bg-white/5 border-primary/20 p-8 md:p-10 rounded-[48px] relative overflow-hidden shadow-2xl backdrop-blur-3xl group/card">
+              {/* Animated Background Highlight */}
+              <div className="absolute -top-20 -right-20 w-64 h-64 bg-primary/10 rounded-full blur-[100px] transition-all duration-1000 group-hover/card:bg-primary/20" />
+              
+              <div className="absolute top-0 right-0 p-10 text-primary/5">
+                <Gavel className="w-40 h-40 rotate-12 transition-transform duration-700 group-hover/card:rotate-0 group-hover/card:scale-110" />
               </div>
               
-              <div className="relative z-10 space-y-8">
-                <div>
-                  <h1 className="text-3xl font-black italic uppercase tracking-tighter leading-tight mb-2">
+              <div className="relative z-10 space-y-10">
+                <div className="space-y-2">
+                  <Badge variant="outline" className="border-primary/30 text-primary font-bold tracking-widest text-[10px] uppercase bg-primary/5">ITEM EM DISPUTA</Badge>
+                  <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-tight text-white drop-shadow-sm">
                     {auction.product?.name}
                   </h1>
-                  <p className="text-white/40 font-medium">Cód do Leilão: #{id.substring(0, 8).toUpperCase()}</p>
+                  <p className="text-white/30 font-bold text-xs tracking-widest uppercase">REF: {id.substring(0, 8).toUpperCase()}</p>
                 </div>
 
-                <div className="flex flex-col gap-2 p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md">
-                  <span className="text-sm text-white/40 font-bold uppercase tracking-widest">Preço Atual</span>
-                  <div className={`text-6xl font-black text-primary transition-transform duration-300 ${isNewBid ? 'scale-110' : 'scale-100'}`}>
-                    R$ {auction.current_price?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                <div className="flex flex-col gap-3 p-8 rounded-[32px] bg-gradient-to-br from-white/10 to-transparent border border-white/10 backdrop-blur-xl shadow-inner group/price">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs text-white/40 font-black uppercase tracking-[0.2em]">Preço Atual</span>
+                    <Badge variant="outline" className="border-green-500/30 text-green-500 bg-green-500/5 animate-pulse">VALOR DE REPASSE</Badge>
+                  </div>
+                  <div className={`text-7xl font-black text-primary transition-all duration-500 ${isNewBid ? 'scale-110 drop-shadow-[0_0_30px_rgba(var(--color-primary),0.6)]' : 'scale-100'}`}>
+                    <span className="text-3xl align-top mt-2 inline-block mr-1 opacity-60">R$</span>
+                    {auction.current_price?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-2 p-6 rounded-3xl bg-white/5 border border-white/10">
-                    <span className="text-xs text-white/40 font-bold uppercase tracking-widest flex items-center gap-2">
-                      <Clock className="w-3 h-3 text-primary" /> Tempo Restante
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="flex flex-col gap-3 p-6 rounded-[28px] bg-white/5 border border-white/10 transition-colors hover:bg-white/10">
+                    <span className="text-[10px] text-white/40 font-black uppercase tracking-widest flex items-center gap-2">
+                      <Clock className="w-3 h-3 text-primary" /> Cronômetro
                     </span>
-                    <div className={`text-3xl font-mono font-black ${timeLeft < 10 && !isFinished ? 'text-red-500 animate-pulse' : 'text-white'}`}>
+                    <div className={`text-4xl font-mono font-black ${timeLeft < 10 && !isFinished ? 'text-red-500 animate-pulse' : 'text-white'}`}>
                       {isFinished ? "00:00" : formatTime(timeLeft)}
                     </div>
                   </div>
-                  <div className="flex flex-col gap-2 p-6 rounded-3xl bg-white/5 border border-white/10">
-                    <span className="text-xs text-white/40 font-bold uppercase tracking-widest flex items-center gap-2">
-                      <History className="w-3 h-3 text-primary" /> Total Lances
+                  <div className="flex flex-col gap-3 p-6 rounded-[28px] bg-white/5 border border-white/10 transition-colors hover:bg-white/10">
+                    <span className="text-[10px] text-white/40 font-black uppercase tracking-widest flex items-center gap-2">
+                      <History className="w-3 h-3 text-primary" /> Total Bids
                     </span>
-                    <div className="text-3xl font-black text-white">
+                    <div className="text-4xl font-black text-white">
                       {auction.bid_count || 0}
                     </div>
                   </div>
                 </div>
 
-                <div className="p-6 rounded-3xl bg-primary/10 border border-primary/20 flex items-center justify-between group">
+                <div className="p-6 rounded-[28px] bg-primary/5 border border-primary/20 flex items-center justify-between group/bidder transition-all hover:bg-primary/10">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-white/10 border border-white/20 flex items-center justify-center overflow-hidden shrink-0">
+                    <div className="w-14 h-14 rounded-full bg-white/5 border-2 border-primary/20 flex items-center justify-center overflow-hidden shrink-0 shadow-lg">
                       {auction.last_bidder?.avatar_url ? (
                         <img src={auction.last_bidder.avatar_url} className="w-full h-full object-cover" />
                       ) : (
-                        <User className="w-6 h-6 text-white/40" />
+                        <User className="w-7 h-7 text-white/20" />
                       )}
                     </div>
                     <div>
-                      <span className="block text-[10px] text-white/40 font-bold uppercase tracking-widest">Líder Atual</span>
-                      <span className="text-lg font-bold text-white group-hover:text-primary transition-colors">{auction.last_bidder?.username || "Ninguém ainda"}</span>
+                      <span className="block text-[9px] text-white/30 font-black uppercase tracking-[0.2em] mb-1 leading-none">Vantagem Atual</span>
+                      <span className="text-xl font-black text-white group-hover/bidder:text-primary transition-colors tracking-tight italic uppercase">{auction.last_bidder?.username || "Nenhum lance"}</span>
                     </div>
                   </div>
                   {showBonus && (
-                    <div className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-black animate-bounce">
+                    <div className="bg-primary text-primary-foreground px-4 py-1.5 rounded-full text-[10px] font-black animate-bounce shadow-lg ring-4 ring-primary/20">
                       +15s BÔNUS
                     </div>
                   )}
                 </div>
 
-                <Button 
-                  onClick={handleBid}
-                  disabled={isFinished || bidLoading}
-                  className={`w-full h-20 text-2xl font-black uppercase italic tracking-tighter transition-all rounded-3xl ${isFinished ? 'bg-white/5 text-white/20' : 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_10px_30px_rgba(var(--color-primary),0.4)] hover:scale-[1.02] active:scale-95'}`}
-                >
-                  {bidLoading ? "Processando..." : isFinished ? "LEILÃO ENCERRADO" : (
-                    <span className="flex items-center gap-3">
-                      Dar Lance <Zap className="w-6 h-6 fill-current" />
-                    </span>
-                  )}
-                </Button>
-                
-                <p className="text-center text-[10px] text-white/20 uppercase tracking-[0.2em] font-bold">
-                  Cada lance consome 1 crédito do seu saldo
-                </p>
+                <div className="space-y-4 pt-4">
+                  <Button 
+                    onClick={handleBid}
+                    disabled={isFinished || bidLoading}
+                    className={`w-full h-24 text-3xl font-black uppercase italic tracking-tighter transition-all rounded-[32px] group/btn relative overflow-hidden ${isFinished ? 'bg-white/5 text-white/20' : 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_20px_50px_rgba(var(--color-primary),0.4)] hover:-translate-y-1 active:translate-y-1'}`}
+                  >
+                    {!isFinished && (
+                      <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover/btn:animate-shimmer" 
+                           style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)' }} />
+                    )}
+                    
+                    {bidLoading ? <div className="w-8 h-8 border-4 border-current border-t-transparent rounded-full animate-spin" /> : isFinished ? "LEILÃO ENCERRADO" : (
+                      <span className="flex items-center gap-4 relative z-10">
+                        Arrematar Agora <Zap className="w-8 h-8 fill-current animate-pulse" />
+                      </span>
+                    )}
+                  </Button>
+                  
+                  <p className="text-center text-[10px] text-white/20 uppercase tracking-[0.3em] font-black">
+                    CUSTO POR LANCE: 1 CRÉDITO
+                  </p>
+                </div>
               </div>
             </Card>
 
