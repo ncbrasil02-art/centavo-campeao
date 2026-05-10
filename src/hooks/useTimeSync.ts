@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 let serverOffset = 0;
@@ -35,7 +35,7 @@ export function useTimeSync() {
     syncTime();
   }, []);
 
-  const getAdjustedNow = () => Date.now() + offset;
+  const getAdjustedNow = useCallback(() => Date.now() + offset, [offset]);
 
   return { offset, synced, getAdjustedNow };
 }
