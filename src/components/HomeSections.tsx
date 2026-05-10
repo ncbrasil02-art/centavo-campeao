@@ -248,7 +248,7 @@ export function AuctionCard({ auction: initialAuction }: { auction: any }) {
             <span className="text-[9px] text-white/40 uppercase font-black tracking-widest mb-1">Tempo</span>
             <div className={`flex items-center gap-1 font-mono text-2xl font-bold ${timeLeft < 10 && !isFinished ? 'text-red-500 animate-pulse' : isFinished ? 'text-white/20' : 'text-white'}`}>
               <Clock className={`w-4 h-4 ${timeLeft < 10 && !isFinished ? 'animate-spin' : ''}`} />
-              {isFinished ? "00:00" : `00:${timeLeft.toString().padStart(2, '0')}`}
+              {isFinished ? "00:00" : formatTime(timeLeft)}
             </div>
             {showBonus && (
               <div className="absolute -top-8 right-0 text-primary font-black text-[10px] animate-bounce bg-primary/20 px-2 py-1 rounded-lg border border-primary/30 backdrop-blur-sm">
