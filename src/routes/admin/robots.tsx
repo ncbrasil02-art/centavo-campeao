@@ -34,10 +34,19 @@ function AdminRobotsPage() {
   useEffect(() => {
     automationRef.current = automationActive;
     if (automationActive) {
-      const interval = setInterval(runAutomation, 1000);
+      const interval = setInterval(runAutomation, 1500); // Poll every 1.5s
       return () => clearInterval(interval);
     }
   }, [automationActive]);
+
+  async function checkAdmin() {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      navigate({ to: "/auth" });
+      return;
+    }
+    setIsAdmin(true);
+  }
 
   async function fetchRobotUsers() {
     const { data } = await supabase
@@ -47,28 +56,52 @@ function AdminRobotsPage() {
     if (data) setRobots(data);
   }
 
+  async function fetchAuctionsWithRobots() {
+    const { data, error } = await supabase
+      .from("auctions")
+      .select(`
+        *,
+        product:products(name),
+        robot_settings(*)
+      `)
+      .eq("status", "live");
+    
+    if (data) {
+      for (const auction of data) {
+        if (!auction.robot_settings || auction.robot_settings.length === 0) {
+          await supabase.from("robot_settings").insert({ auction_id: auction.id });
+        }
+      }
+      const { data: updatedData } = await supabase
+        .from("auctions")
+        .select(`
+          *,
+          product:products(name),
+          robot_settings(*)
+        `)
+        .eq("status", "live");
+      
+      if (updatedData) setAuctions(updatedData);
+    }
+    setLoading(false);
+  }
+
   async function runAutomation() {
     if (!automationRef.current) return;
     
-    // For each active auction with robot settings enabled
     for (const auction of auctions) {
       const settings = auction.robot_settings?.[0];
       if (!settings?.active) continue;
 
-      // Calculate time left
       const end = new Date(auction.end_time).getTime();
       const now = new Date().getTime();
       const diff = Math.max(0, Math.floor((end - now) / 1000));
 
-      // Strategy: 
-      // - Higher chance to bid as time gets lower
-      // - Random delay within the configured range
-      let bidChance = 0.05; // 5% chance every second normally
-      if (diff < 10) bidChance = 0.3; // 30% chance in last 10s
-      if (diff < 3) bidChance = 0.6; // 60% chance in last 3s
+      let bidChance = 0.1; 
+      if (diff < 10) bidChance = 0.4;
+      if (diff < 5) bidChance = 0.8;
 
       if (Math.random() < bidChance) {
-        // Choose a random robot
         const randomRobot = robots[Math.floor(Math.random() * robots.length)];
         if (randomRobot && auction.last_bidder_id !== randomRobot.id) {
           triggerRobotBid(auction.id, randomRobot.id);
@@ -78,15 +111,11 @@ function AdminRobotsPage() {
   }
 
   const triggerRobotBid = async (auctionId: string, robotId: string) => {
-    const { data, error } = await supabase.rpc('place_robot_bid', {
+    await supabase.rpc('place_robot_bid', {
       p_auction_id: auctionId,
       p_robot_id: robotId
     });
-    
-    if (!error && (data as any)?.success) {
-      // Refresh local data to show new bid
-      fetchAuctionsWithRobots();
-    }
+    fetchAuctionsWithRobots();
   };
 
   const toggleRobot = async (auctionId: string, currentStatus: boolean, settingsId: string) => {
@@ -95,10 +124,8 @@ function AdminRobotsPage() {
       .update({ active: !currentStatus })
       .eq("id", settingsId);
     
-    if (error) {
-      toast.error("Erro ao atualizar robô.");
-    } else {
-      toast.success(`Robô ${!currentStatus ? 'ativado' : 'desativado'} com sucesso!`);
+    if (!error) {
+      toast.success(`Robô ${!currentStatus ? 'ativado' : 'desativado'}`);
       fetchAuctionsWithRobots();
     }
   };
@@ -109,10 +136,8 @@ function AdminRobotsPage() {
       .update({ min_delay: min, max_delay: max })
       .eq("id", settingsId);
     
-    if (error) {
-      toast.error("Erro ao atualizar delays.");
-    } else {
-      toast.success("Configurações salvas.");
+    if (!error) {
+      toast.success("Delay atualizado");
       fetchAuctionsWithRobots();
     }
   };
@@ -136,6 +161,13 @@ function AdminRobotsPage() {
           </div>
           
           <div className="flex gap-4">
+            <Button 
+              onClick={() => setAutomationActive(!automationActive)}
+              variant={automationActive ? "destructive" : "default"}
+              className={`font-bold ${!automationActive ? 'bg-green-600 hover:bg-green-500 shadow-[0_0_20px_rgba(22,163,74,0.4)]' : ''}`}
+            >
+              {automationActive ? <><StopCircle className="w-4 h-4 mr-2" /> PARAR AUTOMAÇÃO</> : <><PlayCircle className="w-4 h-4 mr-2" /> INICIAR AUTOMAÇÃO</>}
+            </Button>
             <Button variant="outline" className="border-white/10 hover:bg-white/5" asChild>
               <Link to="/"><LayoutDashboard className="w-4 h-4 mr-2" /> Dashboard</Link>
             </Button>
@@ -143,10 +175,10 @@ function AdminRobotsPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-          <StatCard icon={<Gavel className="w-5 h-5" />} label="Leilões Ativos" value={auctions.length.toString()} color="primary" />
-          <StatCard icon={<Bot className="w-5 h-5" />} label="Robôs Rodando" value={auctions.filter(a => a.robot_settings?.[0]?.active).length.toString()} color="primary" />
-          <StatCard icon={<Users className="w-5 h-5" />} label="Lances I.A (Hoje)" value="1.240" color="primary" />
-          <StatCard icon={<AlertCircle className="w-5 h-5" />} label="Eficiência" value="98%" color="primary" />
+          <StatCard icon={<Gavel className="w-5 h-5" />} label="Leilões Ativos" value={auctions.length.toString()} />
+          <StatCard icon={<Bot className="w-5 h-5" />} label="Robôs Rodando" value={auctions.filter(a => a.robot_settings?.[0]?.active).length.toString()} />
+          <StatCard icon={<Users className="w-5 h-5" />} label="Robôs Prontos" value={robots.length.toString()} />
+          <StatCard icon={<AlertCircle className="w-5 h-5" />} label="Automação" value={automationActive ? "LIGADA" : "DESLIGADA"} />
         </div>
 
         <Card className="bg-white/5 border-white/10 overflow-hidden backdrop-blur-md">
@@ -161,7 +193,7 @@ function AdminRobotsPage() {
                   <TableHead className="text-white/60 font-bold">Produto</TableHead>
                   <TableHead className="text-white/60 font-bold">Status Robô</TableHead>
                   <TableHead className="text-white/60 font-bold">Delays (Min/Max)</TableHead>
-                  <TableHead className="text-white/60 font-bold">Lances Totais</TableHead>
+                  <TableHead className="text-white/60 font-bold">Lances Atuais</TableHead>
                   <TableHead className="text-white/60 font-bold text-right">Ações</TableHead>
                 </TableRow>
               </TableHeader>
@@ -175,7 +207,7 @@ function AdminRobotsPage() {
                       <TableCell className="font-bold py-6">
                         <div className="flex flex-col">
                           <span>{auction.product?.name}</span>
-                          <span className="text-[10px] text-white/40 font-mono">{auction.id}</span>
+                          <span className="text-[10px] text-white/40 font-mono italic">Preço: R$ {auction.current_price?.toFixed(2)}</span>
                         </div>
                       </TableCell>
                       <TableCell>
@@ -186,7 +218,7 @@ function AdminRobotsPage() {
                             className="data-[state=checked]:bg-primary"
                           />
                           <Badge variant="outline" className={settings.active ? "border-primary text-primary bg-primary/10" : "border-white/10 text-white/40"}>
-                            {settings.active ? "ATIVO" : "DESATIVADO"}
+                            {settings.active ? "ATIVO" : "OFF"}
                           </Badge>
                         </div>
                       </TableCell>
@@ -205,7 +237,6 @@ function AdminRobotsPage() {
                             defaultValue={settings.max_delay} 
                             onBlur={(e) => updateDelay(settings.id, settings.min_delay, parseInt(e.target.value))}
                           />
-                          <span className="text-[10px] text-white/40 uppercase font-bold ml-1">seg</span>
                         </div>
                       </TableCell>
                       <TableCell>
@@ -231,11 +262,11 @@ function AdminRobotsPage() {
   );
 }
 
-function StatCard({ icon, label, value, color }: { icon: React.ReactNode, label: string, value: string, color: string }) {
+function StatCard({ icon, label, value }: { icon: React.ReactNode, label: string, value: string }) {
   return (
     <Card className="bg-white/5 border-white/10 p-6">
       <div className="flex justify-between items-start mb-4">
-        <div className={`p-2 bg-primary/10 rounded-lg text-primary`}>
+        <div className="p-2 bg-primary/10 rounded-lg text-primary">
           {icon}
         </div>
         <Badge variant="outline" className="border-white/10 text-[10px] uppercase">Real-time</Badge>
