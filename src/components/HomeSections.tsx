@@ -86,6 +86,7 @@ export function AuctionCard({ auction: initialAuction }: { auction: any }) {
   const [showBonus, setShowBonus] = useState(false);
   const [loading, setLoading] = useState(false);
   const confettiFired = useRef(false);
+  const { getAdjustedNow } = useTimeSync();
 
   useEffect(() => {
     setAuction(initialAuction);
@@ -96,7 +97,7 @@ export function AuctionCard({ auction: initialAuction }: { auction: any }) {
     const calculateTimeLeft = () => {
       if (!auction.end_time) return 0;
       const end = new Date(auction.end_time).getTime();
-      const now = new Date().getTime();
+      const now = getAdjustedNow();
       const diff = Math.max(0, Math.floor((end - now) / 1000));
       return diff;
     };
