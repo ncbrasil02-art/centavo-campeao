@@ -6,6 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Send, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
+import { getFallbackAvatarUrl } from "@/lib/constants";
 
 export function AuctionChat({ auctionId }: { auctionId: string }) {
   const [messages, setMessages] = useState<any[]>([]);
