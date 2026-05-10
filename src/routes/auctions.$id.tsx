@@ -12,7 +12,7 @@ import { AuctionChat } from "@/components/AuctionChat";
 import { useTimeSync } from "@/hooks/useTimeSync";
 // confetti will be imported dynamically on the client
 import { toast } from "sonner";
-import { FALLBACK_PRODUCT_IMAGE } from "@/lib/constants";
+import { FALLBACK_PRODUCT_IMAGE, getFallbackAvatarUrl } from "@/lib/constants";
 
 export const Route = createFileRoute("/auctions/$id")({
   component: AuctionPage,
