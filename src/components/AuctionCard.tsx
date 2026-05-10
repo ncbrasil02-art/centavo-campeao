@@ -29,6 +29,10 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   }, [initialAuction]);
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
     confettiFired.current = false;
     const calculateTimeLeft = () => {
       if (!auction.end_time) return 0;
