@@ -32,6 +32,8 @@ function AuctionPage() {
   const confettiFired = useRef(false);
   const navigate = useNavigate();
   const { getAdjustedNow } = useTimeSync();
+  const channelRef = useRef<string>(`auction_detail_${id}_${Math.random().toString(36).substring(7)}`);
+  const bidsChannelRef = useRef<string>(`bids_detail_${id}_${Math.random().toString(36).substring(7)}`);
 
   useEffect(() => {
     setMounted(true);
@@ -42,7 +44,7 @@ function AuctionPage() {
     fetchBids();
 
     const auctionChannel = supabase
-      .channel(`auction_${id}`)
+      .channel(channelRef.current)
       .on(
         'postgres_changes',
         { event: 'UPDATE', schema: 'public', table: 'auctions', filter: `id=eq.${id}` },
@@ -56,7 +58,7 @@ function AuctionPage() {
       .subscribe();
 
     const bidsChannel = supabase
-      .channel(`bids_${id}`)
+      .channel(bidsChannelRef.current)
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'bids', filter: `auction_id=eq.${id}` },

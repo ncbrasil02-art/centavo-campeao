@@ -13,6 +13,8 @@ export function GlobalActivityChat() {
   const [newMessage, setNewMessage] = useState("");
   const [user, setUser] = useState<any>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const channelRef = useRef<string>(`global_chat_${Math.random().toString(36).substring(7)}`);
+  const bidChannelRef = useRef<string>(`global_bids_${Math.random().toString(36).substring(7)}`);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -23,7 +25,7 @@ export function GlobalActivityChat() {
 
     // Subscribe to general chat messages
     const chatChannel = supabase
-      .channel('global_chat')
+      .channel(channelRef.current)
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'chat_messages' },
@@ -37,7 +39,7 @@ export function GlobalActivityChat() {
 
     // Subscribe to ALL bids for activity feed
     const bidChannel = supabase
-      .channel('global_bids')
+      .channel(bidChannelRef.current)
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'bids' },
