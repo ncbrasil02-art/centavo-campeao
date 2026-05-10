@@ -83,6 +83,8 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
     }, 1000);
 
     return () => clearInterval(timer);
+  }, [auction.id]);
+
   useEffect(() => {
     if (isFinished) return;
 
