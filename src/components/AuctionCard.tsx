@@ -79,6 +79,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
     setLoading(true);
     // Simulate bid for fictitious mode
     setTimeout(() => {
+      playBidSound();
       setIsNewBid(true);
       setTimeLeft(30); // Reset to 30s as per fictitious mode
       setShowBonus(true);
