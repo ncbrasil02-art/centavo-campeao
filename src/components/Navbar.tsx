@@ -3,6 +3,8 @@ import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { User, LogOut, Wallet, Gavel, LayoutDashboard } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getFallbackAvatarUrl } from "@/lib/constants";
 
 export function Navbar() {
   const [user, setUser] = useState<any>(null);
