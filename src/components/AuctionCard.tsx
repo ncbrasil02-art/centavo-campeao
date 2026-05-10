@@ -24,8 +24,22 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   const [showBonus, setShowBonus] = useState(false);
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const confettiFired = useRef(false);
   const { getAdjustedNow } = useTimeSync();
+
+  useEffect(() => {
+    audioRef.current = new Audio(BID_SOUND_URL);
+    audioRef.current.load();
+  }, []);
+
+  const playBidSound = useCallback(() => {
+    if (audioRef.current && !isMuted) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().catch(err => console.error("Error playing sound:", err));
+    }
+  }, [isMuted]);
 
   useEffect(() => {
     setAuction(initialAuction);
