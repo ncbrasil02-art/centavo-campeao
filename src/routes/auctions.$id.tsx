@@ -28,9 +28,14 @@ function AuctionPage() {
   const [activeImage, setActiveImage] = useState(0);
   const [isNewBid, setIsNewBid] = useState(false);
   const [showBonus, setShowBonus] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const confettiFired = useRef(false);
   const navigate = useNavigate();
   const { getAdjustedNow } = useTimeSync();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     fetchAuction();
