@@ -420,29 +420,46 @@ function AuctionPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="flex flex-col gap-3 p-6 rounded-[28px] bg-white/5 border border-white/10 transition-colors hover:bg-white/10">
-                    <span className="text-[10px] text-white/40 font-black uppercase tracking-widest flex items-center gap-2">
-                      <Clock className="w-3 h-3 text-primary" /> Cronômetro
-                    </span>
-                    <div className={`text-4xl font-mono font-black transition-all duration-300 ${
-                      timeLeft <= 5 && !isFinished 
-                        ? 'text-red-500 animate-pulse scale-110 drop-shadow-[0_0_15px_rgba(239,68,68,0.7)]' 
-                        : timeLeft <= 10 && !isFinished
-                        ? 'text-orange-500'
-                        : isFinished ? 'text-white/20' : 'text-white'
-                    }`}>
-                      {isFinished ? "00:00" : formatTime(timeLeft)}
+                <div className="relative space-y-4">
+                  <div className="grid grid-cols-2 gap-6 relative z-10">
+                    <div className="flex flex-col gap-3 p-6 rounded-[28px] bg-white/5 border border-white/10 transition-colors hover:bg-white/10">
+                      <span className="text-[10px] text-white/40 font-black uppercase tracking-widest flex items-center gap-2">
+                        <Clock className="w-3 h-3 text-primary" /> Cronômetro
+                      </span>
+                      <div className={`text-4xl font-mono font-black transition-all duration-300 ${
+                        timeLeft <= 5 && !isFinished 
+                          ? 'text-red-500 animate-pulse scale-110 drop-shadow-[0_0_15px_rgba(239,68,68,0.7)]' 
+                          : timeLeft <= 10 && !isFinished
+                          ? 'text-orange-500'
+                          : isFinished ? 'text-white/20' : 'text-white'
+                      }`}>
+                        {isFinished ? "00:00" : formatTime(timeLeft)}
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-3 p-6 rounded-[28px] bg-white/5 border border-white/10 transition-colors hover:bg-white/10">
+                      <span className="text-[10px] text-white/40 font-black uppercase tracking-widest flex items-center gap-2">
+                        <History className="w-3 h-3 text-primary" /> Total Bids
+                      </span>
+                      <div className="text-4xl font-black text-white">
+                        {auction.bid_count || 0}
+                      </div>
                     </div>
                   </div>
-                  <div className="flex flex-col gap-3 p-6 rounded-[28px] bg-white/5 border border-white/10 transition-colors hover:bg-white/10">
-                    <span className="text-[10px] text-white/40 font-black uppercase tracking-widest flex items-center gap-2">
-                      <History className="w-3 h-3 text-primary" /> Total Bids
-                    </span>
-                    <div className="text-4xl font-black text-white">
-                      {auction.bid_count || 0}
+                  
+                  {/* Time Bar */}
+                  {!isFinished && (
+                    <div className="px-1">
+                      <Progress 
+                        value={(timeLeft / 30) * 100} 
+                        className={`h-2 bg-white/5 transition-all duration-1000 ${
+                          timeLeft <= 5 ? 'bg-red-500/20' : ''
+                        }`}
+                        indicatorClassName={`${
+                          timeLeft <= 5 ? 'bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)]' : timeLeft <= 10 ? 'bg-orange-500' : 'bg-primary shadow-[0_0_15px_rgba(var(--color-primary),0.5)]'
+                        }`}
+                      />
                     </div>
-                  </div>
+                  )}
                 </div>
 
                 <div className="p-6 rounded-[28px] bg-primary/5 border border-primary/20 flex items-center justify-between group/bidder transition-all hover:bg-primary/10">
