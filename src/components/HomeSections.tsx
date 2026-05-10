@@ -105,7 +105,15 @@ export function AuctionCard({ auction: initialAuction }: { auction: any }) {
       setTimeLeft(remaining);
       
       if (remaining <= 0 && auction.status === 'live') {
-        // Auction ended
+        if (!confettiFired.current) {
+          confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#00F2FF', '#9D00FF', '#FF00E5']
+          });
+          confettiFired.current = true;
+        }
         clearInterval(timer);
       }
     }, 1000);
