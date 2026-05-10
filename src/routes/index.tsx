@@ -34,6 +34,8 @@ function WinnerCard({ name, product, price, saving }: { name: string, product: s
 function Index() {
   const [auctions, setAuctions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showChat, setShowChat] = useState(false); // Mobile toggle
+
 
   useEffect(() => {
     async function fetchAuctions() {
