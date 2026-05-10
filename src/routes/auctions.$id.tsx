@@ -273,9 +273,19 @@ function AuctionPage() {
                     {discount}% ECONOMIA
                   </Badge>
                 </div>
-                <button className="absolute top-6 right-6 z-20 p-4 rounded-full bg-black/40 hover:bg-primary/20 border border-white/10 backdrop-blur-md transition-all group/share">
-                  <Share2 className="w-5 h-5 transition-transform group-hover/share:scale-110" />
-                </button>
+                <div className="absolute top-6 right-6 z-20 flex gap-2">
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    onClick={() => setIsMuted(!isMuted)}
+                    className="p-4 rounded-full bg-black/40 hover:bg-primary/20 border border-white/10 backdrop-blur-md transition-all group/sound"
+                  >
+                    {isMuted ? <VolumeX className="w-5 h-5 text-white/60" /> : <Volume2 className="w-5 h-5 text-primary" />}
+                  </Button>
+                  <button className="p-4 rounded-full bg-black/40 hover:bg-primary/20 border border-white/10 backdrop-blur-md transition-all group/share">
+                    <Share2 className="w-5 h-5 transition-transform group-hover/share:scale-110" />
+                  </button>
+                </div>
               </div>
 
               {auction.product?.images && auction.product.images.length > 1 && (
