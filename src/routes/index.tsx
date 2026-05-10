@@ -37,6 +37,22 @@ function Index() {
 
     fetchAuctions();
 
+    const fetchAuctionUpdate = async (id: string) => {
+      const { data } = await supabase
+        .from("auctions")
+        .select(`
+          *,
+          product:products(*),
+          last_bidder:profiles(username)
+        `)
+        .eq("id", id)
+        .single();
+      
+      if (data) {
+        setAuctions(prev => prev.map(a => a.id === id ? data : a));
+      }
+    };
+
     // Subscribe to realtime changes
     const channel = supabase
       .channel('auctions_live')
@@ -44,7 +60,7 @@ function Index() {
         'postgres_changes',
         { event: 'UPDATE', schema: 'public', table: 'auctions' },
         (payload) => {
-          setAuctions(prev => prev.map(a => a.id === payload.new.id ? { ...a, ...payload.new } : a));
+          fetchAuctionUpdate(payload.new.id);
         }
       )
       .subscribe();
