@@ -39,6 +39,30 @@ export function AuctionChat({ auctionId }: { auctionId: string }) {
   }, [auctionId]);
 
   useEffect(() => {
+    // Fictitious chat simulation
+    const chatInterval = setInterval(() => {
+      if (Math.random() < 0.2) { // 20% chance of a bot sending a message
+        const randomUser = FICTITIOUS_PARTICIPANTS[Math.floor(Math.random() * FICTITIOUS_PARTICIPANTS.length)];
+        const randomPhrase = FICTITIOUS_CHAT_PHRASES[Math.floor(Math.random() * FICTITIOUS_CHAT_PHRASES.length)];
+        
+        const botMessage = {
+          id: Math.random().toString(36).substring(7),
+          message: randomPhrase,
+          profile: {
+            username: randomUser,
+            avatar_url: null
+          },
+          created_at: new Date().toISOString()
+        };
+        
+        setMessages(prev => [...prev, botMessage].slice(-50));
+      }
+    }, 4000);
+
+    return () => clearInterval(chatInterval);
+  }, []);
+
+  useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
