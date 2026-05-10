@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Bot, Settings2, Power, AlertCircle, LayoutDashboard, Users, Gavel, PlayCircle, StopCircle } from "lucide-react";
 import { toast } from "sonner";
+import { useTimeSync } from "@/hooks/useTimeSync";
 
 export const Route = createFileRoute("/admin/robots")({
   component: AdminRobotsPage,
