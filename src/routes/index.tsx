@@ -3,7 +3,7 @@ import { Navbar } from "@/components/Navbar";
 import { Hero, AuctionCard } from "@/components/HomeSections";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Zap, ShieldCheck, Heart } from "lucide-react";
+import { ArrowRight, Zap, ShieldCheck, Heart, User } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
