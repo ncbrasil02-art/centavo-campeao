@@ -216,13 +216,19 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             <span className="mb-1 text-[9px] font-black uppercase tracking-widest text-white/40">
               Tempo
             </span>
-            <div className={`flex items-center gap-1 font-mono text-2xl font-bold ${timeLeft < 10 && !isFinished ? 'text-red-500 animate-pulse' : isFinished ? 'text-white/20' : 'text-white'}`}>
-              <Clock className={`h-4 w-4 ${timeLeft < 10 && !isFinished ? 'animate-spin' : ''}`} />
+            <div className={`flex items-center gap-1 font-mono text-2xl font-bold transition-colors duration-300 ${
+              timeLeft <= 5 && !isFinished 
+                ? 'text-red-500 animate-pulse scale-110 drop-shadow-[0_0_10px_rgba(239,68,68,0.7)]' 
+                : timeLeft <= 10 && !isFinished
+                ? 'text-orange-500'
+                : isFinished ? 'text-white/20' : 'text-white'
+            }`}>
+              <Clock className={`h-4 w-4 ${timeLeft <= 5 && !isFinished ? 'animate-spin' : ''}`} />
               {isFinished ? "00:00" : formatTime(timeLeft)}
             </div>
             {showBonus && (
               <div className="absolute -top-8 right-0 animate-bounce rounded-lg border border-primary/30 bg-primary/20 px-2 py-1 text-[10px] font-black text-primary backdrop-blur-sm">
-                +15s BÔNUS
+                +30s RESET
               </div>
             )}
           </div>
