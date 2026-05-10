@@ -9,7 +9,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Clock, User, MessageSquare, Zap, Eye, Volume2, VolumeX } from "lucide-react";
 import { AuctionChat } from "./AuctionChat";
 import { toast } from "sonner";
-import { FALLBACK_PRODUCT_IMAGE, getFallbackAvatarUrl } from "@/lib/constants";
+import { FALLBACK_PRODUCT_IMAGE, getFallbackAvatarUrl, FICTITIOUS_PARTICIPANTS } from "@/lib/constants";
+import { Progress } from "@/components/ui/progress";
 
 const BID_SOUND_URL = "https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3";
 
@@ -28,6 +29,11 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const confettiFired = useRef(false);
   const { getAdjustedNow } = useTimeSync();
+
+  const isFinished = timeLeft <= 0 || auction.status === 'finished';
+  const discount = auction.product?.market_value 
+    ? Math.round((1 - (auction.current_price / auction.product.market_value)) * 100)
+    : 0;
 
   useEffect(() => {
     audioRef.current = new Audio(BID_SOUND_URL);
@@ -84,6 +90,31 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
     return () => clearInterval(timer);
   }, [auction.id]);
 
+  useEffect(() => {
+    if (isFinished) return;
+
+    const fictitiousBidInterval = setInterval(() => {
+      // Logic: If time is low (e.g. < 10s), there's a higher chance of a bot bidding
+      const chance = timeLeft < 10 ? 0.4 : 0.05;
+      if (Math.random() < chance) {
+        const randomUser = FICTITIOUS_PARTICIPANTS[Math.floor(Math.random() * FICTITIOUS_PARTICIPANTS.length)];
+        
+        playBidSound();
+        setIsNewBid(true);
+        setTimeLeft(30);
+        setAuction((prev: any) => ({
+          ...prev,
+          current_price: (prev.current_price || 0) + 0.01,
+          last_bidder: { username: randomUser, avatar_url: null }
+        }));
+        
+        setTimeout(() => setIsNewBid(false), 800);
+      }
+    }, 3000);
+
+    return () => clearInterval(fictitiousBidInterval);
+  }, [timeLeft, isFinished, playBidSound]);
+
   const handleBid = async () => {
     setLoading(true);
     // Simulate bid for fictitious mode
@@ -92,46 +123,16 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       setIsNewBid(true);
       setTimeLeft(30); // Reset to 30s as per fictitious mode
       setShowBonus(true);
+      setAuction((prev: any) => ({
+        ...prev,
+        current_price: (prev.current_price || 0) + 0.01,
+        last_bidder: { username: "Você", avatar_url: null }
+      }));
       setTimeout(() => setShowBonus(false), 1000);
-      setIsNewBid(false);
+      setTimeout(() => setIsNewBid(false), 800);
       setLoading(false);
       toast.success("Lance realizado! (Simulado)");
     }, 300);
-    
-    /* 
-    // Real DB code commented out for fictitious mode
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast.error("Você precisa estar logado para dar um lance!");
-        return;
-      }
-
-      const { data, error } = await supabase.rpc('place_bid', {
-        p_auction_id: auction.id,
-        p_user_id: session.user.id
-      });
-
-      if (error) throw error;
-      
-      const result = data as any;
-      if (!result.success) {
-        toast.error(result.message);
-      } else {
-        setIsNewBid(true);
-        if (timeLeft < 15) {
-          setShowBonus(true);
-          setTimeout(() => setShowBonus(false), 1000);
-        }
-        setTimeout(() => setIsNewBid(false), 500);
-      }
-    } catch (error: any) {
-      console.error("Erro ao dar lance:", error);
-      toast.error("Erro ao processar lance.");
-    } finally {
-      setLoading(false);
-    }
-    */
   };
 
   const formatTime = (seconds: number) => {
@@ -140,10 +141,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
-  const isFinished = timeLeft <= 0 || auction.status === 'finished';
-  const discount = auction.product?.market_value 
-    ? Math.round((1 - (auction.current_price / auction.product.market_value)) * 100)
-    : 0;
+  const timePercentage = (timeLeft / 30) * 100;
 
   return (
     <Card className="group relative flex flex-col h-full overflow-hidden rounded-[32px] border-white/10 bg-white/5 transition-all duration-500 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/20">
@@ -226,7 +224,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       </div>
       
       {/* Content Section */}
-      <div className="relative flex flex-1 flex-col gap-5 bg-gradient-to-b from-white/[0.02] to-transparent p-6">
+      <div className="relative flex flex-1 flex-col gap-4 bg-gradient-to-b from-white/[0.02] to-transparent p-6">
         <div>
           <Link to="/auctions/$id" params={{ id: auction.id }} className="cursor-pointer">
             <h3 className="mb-1 line-clamp-1 text-xl font-black uppercase italic tracking-tighter text-white transition-colors group-hover:text-primary">
@@ -243,39 +241,63 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
-          <div className="flex flex-col">
-            <span className="mb-1 text-[9px] font-black uppercase tracking-widest text-white/40">
-              Preço Atual
-            </span>
-            <span className={`text-2xl font-black text-primary transition-all duration-300 ${isNewBid ? 'scale-110 drop-shadow-[0_0_10px_rgba(var(--color-primary),0.5)]' : 'scale-100'}`}>
-              R$ {auction.current_price?.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) || "0,01"}
-            </span>
-          </div>
-          <div className="relative flex flex-col items-end">
-            <span className="mb-1 text-[9px] font-black uppercase tracking-widest text-white/40">
-              Tempo
-            </span>
-            <div className={`flex items-center gap-1 font-mono text-2xl font-bold transition-colors duration-300 ${
-              timeLeft <= 5 && !isFinished 
-                ? 'text-red-500 animate-pulse scale-110 drop-shadow-[0_0_10px_rgba(239,68,68,0.7)]' 
-                : timeLeft <= 10 && !isFinished
-                ? 'text-orange-500'
-                : isFinished ? 'text-white/20' : 'text-white'
-            }`}>
-              <Clock className={`h-4 w-4 ${timeLeft <= 5 && !isFinished ? 'animate-spin' : ''}`} />
-              {isFinished ? "00:00" : formatTime(timeLeft)}
+        <div className="relative space-y-2">
+          <div className="grid grid-cols-2 gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm relative z-10">
+            <div className="flex flex-col">
+              <span className="mb-1 text-[9px] font-black uppercase tracking-widest text-white/40">
+                Preço Atual
+              </span>
+              <span className={`text-2xl font-black text-primary transition-all duration-300 ${isNewBid ? 'scale-110 drop-shadow-[0_0_10px_rgba(var(--color-primary),0.5)]' : 'scale-100'}`}>
+                R$ {auction.current_price?.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) || "0,01"}
+              </span>
             </div>
-            {showBonus && (
-              <div className="absolute -top-8 right-0 animate-bounce rounded-lg border border-primary/30 bg-primary/20 px-2 py-1 text-[10px] font-black text-primary backdrop-blur-sm">
-                +30s RESET
+            <div className="relative flex flex-col items-end">
+              <span className="mb-1 text-[9px] font-black uppercase tracking-widest text-white/40">
+                Tempo
+              </span>
+              <div className={`flex items-center gap-1 font-mono text-2xl font-bold transition-colors duration-300 ${
+                timeLeft <= 5 && !isFinished 
+                  ? 'text-red-500 animate-pulse scale-110 drop-shadow-[0_0_10px_rgba(239,68,68,0.7)]' 
+                  : timeLeft <= 10 && !isFinished
+                  ? 'text-orange-500'
+                  : isFinished ? 'text-white/20' : 'text-white'
+              }`}>
+                <Clock className={`h-4 w-4 ${timeLeft <= 5 && !isFinished ? 'animate-spin' : ''}`} />
+                {isFinished ? "00:00" : formatTime(timeLeft)}
               </div>
-            )}
+              {showBonus && (
+                <div className="absolute -top-8 right-0 animate-bounce rounded-lg border border-primary/30 bg-primary/20 px-2 py-1 text-[10px] font-black text-primary backdrop-blur-sm">
+                  +30s RESET
+                </div>
+              )}
+            </div>
           </div>
+          
+          {/* Time Bar */}
+          {!isFinished && (
+            <div className="px-1">
+              <Progress 
+                value={timePercentage} 
+                className={`h-1.5 bg-white/5 transition-all duration-1000 ${
+                  timeLeft <= 5 ? 'bg-red-500/20' : ''
+                }`}
+                indicatorClassName={`${
+                  timeLeft <= 5 ? 'bg-red-500' : timeLeft <= 10 ? 'bg-orange-500' : 'bg-primary'
+                }`}
+              />
+            </div>
+          )}
         </div>
 
-        <div className="flex items-center gap-3 py-1">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-primary/20 bg-primary/10">
+        {/* Highlighted Last Bidder */}
+        <div className={`flex items-center gap-3 p-3 rounded-2xl transition-all duration-500 border ${
+          isNewBid 
+            ? 'bg-primary/20 border-primary/50 shadow-[0_0_15px_rgba(var(--color-primary),0.3)]' 
+            : 'bg-white/5 border-white/10'
+        }`}>
+          <div className={`flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border transition-all duration-500 ${
+            isNewBid ? 'border-primary scale-110' : 'border-primary/20'
+          }`}>
             <img 
               src={auction.last_bidder?.avatar_url || getFallbackAvatarUrl(auction.last_bidder?.username)} 
               className="h-full w-full object-cover" 
@@ -284,11 +306,20 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             />
           </div>
           <div className="flex flex-col overflow-hidden">
-            <span className="text-[9px] font-black uppercase tracking-widest text-white/30">Último Lance</span>
-            <span className="truncate text-sm font-bold text-white">
+            <span className={`text-[9px] font-black uppercase tracking-widest transition-colors ${
+              isNewBid ? 'text-primary' : 'text-white/30'
+            }`}>Último Lance</span>
+            <span className={`truncate text-sm font-bold transition-all ${
+              isNewBid ? 'text-primary scale-105 origin-left' : 'text-white'
+            }`}>
               {auction.last_bidder?.username || "Aguardando..."}
             </span>
           </div>
+          {isNewBid && (
+            <div className="ml-auto">
+              <Zap className="h-4 w-4 text-primary animate-pulse" />
+            </div>
+          )}
         </div>
 
         <Button 

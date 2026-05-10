@@ -12,7 +12,8 @@ import { AuctionChat } from "@/components/AuctionChat";
 import { useTimeSync } from "@/hooks/useTimeSync";
 // confetti will be imported dynamically on the client
 import { toast } from "sonner";
-import { FALLBACK_PRODUCT_IMAGE, getFallbackAvatarUrl } from "@/lib/constants";
+import { FALLBACK_PRODUCT_IMAGE, getFallbackAvatarUrl, FICTITIOUS_PARTICIPANTS } from "@/lib/constants";
+import { Progress } from "@/components/ui/progress";
 
 const BID_SOUND_URL = "https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3";
 
@@ -36,6 +37,9 @@ function AuctionPage() {
   const confettiFired = useRef(false);
   const navigate = useNavigate();
   const { getAdjustedNow } = useTimeSync();
+
+  const isFinished = timeLeft <= 0 || auction?.status === 'finished';
+  const discount = Math.round((1 - (auction?.current_price / auction?.product?.market_value)) * 100);
 
   useEffect(() => {
     audioRef.current = new Audio(BID_SOUND_URL);
@@ -128,6 +132,41 @@ function AuctionPage() {
 
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    if (isFinished) return;
+
+    const fictitiousBidInterval = setInterval(() => {
+      const chance = timeLeft < 10 ? 0.4 : 0.05;
+      if (Math.random() < chance) {
+        const randomUser = FICTITIOUS_PARTICIPANTS[Math.floor(Math.random() * FICTITIOUS_PARTICIPANTS.length)];
+        
+        playBidSound();
+        setIsNewBid(true);
+        setTimeLeft(30);
+        setAuction((prev: any) => ({
+          ...prev,
+          current_price: (prev.current_price || 0) + 0.01,
+          bid_count: (prev.bid_count || 0) + 1,
+          last_bidder: { username: randomUser, avatar_url: null }
+        }));
+        
+        setBids(prev => [
+          { 
+            id: Math.random().toString(), 
+            profile: { username: randomUser }, 
+            price_at_bid: (auction?.current_price || 0) + 0.01, 
+            created_at: new Date().toISOString() 
+          },
+          ...prev.slice(0, 9)
+        ]);
+
+        setTimeout(() => setIsNewBid(false), 800);
+      }
+    }, 4000);
+
+    return () => clearInterval(fictitiousBidInterval);
+  }, [timeLeft, isFinished, playBidSound, auction?.current_price]);
 
   async function fetchAuction() {
     // Mock data for fictitious mode if wanted, but we'll try to fetch first
@@ -224,8 +263,6 @@ function AuctionPage() {
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
-  const isFinished = timeLeft <= 0 || auction.status === 'finished';
-  const discount = Math.round((1 - (auction.current_price / auction.product?.market_value)) * 100);
 
   return (
     <div className="min-h-screen bg-background text-white selection:bg-primary selection:text-primary-foreground">
@@ -383,34 +420,57 @@ function AuctionPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="flex flex-col gap-3 p-6 rounded-[28px] bg-white/5 border border-white/10 transition-colors hover:bg-white/10">
-                    <span className="text-[10px] text-white/40 font-black uppercase tracking-widest flex items-center gap-2">
-                      <Clock className="w-3 h-3 text-primary" /> Cronômetro
-                    </span>
-                    <div className={`text-4xl font-mono font-black transition-all duration-300 ${
-                      timeLeft <= 5 && !isFinished 
-                        ? 'text-red-500 animate-pulse scale-110 drop-shadow-[0_0_15px_rgba(239,68,68,0.7)]' 
-                        : timeLeft <= 10 && !isFinished
-                        ? 'text-orange-500'
-                        : isFinished ? 'text-white/20' : 'text-white'
-                    }`}>
-                      {isFinished ? "00:00" : formatTime(timeLeft)}
+                <div className="relative space-y-4">
+                  <div className="grid grid-cols-2 gap-6 relative z-10">
+                    <div className="flex flex-col gap-3 p-6 rounded-[28px] bg-white/5 border border-white/10 transition-colors hover:bg-white/10">
+                      <span className="text-[10px] text-white/40 font-black uppercase tracking-widest flex items-center gap-2">
+                        <Clock className="w-3 h-3 text-primary" /> Cronômetro
+                      </span>
+                      <div className={`text-4xl font-mono font-black transition-all duration-300 ${
+                        timeLeft <= 5 && !isFinished 
+                          ? 'text-red-500 animate-pulse scale-110 drop-shadow-[0_0_15px_rgba(239,68,68,0.7)]' 
+                          : timeLeft <= 10 && !isFinished
+                          ? 'text-orange-500'
+                          : isFinished ? 'text-white/20' : 'text-white'
+                      }`}>
+                        {isFinished ? "00:00" : formatTime(timeLeft)}
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-3 p-6 rounded-[28px] bg-white/5 border border-white/10 transition-colors hover:bg-white/10">
+                      <span className="text-[10px] text-white/40 font-black uppercase tracking-widest flex items-center gap-2">
+                        <History className="w-3 h-3 text-primary" /> Total Bids
+                      </span>
+                      <div className="text-4xl font-black text-white">
+                        {auction.bid_count || 0}
+                      </div>
                     </div>
                   </div>
-                  <div className="flex flex-col gap-3 p-6 rounded-[28px] bg-white/5 border border-white/10 transition-colors hover:bg-white/10">
-                    <span className="text-[10px] text-white/40 font-black uppercase tracking-widest flex items-center gap-2">
-                      <History className="w-3 h-3 text-primary" /> Total Bids
-                    </span>
-                    <div className="text-4xl font-black text-white">
-                      {auction.bid_count || 0}
+                  
+                  {/* Time Bar */}
+                  {!isFinished && (
+                    <div className="px-1">
+                      <Progress 
+                        value={(timeLeft / 30) * 100} 
+                        className={`h-2 bg-white/5 transition-all duration-1000 ${
+                          timeLeft <= 5 ? 'bg-red-500/20' : ''
+                        }`}
+                        indicatorClassName={`${
+                          timeLeft <= 5 ? 'bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)]' : timeLeft <= 10 ? 'bg-orange-500' : 'bg-primary shadow-[0_0_15px_rgba(var(--color-primary),0.5)]'
+                        }`}
+                      />
                     </div>
-                  </div>
+                  )}
                 </div>
 
-                <div className="p-6 rounded-[28px] bg-primary/5 border border-primary/20 flex items-center justify-between group/bidder transition-all hover:bg-primary/10">
+                <div className={`p-6 rounded-[28px] flex items-center justify-between group/bidder transition-all duration-500 border ${
+                  isNewBid 
+                    ? 'bg-primary/20 border-primary/50 shadow-[0_0_30px_rgba(var(--color-primary),0.3)]' 
+                    : 'bg-white/5 border-white/10 hover:bg-white/10'
+                }`}>
                   <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-full bg-white/5 border-2 border-primary/20 flex items-center justify-center overflow-hidden shrink-0 shadow-lg">
+                    <div className={`w-14 h-14 rounded-full bg-white/5 flex items-center justify-center overflow-hidden shrink-0 shadow-lg border-2 transition-all duration-500 ${
+                      isNewBid ? 'border-primary scale-110' : 'border-primary/20'
+                    }`}>
                       <img 
                         src={auction.last_bidder?.avatar_url || getFallbackAvatarUrl(auction.last_bidder?.username)} 
                         className="w-full h-full object-cover" 
@@ -419,8 +479,8 @@ function AuctionPage() {
                       />
                     </div>
                     <div>
-                      <span className="block text-[9px] text-white/30 font-black uppercase tracking-[0.2em] mb-1 leading-none">Vantagem Atual</span>
-                      <span className="text-xl font-black text-white group-hover/bidder:text-primary transition-colors tracking-tight italic uppercase">{auction.last_bidder?.username || "Nenhum lance"}</span>
+                      <span className={`block text-[9px] font-black uppercase tracking-[0.2em] mb-1 leading-none transition-colors ${isNewBid ? 'text-primary' : 'text-white/30'}`}>Vantagem Atual</span>
+                      <span className={`text-xl font-black transition-all italic uppercase ${isNewBid ? 'text-primary scale-105 origin-left' : 'text-white group-hover/bidder:text-primary'}`}>{auction.last_bidder?.username || "Nenhum lance"}</span>
                     </div>
                   </div>
                   {showBonus && (
