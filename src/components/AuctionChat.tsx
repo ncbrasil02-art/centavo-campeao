@@ -113,9 +113,9 @@ export function AuctionChat({ auctionId }: { auctionId: string }) {
           {messages.map((msg) => (
             <div key={msg.id} className="flex gap-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
               <Avatar className="w-9 h-9 border border-white/10 shadow-sm shrink-0">
-                <AvatarImage src={msg.profile?.avatar_url} />
+                <AvatarImage src={msg.profile?.avatar_url || getFallbackAvatarUrl(msg.profile?.username)} />
                 <AvatarFallback className="bg-primary/20 text-primary font-black text-xs">
-                  {msg.profile?.username?.substring(0, 2).toUpperCase()}
+                  {msg.profile?.username?.substring(0, 2).toUpperCase() || "U"}
                 </AvatarFallback>
               </Avatar>
               <div className="flex flex-col gap-1 min-w-0">
