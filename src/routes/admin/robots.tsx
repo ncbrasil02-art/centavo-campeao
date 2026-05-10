@@ -97,7 +97,7 @@ function AdminRobotsPage() {
 
       const end = new Date(auction.end_time).getTime();
       const now = getAdjustedNow();
-      const diff = Math.max(0, Math.floor((end - now) / 1000));
+      const diff = Math.max(0, Math.ceil((end - now) / 1000));
 
       let bidChance = 0.1; 
       if (diff < 10) bidChance = 0.4;
