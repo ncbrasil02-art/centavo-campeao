@@ -45,60 +45,59 @@ function Index() {
 
   useEffect(() => {
     setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    async function fetchAuctions() {
-      const { data, error } = await supabase
-        .from("auctions")
-        .select(`
-          *,
-          product:products(*),
-          last_bidder:profiles(username)
-        `)
-        .eq("status", "live")
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        console.error("Error fetching auctions:", error);
-      } else {
-        setAuctions(data || []);
+    
+    // Fictitious Mode: Mock data
+    const mockAuctions = [
+      {
+        id: "1",
+        status: "live",
+        current_price: 15.20,
+        product: {
+          name: "iPhone 15 Pro Max",
+          market_value: 8999.00,
+          images: ["https://images.unsplash.com/photo-1696446701796-da61225697cc?auto=format&fit=crop&q=80&w=800"]
+        },
+        last_bidder: { username: "Arrematador99" }
+      },
+      {
+        id: "2",
+        status: "live",
+        current_price: 8.45,
+        product: {
+          name: "PlayStation 5 Slim",
+          market_value: 3999.00,
+          images: ["https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&q=80&w=800"]
+        },
+        last_bidder: { username: "GamerPro" }
+      },
+      {
+        id: "3",
+        status: "live",
+        current_price: 125.60,
+        product: {
+          name: "MacBook Air M3",
+          market_value: 12499.00,
+          images: ["https://images.unsplash.com/photo-1517336714460-4c50d9178ee5?auto=format&fit=crop&q=80&w=800"]
+        },
+        last_bidder: { username: "DesignMaster" }
+      },
+      {
+        id: "4",
+        status: "live",
+        current_price: 42.10,
+        product: {
+          name: "AirPods Pro 2",
+          market_value: 2499.00,
+          images: ["https://images.unsplash.com/photo-1588423770574-91993ca072b7?auto=format&fit=crop&q=80&w=800"]
+        },
+        last_bidder: { username: "TechLover" }
       }
+    ];
+
+    setTimeout(() => {
+      setAuctions(mockAuctions);
       setLoading(false);
-    }
-
-    fetchAuctions();
-
-    const fetchAuctionUpdate = async (id: string) => {
-      const { data } = await supabase
-        .from("auctions")
-        .select(`
-          *,
-          product:products(*),
-          last_bidder:profiles(username)
-        `)
-        .eq("id", id)
-        .single();
-      
-      if (data) {
-        setAuctions(prev => prev.map(a => a.id === id ? data : a));
-      }
-    };
-
-    const channel = supabase
-      .channel('auctions_live')
-      .on(
-        'postgres_changes',
-        { event: 'UPDATE', schema: 'public', table: 'auctions' },
-        (payload) => {
-          fetchAuctionUpdate(payload.new.id);
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    }, 1000);
   }, []);
 
   return (
