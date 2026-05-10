@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Navbar } from "@/components/Navbar";
-import { Hero, AuctionCard } from "@/components/HomeSections";
+import { Hero } from "@/components/HomeSections";
+import { AuctionCard } from "@/components/AuctionCard";
 import { GlobalActivityChat } from "@/components/GlobalActivityChat";
 import { MessageSquare, X, ArrowRight, Zap, ShieldCheck, Heart, User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
