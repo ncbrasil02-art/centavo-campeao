@@ -212,16 +212,22 @@ function AuctionPage() {
               <div className="relative aspect-square rounded-[32px] overflow-hidden bg-white/5 border border-white/10 group shadow-2xl">
                 <div className="absolute inset-0 z-0">
                   <img 
-                    src={auction.product?.images?.[activeImage] || "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=1200&auto=format&fit=crop"} 
+                    src={auction.product?.images?.[activeImage] || FALLBACK_PRODUCT_IMAGE} 
                     alt={auction.product?.name} 
                     className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 blur-2xl opacity-20 scale-150"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = FALLBACK_PRODUCT_IMAGE;
+                    }}
                   />
                 </div>
                 <img 
                   key={activeImage}
-                  src={auction.product?.images?.[activeImage] || "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=1200&auto=format&fit=crop"} 
+                  src={auction.product?.images?.[activeImage] || FALLBACK_PRODUCT_IMAGE} 
                   alt={auction.product?.name} 
                   className="relative z-10 w-full h-full object-contain p-8 transition-all duration-500 animate-in fade-in zoom-in-95"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = FALLBACK_PRODUCT_IMAGE;
+                  }}
                 />
                 <div className="absolute top-6 left-6 z-20 flex flex-col gap-3">
                   {isFinished ? (
