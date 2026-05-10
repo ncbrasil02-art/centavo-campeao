@@ -214,7 +214,7 @@ function Index() {
                 <MessageSquare className="w-6 h-6" />
               </Button>
               <div className="flex-1 flex items-center justify-center">
-                <p className="vertical-text font-black text-[10px] tracking-[0.5em] text-white/20 uppercase italic whitespace-nowrap">
+                <p className="-rotate-90 font-black text-[10px] tracking-[0.5em] text-white/20 uppercase italic whitespace-nowrap">
                   CHAT GLOBAL
                 </p>
               </div>
