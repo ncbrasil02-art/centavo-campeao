@@ -120,14 +120,14 @@ function AuthPage() {
                   <Label htmlFor="email">E-mail</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-3 h-4 w-4 text-white/40" />
-                    <Input id="email" type="email" placeholder="seu@email.com" className="pl-10 bg-white/5 border-white/10" value={email} onChange={e => setEmail(e.target.value)} required />
+                    <Input id="email" type="email" placeholder="seu@email.com" className="pl-10 bg-white/5 border-white/10 placeholder:text-primary/50" value={email} onChange={e => setEmail(e.target.value)} required />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="password">Senha</Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-3 h-4 w-4 text-white/40" />
-                    <Input id="password" type="password" placeholder="••••••••" className="pl-10 bg-white/5 border-white/10" value={password} onChange={e => setPassword(e.target.value)} required />
+                    <Input id="password" type="password" placeholder="••••••••" className="pl-10 bg-white/5 border-white/10 placeholder:text-primary/50" value={password} onChange={e => setPassword(e.target.value)} required />
                   </div>
                 </div>
                 <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90" disabled={loading}>
@@ -143,14 +143,14 @@ function AuthPage() {
                     <Label htmlFor="reg-name">Nome Completo</Label>
                     <div className="relative">
                       <User className="absolute left-3 top-3 h-4 w-4 text-white/40" />
-                      <Input id="reg-name" placeholder="João Silva" className="pl-10 bg-white/5 border-white/10" value={fullName} onChange={e => setFullName(e.target.value)} required />
+                      <Input id="reg-name" placeholder="João Silva" className="pl-10 bg-white/5 border-white/10 placeholder:text-primary/50" value={fullName} onChange={e => setFullName(e.target.value)} required />
                     </div>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="reg-user">Nickname</Label>
                     <div className="relative">
                       <Hash className="absolute left-3 top-3 h-4 w-4 text-white/40" />
-                      <Input id="reg-user" placeholder="joao123" className="pl-10 bg-white/5 border-white/10" value={username} onChange={e => setUsername(e.target.value)} required />
+                      <Input id="reg-user" placeholder="joao123" className="pl-10 bg-white/5 border-white/10 placeholder:text-primary/50" value={username} onChange={e => setUsername(e.target.value)} required />
                     </div>
                   </div>
                 </div>
@@ -159,18 +159,18 @@ function AuthPage() {
                   <Label htmlFor="reg-email">E-mail</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-3 h-4 w-4 text-white/40" />
-                    <Input id="reg-email" type="email" placeholder="seu@email.com" className="pl-10 bg-white/5 border-white/10" value={email} onChange={e => setEmail(e.target.value)} required />
+                    <Input id="reg-email" type="email" placeholder="seu@email.com" className="pl-10 bg-white/5 border-white/10 placeholder:text-primary/50" value={email} onChange={e => setEmail(e.target.value)} required />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="reg-cpf">CPF</Label>
-                    <Input id="reg-cpf" placeholder="000.000.000-00" className="bg-white/5 border-white/10" value={cpf} onChange={e => setCpf(e.target.value)} required />
+                    <Input id="reg-cpf" placeholder="000.000.000-00" className="bg-white/5 border-white/10 placeholder:text-primary/50" value={cpf} onChange={e => setCpf(e.target.value)} required />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="reg-phone">Telefone</Label>
-                    <Input id="reg-phone" placeholder="(00) 00000-0000" className="bg-white/5 border-white/10" value={phone} onChange={e => setPhone(e.target.value)} required />
+                    <Input id="reg-phone" placeholder="(00) 00000-0000" className="bg-white/5 border-white/10 placeholder:text-primary/50" value={phone} onChange={e => setPhone(e.target.value)} required />
                   </div>
                 </div>
 
@@ -178,7 +178,7 @@ function AuthPage() {
                   <Label htmlFor="reg-pass">Senha</Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-3 h-4 w-4 text-white/40" />
-                    <Input id="reg-pass" type="password" placeholder="••••••••" className="pl-10 bg-white/5 border-white/10" value={password} onChange={e => setPassword(e.target.value)} required />
+                    <Input id="reg-pass" type="password" placeholder="••••••••" className="pl-10 bg-white/5 border-white/10 placeholder:text-primary/50" value={password} onChange={e => setPassword(e.target.value)} required />
                   </div>
                 </div>
                 
