@@ -42,10 +42,12 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   }, [isMuted]);
 
   // Play sound when auction updates (e.g. real-time bid from others)
+  const lastPriceRef = useRef<number>(auction.current_price);
   useEffect(() => {
-    if (mounted && auction.current_price > initialAuction.current_price) {
+    if (mounted && auction.current_price > lastPriceRef.current) {
       playBidSound();
     }
+    lastPriceRef.current = auction.current_price;
   }, [auction.current_price, playBidSound, mounted]);
 
   useEffect(() => {
