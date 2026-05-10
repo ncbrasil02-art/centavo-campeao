@@ -151,7 +151,28 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           )}
         </div>
         
-        {/* Chat disabled for debugging */}
+        {/* Chat Trigger (Floating on Image) */}
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button 
+              size="icon" 
+              variant="ghost" 
+              className="absolute right-4 top-4 h-10 w-10 rounded-full border border-white/10 bg-black/40 text-white/60 backdrop-blur-md transition-all hover:bg-primary/20 hover:text-primary"
+            >
+              <MessageSquare className="h-4 w-4" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="right" className="w-full border-white/10 bg-background p-0 sm:max-w-md">
+            <SheetHeader className="border-b border-white/10 p-4">
+              <SheetTitle className="font-black italic uppercase tracking-tighter text-white">
+                Chat do <span className="text-primary">Leilão</span>
+              </SheetTitle>
+            </SheetHeader>
+            <div className="h-[calc(100vh-80px)]">
+              {/* AuctionChat disabled for debugging */}
+            </div>
+          </SheetContent>
+        </Sheet>
       </div>
       
       {/* Content Section */}
