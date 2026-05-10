@@ -148,6 +148,23 @@ function Index() {
         </div>
       </section>
 
+      {/* Winners Section */}
+      <section className="py-20 bg-primary/5">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <Badge variant="outline" className="mb-4 border-primary/30 bg-primary/10 text-primary uppercase">GALERIA DE HONRA</Badge>
+            <h2 className="text-4xl font-black tracking-tight text-white mb-4 italic">Últimos <span className="text-primary">Ganhadores</span></h2>
+            <p className="text-white/40">Pessoas reais, economias reais. Veja quem já levou o prêmio para casa.</p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <WinnerCard name="Mateus Oliveira" product="iPhone 15 Pro Max" price="R$ 142,50" saving="98%" />
+            <WinnerCard name="Juliana Costa" product="PlayStation 5" price="R$ 89,12" saving="97%" />
+            <WinnerCard name="Ricardo Silva" product="MacBook Air M2" price="R$ 210,00" saving="96%" />
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="py-12 border-t border-white/10">
         <div className="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6">
