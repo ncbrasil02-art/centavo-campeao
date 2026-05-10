@@ -187,6 +187,7 @@ function AuctionPage() {
     setBidLoading(true);
     // Simulate bid
     setTimeout(() => {
+      playBidSound();
       setIsNewBid(true);
       setTimeLeft(30); // Reset to 30s
       setShowBonus(true);
