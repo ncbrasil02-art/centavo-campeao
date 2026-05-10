@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Send, MessageSquare, Zap } from "lucide-react";
+import { Send, MessageSquare, Zap, Users } from "lucide-react";
 import { toast } from "sonner";
-import { getFallbackAvatarUrl } from "@/lib/constants";
+import { getFallbackAvatarUrl, FICTITIOUS_PARTICIPANTS } from "@/lib/constants";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export function GlobalActivityChat() {
   const [items, setItems] = useState<any[]>([]);
