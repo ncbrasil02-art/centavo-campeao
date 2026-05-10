@@ -209,6 +209,7 @@ export type Database = {
           created_at: string
           full_name: string | null
           id: string
+          is_bot: boolean | null
           phone: string | null
           state: string | null
           username: string | null
@@ -221,6 +222,7 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           id: string
+          is_bot?: boolean | null
           phone?: string | null
           state?: string | null
           username?: string | null
@@ -233,6 +235,7 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           id?: string
+          is_bot?: boolean | null
           phone?: string | null
           state?: string | null
           username?: string | null
@@ -401,6 +404,10 @@ export type Database = {
     Functions: {
       place_bid: {
         Args: { p_auction_id: string; p_user_id: string }
+        Returns: Json
+      }
+      place_robot_bid: {
+        Args: { p_auction_id: string; p_robot_id: string }
         Returns: Json
       }
     }
