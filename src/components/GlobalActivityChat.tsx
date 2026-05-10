@@ -183,15 +183,15 @@ export function GlobalActivityChat() {
         </div>
       </ScrollArea>
 
-      <form onSubmit={handleSendMessage} className="p-4 border-t border-white/10 flex gap-2">
+      <form onSubmit={handleSendMessage} className="p-3 border-t border-white/5 bg-white/[0.02] flex gap-2">
         <Input 
-          placeholder="Mensagem para todos..." 
-          className="bg-white/5 border-white/10 h-10 text-xs placeholder:text-primary/50 placeholder:italic"
+          placeholder="Diga algo..." 
+          className="bg-black/20 border-white/5 h-9 text-xs rounded-xl placeholder:text-white/20"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
         />
-        <Button type="submit" size="icon" className="shrink-0 bg-primary text-primary-foreground hover:bg-primary/90">
-          <Send className="w-4 h-4" />
+        <Button type="submit" size="icon" className="h-9 w-9 shrink-0 bg-primary text-primary-foreground hover:scale-105 active:scale-95 transition-all rounded-xl">
+          <Send className="w-3.5 h-3.5" />
         </Button>
       </form>
     </div>
