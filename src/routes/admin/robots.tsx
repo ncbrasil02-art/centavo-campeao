@@ -25,6 +25,7 @@ function AdminRobotsPage() {
   const [automationActive, setAutomationActive] = useState(false);
   const automationRef = useRef<boolean>(false);
   const navigate = useNavigate();
+  const { getAdjustedNow } = useTimeSync();
 
   useEffect(() => {
     checkAdmin();
