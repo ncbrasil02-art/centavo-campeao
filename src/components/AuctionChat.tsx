@@ -131,7 +131,7 @@ export function AuctionChat({ auctionId }: { auctionId: string }) {
       <form onSubmit={handleSendMessage} className="p-6 border-t border-white/10 bg-white/5 flex gap-3">
         <Input 
           placeholder="Escreva algo épico..." 
-          className="bg-black/40 border-white/10 h-12 text-sm rounded-2xl focus:ring-primary/50 transition-all placeholder:text-white/20 font-medium"
+          className="bg-black/40 border-white/10 h-12 text-sm rounded-2xl focus:ring-primary/50 transition-all placeholder:text-primary/40 placeholder:italic placeholder:drop-shadow-[0_0_5px_rgba(var(--color-primary),0.5)] font-medium"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
         />
