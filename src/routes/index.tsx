@@ -93,44 +93,51 @@ function Index() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background text-white selection:bg-primary selection:text-primary-foreground">
+    <div className="min-h-screen bg-background text-white selection:bg-primary selection:text-primary-foreground flex flex-col">
       <Navbar />
-      <Hero />
+      
+      <div className="flex flex-1 relative overflow-hidden">
+        {/* Main Content */}
+        <div className="flex-1 overflow-y-auto">
+          <Hero />
 
-      {/* Live Auctions Section */}
-      <section className="py-20 bg-black/20">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row items-end justify-between mb-12 gap-6">
-            <div className="max-w-xl">
-              <Badge variant="outline" className="mb-4 border-primary/30 bg-primary/10 text-primary uppercase">LEILÕES EM DESTAQUE</Badge>
-              <h2 className="text-4xl font-black tracking-tight text-white mb-4">Leilões <span className="text-primary italic">ao vivo</span> agora</h2>
-              <p className="text-white/40">Não perca a chance de arrematar os produtos mais cobiçados do momento por uma fração do preço original.</p>
-            </div>
-            <Button variant="ghost" className="text-primary hover:text-primary hover:bg-primary/10 group">
-              Ver todos os leilões
-              <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
-            </Button>
-          </div>
+          {/* Live Auctions Section */}
+          <section className="py-20 bg-black/20">
+            <div className="container mx-auto px-4">
+              <div className="flex flex-col md:flex-row items-end justify-between mb-12 gap-6">
+                <div className="max-w-xl">
+                  <Badge variant="outline" className="mb-4 border-primary/30 bg-primary/10 text-primary uppercase">LEILÕES EM DESTAQUE</Badge>
+                  <h2 className="text-4xl font-black tracking-tight text-white mb-4">Leilões <span className="text-primary italic">ao vivo</span> agora</h2>
+                  <p className="text-white/40">Não perca a chance de arrematar os produtos mais cobiçados do momento por uma fração do preço original.</p>
+                </div>
+                <Button variant="ghost" className="text-primary hover:text-primary hover:bg-primary/10 group">
+                  Ver todos os leilões
+                  <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
+                </Button>
+              </div>
 
-          {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="aspect-[3/4] rounded-xl bg-white/5 animate-pulse"></div>
-              ))}
+              {loading ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="aspect-[3/4] rounded-xl bg-white/5 animate-pulse"></div>
+                  ))}
+                </div>
+              ) : auctions.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {auctions.map((auction) => (
+                    <AuctionCard key={auction.id} auction={auction} />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-20 bg-white/5 rounded-3xl border border-dashed border-white/10">
+                  <p className="text-white/40">Nenhum leilão ao vivo no momento.</p>
+                </div>
+              )}
             </div>
-          ) : auctions.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {auctions.map((auction) => (
-                <AuctionCard key={auction.id} auction={auction} />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-20 bg-white/5 rounded-3xl border border-dashed border-white/10">
-              <p className="text-white/40">Nenhum leilão ao vivo no momento.</p>
-            </div>
-          )}
-        </div>
-      </section>
+          </section>
+
+          {/* How it Works Section */}
+...
 
       {/* How it Works Section */}
       <section className="py-24 relative overflow-hidden">
