@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { AuctionChat } from "./AuctionChat";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import confetti from "canvas-confetti";
+import { useTimeSync } from "@/hooks/useTimeSync";
 
 export function Hero() {
   const [onlineUsers, setOnlineUsers] = useState(128);
