@@ -4,10 +4,11 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Users, Star, Trophy, ArrowRight, Play, Clock, Sparkles, User, MessageSquare } from "lucide-react";
 import { Link } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AuctionChat } from "./AuctionChat";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import confetti from "canvas-confetti";
 
 export function Hero() {
   const [onlineUsers, setOnlineUsers] = useState(128);
@@ -82,12 +83,14 @@ export function AuctionCard({ auction: initialAuction }: { auction: any }) {
   const [timeLeft, setTimeLeft] = useState(0);
   const [isNewBid, setIsNewBid] = useState(false);
   const [loading, setLoading] = useState(false);
+  const confettiFired = useRef(false);
 
   useEffect(() => {
     setAuction(initialAuction);
   }, [initialAuction]);
 
   useEffect(() => {
+    confettiFired.current = false;
     const calculateTimeLeft = () => {
       if (!auction.end_time) return 0;
       const end = new Date(auction.end_time).getTime();
@@ -103,7 +106,15 @@ export function AuctionCard({ auction: initialAuction }: { auction: any }) {
       setTimeLeft(remaining);
       
       if (remaining <= 0 && auction.status === 'live') {
-        // Auction ended
+        if (!confettiFired.current) {
+          confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#00F2FF', '#9D00FF', '#FF00E5']
+          });
+          confettiFired.current = true;
+        }
         clearInterval(timer);
       }
     }, 1000);
