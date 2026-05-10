@@ -58,7 +58,7 @@ function AuctionPage() {
       .subscribe();
 
     const bidsChannel = supabase
-      .channel(`bids_${id}`)
+      .channel(bidsChannelRef.current)
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'bids', filter: `auction_id=eq.${id}` },
