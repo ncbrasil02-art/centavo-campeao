@@ -113,6 +113,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         playBidSound();
         setIsNewBid(true);
         setTimeLeft(30);
+        confettiFired.current = false;
         setAuction((prev: any) => ({
           ...prev,
           current_price: (prev.current_price || 0) + 0.01,
