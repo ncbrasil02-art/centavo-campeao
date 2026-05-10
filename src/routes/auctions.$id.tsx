@@ -38,6 +38,9 @@ function AuctionPage() {
   const navigate = useNavigate();
   const { getAdjustedNow } = useTimeSync();
 
+  const isFinished = timeLeft <= 0 || auction?.status === 'finished';
+  const discount = Math.round((1 - (auction?.current_price / auction?.product?.market_value)) * 100);
+
   useEffect(() => {
     audioRef.current = new Audio(BID_SOUND_URL);
     audioRef.current.load();
