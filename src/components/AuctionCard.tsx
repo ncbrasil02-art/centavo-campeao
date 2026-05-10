@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { useTimeSync } from "@/hooks/useTimeSync";
@@ -6,10 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Clock, User, MessageSquare, Zap, Eye } from "lucide-react";
+import { Clock, User, MessageSquare, Zap, Eye, Volume2, VolumeX } from "lucide-react";
 import { AuctionChat } from "./AuctionChat";
 import { toast } from "sonner";
 import { FALLBACK_PRODUCT_IMAGE, getFallbackAvatarUrl } from "@/lib/constants";
+
+const BID_SOUND_URL = "https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3";
 
 interface AuctionCardProps {
   auction: any;
@@ -22,8 +24,31 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   const [showBonus, setShowBonus] = useState(false);
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const confettiFired = useRef(false);
   const { getAdjustedNow } = useTimeSync();
+
+  useEffect(() => {
+    audioRef.current = new Audio(BID_SOUND_URL);
+    audioRef.current.load();
+  }, []);
+
+  const playBidSound = useCallback(() => {
+    if (audioRef.current && !isMuted) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().catch(err => console.error("Error playing sound:", err));
+    }
+  }, [isMuted]);
+
+  // Play sound when auction updates (e.g. real-time bid from others)
+  const lastPriceRef = useRef<number>(auction.current_price);
+  useEffect(() => {
+    if (mounted && auction.current_price > lastPriceRef.current) {
+      playBidSound();
+    }
+    lastPriceRef.current = auction.current_price;
+  }, [auction.current_price, playBidSound, mounted]);
 
   useEffect(() => {
     setAuction(initialAuction);
@@ -63,6 +88,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
     setLoading(true);
     // Simulate bid for fictitious mode
     setTimeout(() => {
+      playBidSound();
       setIsNewBid(true);
       setTimeLeft(30); // Reset to 30s as per fictitious mode
       setShowBonus(true);
@@ -161,28 +187,42 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           )}
         </div>
         
-        {/* Chat Trigger (Floating on Image) */}
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button 
-              size="icon" 
-              variant="ghost" 
-              className="absolute right-4 top-4 h-10 w-10 rounded-full border border-white/10 bg-black/40 text-white/60 backdrop-blur-md transition-all hover:bg-primary/20 hover:text-primary"
-            >
-              <MessageSquare className="h-4 w-4" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="right" className="w-full border-white/10 bg-background p-0 sm:max-w-md">
-            <SheetHeader className="border-b border-white/10 p-4">
-              <SheetTitle className="font-black italic uppercase tracking-tighter text-white">
-                Chat do <span className="text-primary">Leilão</span>
-              </SheetTitle>
-            </SheetHeader>
-            <div className="h-[calc(100vh-80px)]">
-              {mounted && <AuctionChat auctionId={auction.id} />}
-            </div>
-          </SheetContent>
-        </Sheet>
+        {/* Controls (Floating on Image) */}
+        <div className="absolute right-4 top-4 flex flex-col gap-2">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button 
+                size="icon" 
+                variant="ghost" 
+                className="h-10 w-10 rounded-full border border-white/10 bg-black/40 text-white/60 backdrop-blur-md transition-all hover:bg-primary/20 hover:text-primary"
+              >
+                <MessageSquare className="h-4 w-4" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-full border-white/10 bg-background p-0 sm:max-w-md">
+              <SheetHeader className="border-b border-white/10 p-4">
+                <SheetTitle className="font-black italic uppercase tracking-tighter text-white">
+                  Chat do <span className="text-primary">Leilão</span>
+                </SheetTitle>
+              </SheetHeader>
+              <div className="h-[calc(100vh-80px)]">
+                {mounted && <AuctionChat auctionId={auction.id} />}
+              </div>
+            </SheetContent>
+          </Sheet>
+
+          <Button 
+            size="icon" 
+            variant="ghost" 
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsMuted(!isMuted);
+            }}
+            className="h-10 w-10 rounded-full border border-white/10 bg-black/40 text-white/60 backdrop-blur-md transition-all hover:bg-primary/20 hover:text-primary"
+          >
+            {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+          </Button>
+        </div>
       </div>
       
       {/* Content Section */}

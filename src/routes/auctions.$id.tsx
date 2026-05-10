@@ -4,15 +4,17 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Clock, User, Gavel, ShieldCheck, Zap, ArrowLeft, Share2, Info, MessageSquare, History, Trophy } from "lucide-react";
+import { Clock, User, Gavel, ShieldCheck, Zap, ArrowLeft, Share2, Info, MessageSquare, History, Trophy, Volume2, VolumeX } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AuctionChat } from "@/components/AuctionChat";
 import { useTimeSync } from "@/hooks/useTimeSync";
 // confetti will be imported dynamically on the client
 import { toast } from "sonner";
 import { FALLBACK_PRODUCT_IMAGE, getFallbackAvatarUrl } from "@/lib/constants";
+
+const BID_SOUND_URL = "https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3";
 
 export const Route = createFileRoute("/auctions/$id")({
   component: AuctionPage,
@@ -29,9 +31,34 @@ function AuctionPage() {
   const [isNewBid, setIsNewBid] = useState(false);
   const [showBonus, setShowBonus] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const confettiFired = useRef(false);
   const navigate = useNavigate();
   const { getAdjustedNow } = useTimeSync();
+
+  useEffect(() => {
+    audioRef.current = new Audio(BID_SOUND_URL);
+    audioRef.current.load();
+  }, []);
+
+  const playBidSound = useCallback(() => {
+    if (audioRef.current && !isMuted) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().catch(err => console.error("Error playing sound:", err));
+    }
+  }, [isMuted]);
+
+  // Play sound when auction updates (e.g. real-time bid from others)
+  const lastPriceRef = useRef<number>(0);
+  useEffect(() => {
+    if (auction?.current_price) {
+      if (mounted && lastPriceRef.current > 0 && auction.current_price > lastPriceRef.current) {
+        playBidSound();
+      }
+      lastPriceRef.current = auction.current_price;
+    }
+  }, [auction?.current_price, playBidSound, mounted]);
   const channelRef = useRef<string>(`auction_detail_${id}_${Math.random().toString(36).substring(7)}`);
   const bidsChannelRef = useRef<string>(`bids_detail_${id}_${Math.random().toString(36).substring(7)}`);
 
@@ -160,6 +187,7 @@ function AuctionPage() {
     setBidLoading(true);
     // Simulate bid
     setTimeout(() => {
+      playBidSound();
       setIsNewBid(true);
       setTimeLeft(30); // Reset to 30s
       setShowBonus(true);
@@ -245,9 +273,19 @@ function AuctionPage() {
                     {discount}% ECONOMIA
                   </Badge>
                 </div>
-                <button className="absolute top-6 right-6 z-20 p-4 rounded-full bg-black/40 hover:bg-primary/20 border border-white/10 backdrop-blur-md transition-all group/share">
-                  <Share2 className="w-5 h-5 transition-transform group-hover/share:scale-110" />
-                </button>
+                <div className="absolute top-6 right-6 z-20 flex gap-2">
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    onClick={() => setIsMuted(!isMuted)}
+                    className="p-4 rounded-full bg-black/40 hover:bg-primary/20 border border-white/10 backdrop-blur-md transition-all group/sound"
+                  >
+                    {isMuted ? <VolumeX className="w-5 h-5 text-white/60" /> : <Volume2 className="w-5 h-5 text-primary" />}
+                  </Button>
+                  <button className="p-4 rounded-full bg-black/40 hover:bg-primary/20 border border-white/10 backdrop-blur-md transition-all group/share">
+                    <Share2 className="w-5 h-5 transition-transform group-hover/share:scale-110" />
+                  </button>
+                </div>
               </div>
 
               {auction.product?.images && auction.product.images.length > 1 && (
