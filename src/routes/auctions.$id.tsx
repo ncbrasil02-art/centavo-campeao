@@ -128,7 +128,40 @@ function AuctionPage() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  useEffect(() => {
+    if (isFinished) return;
+
+    const fictitiousBidInterval = setInterval(() => {
+      const chance = timeLeft < 10 ? 0.4 : 0.05;
+      if (Math.random() < chance) {
+        const randomUser = FICTITIOUS_PARTICIPANTS[Math.floor(Math.random() * FICTITIOUS_PARTICIPANTS.length)];
+        
+        playBidSound();
+        setIsNewBid(true);
+        setTimeLeft(30);
+        setAuction((prev: any) => ({
+          ...prev,
+          current_price: (prev.current_price || 0) + 0.01,
+          bid_count: (prev.bid_count || 0) + 1,
+          last_bidder: { username: randomUser, avatar_url: null }
+        }));
+        
+        setBids(prev => [
+          { 
+            id: Math.random().toString(), 
+            profile: { username: randomUser }, 
+            price_at_bid: (auction?.current_price || 0) + 0.01, 
+            created_at: new Date().toISOString() 
+          },
+          ...prev.slice(0, 9)
+        ]);
+
+        setTimeout(() => setIsNewBid(false), 800);
+      }
+    }, 4000);
+
+    return () => clearInterval(fictitiousBidInterval);
+  }, [timeLeft, isFinished, playBidSound, auction?.current_price]);
 
   async function fetchAuction() {
     // Mock data for fictitious mode if wanted, but we'll try to fetch first
