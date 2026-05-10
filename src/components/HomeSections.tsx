@@ -2,10 +2,12 @@ import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { Users, Star, Trophy, ArrowRight, Play, Clock, Sparkles, User } from "lucide-react";
+import { Users, Star, Trophy, ArrowRight, Play, Clock, Sparkles, User, MessageSquare } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { AuctionChat } from "./AuctionChat";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 export function Hero() {
   const [onlineUsers, setOnlineUsers] = useState(128);
@@ -162,9 +164,26 @@ export function AuctionCard({ auction: initialAuction }: { auction: any }) {
       </div>
       
       <div className="p-5 flex flex-col gap-4">
-        <div>
-          <h3 className="text-lg font-bold text-white line-clamp-1 group-hover:text-primary transition-colors">{auction.product?.name || "Produto"}</h3>
-          <p className="text-sm text-white/40">Valor: R$ {auction.product?.market_value?.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) || "0,00"}</p>
+        <div className="flex justify-between items-start">
+          <div>
+            <h3 className="text-lg font-bold text-white line-clamp-1 group-hover:text-primary transition-colors">{auction.product?.name || "Produto"}</h3>
+            <p className="text-sm text-white/40">Valor: R$ {auction.product?.market_value?.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) || "0,00"}</p>
+          </div>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button size="icon" variant="ghost" className="text-white/40 hover:text-primary hover:bg-primary/10 -mt-1 -mr-2">
+                <MessageSquare className="w-5 h-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-full sm:max-w-md p-0 bg-background border-white/10">
+              <SheetHeader className="p-4 border-b border-white/10">
+                <SheetTitle className="text-white font-black italic uppercase tracking-tighter">Chat do <span className="text-primary">Leilão</span></SheetTitle>
+              </SheetHeader>
+              <div className="h-[calc(100vh-80px)]">
+                <AuctionChat auctionId={auction.id} />
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
 
         <div className="flex items-center justify-between py-2 border-y border-white/5">

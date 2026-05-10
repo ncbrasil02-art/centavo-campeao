@@ -1,15 +1,33 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Navbar } from "@/components/Navbar";
 import { Hero, AuctionCard } from "@/components/HomeSections";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Zap, ShieldCheck, Heart } from "lucide-react";
+import { ArrowRight, Zap, ShieldCheck, Heart, User } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
+
+function WinnerCard({ name, product, price, saving }: { name: string, product: string, price: string, saving: string }) {
+  return (
+    <div className="p-6 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-4 hover:border-primary/50 transition-all group">
+      <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center overflow-hidden shrink-0 border-2 border-primary/20 group-hover:border-primary transition-all">
+        <User className="w-8 h-8 text-white/40" />
+      </div>
+      <div>
+        <h4 className="font-bold text-white group-hover:text-primary transition-colors">{name}</h4>
+        <p className="text-xs text-white/60 mb-1">{product}</p>
+        <div className="flex items-center gap-2">
+          <Badge className="bg-green-500/10 text-green-500 border-green-500/20 text-[10px]">{saving} OFF</Badge>
+          <span className="font-black text-sm text-primary">{price}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function Index() {
   const [auctions, setAuctions] = useState<any[]>([]);
@@ -144,6 +162,23 @@ function Index() {
               <h3 className="text-xl font-bold mb-3">3. Arremate e economize</h3>
               <p className="text-white/40">O último usuário a dar o lance quando o cronômetro zerar vence o leilão. Simples assim!</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Winners Section */}
+      <section className="py-20 bg-primary/5">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <Badge variant="outline" className="mb-4 border-primary/30 bg-primary/10 text-primary uppercase">GALERIA DE HONRA</Badge>
+            <h2 className="text-4xl font-black tracking-tight text-white mb-4 italic">Últimos <span className="text-primary">Ganhadores</span></h2>
+            <p className="text-white/40">Pessoas reais, economias reais. Veja quem já levou o prêmio para casa.</p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <WinnerCard name="Mateus Oliveira" product="iPhone 15 Pro Max" price="R$ 142,50" saving="98%" />
+            <WinnerCard name="Juliana Costa" product="PlayStation 5" price="R$ 89,12" saving="97%" />
+            <WinnerCard name="Ricardo Silva" product="MacBook Air M2" price="R$ 210,00" saving="96%" />
           </div>
         </div>
       </section>
