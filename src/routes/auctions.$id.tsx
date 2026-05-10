@@ -9,7 +9,7 @@ import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AuctionChat } from "@/components/AuctionChat";
 import { useTimeSync } from "@/hooks/useTimeSync";
-import confetti from "canvas-confetti";
+// confetti will be imported dynamically on the client
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/auctions/$id")({
