@@ -28,9 +28,14 @@ function AuctionPage() {
   const [activeImage, setActiveImage] = useState(0);
   const [isNewBid, setIsNewBid] = useState(false);
   const [showBonus, setShowBonus] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const confettiFired = useRef(false);
   const navigate = useNavigate();
   const { getAdjustedNow } = useTimeSync();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     fetchAuction();
@@ -460,7 +465,7 @@ function AuctionPage() {
             </Card>
 
             <div className="h-[500px] rounded-[40px] overflow-hidden border border-white/10">
-              <AuctionChat auctionId={id} />
+              {mounted && <AuctionChat auctionId={id} />}
             </div>
           </div>
         </div>

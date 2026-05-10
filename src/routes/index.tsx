@@ -40,6 +40,11 @@ function Index() {
   const [auctions, setAuctions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showChat, setShowChat] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     async function fetchAuctions() {
@@ -197,7 +202,7 @@ function Index() {
 
         {/* Desktop Sidebar Chat */}
         <aside className="hidden lg:block w-80 xl:w-96 border-l border-white/10 shrink-0">
-          <GlobalActivityChat />
+          {mounted && <GlobalActivityChat />}
         </aside>
 
         {/* Mobile Chat Drawer Overlay */}
