@@ -90,6 +90,7 @@ export function AuctionCard({ auction: initialAuction }: { auction: any }) {
   }, [initialAuction]);
 
   useEffect(() => {
+    confettiFired.current = false;
     const calculateTimeLeft = () => {
       if (!auction.end_time) return 0;
       const end = new Date(auction.end_time).getTime();
