@@ -41,6 +41,13 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
     }
   }, [isMuted]);
 
+  // Play sound when auction updates (e.g. real-time bid from others)
+  useEffect(() => {
+    if (mounted && auction.current_price > initialAuction.current_price) {
+      playBidSound();
+    }
+  }, [auction.current_price, playBidSound, mounted]);
+
   useEffect(() => {
     setAuction(initialAuction);
   }, [initialAuction]);
