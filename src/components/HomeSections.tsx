@@ -83,6 +83,7 @@ export function AuctionCard({ auction: initialAuction }: { auction: any }) {
   const [timeLeft, setTimeLeft] = useState(0);
   const [isNewBid, setIsNewBid] = useState(false);
   const [loading, setLoading] = useState(false);
+  const confettiFired = useRef(false);
 
   useEffect(() => {
     setAuction(initialAuction);
