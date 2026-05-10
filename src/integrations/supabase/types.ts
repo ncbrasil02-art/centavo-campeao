@@ -65,6 +65,33 @@ export type Database = {
           },
         ]
       }
+      bid_packages: {
+        Row: {
+          bid_amount: number
+          created_at: string
+          id: string
+          image_url: string | null
+          name: string
+          price: number
+        }
+        Insert: {
+          bid_amount: number
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          name: string
+          price: number
+        }
+        Update: {
+          bid_amount?: number
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          name?: string
+          price?: number
+        }
+        Relationships: []
+      }
       bids: {
         Row: {
           auction_id: string | null
@@ -212,12 +239,170 @@ export type Database = {
         }
         Relationships: []
       }
+      robot_settings: {
+        Row: {
+          active: boolean | null
+          auction_id: string | null
+          bid_chance: number | null
+          created_at: string
+          id: string
+          max_bids_per_robot: number | null
+          max_delay: number | null
+          min_delay: number | null
+        }
+        Insert: {
+          active?: boolean | null
+          auction_id?: string | null
+          bid_chance?: number | null
+          created_at?: string
+          id?: string
+          max_bids_per_robot?: number | null
+          max_delay?: number | null
+          min_delay?: number | null
+        }
+        Update: {
+          active?: boolean | null
+          auction_id?: string | null
+          bid_chance?: number | null
+          created_at?: string
+          id?: string
+          max_bids_per_robot?: number | null
+          max_delay?: number | null
+          min_delay?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "robot_settings_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: false
+            referencedRelation: "auctions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      robot_users: {
+        Row: {
+          avatar_url: string | null
+          city: string | null
+          created_at: string
+          id: string
+          state: string | null
+          username: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          city?: string | null
+          created_at?: string
+          id?: string
+          state?: string | null
+          username: string
+        }
+        Update: {
+          avatar_url?: string | null
+          city?: string | null
+          created_at?: string
+          id?: string
+          state?: string | null
+          username?: string
+        }
+        Relationships: []
+      }
+      transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          package_id: string | null
+          payment_method: string | null
+          status: string | null
+          user_id: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          package_id?: string | null
+          payment_method?: string | null
+          status?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          package_id?: string | null
+          payment_method?: string | null
+          status?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_package_id_fkey"
+            columns: ["package_id"]
+            isOneToOne: false
+            referencedRelation: "bid_packages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      winners: {
+        Row: {
+          auction_id: string | null
+          created_at: string
+          final_price: number
+          id: string
+          savings_percentage: number | null
+          user_id: string | null
+        }
+        Insert: {
+          auction_id?: string | null
+          created_at?: string
+          final_price: number
+          id?: string
+          savings_percentage?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          auction_id?: string | null
+          created_at?: string
+          final_price?: number
+          id?: string
+          savings_percentage?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "winners_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: true
+            referencedRelation: "auctions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "winners_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      place_bid: {
+        Args: { p_auction_id: string; p_user_id: string }
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never
