@@ -126,43 +126,55 @@ export function GlobalActivityChat() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-black/60 border-l border-white/10 backdrop-blur-3xl">
-      <div className="p-4 border-b border-white/10 flex items-center justify-between">
+    <div className="flex flex-col h-full bg-black/40 backdrop-blur-3xl overflow-hidden">
+      <div className="p-3 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
         <div className="flex items-center gap-2">
-          <MessageSquare className="w-4 h-4 text-primary" />
-          <h3 className="font-bold text-xs uppercase tracking-widest italic">Atividade <span className="text-primary">Global</span></h3>
+          <div className="p-1.5 bg-primary/10 rounded-lg">
+            <MessageSquare className="w-3.5 h-3.5 text-primary" />
+          </div>
+          <h3 className="font-black text-[10px] uppercase tracking-[0.2em] text-white/80">Atividade <span className="text-primary">Global</span></h3>
         </div>
         <div className="flex items-center gap-1.5">
-          <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-          <span className="text-[10px] text-white/40 font-bold uppercase">Live</span>
+          <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+          <span className="text-[8px] font-black text-white/30 uppercase">LIVE</span>
         </div>
       </div>
       
-      <ScrollArea className="flex-1 p-4" ref={scrollRef}>
-        <div className="flex flex-col gap-4">
+      <ScrollArea className="flex-1 px-4" ref={scrollRef}>
+        <div className="flex flex-col gap-3 py-4">
+          {items.length === 0 && (
+            <div className="py-10 text-center space-y-2 opacity-20">
+              <MessageSquare className="w-6 h-6 mx-auto" />
+              <p className="text-[10px] font-black uppercase tracking-widest italic">Silêncio no chat...</p>
+            </div>
+          )}
           {items.map((item) => (
-            <div key={item.id} className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <div key={item.id} className="animate-in fade-in slide-in-from-bottom-1 duration-300">
               {item.type === 'chat' ? (
-                <div className="flex gap-3">
-                  <Avatar className="w-8 h-8 border border-white/10 shrink-0">
+                <div className="flex gap-2">
+                  <Avatar className="w-6 h-6 border border-white/10 shrink-0">
                     <AvatarImage src={item.profile?.avatar_url || getFallbackAvatarUrl(item.profile?.username)} />
-                    <AvatarFallback className="bg-primary/20 text-primary text-[10px]">
+                    <AvatarFallback className="bg-primary/20 text-primary text-[8px] font-black">
                       {item.profile?.username?.substring(0, 2).toUpperCase() || "U"}
                     </AvatarFallback>
                   </Avatar>
-                  <div className="flex flex-col">
-                    <span className="text-[10px] font-bold text-primary">{item.profile?.username}</span>
-                    <p className="text-sm text-white/80 leading-tight">{item.message}</p>
+                  <div className="flex flex-col min-w-0">
+                    <span className="text-[9px] font-black text-primary/80 uppercase tracking-tighter leading-none mb-1">{item.profile?.username}</span>
+                    <div className="bg-white/5 rounded-xl rounded-tl-none px-2.5 py-1.5 border border-white/5">
+                      <p className="text-xs text-white/70 leading-snug break-words">{item.message}</p>
+                    </div>
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center gap-2 bg-primary/5 border border-primary/10 rounded-lg p-2 py-1.5">
-                  <Zap className="w-3 h-3 text-primary fill-primary animate-pulse" />
-                  <div className="text-[10px] leading-tight">
-                    <span className="font-bold text-white">{item.username}</span>
-                    <span className="text-white/40 mx-1">deu lance em</span>
-                    <span className="font-bold text-primary">{item.productName}</span>
-                    <span className="text-white/40 ml-1">por R$ {item.price?.toFixed(2)}</span>
+                <div className="flex items-center gap-2 bg-primary/5 border border-primary/10 rounded-xl p-2 py-1.5">
+                  <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                    <Zap className="w-2.5 h-2.5 text-primary fill-primary animate-pulse" />
+                  </div>
+                  <div className="text-[9px] leading-tight">
+                    <span className="font-black text-white/90">{item.username}</span>
+                    <span className="text-white/30 mx-1">lance em</span>
+                    <span className="font-black text-primary">{item.productName}</span>
+                    <span className="text-white/30 ml-1">por R$ {item.price?.toFixed(2)}</span>
                   </div>
                 </div>
               )}
@@ -171,15 +183,15 @@ export function GlobalActivityChat() {
         </div>
       </ScrollArea>
 
-      <form onSubmit={handleSendMessage} className="p-4 border-t border-white/10 flex gap-2">
+      <form onSubmit={handleSendMessage} className="p-3 border-t border-white/5 bg-white/[0.02] flex gap-2">
         <Input 
-          placeholder="Mensagem para todos..." 
-          className="bg-white/5 border-white/10 h-10 text-xs placeholder:text-primary/50 placeholder:italic"
+          placeholder="Diga algo..." 
+          className="bg-black/20 border-white/5 h-9 text-xs rounded-xl placeholder:text-white/20"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
         />
-        <Button type="submit" size="icon" className="shrink-0 bg-primary text-primary-foreground hover:bg-primary/90">
-          <Send className="w-4 h-4" />
+        <Button type="submit" size="icon" className="h-9 w-9 shrink-0 bg-primary text-primary-foreground hover:scale-105 active:scale-95 transition-all rounded-xl">
+          <Send className="w-3.5 h-3.5" />
         </Button>
       </form>
     </div>

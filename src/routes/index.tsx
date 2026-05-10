@@ -40,64 +40,64 @@ function Index() {
   const [auctions, setAuctions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showChat, setShowChat] = useState(false);
+  const [isChatExpanded, setIsChatExpanded] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    async function fetchAuctions() {
-      const { data, error } = await supabase
-        .from("auctions")
-        .select(`
-          *,
-          product:products(*),
-          last_bidder:profiles(username)
-        `)
-        .eq("status", "live")
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        console.error("Error fetching auctions:", error);
-      } else {
-        setAuctions(data || []);
+    
+    // Fictitious Mode: Mock data
+    const mockAuctions = [
+      {
+        id: "1",
+        status: "live",
+        current_price: 15.20,
+        product: {
+          name: "iPhone 15 Pro Max",
+          market_value: 8999.00,
+          images: ["https://images.unsplash.com/photo-1696446701796-da61225697cc?auto=format&fit=crop&q=80&w=800"]
+        },
+        last_bidder: { username: "Arrematador99" }
+      },
+      {
+        id: "2",
+        status: "live",
+        current_price: 8.45,
+        product: {
+          name: "PlayStation 5 Slim",
+          market_value: 3999.00,
+          images: ["https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&q=80&w=800"]
+        },
+        last_bidder: { username: "GamerPro" }
+      },
+      {
+        id: "3",
+        status: "live",
+        current_price: 125.60,
+        product: {
+          name: "MacBook Air M3",
+          market_value: 12499.00,
+          images: ["https://images.unsplash.com/photo-1517336714460-4c50d9178ee5?auto=format&fit=crop&q=80&w=800"]
+        },
+        last_bidder: { username: "DesignMaster" }
+      },
+      {
+        id: "4",
+        status: "live",
+        current_price: 42.10,
+        product: {
+          name: "AirPods Pro 2",
+          market_value: 2499.00,
+          images: ["https://images.unsplash.com/photo-1588423770574-91993ca072b7?auto=format&fit=crop&q=80&w=800"]
+        },
+        last_bidder: { username: "TechLover" }
       }
+    ];
+
+    setTimeout(() => {
+      setAuctions(mockAuctions);
       setLoading(false);
-    }
-
-    fetchAuctions();
-
-    const fetchAuctionUpdate = async (id: string) => {
-      const { data } = await supabase
-        .from("auctions")
-        .select(`
-          *,
-          product:products(*),
-          last_bidder:profiles(username)
-        `)
-        .eq("id", id)
-        .single();
-      
-      if (data) {
-        setAuctions(prev => prev.map(a => a.id === id ? data : a));
-      }
-    };
-
-    const channel = supabase
-      .channel('auctions_live')
-      .on(
-        'postgres_changes',
-        { event: 'UPDATE', schema: 'public', table: 'auctions' },
-        (payload) => {
-          fetchAuctionUpdate(payload.new.id);
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    }, 1000);
   }, []);
 
   return (
@@ -201,8 +201,36 @@ function Index() {
         </div>
 
         {/* Desktop Sidebar Chat */}
-        <aside className="hidden lg:block w-80 xl:w-96 border-l border-white/10 shrink-0">
-          {mounted && <GlobalActivityChat />}
+        <aside className={`hidden lg:flex flex-col border-l border-white/10 shrink-0 transition-all duration-500 relative bg-black/40 backdrop-blur-xl ${isChatExpanded ? 'w-80 xl:w-96' : 'w-20'}`}>
+          {!isChatExpanded ? (
+            <div className="flex flex-col items-center py-8 gap-6 h-full">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={() => setIsChatExpanded(true)}
+                className="w-12 h-12 rounded-2xl bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all animate-pulse"
+              >
+                <MessageSquare className="w-6 h-6" />
+              </Button>
+              <div className="flex-1 flex items-center justify-center">
+                <p className="-rotate-90 font-black text-[10px] tracking-[0.5em] text-white/20 uppercase italic whitespace-nowrap">
+                  CHAT GLOBAL
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col h-full w-full">
+              <div className="p-4 border-b border-white/10 flex items-center justify-between bg-white/5">
+                <span className="font-black text-xs text-primary italic uppercase tracking-widest">Chat Ativo</span>
+                <Button variant="ghost" size="icon" onClick={() => setIsChatExpanded(false)} className="h-8 w-8 text-white/40 hover:text-white">
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+              <div className="flex-1 overflow-hidden">
+                {mounted && <GlobalActivityChat />}
+              </div>
+            </div>
+          )}
         </aside>
 
         {/* Mobile Chat Drawer Overlay */}

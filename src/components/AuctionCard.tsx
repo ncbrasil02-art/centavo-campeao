@@ -17,7 +17,7 @@ interface AuctionCardProps {
 
 export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   const [auction, setAuction] = useState(initialAuction);
-  const [timeLeft, setTimeLeft] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(30); // Fictitious mode: starts at 30s
   const [isNewBid, setIsNewBid] = useState(false);
   const [showBonus, setShowBonus] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -34,46 +34,46 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   }, []);
 
   useEffect(() => {
-    const calculateTimeLeft = () => {
-      if (!auction.end_time) return 0;
-      const end = new Date(auction.end_time).getTime();
-      const now = getAdjustedNow();
-      // Using Math.ceil so it shows 01 until it actually hits 0
-      const diff = Math.max(0, Math.ceil((end - now) / 1000));
-      return diff;
-    };
-
-    setTimeLeft(calculateTimeLeft());
-
-    // Update more frequently (100ms) for better responsiveness, 
-    // though we still only display whole seconds.
+    // Fictitious timer logic
     const timer = setInterval(() => {
-      const remaining = calculateTimeLeft();
-      setTimeLeft(remaining);
-      
-      if (remaining <= 0 && auction.status === 'live') {
-        if (!confettiFired.current) {
-          import("canvas-confetti").then((m) => {
-            const confetti = m.default || m;
-            confetti({
-              particleCount: 150,
-              spread: 70,
-              origin: { y: 0.6 },
-              colors: ['#00F2FF', '#9D00FF', '#FF00E5']
+      setTimeLeft((prev) => {
+        if (prev <= 0) {
+          if (!confettiFired.current) {
+            import("canvas-confetti").then((m) => {
+              const confetti = m.default || m;
+              confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#00F2FF', '#9D00FF', '#FF00E5']
+              });
             });
-          });
-          confettiFired.current = true;
+            confettiFired.current = true;
+          }
+          return 0;
         }
-        // Don't clear immediately, wait for status to actually update from DB
-        // or just let it keep checking until remaining is 0.
-      }
-    }, 200);
+        return prev - 1;
+      });
+    }, 1000);
 
     return () => clearInterval(timer);
-  }, [auction.end_time, auction.status, getAdjustedNow]);
+  }, [auction.id]);
 
   const handleBid = async () => {
     setLoading(true);
+    // Simulate bid for fictitious mode
+    setTimeout(() => {
+      setIsNewBid(true);
+      setTimeLeft(30); // Reset to 30s as per fictitious mode
+      setShowBonus(true);
+      setTimeout(() => setShowBonus(false), 1000);
+      setIsNewBid(false);
+      setLoading(false);
+      toast.success("Lance realizado! (Simulado)");
+    }, 300);
+    
+    /* 
+    // Real DB code commented out for fictitious mode
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
@@ -105,6 +105,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
     } finally {
       setLoading(false);
     }
+    */
   };
 
   const formatTime = (seconds: number) => {
@@ -215,13 +216,19 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             <span className="mb-1 text-[9px] font-black uppercase tracking-widest text-white/40">
               Tempo
             </span>
-            <div className={`flex items-center gap-1 font-mono text-2xl font-bold ${timeLeft < 10 && !isFinished ? 'text-red-500 animate-pulse' : isFinished ? 'text-white/20' : 'text-white'}`}>
-              <Clock className={`h-4 w-4 ${timeLeft < 10 && !isFinished ? 'animate-spin' : ''}`} />
+            <div className={`flex items-center gap-1 font-mono text-2xl font-bold transition-colors duration-300 ${
+              timeLeft <= 5 && !isFinished 
+                ? 'text-red-500 animate-pulse scale-110 drop-shadow-[0_0_10px_rgba(239,68,68,0.7)]' 
+                : timeLeft <= 10 && !isFinished
+                ? 'text-orange-500'
+                : isFinished ? 'text-white/20' : 'text-white'
+            }`}>
+              <Clock className={`h-4 w-4 ${timeLeft <= 5 && !isFinished ? 'animate-spin' : ''}`} />
               {isFinished ? "00:00" : formatTime(timeLeft)}
             </div>
             {showBonus && (
               <div className="absolute -top-8 right-0 animate-bounce rounded-lg border border-primary/30 bg-primary/20 px-2 py-1 text-[10px] font-black text-primary backdrop-blur-sm">
-                +15s BÔNUS
+                +30s RESET
               </div>
             )}
           </div>
@@ -250,11 +257,17 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             handleBid();
           }} 
           disabled={isFinished || loading}
-          className={`h-14 w-full rounded-2xl text-lg font-black uppercase italic tracking-tighter transition-all ${isFinished ? 'cursor-not-allowed border border-white/5 bg-white/5 text-white/20' : 'bg-primary text-primary-foreground shadow-[0_8px_25px_rgba(var(--color-primary),0.3)] hover:scale-[1.02] hover:bg-primary/90 active:scale-95'}`}
+          className={`h-14 w-full rounded-2xl text-lg font-black uppercase italic tracking-tighter transition-all relative overflow-hidden ${
+            isFinished 
+              ? 'cursor-not-allowed border border-white/5 bg-white/5 text-white/20' 
+              : timeLeft <= 5
+              ? 'bg-red-600 text-white shadow-[0_0_30px_rgba(220,38,38,0.8)] animate-[pulse_0.5s_ease-in-out_infinite] hover:bg-red-700'
+              : 'bg-primary text-primary-foreground shadow-[0_8px_25px_rgba(var(--color-primary),0.3)] hover:scale-[1.02] hover:bg-primary/90 active:scale-95'
+          }`}
         >
           {loading ? "..." : isFinished ? "ENCERRADO" : (
             <span className="flex items-center gap-2">
-              Dar Lance <Zap className="h-5 w-5 fill-current" />
+              {timeLeft <= 5 ? "VAI PERDER! LANCE AGORA" : "Dar Lance"} <Zap className={`h-5 w-5 fill-current ${timeLeft <= 5 ? 'animate-bounce' : ''}`} />
             </span>
           )}
         </Button>
