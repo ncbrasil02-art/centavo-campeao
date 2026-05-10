@@ -305,7 +305,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         {/* Highlighted Last Bidder */}
         <div className={`flex items-center gap-3 p-3 rounded-2xl transition-all duration-500 border ${
           isNewBid 
-            ? 'bg-primary/20 border-primary/50 shadow-[0_0_15px_rgba(var(--color-primary),0.3)]' 
+            ? 'bg-primary/30 border-primary shadow-[0_0_20px_rgba(var(--color-primary),0.5)] animate-pulse' 
             : 'bg-white/5 border-white/10'
         }`}>
           <div className={`flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border transition-all duration-500 ${
