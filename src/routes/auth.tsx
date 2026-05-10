@@ -170,7 +170,7 @@ function AuthPage() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="reg-phone">Telefone</Label>
-                    <Input id="reg-phone" placeholder="(00) 00000-0000" className="bg-white/5 border-white/10" value={phone} onChange={e => setPhone(e.target.value)} required />
+                    <Input id="reg-phone" placeholder="(00) 00000-0000" className="bg-white/5 border-white/10 placeholder:text-primary/40 placeholder:drop-shadow-[0_0_5px_rgba(var(--color-primary),0.5)]" value={phone} onChange={e => setPhone(e.target.value)} required />
                   </div>
                 </div>
 
