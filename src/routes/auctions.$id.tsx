@@ -128,6 +128,8 @@ function AuctionPage() {
     }, 1000);
 
     return () => clearInterval(timer);
+  }, []);
+
   useEffect(() => {
     if (isFinished) return;
 
