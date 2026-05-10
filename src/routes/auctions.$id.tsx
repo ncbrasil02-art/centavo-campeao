@@ -428,9 +428,9 @@ function AuctionPage() {
                         <div className="flex items-center gap-4">
                           <div className="relative">
                             <Avatar className={`w-10 h-10 border-2 transition-all ${idx === 0 ? 'border-primary scale-110 shadow-lg' : 'border-white/10'}`}>
-                              <AvatarImage src={bid.profile?.avatar_url} />
+                              <AvatarImage src={bid.profile?.avatar_url || getFallbackAvatarUrl(bid.profile?.username)} />
                               <AvatarFallback className="bg-primary/10 text-primary font-bold text-xs">
-                                {bid.profile?.username?.substring(0, 2).toUpperCase()}
+                                {bid.profile?.username?.substring(0, 2).toUpperCase() || "U"}
                               </AvatarFallback>
                             </Avatar>
                             {idx === 0 && (
