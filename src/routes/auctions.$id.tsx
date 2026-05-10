@@ -362,7 +362,7 @@ function AuctionPage() {
                   <div className="flex items-center gap-4">
                     <div className="w-14 h-14 rounded-full bg-white/5 border-2 border-primary/20 flex items-center justify-center overflow-hidden shrink-0 shadow-lg">
                       {auction.last_bidder?.avatar_url ? (
-                        <img src={auction.last_bidder.avatar_url} className="w-full h-full object-cover" />
+                        <img src={auction.last_bidder.avatar_url} className="w-full h-full object-cover" onError={(e) => (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${auction.last_bidder?.username || 'User'}&background=random`} />
                       ) : (
                         <User className="w-7 h-7 text-white/20" />
                       )}
