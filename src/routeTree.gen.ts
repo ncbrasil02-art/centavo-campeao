@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as PackagesRouteImport } from './routes/packages'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuctionsIdRouteImport } from './routes/auctions.$id'
 import { Route as AdminRobotsRouteImport } from './routes/admin/robots'
 
 const PackagesRoute = PackagesRouteImport.update({
@@ -29,6 +30,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuctionsIdRoute = AuctionsIdRouteImport.update({
+  id: '/auctions/$id',
+  path: '/auctions/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRobotsRoute = AdminRobotsRouteImport.update({
   id: '/admin/robots',
   path: '/admin/robots',
@@ -40,12 +46,14 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/packages': typeof PackagesRoute
   '/admin/robots': typeof AdminRobotsRoute
+  '/auctions/$id': typeof AuctionsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/packages': typeof PackagesRoute
   '/admin/robots': typeof AdminRobotsRoute
+  '/auctions/$id': typeof AuctionsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,20 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/packages': typeof PackagesRoute
   '/admin/robots': typeof AdminRobotsRoute
+  '/auctions/$id': typeof AuctionsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/packages' | '/admin/robots'
+  fullPaths: '/' | '/auth' | '/packages' | '/admin/robots' | '/auctions/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/packages' | '/admin/robots'
-  id: '__root__' | '/' | '/auth' | '/packages' | '/admin/robots'
+  to: '/' | '/auth' | '/packages' | '/admin/robots' | '/auctions/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/packages'
+    | '/admin/robots'
+    | '/auctions/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,6 +82,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   PackagesRoute: typeof PackagesRoute
   AdminRobotsRoute: typeof AdminRobotsRoute
+  AuctionsIdRoute: typeof AuctionsIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -92,6 +108,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auctions/$id': {
+      id: '/auctions/$id'
+      path: '/auctions/$id'
+      fullPath: '/auctions/$id'
+      preLoaderRoute: typeof AuctionsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/robots': {
       id: '/admin/robots'
       path: '/admin/robots'
@@ -107,6 +130,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   PackagesRoute: PackagesRoute,
   AdminRobotsRoute: AdminRobotsRoute,
+  AuctionsIdRoute: AuctionsIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
