@@ -50,18 +50,15 @@ function AuctionPage() {
   }, [isMuted]);
 
   // Play sound when auction updates (e.g. real-time bid from others)
+  const lastPriceRef = useRef<number>(0);
   useEffect(() => {
-    if (mounted && auction?.current_price > initialAuction?.current_price) {
-      playBidSound();
+    if (auction?.current_price) {
+      if (mounted && lastPriceRef.current > 0 && auction.current_price > lastPriceRef.current) {
+        playBidSound();
+      }
+      lastPriceRef.current = auction.current_price;
     }
   }, [auction?.current_price, playBidSound, mounted]);
-
-  const initialAuction = useRef<any>(null);
-  useEffect(() => {
-    if (auction && !initialAuction.current) {
-      initialAuction.current = auction;
-    }
-  }, [auction]);
   const channelRef = useRef<string>(`auction_detail_${id}_${Math.random().toString(36).substring(7)}`);
   const bidsChannelRef = useRef<string>(`bids_detail_${id}_${Math.random().toString(36).substring(7)}`);
 
