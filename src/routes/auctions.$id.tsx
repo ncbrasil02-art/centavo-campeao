@@ -4,7 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Clock, User, Gavel, ShieldCheck, Zap, ArrowLeft, Share2, Info, MessageSquare, History } from "lucide-react";
+import { Clock, User, Gavel, ShieldCheck, Zap, ArrowLeft, Share2, Info, MessageSquare, History, Trophy } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AuctionChat } from "@/components/AuctionChat";
@@ -207,37 +208,50 @@ function AuctionPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-12">
           {/* Left Column: Product Gallery & Description */}
           <div className="lg:col-span-7 space-y-8">
-            <div className="space-y-4">
-              <div className="relative aspect-square rounded-3xl overflow-hidden bg-white/5 border border-white/10 group">
+            <div className="space-y-6">
+              <div className="relative aspect-square rounded-[32px] overflow-hidden bg-white/5 border border-white/10 group shadow-2xl">
+                <div className="absolute inset-0 z-0">
+                  <img 
+                    src={auction.product?.images?.[activeImage] || "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=1200&auto=format&fit=crop"} 
+                    alt={auction.product?.name} 
+                    className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 blur-2xl opacity-20 scale-150"
+                  />
+                </div>
                 <img 
+                  key={activeImage}
                   src={auction.product?.images?.[activeImage] || "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=1200&auto=format&fit=crop"} 
                   alt={auction.product?.name} 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  className="relative z-10 w-full h-full object-contain p-8 transition-all duration-500 animate-in fade-in zoom-in-95"
                 />
-                <div className="absolute top-6 left-6 flex flex-col gap-3">
+                <div className="absolute top-6 left-6 z-20 flex flex-col gap-3">
                   {isFinished ? (
-                    <Badge variant="outline" className="bg-black/60 backdrop-blur-md border-white/20 px-4 py-2 text-lg">ENCERRADO</Badge>
+                    <Badge variant="outline" className="bg-black/60 backdrop-blur-md border-white/20 px-4 py-2 text-lg font-black italic">ENCERRADO</Badge>
                   ) : (
-                    <Badge className="bg-red-500 hover:bg-red-600 animate-pulse border-none px-4 py-2 text-lg">AO VIVO</Badge>
+                    <Badge className="bg-red-500 hover:bg-red-600 animate-pulse border-none px-4 py-2 text-lg font-black italic shadow-[0_0_20px_rgba(239,68,68,0.5)]">AO VIVO</Badge>
                   )}
-                  <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30 backdrop-blur-md px-4 py-2 text-lg">
+                  <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30 backdrop-blur-md px-4 py-2 text-lg font-black italic">
                     {discount}% ECONOMIA
                   </Badge>
                 </div>
-                <button className="absolute top-6 right-6 p-3 rounded-full bg-black/40 hover:bg-primary/20 border border-white/10 transition-all">
-                  <Share2 className="w-5 h-5" />
+                <button className="absolute top-6 right-6 z-20 p-4 rounded-full bg-black/40 hover:bg-primary/20 border border-white/10 backdrop-blur-md transition-all group/share">
+                  <Share2 className="w-5 h-5 transition-transform group-hover/share:scale-110" />
                 </button>
               </div>
 
               {auction.product?.images && auction.product.images.length > 1 && (
-                <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
                   {auction.product.images.map((img: string, idx: number) => (
                     <button 
                       key={idx}
                       onClick={() => setActiveImage(idx)}
-                      className={`w-24 h-24 rounded-2xl overflow-hidden border-2 transition-all shrink-0 ${activeImage === idx ? 'border-primary' : 'border-white/10 opacity-50 hover:opacity-100'}`}
+                      className={`relative w-24 h-24 rounded-2xl overflow-hidden border-2 transition-all shrink-0 snap-start ${activeImage === idx ? 'border-primary shadow-[0_0_15px_rgba(var(--color-primary),0.3)]' : 'border-white/10 opacity-50 hover:opacity-100 hover:border-white/20'}`}
                     >
                       <img src={img} className="w-full h-full object-cover" />
+                      {activeImage === idx && (
+                        <div className="absolute inset-0 bg-primary/10 flex items-center justify-center">
+                          <div className="w-1 h-1 bg-primary rounded-full animate-ping" />
+                        </div>
+                      )}
                     </button>
                   ))}
                 </div>
@@ -291,111 +305,149 @@ function AuctionPage() {
 
           {/* Right Column: Bidding Controls & History */}
           <div className="lg:col-span-5 space-y-8">
-            <Card className="bg-white/5 border-primary/20 p-8 rounded-[40px] relative overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
-              <div className="absolute top-0 right-0 p-8 text-primary/10">
-                <Gavel className="w-32 h-32 rotate-12" />
+            <Card className="bg-white/5 border-primary/20 p-8 md:p-10 rounded-[48px] relative overflow-hidden shadow-2xl backdrop-blur-3xl group/card">
+              {/* Animated Background Highlight */}
+              <div className="absolute -top-20 -right-20 w-64 h-64 bg-primary/10 rounded-full blur-[100px] transition-all duration-1000 group-hover/card:bg-primary/20" />
+              
+              <div className="absolute top-0 right-0 p-10 text-primary/5">
+                <Gavel className="w-40 h-40 rotate-12 transition-transform duration-700 group-hover/card:rotate-0 group-hover/card:scale-110" />
               </div>
               
-              <div className="relative z-10 space-y-8">
-                <div>
-                  <h1 className="text-3xl font-black italic uppercase tracking-tighter leading-tight mb-2">
+              <div className="relative z-10 space-y-10">
+                <div className="space-y-2">
+                  <Badge variant="outline" className="border-primary/30 text-primary font-bold tracking-widest text-[10px] uppercase bg-primary/5">ITEM EM DISPUTA</Badge>
+                  <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-tight text-white drop-shadow-sm">
                     {auction.product?.name}
                   </h1>
-                  <p className="text-white/40 font-medium">Cód do Leilão: #{id.substring(0, 8).toUpperCase()}</p>
+                  <p className="text-white/30 font-bold text-xs tracking-widest uppercase">REF: {id.substring(0, 8).toUpperCase()}</p>
                 </div>
 
-                <div className="flex flex-col gap-2 p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md">
-                  <span className="text-sm text-white/40 font-bold uppercase tracking-widest">Preço Atual</span>
-                  <div className={`text-6xl font-black text-primary transition-transform duration-300 ${isNewBid ? 'scale-110' : 'scale-100'}`}>
-                    R$ {auction.current_price?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                <div className="flex flex-col gap-3 p-8 rounded-[32px] bg-gradient-to-br from-white/10 to-transparent border border-white/10 backdrop-blur-xl shadow-inner group/price">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs text-white/40 font-black uppercase tracking-[0.2em]">Preço Atual</span>
+                    <Badge variant="outline" className="border-green-500/30 text-green-500 bg-green-500/5 animate-pulse">VALOR DE REPASSE</Badge>
+                  </div>
+                  <div className={`text-7xl font-black text-primary transition-all duration-500 ${isNewBid ? 'scale-110 drop-shadow-[0_0_30px_rgba(var(--color-primary),0.6)]' : 'scale-100'}`}>
+                    <span className="text-3xl align-top mt-2 inline-block mr-1 opacity-60">R$</span>
+                    {auction.current_price?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-2 p-6 rounded-3xl bg-white/5 border border-white/10">
-                    <span className="text-xs text-white/40 font-bold uppercase tracking-widest flex items-center gap-2">
-                      <Clock className="w-3 h-3 text-primary" /> Tempo Restante
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="flex flex-col gap-3 p-6 rounded-[28px] bg-white/5 border border-white/10 transition-colors hover:bg-white/10">
+                    <span className="text-[10px] text-white/40 font-black uppercase tracking-widest flex items-center gap-2">
+                      <Clock className="w-3 h-3 text-primary" /> Cronômetro
                     </span>
-                    <div className={`text-3xl font-mono font-black ${timeLeft < 10 && !isFinished ? 'text-red-500 animate-pulse' : 'text-white'}`}>
+                    <div className={`text-4xl font-mono font-black ${timeLeft < 10 && !isFinished ? 'text-red-500 animate-pulse' : 'text-white'}`}>
                       {isFinished ? "00:00" : formatTime(timeLeft)}
                     </div>
                   </div>
-                  <div className="flex flex-col gap-2 p-6 rounded-3xl bg-white/5 border border-white/10">
-                    <span className="text-xs text-white/40 font-bold uppercase tracking-widest flex items-center gap-2">
-                      <History className="w-3 h-3 text-primary" /> Total Lances
+                  <div className="flex flex-col gap-3 p-6 rounded-[28px] bg-white/5 border border-white/10 transition-colors hover:bg-white/10">
+                    <span className="text-[10px] text-white/40 font-black uppercase tracking-widest flex items-center gap-2">
+                      <History className="w-3 h-3 text-primary" /> Total Bids
                     </span>
-                    <div className="text-3xl font-black text-white">
+                    <div className="text-4xl font-black text-white">
                       {auction.bid_count || 0}
                     </div>
                   </div>
                 </div>
 
-                <div className="p-6 rounded-3xl bg-primary/10 border border-primary/20 flex items-center justify-between group">
+                <div className="p-6 rounded-[28px] bg-primary/5 border border-primary/20 flex items-center justify-between group/bidder transition-all hover:bg-primary/10">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-white/10 border border-white/20 flex items-center justify-center overflow-hidden shrink-0">
+                    <div className="w-14 h-14 rounded-full bg-white/5 border-2 border-primary/20 flex items-center justify-center overflow-hidden shrink-0 shadow-lg">
                       {auction.last_bidder?.avatar_url ? (
                         <img src={auction.last_bidder.avatar_url} className="w-full h-full object-cover" />
                       ) : (
-                        <User className="w-6 h-6 text-white/40" />
+                        <User className="w-7 h-7 text-white/20" />
                       )}
                     </div>
                     <div>
-                      <span className="block text-[10px] text-white/40 font-bold uppercase tracking-widest">Líder Atual</span>
-                      <span className="text-lg font-bold text-white group-hover:text-primary transition-colors">{auction.last_bidder?.username || "Ninguém ainda"}</span>
+                      <span className="block text-[9px] text-white/30 font-black uppercase tracking-[0.2em] mb-1 leading-none">Vantagem Atual</span>
+                      <span className="text-xl font-black text-white group-hover/bidder:text-primary transition-colors tracking-tight italic uppercase">{auction.last_bidder?.username || "Nenhum lance"}</span>
                     </div>
                   </div>
                   {showBonus && (
-                    <div className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-black animate-bounce">
+                    <div className="bg-primary text-primary-foreground px-4 py-1.5 rounded-full text-[10px] font-black animate-bounce shadow-lg ring-4 ring-primary/20">
                       +15s BÔNUS
                     </div>
                   )}
                 </div>
 
-                <Button 
-                  onClick={handleBid}
-                  disabled={isFinished || bidLoading}
-                  className={`w-full h-20 text-2xl font-black uppercase italic tracking-tighter transition-all rounded-3xl ${isFinished ? 'bg-white/5 text-white/20' : 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_10px_30px_rgba(var(--color-primary),0.4)] hover:scale-[1.02] active:scale-95'}`}
-                >
-                  {bidLoading ? "Processando..." : isFinished ? "LEILÃO ENCERRADO" : (
-                    <span className="flex items-center gap-3">
-                      Dar Lance <Zap className="w-6 h-6 fill-current" />
-                    </span>
-                  )}
-                </Button>
-                
-                <p className="text-center text-[10px] text-white/20 uppercase tracking-[0.2em] font-bold">
-                  Cada lance consome 1 crédito do seu saldo
-                </p>
+                <div className="space-y-4 pt-4">
+                  <Button 
+                    onClick={handleBid}
+                    disabled={isFinished || bidLoading}
+                    className={`w-full h-24 text-3xl font-black uppercase italic tracking-tighter transition-all rounded-[32px] group/btn relative overflow-hidden ${isFinished ? 'bg-white/5 text-white/20' : 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_20px_50px_rgba(var(--color-primary),0.4)] hover:-translate-y-1 active:translate-y-1'}`}
+                  >
+                    {!isFinished && (
+                      <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover/btn:animate-shimmer" 
+                           style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)' }} />
+                    )}
+                    
+                    {bidLoading ? <div className="w-8 h-8 border-4 border-current border-t-transparent rounded-full animate-spin" /> : isFinished ? "LEILÃO ENCERRADO" : (
+                      <span className="flex items-center gap-4 relative z-10">
+                        Arrematar Agora <Zap className="w-8 h-8 fill-current animate-pulse" />
+                      </span>
+                    )}
+                  </Button>
+                  
+                  <p className="text-center text-[10px] text-white/20 uppercase tracking-[0.3em] font-black">
+                    CUSTO POR LANCE: 1 CRÉDITO
+                  </p>
+                </div>
               </div>
             </Card>
 
-            <Card className="bg-white/5 border-white/10 rounded-3xl overflow-hidden">
-              <div className="p-6 border-b border-white/10 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <History className="w-4 h-4 text-primary" />
-                  <h3 className="font-bold text-xs uppercase tracking-widest">Histórico de <span className="text-primary">Lances</span></h3>
+            <Card className="bg-white/5 border-white/10 rounded-[32px] overflow-hidden shadow-xl backdrop-blur-xl group/history">
+              <div className="p-8 border-b border-white/10 flex items-center justify-between bg-white/5">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <History className="w-5 h-5 text-primary" />
+                  </div>
+                  <h3 className="font-black text-sm uppercase tracking-[0.2em] text-white">Histórico de <span className="text-primary">Lances</span></h3>
                 </div>
-                <Badge variant="outline" className="text-[10px] border-white/10 text-white/40">ÚLTIMOS 10</Badge>
+                <Badge variant="outline" className="text-[10px] border-white/10 text-white/40 font-bold px-3">LIVE FEED</Badge>
               </div>
-              <div className="p-2">
+              <div className="p-4">
                 {bids.length > 0 ? (
-                  <div className="space-y-1">
+                  <div className="space-y-2">
                     {bids.map((bid, idx) => (
-                      <div key={bid.id} className={`flex items-center justify-between p-3 rounded-2xl transition-colors ${idx === 0 ? 'bg-primary/10 border border-primary/20' : 'hover:bg-white/5'}`}>
-                        <div className="flex items-center gap-3">
-                          <span className={`text-[10px] font-bold w-4 ${idx === 0 ? 'text-primary' : 'text-white/20'}`}>#{bids.length - idx}</span>
-                          <div className="flex items-center gap-2">
-                            <span className={`font-bold text-sm ${idx === 0 ? 'text-white' : 'text-white/60'}`}>{bid.profile?.username}</span>
-                            {idx === 0 && <Badge className="h-4 px-1.5 text-[8px] bg-primary text-primary-foreground">LIDERANDO</Badge>}
+                      <div key={bid.id} className={`flex items-center justify-between p-4 rounded-2xl transition-all duration-300 animate-in fade-in slide-in-from-right-2 ${idx === 0 ? 'bg-primary/20 border border-primary/30 shadow-[0_0_20px_rgba(var(--color-primary),0.1)]' : 'hover:bg-white/5 border border-transparent'}`}>
+                        <div className="flex items-center gap-4">
+                          <div className="relative">
+                            <Avatar className={`w-10 h-10 border-2 transition-all ${idx === 0 ? 'border-primary scale-110 shadow-lg' : 'border-white/10'}`}>
+                              <AvatarImage src={bid.profile?.avatar_url} />
+                              <AvatarFallback className="bg-primary/10 text-primary font-bold text-xs">
+                                {bid.profile?.username?.substring(0, 2).toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                            {idx === 0 && (
+                              <div className="absolute -top-1 -right-1 bg-primary text-primary-foreground p-0.5 rounded-full ring-2 ring-background">
+                                <Trophy className="w-3 h-3" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex flex-col">
+                            <div className="flex items-center gap-2">
+                              <span className={`font-black text-sm uppercase italic tracking-tighter ${idx === 0 ? 'text-white' : 'text-white/60'}`}>{bid.profile?.username}</span>
+                              {idx === 0 && <Badge className="h-4 px-1.5 text-[8px] font-black bg-primary text-primary-foreground animate-pulse">LIDERANDO</Badge>}
+                            </div>
+                            <span className="text-[10px] text-white/30 font-bold uppercase">{new Date(bid.created_at).toLocaleTimeString()}</span>
                           </div>
                         </div>
-                        <span className={`font-mono text-sm font-bold ${idx === 0 ? 'text-primary' : 'text-white/40'}`}>R$ {bid.price_at_bid?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                        <div className="text-right">
+                          <span className={`font-mono text-lg font-black block ${idx === 0 ? 'text-primary' : 'text-white/40'}`}>R$ {bid.price_at_bid?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                          <span className="text-[9px] text-white/20 font-black uppercase tracking-widest">Lance #{bids.length - idx}</span>
+                        </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="py-12 text-center text-white/20 italic text-sm">
-                    Nenhum lance efetuado ainda.
+                  <div className="py-20 text-center space-y-4">
+                    <div className="inline-flex p-4 rounded-full bg-white/5 text-white/10">
+                      <Zap className="w-12 h-12" />
+                    </div>
+                    <p className="text-white/20 font-black uppercase tracking-[0.2em] italic text-sm">Aguardando lance inicial...</p>
                   </div>
                 )}
               </div>
@@ -409,13 +461,14 @@ function AuctionPage() {
       </main>
       
       {/* Trust Badges */}
-      <section className="py-20 border-t border-white/5 bg-black/20">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <TrustItem icon={<ShieldCheck className="w-8 h-8 text-primary" />} title="Seguro" desc="Transações 100% protegidas" />
-            <TrustItem icon={<Zap className="w-8 h-8 text-primary" />} title="Rápido" desc="Lances em tempo real" />
-            <TrustItem icon={<Info className="w-8 h-8 text-primary" />} title="Suporte" desc="Atendimento 24/7" />
-            <TrustItem icon={<History className="w-8 h-8 text-primary" />} title="Histórico" desc="Auditoria de lances" />
+      <section className="py-24 border-t border-white/5 bg-black/40 relative overflow-hidden">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[120px]" />
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 md:gap-8">
+            <TrustItem icon={<ShieldCheck className="w-10 h-10 text-primary" />} title="Compra Segura" desc="Certificação SSL & Pagamentos PIX" />
+            <TrustItem icon={<Zap className="w-10 h-10 text-primary" />} title="Real-Time" desc="Lances processados em 10ms" />
+            <TrustItem icon={<Info className="w-10 h-10 text-primary" />} title="Suporte VIP" desc="Atendimento especializado 24/7" />
+            <TrustItem icon={<History className="w-10 h-10 text-primary" />} title="Transparência" desc="Auditoria pública de cada lance" />
           </div>
         </div>
       </section>
@@ -425,13 +478,15 @@ function AuctionPage() {
 
 function TrustItem({ icon, title, desc }: { icon: React.ReactNode, title: string, desc: string }) {
   return (
-    <div className="flex flex-col items-center text-center gap-3 group">
-      <div className="p-4 rounded-2xl bg-white/5 border border-white/10 transition-transform group-hover:scale-110">
-        {icon}
+    <div className="flex flex-col items-center text-center gap-4 group/trust cursor-default">
+      <div className="p-6 rounded-[24px] bg-white/5 border border-white/5 transition-all duration-500 group-hover/trust:bg-primary/10 group-hover/trust:border-primary/20 group-hover/trust:-translate-y-2 shadow-lg">
+        <div className="transition-transform duration-500 group-hover/trust:scale-110">
+          {icon}
+        </div>
       </div>
-      <div>
-        <h4 className="font-bold text-white uppercase tracking-widest text-xs mb-1">{title}</h4>
-        <p className="text-white/40 text-[10px]">{desc}</p>
+      <div className="space-y-1">
+        <h4 className="font-black text-white uppercase tracking-[0.2em] text-[10px] italic">{title}</h4>
+        <p className="text-white/30 text-[10px] font-bold uppercase tracking-widest leading-tight max-w-[120px]">{desc}</p>
       </div>
     </div>
   );
