@@ -6,7 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Send, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
-import { getFallbackAvatarUrl } from "@/lib/constants";
+import { getFallbackAvatarUrl, FICTITIOUS_PARTICIPANTS, FICTITIOUS_CHAT_PHRASES } from "@/lib/constants";
 
 export function AuctionChat({ auctionId }: { auctionId: string }) {
   const [messages, setMessages] = useState<any[]>([]);
@@ -19,6 +19,18 @@ export function AuctionChat({ auctionId }: { auctionId: string }) {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
     });
+
+    // Pre-populate with some fictitious messages
+    const initialMessages = Array.from({ length: 5 }).map(() => ({
+      id: Math.random().toString(36).substring(7),
+      message: FICTITIOUS_CHAT_PHRASES[Math.floor(Math.random() * FICTITIOUS_CHAT_PHRASES.length)],
+      profile: {
+        username: FICTITIOUS_PARTICIPANTS[Math.floor(Math.random() * FICTITIOUS_PARTICIPANTS.length)],
+        avatar_url: null
+      },
+      created_at: new Date().toISOString()
+    }));
+    setMessages(initialMessages);
 
     fetchMessages();
 
@@ -37,6 +49,30 @@ export function AuctionChat({ auctionId }: { auctionId: string }) {
       supabase.removeChannel(channel);
     };
   }, [auctionId]);
+
+  useEffect(() => {
+    // Fictitious chat simulation
+    const chatInterval = setInterval(() => {
+      if (Math.random() < 0.2) { // 20% chance of a bot sending a message
+        const randomUser = FICTITIOUS_PARTICIPANTS[Math.floor(Math.random() * FICTITIOUS_PARTICIPANTS.length)];
+        const randomPhrase = FICTITIOUS_CHAT_PHRASES[Math.floor(Math.random() * FICTITIOUS_CHAT_PHRASES.length)];
+        
+        const botMessage = {
+          id: Math.random().toString(36).substring(7),
+          message: randomPhrase,
+          profile: {
+            username: randomUser,
+            avatar_url: null
+          },
+          created_at: new Date().toISOString()
+        };
+        
+        setMessages(prev => [...prev, botMessage].slice(-50));
+      }
+    }, 4000);
+
+    return () => clearInterval(chatInterval);
+  }, []);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -82,6 +118,17 @@ export function AuctionChat({ auctionId }: { auctionId: string }) {
     if (error) {
       toast.error("Erro ao enviar mensagem.");
     } else {
+      // For fictitious mode, we add it locally immediately
+      const userMessage = {
+        id: Math.random().toString(36).substring(7),
+        message: newMessage.trim(),
+        profile: {
+          username: user?.email?.split('@')[0] || "Você",
+          avatar_url: null
+        },
+        created_at: new Date().toISOString()
+      };
+      setMessages(prev => [...prev, userMessage].slice(-50));
       setNewMessage("");
     }
   };

@@ -12,3 +12,22 @@ export const FICTITIOUS_PARTICIPANTS = [
   "Gabriel Martins", "Camila Ferreira", "Bruno Alves", "Larissa Gomes",
   "Rafael Ribeiro", "Mariana Carvalho", "Diego Lopes", "Vanessa Teixeira"
 ];
+
+export const FICTITIOUS_CHAT_PHRASES = [
+  "Vou levar essa!",
+  "Alguém mais está de olho?",
+  "Esse preço está muito bom",
+  "Opa, mais um lance!",
+  "Agora vai!",
+  "Quase levei na última...",
+  "Produto top demais",
+  "Será que o preço sobe mais?",
+  "Eita, a disputa está quente!",
+  "Não desisto fácil",
+  "Meu primeiro leilão aqui",
+  "Boa sorte a todos!",
+  "Essa economia é real mesmo?",
+  "Caramba, quase perdi o tempo",
+  "Só mais um lancezinho",
+  "Alguém já ganhou algo hoje?"
+];
