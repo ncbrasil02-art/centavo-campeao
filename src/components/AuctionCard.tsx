@@ -9,6 +9,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Clock, User, MessageSquare, Zap, Eye } from "lucide-react";
 import { AuctionChat } from "./AuctionChat";
 import { toast } from "sonner";
+import { FALLBACK_PRODUCT_IMAGE } from "@/lib/constants";
 
 interface AuctionCardProps {
   auction: any;
@@ -123,11 +124,11 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       <div className="relative aspect-square overflow-hidden rounded-t-[32px]">
         <Link to="/auctions/$id" params={{ id: auction.id }} className="block h-full w-full cursor-pointer">
           <img 
-            src={auction.product?.images?.[0] || "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800&auto=format&fit=crop"} 
+            src={auction.product?.images?.[0] || FALLBACK_PRODUCT_IMAGE} 
             alt={auction.product?.name} 
             className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
             onError={(e) => {
-              (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800&auto=format&fit=crop";
+              (e.target as HTMLImageElement).src = FALLBACK_PRODUCT_IMAGE;
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent opacity-60"></div>
@@ -229,7 +230,12 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         <div className="flex items-center gap-3 py-1">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-primary/20 bg-primary/10">
             {auction.last_bidder?.avatar_url ? (
-              <img src={auction.last_bidder.avatar_url} className="h-full w-full object-cover" alt="Bidder" />
+              <img 
+                src={auction.last_bidder.avatar_url} 
+                className="h-full w-full object-cover" 
+                alt="Bidder" 
+                onError={(e) => (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${auction.last_bidder?.username || 'User'}&background=random`}
+              />
             ) : (
               <User className="h-5 w-5 text-primary/40" />
             )}

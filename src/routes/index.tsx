@@ -8,16 +8,21 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { FALLBACK_USER_IMAGE } from "@/lib/constants";
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
-function WinnerCard({ name, product, price, saving }: { name: string, product: string, price: string, saving: string }) {
+function WinnerCard({ name, product, price, saving, avatarUrl }: { name: string, product: string, price: string, saving: string, avatarUrl?: string }) {
   return (
     <div className="p-6 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-4 hover:border-primary/50 transition-all group">
       <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center overflow-hidden shrink-0 border-2 border-primary/20 group-hover:border-primary transition-all">
-        <User className="w-8 h-8 text-white/40" />
+        {avatarUrl ? (
+          <img src={avatarUrl} className="w-full h-full object-cover" onError={(e) => (e.target as HTMLImageElement).src = FALLBACK_USER_IMAGE} />
+        ) : (
+          <User className="w-8 h-8 text-white/40" />
+        )}
       </div>
       <div>
         <h4 className="font-bold text-white group-hover:text-primary transition-colors">{name}</h4>

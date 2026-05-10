@@ -12,6 +12,7 @@ import { AuctionChat } from "@/components/AuctionChat";
 import { useTimeSync } from "@/hooks/useTimeSync";
 // confetti will be imported dynamically on the client
 import { toast } from "sonner";
+import { FALLBACK_PRODUCT_IMAGE } from "@/lib/constants";
 
 export const Route = createFileRoute("/auctions/$id")({
   component: AuctionPage,
@@ -211,16 +212,22 @@ function AuctionPage() {
               <div className="relative aspect-square rounded-[32px] overflow-hidden bg-white/5 border border-white/10 group shadow-2xl">
                 <div className="absolute inset-0 z-0">
                   <img 
-                    src={auction.product?.images?.[activeImage] || "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=1200&auto=format&fit=crop"} 
+                    src={auction.product?.images?.[activeImage] || FALLBACK_PRODUCT_IMAGE} 
                     alt={auction.product?.name} 
                     className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 blur-2xl opacity-20 scale-150"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = FALLBACK_PRODUCT_IMAGE;
+                    }}
                   />
                 </div>
                 <img 
                   key={activeImage}
-                  src={auction.product?.images?.[activeImage] || "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=1200&auto=format&fit=crop"} 
+                  src={auction.product?.images?.[activeImage] || FALLBACK_PRODUCT_IMAGE} 
                   alt={auction.product?.name} 
                   className="relative z-10 w-full h-full object-contain p-8 transition-all duration-500 animate-in fade-in zoom-in-95"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = FALLBACK_PRODUCT_IMAGE;
+                  }}
                 />
                 <div className="absolute top-6 left-6 z-20 flex flex-col gap-3">
                   {isFinished ? (
@@ -245,7 +252,7 @@ function AuctionPage() {
                       onClick={() => setActiveImage(idx)}
                       className={`relative w-24 h-24 rounded-2xl overflow-hidden border-2 transition-all shrink-0 snap-start ${activeImage === idx ? 'border-primary shadow-[0_0_15px_rgba(var(--color-primary),0.3)]' : 'border-white/10 opacity-50 hover:opacity-100 hover:border-white/20'}`}
                     >
-                      <img src={img} className="w-full h-full object-cover" />
+                      <img src={img} className="w-full h-full object-cover" onError={(e) => (e.target as HTMLImageElement).src = FALLBACK_PRODUCT_IMAGE} />
                       {activeImage === idx && (
                         <div className="absolute inset-0 bg-primary/10 flex items-center justify-center">
                           <div className="w-1 h-1 bg-primary rounded-full animate-ping" />
@@ -355,7 +362,7 @@ function AuctionPage() {
                   <div className="flex items-center gap-4">
                     <div className="w-14 h-14 rounded-full bg-white/5 border-2 border-primary/20 flex items-center justify-center overflow-hidden shrink-0 shadow-lg">
                       {auction.last_bidder?.avatar_url ? (
-                        <img src={auction.last_bidder.avatar_url} className="w-full h-full object-cover" />
+                        <img src={auction.last_bidder.avatar_url} className="w-full h-full object-cover" onError={(e) => (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${auction.last_bidder?.username || 'User'}&background=random`} />
                       ) : (
                         <User className="w-7 h-7 text-white/20" />
                       )}
