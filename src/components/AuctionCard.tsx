@@ -185,28 +185,42 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           )}
         </div>
         
-        {/* Chat Trigger (Floating on Image) */}
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button 
-              size="icon" 
-              variant="ghost" 
-              className="absolute right-4 top-4 h-10 w-10 rounded-full border border-white/10 bg-black/40 text-white/60 backdrop-blur-md transition-all hover:bg-primary/20 hover:text-primary"
-            >
-              <MessageSquare className="h-4 w-4" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="right" className="w-full border-white/10 bg-background p-0 sm:max-w-md">
-            <SheetHeader className="border-b border-white/10 p-4">
-              <SheetTitle className="font-black italic uppercase tracking-tighter text-white">
-                Chat do <span className="text-primary">Leilão</span>
-              </SheetTitle>
-            </SheetHeader>
-            <div className="h-[calc(100vh-80px)]">
-              {mounted && <AuctionChat auctionId={auction.id} />}
-            </div>
-          </SheetContent>
-        </Sheet>
+        {/* Controls (Floating on Image) */}
+        <div className="absolute right-4 top-4 flex flex-col gap-2">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button 
+                size="icon" 
+                variant="ghost" 
+                className="h-10 w-10 rounded-full border border-white/10 bg-black/40 text-white/60 backdrop-blur-md transition-all hover:bg-primary/20 hover:text-primary"
+              >
+                <MessageSquare className="h-4 w-4" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-full border-white/10 bg-background p-0 sm:max-w-md">
+              <SheetHeader className="border-b border-white/10 p-4">
+                <SheetTitle className="font-black italic uppercase tracking-tighter text-white">
+                  Chat do <span className="text-primary">Leilão</span>
+                </SheetTitle>
+              </SheetHeader>
+              <div className="h-[calc(100vh-80px)]">
+                {mounted && <AuctionChat auctionId={auction.id} />}
+              </div>
+            </SheetContent>
+          </Sheet>
+
+          <Button 
+            size="icon" 
+            variant="ghost" 
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsMuted(!isMuted);
+            }}
+            className="h-10 w-10 rounded-full border border-white/10 bg-black/40 text-white/60 backdrop-blur-md transition-all hover:bg-primary/20 hover:text-primary"
+          >
+            {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+          </Button>
+        </div>
       </div>
       
       {/* Content Section */}
