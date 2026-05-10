@@ -75,22 +75,72 @@ function StatsCard({ icon, label, value }: { icon: React.ReactNode, label: strin
   );
 }
 
-export function AuctionCard({ auction }: { auction: any }) {
-  const [timeLeft, setTimeLeft] = useState(15);
+export function AuctionCard({ auction: initialAuction }: { auction: any }) {
+  const [auction, setAuction] = useState(initialAuction);
+  const [timeLeft, setTimeLeft] = useState(0);
   const [isNewBid, setIsNewBid] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (timeLeft > 0) {
-      const timer = setTimeout(() => setTimeLeft(prev => prev - 1), 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [timeLeft]);
+    setAuction(initialAuction);
+  }, [initialAuction]);
 
-  const handleBid = () => {
-    setIsNewBid(true);
-    setTimeLeft(15); // Reset timer on bid
-    setTimeout(() => setIsNewBid(false), 500);
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      if (!auction.end_time) return 0;
+      const end = new Date(auction.end_time).getTime();
+      const now = new Date().getTime();
+      const diff = Math.max(0, Math.floor((end - now) / 1000));
+      return diff;
+    };
+
+    setTimeLeft(calculateTimeLeft());
+
+    const timer = setInterval(() => {
+      const remaining = calculateTimeLeft();
+      setTimeLeft(remaining);
+      
+      if (remaining <= 0 && auction.status === 'live') {
+        // Auction ended
+        clearInterval(timer);
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [auction.end_time, auction.status]);
+
+  const handleBid = async () => {
+    setLoading(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        alert("Você precisa estar logado para dar um lance!");
+        return;
+      }
+
+      const { data, error } = await supabase.rpc('place_bid', {
+        p_auction_id: auction.id,
+        p_user_id: session.user.id
+      });
+
+      if (error) throw error;
+      
+      const result = data as any;
+      if (!result.success) {
+        alert(result.message);
+      } else {
+        setIsNewBid(true);
+        setTimeout(() => setIsNewBid(false), 500);
+      }
+    } catch (error: any) {
+      console.error("Erro ao dar lance:", error);
+      alert("Ocorreu um erro ao processar seu lance.");
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const isFinished = timeLeft <= 0 || auction.status === 'finished';
 
   return (
     <Card className="overflow-hidden bg-white/5 border-white/10 group hover:border-primary/50 transition-all duration-300">
@@ -101,7 +151,11 @@ export function AuctionCard({ auction }: { auction: any }) {
           className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
         />
         <div className="absolute top-3 left-3 flex gap-2">
-          <Badge className="bg-red-500 hover:bg-red-600 animate-pulse border-none">AO VIVO</Badge>
+          {isFinished ? (
+            <Badge variant="outline" className="bg-white/10 text-white/40 border-none">ENCERRADO</Badge>
+          ) : (
+            <Badge className="bg-red-500 hover:bg-red-600 animate-pulse border-none">AO VIVO</Badge>
+          )}
           <Badge variant="secondary" className="bg-black/60 backdrop-blur-md border-white/10">Novo</Badge>
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-60"></div>
@@ -109,22 +163,22 @@ export function AuctionCard({ auction }: { auction: any }) {
       
       <div className="p-5 flex flex-col gap-4">
         <div>
-          <h3 className="text-lg font-bold text-white line-clamp-1 group-hover:text-primary transition-colors">{auction.product?.name || "iPhone 15 Pro Max 256GB"}</h3>
-          <p className="text-sm text-white/40">Valor: R$ {auction.product?.market_value || "7.499,00"}</p>
+          <h3 className="text-lg font-bold text-white line-clamp-1 group-hover:text-primary transition-colors">{auction.product?.name || "Produto"}</h3>
+          <p className="text-sm text-white/40">Valor: R$ {auction.product?.market_value?.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) || "0,00"}</p>
         </div>
 
         <div className="flex items-center justify-between py-2 border-y border-white/5">
           <div className="flex flex-col">
             <span className="text-xs text-white/40 uppercase font-bold tracking-tighter">Preço Atual</span>
             <span className={`text-2xl font-black text-primary transition-transform duration-300 ${isNewBid ? 'scale-125' : 'scale-100'}`}>
-              R$ {auction.current_price?.toFixed(2) || "0,01"}
+              R$ {auction.current_price?.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) || "0,01"}
             </span>
           </div>
           <div className="flex flex-col items-end">
             <span className="text-xs text-white/40 uppercase font-bold tracking-tighter">Tempo</span>
-            <div className={`flex items-center gap-1 font-mono text-2xl font-bold ${timeLeft < 10 ? 'text-red-500' : 'text-white'}`}>
+            <div className={`flex items-center gap-1 font-mono text-2xl font-bold ${timeLeft < 10 && !isFinished ? 'text-red-500 animate-pulse' : isFinished ? 'text-white/20' : 'text-white'}`}>
               <Clock className="w-4 h-4" />
-              00:{timeLeft.toString().padStart(2, '0')}
+              {isFinished ? "--:--" : `00:${timeLeft.toString().padStart(2, '0')}`}
             </div>
           </div>
         </div>
@@ -134,13 +188,17 @@ export function AuctionCard({ auction }: { auction: any }) {
             <User className="w-4 h-4 text-white/60" />
           </div>
           <div className="flex flex-col overflow-hidden">
-            <span className="text-xs text-white/40 font-bold uppercase tracking-tighter">Último Lance</span>
-            <span className="text-sm font-medium text-white truncate">{auction.last_bidder?.username || "Aguardando..."}</span>
+            <span className="text-xs text-white/40 font-bold uppercase tracking-tighter">Último Arrematante</span>
+            <span className="text-sm font-medium text-white truncate">{auction.last_bidder?.username || "---"}</span>
           </div>
         </div>
 
-        <Button onClick={handleBid} className="w-full h-12 text-lg font-black bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_4px_15px_rgba(var(--color-primary),0.3)]">
-          DAR LANCE
+        <Button 
+          onClick={handleBid} 
+          disabled={isFinished || loading}
+          className={`w-full h-12 text-lg font-black transition-all ${isFinished ? 'bg-white/5 text-white/20 cursor-not-allowed' : 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_4px_15px_rgba(var(--color-primary),0.3)]'}`}
+        >
+          {loading ? "PROCESSANDO..." : isFinished ? "LEILÃO ENCERRADO" : "DAR LANCE"}
         </Button>
       </div>
     </Card>
