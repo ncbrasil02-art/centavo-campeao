@@ -13,6 +13,8 @@ export function GlobalActivityChat() {
   const [newMessage, setNewMessage] = useState("");
   const [user, setUser] = useState<any>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const channelRef = useRef<string>(`global_chat_${Math.random().toString(36).substring(7)}`);
+  const bidChannelRef = useRef<string>(`global_bids_${Math.random().toString(36).substring(7)}`);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
