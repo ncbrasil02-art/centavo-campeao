@@ -143,7 +143,7 @@ function AuthPage() {
                     <Label htmlFor="reg-name">Nome Completo</Label>
                     <div className="relative">
                       <User className="absolute left-3 top-3 h-4 w-4 text-white/40" />
-                      <Input id="reg-name" placeholder="João Silva" className="pl-10 bg-white/5 border-white/10 placeholder:text-primary/40 placeholder:drop-shadow-[0_0_5px_rgba(var(--color-primary),0.5)]" value={fullName} onChange={e => setFullName(e.target.value)} required />
+                      <Input id="reg-name" placeholder="João Silva" className="pl-10 bg-white/5 border-white/10 placeholder:text-primary/50" value={fullName} onChange={e => setFullName(e.target.value)} required />
                     </div>
                   </div>
                   <div className="space-y-2">
