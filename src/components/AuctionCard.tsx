@@ -56,13 +56,29 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
     : 0;
 
   useEffect(() => {
-    // Randomize initial phrase
-    setIncentivePhrase(INCENTIVE_PHRASES[Math.floor(Math.random() * INCENTIVE_PHRASES.length)]);
+    async function loadIncentives() {
+      if (CACHED_INCENTIVES.length > 0) {
+        setIncentivePhrase(CACHED_INCENTIVES[Math.floor(Math.random() * CACHED_INCENTIVES.length)]);
+        return;
+      }
+      const { data } = await supabase
+        .from("app_phrases")
+        .select("text")
+        .eq("type", "incentive")
+        .eq("active", true);
+      
+      const phrases = (data && data.length > 0) ? data.map(p => p.text) : INCENTIVE_PHRASES;
+      CACHED_INCENTIVES = phrases;
+      setIncentivePhrase(phrases[Math.floor(Math.random() * phrases.length)]);
+    }
+
+    loadIncentives();
     setActiveWatchers(Math.floor(Math.random() * 45) + 12);
     
     // Rotate phrases every 8-12 seconds
     const interval = setInterval(() => {
-      setIncentivePhrase(INCENTIVE_PHRASES[Math.floor(Math.random() * INCENTIVE_PHRASES.length)]);
+      const phrases = CACHED_INCENTIVES.length > 0 ? CACHED_INCENTIVES : INCENTIVE_PHRASES;
+      setIncentivePhrase(phrases[Math.floor(Math.random() * phrases.length)]);
       setActiveWatchers(prev => {
         const change = Math.floor(Math.random() * 7) - 3;
         return Math.max(5, prev + change);
