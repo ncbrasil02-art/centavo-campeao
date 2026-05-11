@@ -220,10 +220,43 @@ function AdminPackages() {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label>URL da Imagem (Opcional)</Label>
+                <div className="space-y-4">
+                  <Label>Imagem do Pacote</Label>
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 rounded-lg bg-white/5 border border-white/10 overflow-hidden flex items-center justify-center">
+                      {formData.image_url ? (
+                        <img src={formData.image_url} alt="Preview" className="w-full h-full object-cover" />
+                      ) : (
+                        <Package className="w-6 h-6 text-white/20" />
+                      )}
+                    </div>
+                    <div className="flex-1 relative">
+                      <input
+                        type="file"
+                        id="package-upload"
+                        className="hidden"
+                        accept="image/*"
+                        onChange={handleFileUpload}
+                        disabled={uploading}
+                      />
+                      <Button
+                        asChild
+                        variant="outline"
+                        className="w-full border-white/10 hover:bg-white/5 text-white"
+                        disabled={uploading}
+                      >
+                        <label htmlFor="package-upload" className="cursor-pointer">
+                          {uploading ? (
+                            <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Carregando...</>
+                          ) : (
+                            <><Upload className="w-4 h-4 mr-2" /> Alterar Imagem</>
+                          )}
+                        </label>
+                      </Button>
+                    </div>
+                  </div>
                   <Input 
-                    placeholder="https://..."
+                    placeholder="Ou cole a URL da imagem aqui..."
                     value={formData.image_url}
                     onChange={e => setFormData({...formData, image_url: e.target.value})}
                     className="bg-white/5 border-white/10"
