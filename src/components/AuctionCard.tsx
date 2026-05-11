@@ -232,16 +232,17 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
               <span className="text-4xl font-black text-black italic leading-none mb-2 drop-shadow-sm tabular-nums">
                 {timeParts.s}<span className="text-xl opacity-60 ml-0.5">,{timeParts.ms}</span>
               </span>
-              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-black/10 border border-black/5">
-                <Calendar className="w-3 h-3 text-black/60" />
-                <span className="text-[10px] font-bold text-black/60 uppercase tracking-widest">
-                  {new Date(auction.start_time).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })} às {new Date(auction.start_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
-                </span>
-              </div>
-            </div>
-              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-black/10 border border-black/5">
-                <Clock className="w-3 h-3 text-black/60" />
-                <span className="text-[10px] font-bold text-black/60 uppercase tracking-widest">Prepare seus lances</span>
+              <div className="flex flex-col items-center gap-1">
+                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-black/10 border border-black/5">
+                  <Calendar className="w-3 h-3 text-black/60" />
+                  <span className="text-[10px] font-bold text-black/60 uppercase tracking-widest">
+                    {new Date(auction.start_time).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })} às {new Date(auction.start_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-black/10 border border-black/5">
+                  <Clock className="w-3 h-3 text-black/60" />
+                  <span className="text-[10px] font-bold text-black/60 uppercase tracking-widest">Prepare seus lances</span>
+                </div>
               </div>
             </div>
           </div>
