@@ -13,7 +13,7 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Plus, Image as ImageIcon, Edit, Trash2, Layout, ExternalLink, Power, Upload, Loader2 } from "lucide-react";
+import { Plus, Image as ImageIcon, Edit, Trash2, Layout, ExternalLink, Power, Upload, Loader2, Calendar } from "lucide-react";
 import { toast } from "sonner";
 import { 
   Dialog, 
@@ -26,6 +26,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 export const Route = createFileRoute("/admin/banners")({
   component: AdminBanners,
@@ -43,7 +45,9 @@ function AdminBanners() {
     image_url: "",
     link_url: "",
     order_index: 0,
-    active: true
+    active: true,
+    start_at: "",
+    end_at: ""
   });
 
   useEffect(() => {
@@ -103,6 +107,8 @@ function AdminBanners() {
       const payload = {
         ...formData,
         order_index: Number(formData.order_index),
+        start_at: formData.start_at ? new Date(formData.start_at).toISOString() : null,
+        end_at: formData.end_at ? new Date(formData.end_at).toISOString() : null,
       };
 
       if (editingBanner) {
@@ -122,7 +128,7 @@ function AdminBanners() {
 
       setIsDialogOpen(false);
       setEditingBanner(null);
-      setFormData({ title: "", subtitle: "", image_url: "", link_url: "", order_index: 0, active: true });
+      setFormData({ title: "", subtitle: "", image_url: "", link_url: "", order_index: 0, active: true, start_at: "", end_at: "" });
       fetchBanners();
     } catch (error) {
       console.error("Error saving banner:", error);
@@ -166,7 +172,9 @@ function AdminBanners() {
       image_url: banner.image_url,
       link_url: banner.link_url || "",
       order_index: banner.order_index,
-      active: banner.active
+      active: banner.active,
+      start_at: banner.start_at ? format(new Date(banner.start_at), "yyyy-MM-dd'T'HH:mm") : "",
+      end_at: banner.end_at ? format(new Date(banner.end_at), "yyyy-MM-dd'T'HH:mm") : ""
     });
     setIsDialogOpen(true);
   }
@@ -189,7 +197,7 @@ function AdminBanners() {
             setIsDialogOpen(open);
             if (!open) {
               setEditingBanner(null);
-              setFormData({ title: "", subtitle: "", image_url: "", link_url: "", order_index: 0, active: true });
+              setFormData({ title: "", subtitle: "", image_url: "", link_url: "", order_index: 0, active: true, start_at: "", end_at: "" });
             }
           }}>
             <DialogTrigger asChild>
@@ -288,6 +296,31 @@ function AdminBanners() {
                   </div>
                 </div>
 
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-2">
+                      <Calendar className="w-3 h-3 text-primary" /> Início (Agendado)
+                    </Label>
+                    <Input 
+                      type="datetime-local"
+                      value={formData.start_at}
+                      onChange={e => setFormData({...formData, start_at: e.target.value})}
+                      className="bg-white/5 border-white/10"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-2">
+                      <Calendar className="w-3 h-3 text-primary" /> Fim (Agendado)
+                    </Label>
+                    <Input 
+                      type="datetime-local"
+                      value={formData.end_at}
+                      onChange={e => setFormData({...formData, end_at: e.target.value})}
+                      className="bg-white/5 border-white/10"
+                    />
+                  </div>
+                </div>
+
                 <div className="flex items-center gap-2">
                   <Switch 
                     checked={formData.active} 
@@ -323,37 +356,58 @@ function AdminBanners() {
               ) : banners.length === 0 ? (
                 <TableRow><TableCell colSpan={5} className="text-center py-8 text-white/40">Nenhum banner encontrado</TableCell></TableRow>
               ) : (
-                banners.map((banner) => (
-                  <TableRow key={banner.id} className="border-white/5 hover:bg-white/[0.02] transition-colors">
-                    <TableCell className="font-bold text-primary">#{banner.order_index}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-4">
-                        <div className="w-24 h-12 rounded bg-white/5 overflow-hidden border border-white/10">
-                          <img src={banner.image_url} alt="" className="w-full h-full object-cover" />
+                banners.map((banner) => {
+                  const now = new Date();
+                  const isScheduled = banner.start_at || banner.end_at;
+                  const isLive = banner.active && 
+                    (!banner.start_at || new Date(banner.start_at) <= now) &&
+                    (!banner.end_at || new Date(banner.end_at) >= now);
+
+                  return (
+                    <TableRow key={banner.id} className="border-white/5 hover:bg-white/[0.02] transition-colors">
+                      <TableCell className="font-bold text-primary">#{banner.order_index}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-4">
+                          <div className="w-24 h-12 rounded bg-white/5 overflow-hidden border border-white/10">
+                            <img src={banner.image_url} alt="" className="w-full h-full object-cover" />
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="font-bold">{banner.title || "Sem título"}</span>
+                            <span className="text-[10px] text-white/40">{banner.subtitle}</span>
+                            {isScheduled && (
+                              <span className="text-[9px] text-primary flex items-center gap-1 mt-1 font-bold uppercase tracking-widest">
+                                <Calendar className="w-2 h-2" />
+                                {banner.start_at && format(new Date(banner.start_at), "dd/MM HH:mm")} 
+                                {banner.end_at && ` → ${format(new Date(banner.end_at), "dd/MM HH:mm")}`}
+                              </span>
+                            )}
+                          </div>
                         </div>
-                        <div className="flex flex-col">
-                          <span className="font-bold">{banner.title || "Sem título"}</span>
-                          <span className="text-[10px] text-white/40">{banner.subtitle}</span>
+                      </TableCell>
+                      <TableCell>
+                        {banner.link_url && (
+                          <a href={banner.link_url} target="_blank" className="flex items-center gap-1 text-primary hover:underline text-xs">
+                            {banner.link_url} <ExternalLink className="w-3 h-3" />
+                          </a>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex flex-col gap-1">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className={`h-7 px-2 rounded-full text-[10px] font-black uppercase tracking-widest border ${banner.active ? "bg-green-500/10 text-green-500 border-green-500/20" : "bg-red-500/10 text-red-500 border-red-500/20"}`}
+                            onClick={() => toggleActive(banner)}
+                          >
+                            {banner.active ? "Ativado" : "Desativado"}
+                          </Button>
+                          {banner.active && (
+                            <span className={`text-[8px] font-black uppercase tracking-tighter text-center ${isLive ? 'text-green-500' : 'text-yellow-500'}`}>
+                              {isLive ? '• No Ar' : '• Agendado'}
+                            </span>
+                          )}
                         </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      {banner.link_url && (
-                        <a href={banner.link_url} target="_blank" className="flex items-center gap-1 text-primary hover:underline text-xs">
-                          {banner.link_url} <ExternalLink className="w-3 h-3" />
-                        </a>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className={`h-7 px-2 rounded-full text-[10px] font-black uppercase tracking-widest border ${banner.active ? "bg-green-500/10 text-green-500 border-green-500/20" : "bg-red-500/10 text-red-500 border-red-500/20"}`}
-                        onClick={() => toggleActive(banner)}
-                      >
-                        {banner.active ? "Ativo" : "Inativo"}
-                      </Button>
-                    </TableCell>
+                      </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
                         <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-primary/20 text-primary" onClick={() => handleEdit(banner)}>
@@ -365,7 +419,8 @@ function AdminBanners() {
                       </div>
                     </TableCell>
                   </TableRow>
-                ))
+                  );
+                })
               )}
             </TableBody>
           </Table>
