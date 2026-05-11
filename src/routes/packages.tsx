@@ -50,8 +50,9 @@ function PackagesPage() {
 
       if (rpcError) throw rpcError;
       
-      if (data && !data.success) {
-        toast.error(data.message || "Erro ao processar compra.");
+      const result = data as any;
+      if (result && !result.success) {
+        toast.error(result.message || "Erro ao processar compra.");
         return;
       }
 
