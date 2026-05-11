@@ -20,7 +20,7 @@ export function Heartbeat() {
 
     runHeartbeat();
 
-    const interval = setInterval(runHeartbeat, 2000);
+    const interval = setInterval(runHeartbeat, 1000);
 
     return () => clearInterval(interval);
   }, []);
