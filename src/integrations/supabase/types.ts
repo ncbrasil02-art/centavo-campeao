@@ -72,30 +72,36 @@ export type Database = {
         Row: {
           active: boolean | null
           created_at: string | null
+          end_at: string | null
           id: string
           image_url: string
           link_url: string | null
           order_index: number | null
+          start_at: string | null
           subtitle: string | null
           title: string | null
         }
         Insert: {
           active?: boolean | null
           created_at?: string | null
+          end_at?: string | null
           id?: string
           image_url: string
           link_url?: string | null
           order_index?: number | null
+          start_at?: string | null
           subtitle?: string | null
           title?: string | null
         }
         Update: {
           active?: boolean | null
           created_at?: string | null
+          end_at?: string | null
           id?: string
           image_url?: string
           link_url?: string | null
           order_index?: number | null
+          start_at?: string | null
           subtitle?: string | null
           title?: string | null
         }
