@@ -317,6 +317,8 @@ function AuctionPage() {
                 <div className="absolute top-6 left-6 z-20 flex flex-col gap-3">
                   {auction.status === 'finished' ? (
                     <Badge variant="outline" className="bg-black/60 backdrop-blur-md border-white/20 px-4 py-2 text-lg font-black italic">ENCERRADO</Badge>
+                  ) : auction.status === 'scheduled' ? (
+                    <Badge className="bg-blue-500 border-none px-4 py-2 text-lg font-black italic shadow-[0_0_20px_rgba(59,130,246,0.5)]">AGENDADO</Badge>
                   ) : auction.is_finalizing ? (
                     <Badge className="bg-orange-500 border-none px-4 py-2 text-lg font-black italic shadow-[0_0_20px_rgba(249,115,22,0.5)]">FINALIZANDO</Badge>
                   ) : (
@@ -326,6 +328,32 @@ function AuctionPage() {
                     {discount}% ECONOMIA
                   </Badge>
                 </div>
+
+                {auction.status === 'scheduled' && auction.start_time && (
+                  <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px]">
+                    <div className="bg-primary/70 backdrop-blur-md py-8 px-12 flex flex-col items-center justify-center shadow-[0_0_50px_rgba(var(--color-primary),0.3)] border-y border-white/20 rotate-[-2deg] scale-110">
+                      <span className="text-sm font-black uppercase tracking-[0.4em] text-black/90 mb-3">COMEÇA EM</span>
+                      <div className="flex gap-2">
+                        <div className="bg-black/90 rounded-xl px-5 py-3 min-w-[100px] flex items-center justify-center shadow-2xl border border-white/10">
+                          <span className="text-6xl font-black text-primary tabular-nums tracking-tighter">
+                            {Math.floor(timeLeft).toString().padStart(2, '0')}
+                          </span>
+                        </div>
+                        <div className="bg-black/70 rounded-xl px-3 py-3 flex items-end shadow-2xl border border-white/10">
+                          <span className="text-3xl font-black text-primary/80 tabular-nums">
+                            ,{Math.floor((timeLeft % 1) * 100).toString().padStart(2, '0')}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="mt-4 flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/20 border border-black/10">
+                        <Calendar className="w-4 h-4 text-black/70" />
+                        <span className="text-xs font-bold text-black/80 uppercase tracking-widest">
+                          {new Date(auction.start_time).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })} às {new Date(auction.start_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 <div className="absolute top-6 right-6 z-20 flex gap-2">
                   <Button 
                     variant="ghost" 
