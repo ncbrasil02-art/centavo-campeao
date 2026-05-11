@@ -100,7 +100,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             if (data.end_time) {
               const end = new Date(data.end_time).getTime();
               const now = getAdjustedNow();
-              setTimeLeft(Math.max(0, Math.floor((end - now) / 1000)));
+              setTimeLeft(Math.max(0, (end - now) / 1000));
             }
             
             setTimeout(() => setIsNewBid(false), 800);
