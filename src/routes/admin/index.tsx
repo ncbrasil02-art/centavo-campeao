@@ -13,7 +13,8 @@ import {
   Bot, 
   ArrowUpRight, 
   Activity,
-  Circle
+  Circle,
+  Package
 } from "lucide-react";
 import { 
   BarChart, 
