@@ -376,8 +376,13 @@ function StatusBadge({ status }: { status: string }) {
     scheduled: "Agendado",
     live: "Ativo",
     finished: "Finalizado",
-    cancelled: "Cancelado"
+    cancelled: "Cancelado",
+    finalizing: "Finalizando"
   };
+  
+  const statusToDisplay = status === 'live' && (window as any).is_finalizing_temp ? 'finalizing' : status; 
+  // Wait, I should probably pass is_finalizing to StatusBadge.
+
 
   return (
     <span className={`px-2 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${styles[status as keyof typeof styles]}`}>
