@@ -20,6 +20,7 @@ import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as AdminSalesRouteImport } from './routes/admin/sales'
 import { Route as AdminRobotsRouteImport } from './routes/admin/robots'
 import { Route as AdminPackagesRouteImport } from './routes/admin/packages'
+import { Route as AdminBannersRouteImport } from './routes/admin/banners'
 import { Route as AdminAuctionsRouteImport } from './routes/admin/auctions'
 
 const PackagesRoute = PackagesRouteImport.update({
@@ -77,6 +78,11 @@ const AdminPackagesRoute = AdminPackagesRouteImport.update({
   path: '/packages',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminBannersRoute = AdminBannersRouteImport.update({
+  id: '/banners',
+  path: '/banners',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminAuctionsRoute = AdminAuctionsRouteImport.update({
   id: '/auctions',
   path: '/auctions',
@@ -89,6 +95,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/packages': typeof PackagesRoute
   '/admin/auctions': typeof AdminAuctionsRoute
+  '/admin/banners': typeof AdminBannersRoute
   '/admin/packages': typeof AdminPackagesRoute
   '/admin/robots': typeof AdminRobotsRoute
   '/admin/sales': typeof AdminSalesRoute
@@ -102,6 +109,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/packages': typeof PackagesRoute
   '/admin/auctions': typeof AdminAuctionsRoute
+  '/admin/banners': typeof AdminBannersRoute
   '/admin/packages': typeof AdminPackagesRoute
   '/admin/robots': typeof AdminRobotsRoute
   '/admin/sales': typeof AdminSalesRoute
@@ -117,6 +125,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/packages': typeof PackagesRoute
   '/admin/auctions': typeof AdminAuctionsRoute
+  '/admin/banners': typeof AdminBannersRoute
   '/admin/packages': typeof AdminPackagesRoute
   '/admin/robots': typeof AdminRobotsRoute
   '/admin/sales': typeof AdminSalesRoute
@@ -133,6 +142,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/packages'
     | '/admin/auctions'
+    | '/admin/banners'
     | '/admin/packages'
     | '/admin/robots'
     | '/admin/sales'
@@ -146,6 +156,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/packages'
     | '/admin/auctions'
+    | '/admin/banners'
     | '/admin/packages'
     | '/admin/robots'
     | '/admin/sales'
@@ -160,6 +171,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/packages'
     | '/admin/auctions'
+    | '/admin/banners'
     | '/admin/packages'
     | '/admin/robots'
     | '/admin/sales'
@@ -256,6 +268,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPackagesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/banners': {
+      id: '/admin/banners'
+      path: '/banners'
+      fullPath: '/admin/banners'
+      preLoaderRoute: typeof AdminBannersRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/auctions': {
       id: '/admin/auctions'
       path: '/auctions'
@@ -268,6 +287,7 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminAuctionsRoute: typeof AdminAuctionsRoute
+  AdminBannersRoute: typeof AdminBannersRoute
   AdminPackagesRoute: typeof AdminPackagesRoute
   AdminRobotsRoute: typeof AdminRobotsRoute
   AdminSalesRoute: typeof AdminSalesRoute
@@ -278,6 +298,7 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAuctionsRoute: AdminAuctionsRoute,
+  AdminBannersRoute: AdminBannersRoute,
   AdminPackagesRoute: AdminPackagesRoute,
   AdminRobotsRoute: AdminRobotsRoute,
   AdminSalesRoute: AdminSalesRoute,
