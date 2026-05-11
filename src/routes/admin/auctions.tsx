@@ -13,7 +13,7 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Plus, Gavel, Calendar, Clock, Edit, Trash2, CheckCircle, XCircle, Power } from "lucide-react";
+import { Plus, Gavel, Calendar, Clock, Edit, Trash2, CheckCircle, XCircle, Power, Upload, Loader2, Image as ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 import { 
   Dialog, 
@@ -32,6 +32,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -49,6 +50,11 @@ function AdminAuctions() {
   
   const initialFormData = {
     product_id: "",
+    new_product_name: "",
+    new_product_description: "",
+    new_product_market_value: 0,
+    new_product_images: [] as string[],
+    is_new_product: false,
     start_time: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
     end_time: "",
     status: "scheduled",
