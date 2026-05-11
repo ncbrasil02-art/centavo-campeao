@@ -38,6 +38,7 @@ function WinnerCard({ name, product, price, saving, avatarUrl }: { name: string,
 
 function Index() {
   const [auctions, setAuctions] = useState<any[]>([]);
+  const [winners, setWinners] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showChat, setShowChat] = useState(false);
   const [isChatExpanded, setIsChatExpanded] = useState(false);
@@ -45,7 +46,7 @@ function Index() {
 
   useEffect(() => {
     setMounted(true);
-    fetchAuctions();
+    fetchData();
 
     // Subscribe to changes in auctions table
     const channel = supabase
@@ -54,8 +55,7 @@ function Index() {
         'postgres_changes',
         { event: '*', schema: 'public', table: 'auctions' },
         (payload) => {
-          console.log('Auction change received!', payload);
-          fetchAuctions(); // Refresh list on change
+          fetchData(); 
         }
       )
       .subscribe();
@@ -65,22 +65,32 @@ function Index() {
     };
   }, []);
 
-  async function fetchAuctions() {
-    const { data, error } = await supabase
-      .from("auctions")
-      .select(`
-        *,
-        product:products(*),
-        last_bidder:profiles(username, avatar_url)
-      `)
-      .order("end_time", { ascending: true })
-      .limit(8);
+  async function fetchData() {
+    const [auctionsRes, winnersRes] = await Promise.all([
+      supabase
+        .from("auctions")
+        .select(`
+          *,
+          product:products(*),
+          last_bidder:profiles(username, avatar_url)
+        `)
+        .eq("status", "live")
+        .order("end_time", { ascending: true })
+        .limit(8),
+      supabase
+        .from("winners")
+        .select(`
+          *,
+          profile:profiles(full_name, avatar_url, username),
+          auction:auctions(product:products(name))
+        `)
+        .order("created_at", { ascending: false })
+        .limit(3)
+    ]);
 
-    if (error) {
-      console.error("Error fetching auctions:", error);
-    } else {
-      setAuctions(data || []);
-    }
+    if (!auctionsRes.error) setAuctions(auctionsRes.data || []);
+    if (!winnersRes.error) setWinners(winnersRes.data || []);
+    
     setLoading(false);
   }
 
