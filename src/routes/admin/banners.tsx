@@ -197,7 +197,7 @@ function AdminBanners() {
             setIsDialogOpen(open);
             if (!open) {
               setEditingBanner(null);
-              setFormData({ title: "", subtitle: "", image_url: "", link_url: "", order_index: 0, active: true });
+              setFormData({ title: "", subtitle: "", image_url: "", link_url: "", order_index: 0, active: true, start_at: "", end_at: "" });
             }
           }}>
             <DialogTrigger asChild>
