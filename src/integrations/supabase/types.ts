@@ -544,6 +544,7 @@ export type Database = {
         Args: { p_auction_id: string; p_robot_id: string }
         Returns: Json
       }
+      tick_auctions: { Args: never; Returns: Json }
     }
     Enums: {
       [_ in never]: never
