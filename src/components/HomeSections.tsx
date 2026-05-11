@@ -167,17 +167,23 @@ export function Hero() {
             VIVA A EMOÇÃO DO ARREMATE
           </Badge>
           
-          <div className="h-[120px] md:h-[180px] flex items-center justify-center mb-6 overflow-hidden">
+          <div className="h-[140px] md:h-[220px] flex items-center justify-center mb-6 overflow-hidden">
             <motion.h1
               key={textIndex}
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.5 }}
-              className="text-4xl md:text-7xl font-black tracking-tight text-white leading-tight"
+              initial={{ y: 40, opacity: 0, scale: 0.9 }}
+              animate={{ y: 0, opacity: 1, scale: 1 }}
+              transition={{ 
+                duration: 0.8, 
+                ease: [0.16, 1, 0.3, 1] // Custom quintic ease out for premium feel
+              }}
+              className="text-4xl md:text-8xl font-black tracking-tight text-white leading-tight drop-shadow-2xl"
             >
               {phrases[textIndex].includes("centavos!") ? (
                 <>
-                  Arremate produtos incríveis por <span className="text-primary italic">centavos!</span>
+                  Arremate produtos incríveis por <span className="text-primary italic relative">
+                    centavos!
+                    <span className="absolute -bottom-2 left-0 w-full h-2 bg-primary/20 blur-sm rounded-full"></span>
+                  </span>
                 </>
               ) : phrases[textIndex]}
             </motion.h1>
