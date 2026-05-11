@@ -24,11 +24,32 @@ export function Hero() {
   }, [emblaApi]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setOnlineUsers(prev => prev + (Math.random() > 0.5 ? 1 : -1));
-    }, 5000);
+    // Online Users Tracking via Presence
+    const channel = supabase.channel('online-users', {
+      config: {
+        presence: {
+          key: 'user',
+        },
+      },
+    });
+
+    channel
+      .on('presence', { event: 'sync' }, () => {
+        const state = channel.presenceState();
+        const count = Object.keys(state).length;
+        // Base count + presence count for better feel
+        setOnlineUsers(100 + count);
+      })
+      .subscribe(async (status) => {
+        if (status === 'SUBSCRIBED') {
+          await channel.track({ online_at: new Date().toISOString() });
+        }
+      });
+
     fetchBanners();
-    return () => clearInterval(interval);
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   async function fetchBanners() {

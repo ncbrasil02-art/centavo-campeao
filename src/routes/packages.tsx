@@ -15,6 +15,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { useSearch } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/packages")({
   component: PackagesPage,
@@ -28,10 +29,16 @@ function PackagesPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const navigate = useNavigate();
   const settings = useSettings();
+  const search = useSearch({ from: "/packages" }) as any;
 
   useEffect(() => {
     fetchPackages();
-  }, []);
+    if (search.status === "success") {
+      toast.success("Pagamento aprovado! Seus lances serão creditados em instantes.");
+    } else if (search.status === "failure") {
+      toast.error("O pagamento não pôde ser concluído.");
+    }
+  }, [search.status]);
 
   async function fetchPackages() {
     const { data, error } = await supabase
@@ -78,16 +85,32 @@ function PackagesPage() {
     if (!buying) return;
     setPaymentStep("processing");
     try {
-      const { data, error } = await supabase.rpc("create_pending_payment", {
+      // 1. Create pending transaction
+      const { data: pendingData, error: pendingError } = await supabase.rpc("create_pending_payment", {
         p_package_id: buying.id,
         p_method: "mercado_pago"
       });
+      if (pendingError) throw pendingError;
+      
+      const transaction_id = (pendingData as any).transaction_id;
+
+      // 2. Call Edge Function to create MP Preference
+      const { data, error } = await supabase.functions.invoke('create-mp-preference', {
+        body: { 
+          package_id: buying.id,
+          transaction_id: transaction_id
+        }
+      });
+
       if (error) throw error;
-      setBuying({ ...buying, transaction_id: (data as any).transaction_id });
-      // Simulate MP preference creation
-      setTimeout(() => setPaymentStep("mercado-pago"), 1000);
-    } catch (err) {
-      toast.error("Erro ao iniciar Mercado Pago");
+      if (data.checkout_url) {
+        window.location.href = data.checkout_url;
+      } else {
+        throw new Error("Checkout URL not found");
+      }
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.message || "Erro ao iniciar Mercado Pago");
       setPaymentStep("method");
     }
   };
