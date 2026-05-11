@@ -81,18 +81,8 @@ function Index() {
     };
   }, []);
 
-  // Auction Heartbeat (Tick & Robots)
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      // Tick auctions to close expired ones
-      await supabase.rpc('tick_auctions');
-      
-      // Process robot bids
-      await supabase.rpc('process_robot_bids');
-    }, 2000); // Every 2 seconds to keep robot activity snappy and auctions updated
+  // Heartbeat moved to global Root layout for better reliability
 
-    return () => clearInterval(interval);
-  }, []);
 
   async function fetchData() {
     const [auctionsRes, winnersRes] = await Promise.all([
