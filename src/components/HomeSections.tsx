@@ -272,7 +272,7 @@ export function Hero() {
               </Link>
             </Button>
             <Button size="lg" variant="outline" className="h-14 px-8 text-lg font-bold border-white/10 hover:bg-white/5 bg-white/5" asChild>
-              <Link to="/">
+              <Link to="/how-it-works">
                 <Play className="mr-2 w-5 h-5 fill-current" />
                 Ver como funciona
               </Link>

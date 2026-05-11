@@ -217,7 +217,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       .eq("id", session.user.id)
       .single();
 
-    if (!profile || profile.bid_balance <= 0) {
+    if (!profile || (profile.bid_balance || 0) <= 0) {
       toast.info("Você não tem lances suficientes!", {
         description: "Aproveite nossa oferta de pacote de lances com desconto!",
         action: {
