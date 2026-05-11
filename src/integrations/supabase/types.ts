@@ -587,6 +587,7 @@ export type Database = {
         Returns: undefined
       }
       buy_credits: { Args: { p_package_id: string }; Returns: Json }
+      check_is_admin: { Args: never; Returns: boolean }
       complete_payment: {
         Args: { p_external_id?: string; p_transaction_id: string }
         Returns: Json

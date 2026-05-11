@@ -53,7 +53,14 @@ function AuthPage() {
       if (error) throw error;
 
       if (data.user) {
-        toast.success("Cadastro realizado! Verifique seu e-mail.");
+        toast.success("Cadastro realizado com sucesso!");
+        // If session is created (auto-confirm is on), redirect to home
+        if (data.session) {
+          navigate({ to: "/" });
+        } else {
+          // Tell user to check email if auto-confirm is not instant or they need to verify
+          toast.info("Por favor, verifique seu e-mail para ativar a conta.");
+        }
       }
     } catch (error: any) {
       toast.error(error.message);
