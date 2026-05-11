@@ -351,10 +351,10 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
                 Tempo
               </span>
               <div className="flex items-center gap-1.5">
-                <div className={`relative flex items-center justify-center min-w-[50px] py-1.5 rounded-xl border border-white/10 overflow-hidden shadow-2xl transition-all duration-300 ${
+                <div className={`relative flex items-center justify-center min-w-[50px] py-1.5 rounded-xl border border-white/10 overflow-hidden transition-all duration-300 ${
                   timeLeft <= 8 && !isFinished 
-                    ? 'bg-gradient-to-br from-red-600/40 to-red-900/60 border-red-500/50 animate-pulse' 
-                    : 'bg-gradient-to-br from-black/60 to-black/40'
+                    ? 'bg-gradient-to-br from-red-600 to-red-900 border-red-500 shadow-[0_0_20px_rgba(239,68,68,0.5)]' 
+                    : 'bg-gradient-to-br from-black/60 to-black/40 shadow-2xl'
                 }`}>
                   <span className={`text-2xl font-black tabular-nums tracking-tighter ${
                     timeLeft <= 8 && !isFinished ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'text-white'
@@ -362,7 +362,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
                     {isFinished ? "00" : timeParts.s}
                   </span>
                   {timeLeft <= 8 && !isFinished && (
-                    <div className="absolute inset-0 bg-red-500/10 animate-[ping_1.5s_ease-in-out_infinite]"></div>
+                    <div className="absolute inset-0 bg-red-500/10 shadow-[inset_0_0_20px_rgba(239,68,68,0.4)]"></div>
                   )}
                 </div>
                 <div className={`flex items-end py-1.5 px-1.5 rounded-lg border border-white/5 bg-black/40 ${
@@ -438,16 +438,17 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             handleBid();
           }} 
           disabled={isFinished || isScheduled || loading}
-          className={`h-14 w-full rounded-2xl text-lg font-black uppercase italic tracking-tighter transition-all relative overflow-hidden ${
+          className={`h-14 w-full rounded-2xl text-lg font-black uppercase italic tracking-tighter transition-all relative overflow-hidden group/bidbtn ${
             isFinished 
               ? 'cursor-not-allowed border border-white/5 bg-white/5 text-white/20' 
               : isScheduled
               ? 'cursor-not-allowed border border-white/10 bg-white/10 text-white/40'
               : timeLeft <= 5
-              ? 'bg-red-600 text-white shadow-[0_0_30px_rgba(220,38,38,0.8)] animate-[pulse_0.5s_ease-in-out_infinite] hover:bg-red-700'
+              ? 'bg-red-600 text-white shadow-[0_0_30px_rgba(220,38,38,0.8)] hover:bg-red-700'
               : 'bg-primary text-primary-foreground shadow-[0_8px_25px_rgba(var(--color-primary),0.3)] hover:scale-[1.02] hover:bg-primary/90 active:scale-95'
           }`}
         >
+          <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.2)_50%,transparent_75%)] bg-[length:250%_250%] animate-[shimmer_3s_infinite] group-hover/bidbtn:animate-[shimmer_1.5s_infinite]"></div>
           {loading ? "..." : isFinished ? "ENCERRADO" : isScheduled ? "AGUARDANDO INÍCIO" : (
             <span className="flex items-center gap-2">
               {timeLeft <= 5 ? "VAI PERDER! LANCE AGORA" : "Dar Lance"} <Zap className={`h-5 w-5 fill-current ${timeLeft <= 5 ? 'animate-bounce' : ''}`} />
