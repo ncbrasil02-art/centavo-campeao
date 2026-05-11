@@ -95,9 +95,11 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             setIsNewBid(true);
             setAuction(data);
             // Calculate remaining time from server time
-            const end = new Date(data.end_time).getTime();
-            const now = getAdjustedNow().getTime();
-            setTimeLeft(Math.max(0, Math.floor((end - now) / 1000)));
+            if (data.end_time) {
+              const end = new Date(data.end_time).getTime();
+              const now = getAdjustedNow();
+              setTimeLeft(Math.max(0, Math.floor((end - now) / 1000)));
+            }
             
             setTimeout(() => setIsNewBid(false), 800);
           }
@@ -107,8 +109,10 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
 
     // Timer logic based on the actual end_time
     const timer = setInterval(() => {
+      if (!auction.end_time) return;
+      
       const end = new Date(auction.end_time).getTime();
-      const now = getAdjustedNow().getTime();
+      const now = getAdjustedNow();
       const diff = Math.max(0, Math.floor((end - now) / 1000));
       
       setTimeLeft(diff);
