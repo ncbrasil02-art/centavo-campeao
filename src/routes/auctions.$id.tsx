@@ -205,6 +205,14 @@ function AuctionPage() {
       });
     } else {
       setAuction(data);
+      // Initialize timeLeft immediately
+      const isScheduled = data.status === 'scheduled';
+      const targetTime = isScheduled ? data.start_time : data.end_time;
+      if (targetTime) {
+        const target = new Date(targetTime).getTime();
+        const now = getAdjustedNow();
+        setTimeLeft(Math.max(0, (target - now) / 1000));
+      }
     }
     setLoading(false);
   }

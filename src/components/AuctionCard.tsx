@@ -201,7 +201,8 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   const timePercentage = (timeLeft / timerDuration) * 100;
 
   return (
-    <Card className="group relative flex flex-col h-full overflow-hidden rounded-[32px] border-white/10 bg-white/5 transition-all duration-500 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/20">
+    <Card className="group relative flex flex-col h-full overflow-hidden rounded-[32px] border-white/10 bg-zinc-950/40 backdrop-blur-md transition-all duration-500 hover:border-primary/50 hover:shadow-[0_0_40px_rgba(var(--color-primary),0.3)] border-2">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_rgba(var(--color-primary),0.05),_transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity"></div>
       {/* Product Image Section */}
       <div className="relative aspect-square overflow-hidden rounded-t-[32px]">
         <Link to="/auctions/$id" params={{ id: auction.id }} className="block h-full w-full cursor-pointer">
