@@ -453,8 +453,8 @@ function AuctionPage() {
               {/* Animated Background Highlight */}
               <div className="absolute -top-20 -right-20 w-64 h-64 bg-primary/10 rounded-full blur-[100px] transition-all duration-1000 group-hover/card:bg-primary/20" />
               
-              <div className="absolute top-0 right-0 p-10 text-primary/10">
-                <Trophy className="w-48 h-48 rotate-12 transition-transform duration-700 group-hover/card:rotate-0 group-hover/card:scale-110 drop-shadow-[0_0_30px_rgba(var(--color-primary),0.5)]" />
+              <div className="absolute top-0 right-0 p-10 text-primary/20 animate-float">
+                <Trophy className="w-56 h-56 rotate-12 drop-shadow-[0_0_40px_rgba(var(--color-primary),0.6)]" />
               </div>
               
               <div className="relative z-10 space-y-10">
