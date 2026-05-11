@@ -26,6 +26,7 @@ export type Database = {
           robot_enabled: boolean | null
           start_time: string | null
           status: string | null
+          timer_duration: number | null
         }
         Insert: {
           bid_count?: number | null
@@ -38,6 +39,7 @@ export type Database = {
           robot_enabled?: boolean | null
           start_time?: string | null
           status?: string | null
+          timer_duration?: number | null
         }
         Update: {
           bid_count?: number | null
@@ -50,6 +52,7 @@ export type Database = {
           robot_enabled?: boolean | null
           start_time?: string | null
           status?: string | null
+          timer_duration?: number | null
         }
         Relationships: [
           {
