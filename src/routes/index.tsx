@@ -65,6 +65,7 @@ function Index() {
   const [auctions, setAuctions] = useState<any[]>([]);
   const [finishedAuctions, setFinishedAuctions] = useState<any[]>([]);
   const [winners, setWinners] = useState<any[]>([]);
+  const [testimonials, setTestimonials] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showChat, setShowChat] = useState(false);
   const [isChatExpanded, setIsChatExpanded] = useState(false);
