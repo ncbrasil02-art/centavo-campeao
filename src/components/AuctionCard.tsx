@@ -199,6 +199,20 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           </div>
         </Link>
 
+        {isScheduled && auction.start_time && (
+          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 bg-primary/90 backdrop-blur-md py-4 flex flex-col items-center justify-center z-20 shadow-[0_0_30px_rgba(var(--color-primary),0.3)] border-y border-white/20">
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-black/60 mb-1">COMEÇA EM</span>
+            <div className="flex flex-col items-center">
+              <span className="text-xl font-black text-black italic leading-none mb-1">
+                {new Date(auction.start_time).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })} às {new Date(auction.start_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+              </span>
+              <div className="text-[10px] font-bold text-black/40 uppercase tracking-widest">
+                Prepare seus lances
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Badges */}
         <div className="absolute left-4 top-4 flex flex-col gap-2">
           {isFinished ? (
