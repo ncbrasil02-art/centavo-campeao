@@ -271,11 +271,6 @@ function AuctionPage() {
 
   if (!auction) return null;
 
-  const formatTime = (seconds: number) => {
-    const s = Math.floor(seconds);
-    const ms = Math.floor((seconds % 1) * 100);
-    return `${s.toString().padStart(2, '0')}:${ms.toString().padStart(2, '0')}`;
-  };
 
 
   return (
