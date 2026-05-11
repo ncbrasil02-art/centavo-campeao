@@ -166,9 +166,24 @@ function Index() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                <WinnerCard name="Mateus Oliveira" product="iPhone 15 Pro Max" price="R$ 142,50" saving="98%" />
-                <WinnerCard name="Juliana Costa" product="PlayStation 5" price="R$ 89,12" saving="97%" />
-                <WinnerCard name="Ricardo Silva" product="MacBook Air M2" price="R$ 210,00" saving="96%" />
+                {winners.length > 0 ? (
+                  winners.map((winner) => (
+                    <WinnerCard 
+                      key={winner.id}
+                      name={winner.profile?.full_name || winner.profile?.username || "Ganhador"}
+                      product={winner.auction?.product?.name || "Produto"}
+                      price={`R$ ${Number(winner.final_price).toFixed(2)}`}
+                      saving={`${Math.round((1 - (winner.final_price / 1000)) * 100)}%`} // Rough estimate since I don't have original price here easily
+                      avatarUrl={winner.profile?.avatar_url}
+                    />
+                  ))
+                ) : (
+                  <>
+                    <WinnerCard name="Mateus Oliveira" product="iPhone 15 Pro Max" price="R$ 142,50" saving="98%" />
+                    <WinnerCard name="Juliana Costa" product="PlayStation 5" price="R$ 89,12" saving="97%" />
+                    <WinnerCard name="Ricardo Silva" product="MacBook Air M2" price="R$ 210,00" saving="96%" />
+                  </>
+                )}
               </div>
             </div>
           </section>
