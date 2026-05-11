@@ -128,8 +128,35 @@ function AdminAuctions() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     try {
-      if (!formData.product_id) {
-        toast.error("Selecione um produto");
+      let finalProductId = formData.product_id;
+
+      if (formData.is_new_product && !editingAuction) {
+        if (!formData.new_product_name) {
+          toast.error("Nome do produto é obrigatório");
+          return;
+        }
+
+        const { data: newProduct, error: productError } = await supabase
+          .from("products")
+          .insert([{
+            name: formData.new_product_name,
+            description: formData.new_product_description,
+            market_value: formData.new_product_market_value,
+            images: formData.new_product_images
+          }])
+          .select()
+          .single();
+
+        if (productError) {
+          console.error("Error creating product:", productError);
+          toast.error(`Erro ao criar produto: ${productError.message}`);
+          return;
+        }
+        finalProductId = newProduct.id;
+      }
+
+      if (!finalProductId) {
+        toast.error("Selecione um produto ou cadastre um novo");
         return;
       }
 
@@ -149,7 +176,7 @@ function AdminAuctions() {
       }
 
       const payload = {
-        product_id: formData.product_id,
+        product_id: finalProductId,
         start_time: startTime.toISOString(),
         end_time: endTime,
         status: formData.status,
