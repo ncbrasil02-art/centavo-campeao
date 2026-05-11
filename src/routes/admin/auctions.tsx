@@ -142,12 +142,29 @@ function AdminAuctions() {
     setFormData({
       product_id: auction.product_id,
       start_time: format(new Date(auction.start_time), "yyyy-MM-dd'T'HH:mm"),
-      end_time: format(new Date(auction.end_time), "yyyy-MM-dd'T'HH:mm"),
+      end_time: auction.end_time ? format(new Date(auction.end_time), "yyyy-MM-dd'T'HH:mm") : "",
       status: auction.status,
       robot_enabled: auction.robot_enabled,
-      timer_duration: auction.timer_duration || 15
+      timer_duration: auction.timer_duration || 15,
+      is_finalizing: auction.is_finalizing || false
     });
     setIsDialogOpen(true);
+  }
+
+  async function toggleFinalize(auction: any) {
+    try {
+      const { error } = await supabase
+        .from("auctions")
+        .update({ is_finalizing: !auction.is_finalizing })
+        .eq("id", auction.id);
+      
+      if (error) throw error;
+      toast.success(auction.is_finalizing ? "Finalização cancelada" : "Leilão entrando em fase de finalização");
+      fetchData();
+    } catch (error) {
+      console.error("Error toggling finalize:", error);
+      toast.error("Erro ao alterar estado de finalização");
+    }
   }
 
   return (
