@@ -121,14 +121,37 @@
 }
 
 @keyframes shimmer {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes neon-pulse {
+  0%, 100% { opacity: 1; filter: drop-shadow(0 0 5px var(--primary)) drop-shadow(0 0 10px var(--primary)); }
+  50% { opacity: 0.8; filter: drop-shadow(0 0 2px var(--primary)) drop-shadow(0 0 5px var(--primary)); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
 .animate-shimmer {
   animation: shimmer 2s infinite;
+}
+
+.animate-neon-pulse {
+  animation: neon-pulse 2s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.neon-border {
+  box-shadow: 0 0 10px rgba(var(--primary), 0.3), inset 0 0 10px rgba(var(--primary), 0.1);
+  border: 1px solid rgba(var(--primary), 0.5);
+}
+
+.neon-text {
+  text-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary);
 }

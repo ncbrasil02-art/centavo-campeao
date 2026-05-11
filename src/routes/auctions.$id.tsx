@@ -39,8 +39,11 @@ function AuctionPage() {
   const navigate = useNavigate();
   const { getAdjustedNow } = useTimeSync();
 
-  const isFinished = timeLeft <= 0 || auction?.status === 'finished';
-  const discount = Math.round((1 - (auction?.current_price / auction?.product?.market_value)) * 100);
+  const isFinished = auction?.status === 'finished';
+  const isTimeUp = timeLeft <= 0 && !isFinished;
+  const discount = auction?.product?.market_value 
+    ? Math.round((1 - (auction.current_price / auction.product.market_value)) * 100)
+    : 0;
 
   useEffect(() => {
     audioRef.current = new Audio(BID_SOUND_URL);
@@ -107,7 +110,11 @@ function AuctionPage() {
   }, [id]);
 
   useEffect(() => {
-    if ((!auction?.end_time && !auction?.start_time) || isFinished) return;
+    if (!auction?.end_time && !auction?.start_time) return;
+    if (isFinished) {
+      setTimeLeft(0);
+      return;
+    }
 
     const calculateTimeLeft = async () => {
       const isScheduled = auction.status === 'scheduled';
@@ -155,7 +162,7 @@ function AuctionPage() {
     };
 
     calculateTimeLeft();
-    const timer = setInterval(calculateTimeLeft, 50);
+    const timer = setInterval(calculateTimeLeft, 10);
 
     return () => clearInterval(timer);
   }, [auction?.end_time, auction?.status, getAdjustedNow, isFinished]);
@@ -198,6 +205,14 @@ function AuctionPage() {
       });
     } else {
       setAuction(data);
+      // Initialize timeLeft immediately
+      const isScheduled = data.status === 'scheduled';
+      const targetTime = isScheduled ? data.start_time : data.end_time;
+      if (targetTime) {
+        const target = new Date(targetTime).getTime();
+        const now = getAdjustedNow();
+        setTimeLeft(Math.max(0, (target - now) / 1000));
+      }
     }
     setLoading(false);
   }
@@ -265,7 +280,7 @@ function AuctionPage() {
 
   if (loading) return (
     <div className="min-h-screen bg-background flex items-center justify-center">
-      <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+      <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin shadow-[0_0_20px_rgba(var(--color-primary),0.5)]"></div>
     </div>
   );
 
@@ -431,12 +446,15 @@ function AuctionPage() {
 
           {/* Right Column: Bidding Controls & History */}
           <div className="lg:col-span-5 space-y-8">
-            <Card className="bg-white/5 border-primary/20 p-8 md:p-10 rounded-[48px] relative overflow-hidden shadow-2xl backdrop-blur-3xl group/card">
+            <Card className="bg-zinc-950/80 border-primary/40 p-8 md:p-10 rounded-[48px] relative overflow-hidden shadow-[0_0_50px_rgba(var(--color-primary),0.15)] backdrop-blur-3xl group/card border-2">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_rgba(var(--color-primary),0.15),_transparent_70%)]"></div>
+              <div className="absolute -inset-[100%] bg-[conic-gradient(from_0deg,transparent_0deg,transparent_150deg,rgba(var(--color-primary),0.1)_180deg,transparent_210deg)] animate-[spin_8s_linear_infinite]"></div>
+
               {/* Animated Background Highlight */}
               <div className="absolute -top-20 -right-20 w-64 h-64 bg-primary/10 rounded-full blur-[100px] transition-all duration-1000 group-hover/card:bg-primary/20" />
               
-              <div className="absolute top-0 right-0 p-10 text-primary/5">
-                <Gavel className="w-40 h-40 rotate-12 transition-transform duration-700 group-hover/card:rotate-0 group-hover/card:scale-110" />
+              <div className="absolute top-0 right-0 p-10 text-primary/20 animate-float">
+                <Trophy className="w-56 h-56 rotate-12 drop-shadow-[0_0_40px_rgba(var(--color-primary),0.6)]" />
               </div>
               
               <div className="relative z-10 space-y-10">
@@ -456,8 +474,8 @@ function AuctionPage() {
                     </div>
                     <Badge variant="outline" className="border-green-500/30 text-green-500 bg-green-500/5 animate-pulse">LEILÃO DE CENTAVOS</Badge>
                   </div>
-                  <div className={`text-7xl font-black text-primary transition-all duration-500 ${isNewBid ? 'scale-110 drop-shadow-[0_0_30px_rgba(var(--color-primary),0.6)]' : 'scale-100'}`}>
-                    <span className="text-3xl align-top mt-2 inline-block mr-1 opacity-60">R$</span>
+                  <div className={`text-7xl font-black text-primary transition-all duration-500 flex items-baseline ${isNewBid ? 'scale-110 drop-shadow-[0_0_50px_rgba(var(--color-primary),1)]' : 'scale-100 drop-shadow-[0_0_30px_rgba(var(--color-primary),0.6)]'}`}>
+                    <span className="text-3xl align-top mt-2 inline-block mr-2 opacity-60">R$</span>
                     {auction.current_price?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                   </div>
                 </div>
@@ -465,16 +483,16 @@ function AuctionPage() {
                 <div className="relative space-y-4">
                   <div className="grid grid-cols-2 gap-6 relative z-10">
                     <div className={`flex flex-col gap-3 p-6 rounded-[28px] bg-white/5 border border-white/10 transition-all duration-300 ${
-                      timeLeft <= 8 && !isFinished ? 'scale-105 bg-red-500/5 border-red-500/20' : ''
+                      timeLeft <= 8 && !isFinished ? 'bg-red-500/5 border-red-500/40 shadow-[0_0_30px_rgba(239,68,68,0.2)]' : ''
                     }`}>
                       <span className="text-[10px] text-white/40 font-black uppercase tracking-widest flex items-center gap-2">
                         <Clock className={`w-3 h-3 ${timeLeft <= 8 && !isFinished ? 'text-red-500 animate-spin' : 'text-primary'}`} /> Tempo Restante
                       </span>
                       <div className="flex items-center gap-2">
-                        <div className={`relative flex items-center justify-center min-w-[80px] py-3 rounded-2xl border border-white/10 overflow-hidden shadow-2xl transition-all duration-300 ${
+                        <div className={`relative flex items-center justify-center min-w-[80px] py-3 rounded-2xl border border-white/10 overflow-hidden transition-all duration-300 ${
                           timeLeft <= 8 && !isFinished 
-                            ? 'bg-gradient-to-br from-red-600/60 to-red-900/80 border-red-500 animate-pulse' 
-                            : 'bg-gradient-to-br from-black/80 to-black/60'
+                            ? 'bg-gradient-to-br from-red-600 to-red-900 border-red-500 shadow-[0_0_30px_rgba(239,68,68,0.6)]' 
+                            : 'bg-gradient-to-br from-black/80 to-black/60 shadow-2xl'
                         }`}>
                           <span className={`text-5xl font-black tabular-nums tracking-tighter ${
                             timeLeft <= 8 && !isFinished ? 'text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.6)]' : 'text-white'
@@ -482,7 +500,7 @@ function AuctionPage() {
                             {isFinished ? "00" : Math.floor(timeLeft).toString().padStart(2, '0')}
                           </span>
                           {timeLeft <= 8 && !isFinished && (
-                            <div className="absolute inset-0 bg-white/10 animate-[ping_1.5s_ease-in-out_infinite]"></div>
+                            <div className="absolute inset-0 bg-white/5 shadow-[inset_0_0_30px_rgba(255,255,255,0.2)]"></div>
                           )}
                         </div>
                         <div className={`flex items-end py-2 px-2 rounded-xl border border-white/5 bg-black/40 ${
@@ -559,10 +577,10 @@ function AuctionPage() {
                     disabled={isFinished || bidLoading}
                     className={`w-full h-24 text-3xl font-black uppercase italic tracking-tighter transition-all rounded-[32px] group/btn relative overflow-hidden ${
                       isFinished 
-                        ? 'bg-white/5 text-white/20' 
+                        ? 'bg-white/5 text-white/20 cursor-not-allowed' 
                         : timeLeft <= 5
-                        ? 'bg-red-600 text-white animate-[pulse_0.6s_ease-in-out_infinite] shadow-[0_0_50px_rgba(220,38,38,0.6)]'
-                        : 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_20px_50px_rgba(var(--color-primary),0.4)] hover:-translate-y-1 active:translate-y-1'
+                        ? 'bg-red-600 text-white shadow-[0_0_60px_rgba(220,38,38,0.8)]'
+                        : 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_20px_50px_rgba(var(--color-primary),0.6)] hover:-translate-y-1 active:translate-y-1'
                     }`}
                   >
                     {!isFinished && (
