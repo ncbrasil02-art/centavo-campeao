@@ -187,11 +187,16 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
     }
   };
 
-  const formatTime = (seconds: number) => {
+  const formatTimeParts = (seconds: number) => {
     const s = Math.floor(seconds);
     const ms = Math.floor((seconds % 1) * 100);
-    return `${s.toString().padStart(2, '0')}:${ms.toString().padStart(2, '0')}`;
+    return {
+      s: s.toString().padStart(2, '0'),
+      ms: ms.toString().padStart(2, '0')
+    };
   };
+
+  const timeParts = formatTimeParts(timeLeft);
 
   const timePercentage = (timeLeft / timerDuration) * 100;
 
