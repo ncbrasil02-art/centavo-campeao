@@ -110,7 +110,8 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       .subscribe();
 
     // Timer logic based on the actual end_time (or start_time for scheduled)
-    const timer = setInterval(() => {
+    let isRefreshing = false;
+    const timer = setInterval(async () => {
       const targetTime = isScheduled ? auction.start_time : auction.end_time;
       if (!targetTime) return;
       
@@ -120,16 +121,34 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       
       setTimeLeft(diff);
 
-      if (!isScheduled && diff <= 0 && !confettiFired.current && auction.status === 'live') {
-        // ... (confetti logic remains same)
+      // Handle transition from scheduled to live
+      if (isScheduled && diff <= 0 && !isRefreshing) {
+        isRefreshing = true;
+        console.log("Scheduled auction reached zero, refreshing...");
+        // Call tick_auctions to ensure server status is updated
+        await supabase.rpc('tick_auctions');
+        const { data } = await supabase
+          .from("v_home_live_auctions")
+          .select("*")
+          .eq("id", auction.id)
+          .single();
+        
+        if (data && data.status !== 'scheduled') {
+          setAuction(data);
+        }
+        isRefreshing = false;
       }
-    }, 50);
+
+      if (!isScheduled && diff <= 0 && !confettiFired.current && auction.status === 'live') {
+        // ... confetti logic if needed
+      }
+    }, 10); // Run more frequently for decimal precision
 
     return () => {
       supabase.removeChannel(channel);
       clearInterval(timer);
     };
-  }, [auction.id, getAdjustedNow]);
+  }, [auction.id, isScheduled, getAdjustedNow, auction.start_time, auction.end_time, auction.status]);
 
   const handleBid = async () => {
     const { data: { session } } = await supabase.auth.getSession();
