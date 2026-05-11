@@ -66,13 +66,6 @@ export type Database = {
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "auctions_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "v_home_live_auctions"
-            referencedColumns: ["product_id"]
-          },
         ]
       }
       banners: {
@@ -560,28 +553,30 @@ export type Database = {
           current_price: number | null
           end_time: string | null
           id: string | null
-          last_bidder_avatar_url: string | null
-          last_bidder_username: string | null
+          last_bidder: Json | null
+          product: Json | null
           product_id: string | null
-          product_images: string[] | null
-          product_market_value: number | null
-          product_name: string | null
           robot_enabled: boolean | null
           status: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "auctions_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       v_home_recent_winners: {
         Row: {
+          auction: Json | null
           created_at: string | null
           final_price: number | null
           id: string | null
-          product_images: string[] | null
-          product_name: string | null
+          profile: Json | null
           savings_percentage: number | null
-          winner_avatar_url: string | null
-          winner_name: string | null
-          winner_username: string | null
         }
         Relationships: []
       }
