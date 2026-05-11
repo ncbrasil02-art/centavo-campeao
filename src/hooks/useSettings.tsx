@@ -44,6 +44,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
 
         // Apply colors to document
         document.documentElement.style.setProperty("--primary", data.primary_color || "#8B5CF6");
+        document.documentElement.style.setProperty("--secondary", data.secondary_color || "#7C3AED");
         // Update document title
         document.title = data.site_name || "Leilão de Centavos";
       }
@@ -69,6 +70,9 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
           
           if (newData.primary_color) {
             document.documentElement.style.setProperty("--primary", newData.primary_color);
+          }
+          if (newData.secondary_color) {
+            document.documentElement.style.setProperty("--secondary", newData.secondary_color);
           }
           if (newData.site_name) {
             document.title = newData.site_name;
