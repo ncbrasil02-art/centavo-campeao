@@ -392,7 +392,7 @@ function AdminAuctions() {
   );
 }
 
-function StatusBadge({ status, isFinalizing }: { status: string, isFinalizing?: boolean }) {
+function StatusBadge({ status, isFinalizing, targetWinner }: { status: string, isFinalizing?: boolean, targetWinner?: string }) {
   const effectiveStatus = (status === 'live' && isFinalizing) ? 'finalizing' : status;
   
   const styles = {
@@ -405,7 +405,7 @@ function StatusBadge({ status, isFinalizing }: { status: string, isFinalizing?: 
   
   const labels = {
     scheduled: "Agendado",
-    live: "Ativo",
+    live: `Ativo (${targetWinner === 'robot' ? 'Robô Ganha' : targetWinner === 'user' ? 'Usuário Ganha' : 'Aleatório'})`,
     finished: "Finalizado",
     cancelled: "Cancelado",
     finalizing: "Finalizando"
