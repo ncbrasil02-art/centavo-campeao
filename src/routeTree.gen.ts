@@ -18,6 +18,7 @@ import { Route as AuctionsIdRouteImport } from './routes/auctions.$id'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as AdminRobotsRouteImport } from './routes/admin/robots'
+import { Route as AdminPackagesRouteImport } from './routes/admin/packages'
 import { Route as AdminAuctionsRouteImport } from './routes/admin/auctions'
 
 const PackagesRoute = PackagesRouteImport.update({
@@ -65,6 +66,11 @@ const AdminRobotsRoute = AdminRobotsRouteImport.update({
   path: '/robots',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminPackagesRoute = AdminPackagesRouteImport.update({
+  id: '/packages',
+  path: '/packages',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminAuctionsRoute = AdminAuctionsRouteImport.update({
   id: '/auctions',
   path: '/auctions',
@@ -77,6 +83,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/packages': typeof PackagesRoute
   '/admin/auctions': typeof AdminAuctionsRoute
+  '/admin/packages': typeof AdminPackagesRoute
   '/admin/robots': typeof AdminRobotsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/packages': typeof PackagesRoute
   '/admin/auctions': typeof AdminAuctionsRoute
+  '/admin/packages': typeof AdminPackagesRoute
   '/admin/robots': typeof AdminRobotsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/packages': typeof PackagesRoute
   '/admin/auctions': typeof AdminAuctionsRoute
+  '/admin/packages': typeof AdminPackagesRoute
   '/admin/robots': typeof AdminRobotsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -115,6 +124,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/packages'
     | '/admin/auctions'
+    | '/admin/packages'
     | '/admin/robots'
     | '/admin/settings'
     | '/admin/users'
@@ -126,6 +136,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/packages'
     | '/admin/auctions'
+    | '/admin/packages'
     | '/admin/robots'
     | '/admin/settings'
     | '/admin/users'
@@ -138,6 +149,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/packages'
     | '/admin/auctions'
+    | '/admin/packages'
     | '/admin/robots'
     | '/admin/settings'
     | '/admin/users'
@@ -218,6 +230,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRobotsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/packages': {
+      id: '/admin/packages'
+      path: '/packages'
+      fullPath: '/admin/packages'
+      preLoaderRoute: typeof AdminPackagesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/auctions': {
       id: '/admin/auctions'
       path: '/auctions'
@@ -230,6 +249,7 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminAuctionsRoute: typeof AdminAuctionsRoute
+  AdminPackagesRoute: typeof AdminPackagesRoute
   AdminRobotsRoute: typeof AdminRobotsRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminUsersRoute: typeof AdminUsersRoute
@@ -238,6 +258,7 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAuctionsRoute: AdminAuctionsRoute,
+  AdminPackagesRoute: AdminPackagesRoute,
   AdminRobotsRoute: AdminRobotsRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminUsersRoute: AdminUsersRoute,
@@ -256,3 +277,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
