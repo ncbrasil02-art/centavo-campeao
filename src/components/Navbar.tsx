@@ -16,14 +16,14 @@ export function Navbar() {
   const [profile, setProfile] = useState<any>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { site_name, logo_url } = useSettings();
-  const { getAdjustedNow } = useTimeSync();
+  const { getAdjustedNow, synced } = useTimeSync();
   const [currentTime, setCurrentTime] = useState<Date>(new Date());
   const navigate = useNavigate();
 
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date(getAdjustedNow()));
-    }, 1000);
+    }, 100); // 100ms is enough for the clock display
     return () => clearInterval(timer);
   }, [getAdjustedNow]);
 
@@ -81,15 +81,18 @@ export function Navbar() {
           )}
         </Link>
 
-        {/* Desktop Navigation */}
         <div className="hidden items-center gap-8 lg:flex">
-          <div className="flex flex-col items-center px-4 border-x border-white/5 bg-white/5 py-1 rounded-lg">
+          <div className="flex flex-col items-center px-4 border-x border-white/5 bg-white/5 py-1 rounded-lg relative group/time">
             <span className="text-[9px] font-black text-primary/60 uppercase tracking-[0.2em] mb-0.5 flex items-center gap-1">
               <Clock className="w-2.5 h-2.5" /> Horário Oficial
+              {synced && <div className="w-1 h-1 rounded-full bg-green-500 animate-pulse shadow-[0_0_5px_rgba(34,197,94,0.8)]" title="Sincronizado em tempo real"></div>}
             </span>
             <span className="text-sm font-black tabular-nums text-white/90">
               {format(currentTime, "HH:mm:ss", { locale: ptBR })}
             </span>
+            <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-black/90 px-3 py-1 rounded text-[8px] font-bold text-white/60 opacity-0 group-hover/time:opacity-100 transition-opacity whitespace-nowrap border border-white/10 pointer-events-none">
+              MILISSEGUNDOS SINCRONIZADOS COM O SERVIDOR
+            </div>
           </div>
           <Link to="/" className="text-sm font-medium text-white/70 transition-colors hover:text-primary">Leilões</Link>
           <Link to="/packages" className="text-sm font-medium text-white/70 transition-colors hover:text-primary">Comprar Lances</Link>
