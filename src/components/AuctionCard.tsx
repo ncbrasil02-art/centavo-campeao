@@ -205,6 +205,27 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
     
     if (!session) {
       toast.error("Você precisa estar logado para dar lances!");
+      // Redireciona para o cadastro rápido conforme solicitado
+      window.location.href = "/auth?register=true&offer=welcome_bids";
+      return;
+    }
+
+    // Verificar saldo antes de tentar dar o lance
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("bid_balance")
+      .eq("id", session.user.id)
+      .single();
+
+    if (!profile || profile.bid_balance <= 0) {
+      toast.info("Você não tem lances suficientes!", {
+        description: "Aproveite nossa oferta de pacote de lances com desconto!",
+        action: {
+          label: "Comprar Agora",
+          onClick: () => window.location.href = "/packages"
+        },
+        duration: 8000
+      });
       return;
     }
 
@@ -220,7 +241,17 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
 
       const result = data as any;
       if (!result.success) {
-        toast.error(result.message);
+        if (result.message.includes("lances") || result.message.includes("balance")) {
+          toast.info("Lances esgotados!", {
+            description: "Garanta agora um pacote com 50% de desconto para continuar na disputa!",
+            action: {
+              label: "Ver Ofertas",
+              onClick: () => window.location.href = "/packages"
+            }
+          });
+        } else {
+          toast.error(result.message);
+        }
       } else {
         toast.success("Lance realizado com sucesso!");
         playBidSound();
