@@ -334,6 +334,17 @@ function AdminAuctions() {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
+                        {auction.status === 'live' && (
+                          <Button 
+                            size="icon" 
+                            variant="ghost" 
+                            className={`h-8 w-8 ${auction.is_finalizing ? 'text-orange-500 bg-orange-500/10' : 'text-green-500 hover:bg-green-500/10'}`} 
+                            title={auction.is_finalizing ? "Cancelar Finalização" : "Finalizar Leilão"}
+                            onClick={() => toggleFinalize(auction)}
+                          >
+                            <Power className="w-4 h-4" />
+                          </Button>
+                        )}
                         <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-primary/20 text-primary" onClick={() => handleEdit(auction)}>
                           <Edit className="w-4 h-4" />
                         </Button>
