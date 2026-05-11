@@ -28,6 +28,7 @@ function AuctionPage() {
   const [loading, setLoading] = useState(true);
   const [bidLoading, setBidLoading] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
+  const [timerDuration, setTimerDuration] = useState(15);
   const [activeImage, setActiveImage] = useState(0);
   const [isNewBid, setIsNewBid] = useState(false);
   const [showBonus, setShowBonus] = useState(false);
@@ -106,79 +107,56 @@ function AuctionPage() {
   }, [id]);
 
   useEffect(() => {
-    // Fictitious mode: Always start at 30s
-    setTimeLeft(30);
+    if (!auction?.end_time || isFinished) return;
 
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 0) {
-          if (!confettiFired.current) {
-            import("canvas-confetti").then((m) => {
-              const confetti = m.default || m;
-              const duration = 5 * 1000;
-              const animationEnd = Date.now() + duration;
-              const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0, colors: ['#00F2FF', '#9D00FF', '#FF00E5'] };
+    const calculateTimeLeft = () => {
+      const now = getAdjustedNow();
+      const end = new Date(auction.end_time).getTime();
+      const diff = Math.max(0, Math.floor((end - now) / 1000));
+      
+      setTimeLeft(diff);
 
-              const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
+      if (diff <= 0 && auction.status === 'live') {
+        // Auction just finished
+        if (!confettiFired.current) {
+          import("canvas-confetti").then((m) => {
+            const confetti = m.default || m;
+            const duration = 5 * 1000;
+            const animationEnd = Date.now() + duration;
+            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0, colors: ['#00F2FF', '#9D00FF', '#FF00E5'] };
 
-              const interval: any = setInterval(function() {
-                const timeLeft = animationEnd - Date.now();
+            const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
 
-                if (timeLeft <= 0) {
-                  return clearInterval(interval);
-                }
+            const interval: any = setInterval(function() {
+              const timeLeft = animationEnd - Date.now();
 
-                const particleCount = 50 * (timeLeft / duration);
-                confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
-                confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
-              }, 250);
-            });
-            confettiFired.current = true;
-          }
-          return 0;
+              if (timeLeft <= 0) {
+                return clearInterval(interval);
+              }
+
+              const particleCount = 50 * (timeLeft / duration);
+              confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+              confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+            }, 250);
+          });
+          confettiFired.current = true;
         }
-        return prev - 1;
-      });
-    }, 1000);
+      }
+    };
+
+    calculateTimeLeft();
+    const timer = setInterval(calculateTimeLeft, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [auction?.end_time, auction?.status, getAdjustedNow, isFinished]);
 
+  // Removed fictitiousBidInterval as we now use real DB robot bidding via process_robot_bids RPC 
+  // and real-time updates from Supabase.
   useEffect(() => {
-    if (isFinished) return;
-
-    const fictitiousBidInterval = setInterval(() => {
-      const chance = timeLeft < 10 ? 0.4 : 0.05;
-      if (Math.random() < chance) {
-        const randomUser = FICTITIOUS_PARTICIPANTS[Math.floor(Math.random() * FICTITIOUS_PARTICIPANTS.length)];
-        
-        playBidSound();
-        setIsNewBid(true);
-        setTimeLeft(30);
-        confettiFired.current = false;
-        setAuction((prev: any) => ({
-          ...prev,
-          current_price: (prev.current_price || 0) + 0.01,
-          bid_count: (prev.bid_count || 0) + 1,
-          last_bidder: { username: randomUser, avatar_url: null }
-        }));
-        
-        setBids(prev => [
-          { 
-            id: Math.random().toString(), 
-            profile: { username: randomUser }, 
-            price_at_bid: (auction?.current_price || 0) + 0.01, 
-            created_at: new Date().toISOString() 
-          },
-          ...prev.slice(0, 9)
-        ]);
-
-        setTimeout(() => setIsNewBid(false), 800);
-      }
-    }, 4000);
-
-    return () => clearInterval(fictitiousBidInterval);
-  }, [timeLeft, isFinished, playBidSound, auction?.current_price]);
+    if (auction?.timer_duration) {
+      setTimerDuration(auction.timer_duration);
+    }
+  }, [auction?.timer_duration]);
 
   async function fetchAuction() {
     // Mock data for fictitious mode if wanted, but we'll try to fetch first
@@ -235,26 +213,44 @@ function AuctionPage() {
   }
 
   const handleBid = async () => {
-    setBidLoading(true);
-    // Simulate bid
-    setTimeout(() => {
+    try {
+      setBidLoading(true);
+      
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) {
+        toast.error("Você precisa estar logado para dar um lance.");
+        navigate({ to: "/auth" });
+        return;
+      }
+
+      const { data, error } = await supabase.rpc('place_bid', {
+        p_auction_id: id,
+        p_user_id: userData.user.id
+      });
+
+      if (error) {
+        toast.error(error.message || "Erro ao dar lance");
+        return;
+      }
+
+      if (data && !data.success) {
+        toast.error(data.message || "Erro ao dar lance");
+        return;
+      }
+
       playBidSound();
       setIsNewBid(true);
-      setTimeLeft(30); // Reset to 30s
       confettiFired.current = false;
       setShowBonus(true);
       setTimeout(() => setShowBonus(false), 1000);
-      setIsNewBid(false);
+      setTimeout(() => setIsNewBid(false), 800);
+      toast.success("Lance confirmado!");
+    } catch (err: any) {
+      toast.error("Ocorreu um erro ao processar seu lance.");
+      console.error(err);
+    } finally {
       setBidLoading(false);
-      toast.success("Lance confirmado! (Simulado)");
-      
-      // Update bid count and price locally
-      setAuction((prev: any) => ({
-        ...prev,
-        current_price: prev.current_price + 0.01,
-        bid_count: (prev.bid_count || 0) + 1
-      }));
-    }, 400);
+    }
   };
 
   if (loading) return (
