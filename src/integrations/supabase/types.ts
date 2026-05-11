@@ -23,6 +23,7 @@ export type Database = {
           id: string
           last_bidder_id: string | null
           product_id: string | null
+          robot_enabled: boolean | null
           start_time: string | null
           status: string | null
         }
@@ -34,6 +35,7 @@ export type Database = {
           id?: string
           last_bidder_id?: string | null
           product_id?: string | null
+          robot_enabled?: boolean | null
           start_time?: string | null
           status?: string | null
         }
@@ -45,6 +47,7 @@ export type Database = {
           id?: string
           last_bidder_id?: string | null
           product_id?: string | null
+          robot_enabled?: boolean | null
           start_time?: string | null
           status?: string | null
         }
