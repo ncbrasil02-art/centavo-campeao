@@ -13,7 +13,7 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Plus, Wallet, Edit, Trash2, Package } from "lucide-react";
+import { Plus, Wallet, Edit, Trash2, Package, Upload, Loader2, Image as ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 import { 
   Dialog, 
