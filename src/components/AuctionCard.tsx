@@ -14,6 +14,19 @@ import { Progress } from "@/components/ui/progress";
 
 const BID_SOUND_URL = "https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3";
 
+const INCENTIVE_PHRASES = [
+  "🔥 Este produto é o máximo!",
+  "👀 Tem poucas pessoas disputando!",
+  "💎 Quanto maior o pacote, mais chances!",
+  "⚡ Não deixe essa chance passar!",
+  "🏆 Alguém vai levar por quase nada!",
+  "🚀 O próximo lance pode ser o vencedor!",
+  "😱 Economia de mais de 90% garantida!",
+  "✨ Super oferta exclusiva de hoje!",
+  "📱 Últimas unidades em leilão!",
+  "🎮 O melhor custo-benefício está aqui!"
+];
+
 interface AuctionCardProps {
   auction: any;
 }
@@ -27,6 +40,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [incentivePhrase, setIncentivePhrase] = useState("");
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const confettiFired = useRef(false);
   const { getAdjustedNow } = useTimeSync();
@@ -37,6 +51,18 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   const discount = auction.product?.market_value 
     ? Math.round((1 - (auction.current_price / auction.product.market_value)) * 100)
     : 0;
+
+  useEffect(() => {
+    // Randomize initial phrase
+    setIncentivePhrase(INCENTIVE_PHRASES[Math.floor(Math.random() * INCENTIVE_PHRASES.length)]);
+    
+    // Rotate phrases every 8-12 seconds
+    const interval = setInterval(() => {
+      setIncentivePhrase(INCENTIVE_PHRASES[Math.floor(Math.random() * INCENTIVE_PHRASES.length)]);
+    }, Math.random() * 4000 + 8000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     audioRef.current = new Audio(BID_SOUND_URL);
@@ -319,7 +345,14 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       </div>
       
       {/* Content Section */}
-      <div className="relative flex flex-1 flex-col gap-4 bg-gradient-to-b from-white/[0.02] to-transparent p-6">
+      <div className="relative flex flex-1 flex-col gap-4 bg-gradient-to-b from-white/[0.02] to-transparent p-6 pt-2">
+        {!isFinished && !isScheduled && (
+          <div className="flex justify-center mb-1">
+            <span className="text-[10px] font-black text-primary/60 uppercase tracking-widest animate-pulse italic bg-primary/5 px-3 py-1 rounded-full border border-primary/10">
+              {incentivePhrase}
+            </span>
+          </div>
+        )}
         <div>
           <Link to="/auctions/$id" params={{ id: auction.id }} className="cursor-pointer">
             <h3 className="mb-1 line-clamp-1 text-xl font-black uppercase italic tracking-tighter text-white transition-colors group-hover:text-primary">
@@ -455,6 +488,11 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             </span>
           )}
         </Button>
+        {!isFinished && (
+          <p className="text-[9px] text-center text-white/20 uppercase tracking-[0.2em] font-bold mt-2 italic">
+            {incentivePhrase.split(' ').slice(1).join(' ')}
+          </p>
+        )}
       </div>
     </Card>
   );
