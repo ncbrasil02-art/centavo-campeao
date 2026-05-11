@@ -21,7 +21,7 @@ function AdminRobotsPage() {
   const [auctions, setAuctions] = useState<any[]>([]);
   const [robots, setRobots] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
+  
   const [automationActive, setAutomationActive] = useState(false);
   const automationRef = useRef<boolean>(false);
   const navigate = useNavigate();
