@@ -41,7 +41,19 @@ function AdminSettings() {
         .single();
 
       if (error) throw error;
-      if (data) setSettings(data);
+      if (data) {
+        setSettings({
+          id: data.id,
+          site_name: data.site_name || "",
+          logo_url: data.logo_url || "",
+          primary_color: data.primary_color || "",
+          secondary_color: data.secondary_color || "",
+          mercado_pago_public_key: data.mercado_pago_public_key || "",
+          mercado_pago_access_token: data.mercado_pago_access_token || "",
+          pix_key: data.pix_key || "",
+          pix_name: data.pix_name || "",
+        });
+      }
     } catch (error) {
       console.error("Error fetching settings:", error);
       toast.error("Erro ao carregar configurações");
