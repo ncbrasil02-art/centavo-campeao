@@ -46,16 +46,19 @@ function AdminAuctions() {
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingAuction, setEditingAuction] = useState<any>(null);
-  const [formData, setFormData] = useState({
+  
+  const initialFormData = {
     product_id: "",
-    start_time: "",
+    start_time: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
     end_time: "",
     status: "scheduled",
     robot_enabled: true,
     timer_duration: 15,
     is_finalizing: false,
     target_winner: "random" as "robot" | "user" | "random"
-  });
+  };
+
+  const [formData, setFormData] = useState(initialFormData);
 
   useEffect(() => {
     fetchData();
@@ -111,7 +114,8 @@ function AdminAuctions() {
         status: formData.status,
         robot_enabled: formData.robot_enabled,
         timer_duration: formData.timer_duration,
-        target_winner: formData.target_winner
+        target_winner: formData.target_winner,
+        is_finalizing: formData.is_finalizing
       };
 
       if (editingAuction) {
@@ -119,7 +123,12 @@ function AdminAuctions() {
           .from("auctions")
           .update(payload)
           .eq("id", editingAuction.id);
-        if (error) throw error;
+        
+        if (error) {
+          console.error("Error updating auction:", error);
+          toast.error(`Erro ao atualizar: ${error.message}`);
+          return;
+        }
         toast.success("Leilão atualizado");
       } else {
         const { error } = await supabase
@@ -129,6 +138,7 @@ function AdminAuctions() {
             current_price: 0.01,
             bid_count: 0
           }]);
+        
         if (error) {
           console.error("Error creating auction:", error);
           toast.error(`Erro ao criar: ${error.message}`);
@@ -139,6 +149,7 @@ function AdminAuctions() {
 
       setIsDialogOpen(false);
       setEditingAuction(null);
+      setFormData(initialFormData);
       fetchData();
     } catch (error) {
       console.error("Error saving auction:", error);
@@ -208,17 +219,20 @@ function AdminAuctions() {
             setIsDialogOpen(open);
             if (!open) {
               setEditingAuction(null);
-              setFormData({ product_id: "", start_time: "", end_time: "", status: "scheduled", robot_enabled: true, timer_duration: 15, is_finalizing: false, target_winner: "random" });
+              setFormData(initialFormData);
             }
           }}>
             <DialogTrigger asChild>
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold">
+              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold" onClick={() => {
+                setEditingAuction(null);
+                setFormData(initialFormData);
+              }}>
                 <Plus className="w-4 h-4 mr-2" /> Novo Leilão
               </Button>
             </DialogTrigger>
             <DialogContent className="bg-zinc-900 border-white/10 text-white sm:max-w-[425px]">
               <DialogHeader>
-                <DialogTitle className="text-2xl font-black uppercase italic italic">
+                <DialogTitle className="text-2xl font-black uppercase italic">
                   {editingAuction ? "Editar" : "Novo"} <span className="text-primary">Leilão</span>
                 </DialogTitle>
               </DialogHeader>
