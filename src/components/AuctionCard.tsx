@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Clock, User, MessageSquare, Zap, Eye, Volume2, VolumeX } from "lucide-react";
+import { Clock, User, MessageSquare, Zap, Eye, Volume2, VolumeX, Calendar } from "lucide-react";
 import { AuctionChat } from "./AuctionChat";
 import { toast } from "sonner";
 import { FALLBACK_PRODUCT_IMAGE, getFallbackAvatarUrl, FICTITIOUS_PARTICIPANTS } from "@/lib/constants";
