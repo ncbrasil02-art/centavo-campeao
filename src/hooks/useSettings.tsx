@@ -44,6 +44,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
 
         // Apply colors to document
         document.documentElement.style.setProperty("--primary", data.primary_color || "#8B5CF6");
+        document.documentElement.style.setProperty("--secondary", data.secondary_color || "#7C3AED");
         // Update document title
         document.title = data.site_name || "Leilão de Centavos";
       }
