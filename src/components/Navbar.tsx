@@ -77,26 +77,38 @@ export function Navbar() {
         <div className="flex items-center gap-4">
           {user ? (
             <div className="flex items-center gap-4">
-              <div className="hidden flex-col items-end md:flex">
-                <span className="text-xs font-medium text-white/50">Saldo</span>
-                <div className="flex items-center gap-1 text-primary font-bold">
-                  <Wallet className="h-4 w-4" />
-                  <span>{profile?.bid_balance || 0} Lances</span>
+              <div className="flex items-center gap-3">
+                <div className="hidden flex-col items-end md:flex">
+                  <span className="text-xs font-medium text-white/50">Saldo</span>
+                  <div className="flex items-center gap-1 text-primary font-bold">
+                    <Wallet className="h-4 w-4" />
+                    <span>{profile?.bid_balance || 0} Lances</span>
+                  </div>
                 </div>
+                
+                {profile?.is_admin && (
+                  <Button variant="outline" size="sm" className="hidden sm:flex border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 gap-2" asChild>
+                    <Link to="/admin">
+                      <LayoutDashboard className="w-4 h-4" /> Admin
+                    </Link>
+                  </Button>
+                )}
+
+                <Button variant="outline" size="icon" className="rounded-full border-white/10 bg-white/5 hover:bg-white/10 overflow-hidden" asChild>
+                  <Link to={profile?.is_admin ? "/admin" : "/"}>
+                    <Avatar className="h-full w-full">
+                      <AvatarImage src={profile?.avatar_url || getFallbackAvatarUrl(profile?.username)} />
+                      <AvatarFallback className="bg-primary/20 text-primary text-[10px]">
+                        {profile?.username?.substring(0, 2).toUpperCase() || "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Link>
+                </Button>
+                
+                <Button onClick={handleLogout} variant="ghost" size="icon" className="text-white/50 hover:text-red-400">
+                  <LogOut className="h-4 w-4" />
+                </Button>
               </div>
-              <Button variant="outline" size="icon" className="rounded-full border-white/10 bg-white/5 hover:bg-white/10 overflow-hidden" asChild>
-                <Link to="/">
-                  <Avatar className="h-full w-full">
-                    <AvatarImage src={profile?.avatar_url || getFallbackAvatarUrl(profile?.username)} />
-                    <AvatarFallback className="bg-primary/20 text-primary text-[10px]">
-                      {profile?.username?.substring(0, 2).toUpperCase() || "U"}
-                    </AvatarFallback>
-                  </Avatar>
-                </Link>
-              </Button>
-              <Button onClick={handleLogout} variant="ghost" size="icon" className="text-white/50 hover:text-red-400">
-                <LogOut className="h-4 w-4" />
-              </Button>
             </div>
           ) : (
             <div className="flex items-center gap-2">
