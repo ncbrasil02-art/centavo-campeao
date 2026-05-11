@@ -356,37 +356,58 @@ function AdminBanners() {
               ) : banners.length === 0 ? (
                 <TableRow><TableCell colSpan={5} className="text-center py-8 text-white/40">Nenhum banner encontrado</TableCell></TableRow>
               ) : (
-                banners.map((banner) => (
-                  <TableRow key={banner.id} className="border-white/5 hover:bg-white/[0.02] transition-colors">
-                    <TableCell className="font-bold text-primary">#{banner.order_index}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-4">
-                        <div className="w-24 h-12 rounded bg-white/5 overflow-hidden border border-white/10">
-                          <img src={banner.image_url} alt="" className="w-full h-full object-cover" />
+                banners.map((banner) => {
+                  const now = new Date();
+                  const isScheduled = banner.start_at || banner.end_at;
+                  const isLive = banner.active && 
+                    (!banner.start_at || new Date(banner.start_at) <= now) &&
+                    (!banner.end_at || new Date(banner.end_at) >= now);
+
+                  return (
+                    <TableRow key={banner.id} className="border-white/5 hover:bg-white/[0.02] transition-colors">
+                      <TableCell className="font-bold text-primary">#{banner.order_index}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-4">
+                          <div className="w-24 h-12 rounded bg-white/5 overflow-hidden border border-white/10">
+                            <img src={banner.image_url} alt="" className="w-full h-full object-cover" />
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="font-bold">{banner.title || "Sem título"}</span>
+                            <span className="text-[10px] text-white/40">{banner.subtitle}</span>
+                            {isScheduled && (
+                              <span className="text-[9px] text-primary flex items-center gap-1 mt-1 font-bold uppercase tracking-widest">
+                                <Calendar className="w-2 h-2" />
+                                {banner.start_at && format(new Date(banner.start_at), "dd/MM HH:mm")} 
+                                {banner.end_at && ` → ${format(new Date(banner.end_at), "dd/MM HH:mm")}`}
+                              </span>
+                            )}
+                          </div>
                         </div>
-                        <div className="flex flex-col">
-                          <span className="font-bold">{banner.title || "Sem título"}</span>
-                          <span className="text-[10px] text-white/40">{banner.subtitle}</span>
+                      </TableCell>
+                      <TableCell>
+                        {banner.link_url && (
+                          <a href={banner.link_url} target="_blank" className="flex items-center gap-1 text-primary hover:underline text-xs">
+                            {banner.link_url} <ExternalLink className="w-3 h-3" />
+                          </a>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex flex-col gap-1">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className={`h-7 px-2 rounded-full text-[10px] font-black uppercase tracking-widest border ${banner.active ? "bg-green-500/10 text-green-500 border-green-500/20" : "bg-red-500/10 text-red-500 border-red-500/20"}`}
+                            onClick={() => toggleActive(banner)}
+                          >
+                            {banner.active ? "Ativado" : "Desativado"}
+                          </Button>
+                          {banner.active && (
+                            <span className={`text-[8px] font-black uppercase tracking-tighter text-center ${isLive ? 'text-green-500' : 'text-yellow-500'}`}>
+                              {isLive ? '• No Ar' : '• Agendado'}
+                            </span>
+                          )}
                         </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      {banner.link_url && (
-                        <a href={banner.link_url} target="_blank" className="flex items-center gap-1 text-primary hover:underline text-xs">
-                          {banner.link_url} <ExternalLink className="w-3 h-3" />
-                        </a>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className={`h-7 px-2 rounded-full text-[10px] font-black uppercase tracking-widest border ${banner.active ? "bg-green-500/10 text-green-500 border-green-500/20" : "bg-red-500/10 text-red-500 border-red-500/20"}`}
-                        onClick={() => toggleActive(banner)}
-                      >
-                        {banner.active ? "Ativo" : "Inativo"}
-                      </Button>
-                    </TableCell>
+                      </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
                         <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-primary/20 text-primary" onClick={() => handleEdit(banner)}>
