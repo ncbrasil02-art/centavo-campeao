@@ -30,6 +30,17 @@ function AuthPage() {
   const [cpf, setCpf] = useState("");
   const [phone, setPhone] = useState("");
   const navigate = useNavigate();
+  const search = Route.useSearch() as any;
+  const [activeTab, setActiveTab] = useState(search.register === "true" ? "register" : "login");
+
+  useEffect(() => {
+    if (search.offer === "welcome_bids") {
+      toast.info("Oferta Especial!", {
+        description: "Complete seu cadastro agora e ganhe 50% de desconto no seu primeiro pacote de lances!",
+        duration: 10000,
+      });
+    }
+  }, [search.offer]);
 
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -108,7 +119,7 @@ function AuthPage() {
           <CardDescription className="text-center text-white/60">Participe dos melhores leilões do Brasil</CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="login" className="w-full">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2 bg-white/5 mb-6">
               <TabsTrigger value="login">Login</TabsTrigger>
               <TabsTrigger value="register">Cadastro</TabsTrigger>

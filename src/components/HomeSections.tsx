@@ -236,22 +236,9 @@ export function Hero() {
       
       <div className="container mx-auto px-4 relative z-20">
         <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
-          <div className="flex flex-col items-center mb-8 reveal-on-scroll active">
-            <div className="bg-primary/10 border border-primary/20 rounded-full px-6 py-2 backdrop-blur-md shadow-[0_0_20px_rgba(var(--color-primary),0.2)]">
-              <div className="flex items-center gap-3">
-                <Clock className="w-5 h-5 text-primary animate-pulse" />
-                <div className="flex flex-col items-start">
-                  <span className="text-[10px] font-black text-primary/60 uppercase tracking-widest leading-none">Horário de Brasília</span>
-                  <span className="text-2xl font-black tabular-nums text-white neon-text leading-none mt-1">
-                    {format(currentTime, "HH:mm:ss", { locale: ptBR })}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
+          {/* Removido o relógio repetido aqui conforme solicitado pelo usuário */}
           
-          <div className="h-[140px] md:h-[220px] flex items-center justify-center mb-6 overflow-hidden">
+          <div className="min-h-[160px] md:min-h-[280px] flex items-center justify-center mb-6 overflow-hidden">
             <motion.h1
               key={textIndex}
               initial={{ y: 40, opacity: 0, scale: 0.9 }}
@@ -285,7 +272,7 @@ export function Hero() {
               </Link>
             </Button>
             <Button size="lg" variant="outline" className="h-14 px-8 text-lg font-bold border-white/10 hover:bg-white/5 bg-white/5" asChild>
-              <Link to="/">
+              <Link to="/how-it-works">
                 <Play className="mr-2 w-5 h-5 fill-current" />
                 Ver como funciona
               </Link>
