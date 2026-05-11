@@ -43,35 +43,26 @@ function PackagesPage() {
     }
 
     try {
-      // Create a transaction simulation
-      const { error: txError } = await supabase.from("transactions").insert({
-        user_id: session.user.id,
-        package_id: pkg.id,
-        amount: pkg.price,
-        status: 'completed', // Simulating instant success
-        payment_method: 'pix'
+      // Call the secure RPC to purchase credits
+      const { data, error: rpcError } = await supabase.rpc("buy_credits", {
+        p_package_id: pkg.id
       });
 
-      if (txError) throw txError;
-
-      // Update user balance
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("bid_balance")
-        .eq("id", session.user.id)
-        .single();
-
-      const newBalance = (profile?.bid_balance || 0) + pkg.bid_amount;
-
-      const { error: updateError } = await supabase
-        .from("profiles")
-        .update({ bid_balance: newBalance })
-        .eq("id", session.user.id);
-
-      if (updateError) throw updateError;
+      if (rpcError) throw rpcError;
+      
+      if (data && !data.success) {
+        toast.error(data.message || "Erro ao processar compra.");
+        return;
+      }
 
       toast.success(`Sucesso! Você recebeu ${pkg.bid_amount} lances.`);
       navigate({ to: "/" });
+    } catch (error: any) {
+      console.error(error);
+      toast.error("Erro ao processar pagamento.");
+    } finally {
+      setBuying(null);
+    }
     } catch (error: any) {
       console.error(error);
       toast.error("Erro ao processar pagamento.");
