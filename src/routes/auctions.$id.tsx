@@ -474,8 +474,8 @@ function AuctionPage() {
                     </div>
                     <Badge variant="outline" className="border-green-500/30 text-green-500 bg-green-500/5 animate-pulse">LEILÃO DE CENTAVOS</Badge>
                   </div>
-                  <div className={`text-7xl font-black text-primary transition-all duration-500 ${isNewBid ? 'scale-110 drop-shadow-[0_0_40px_rgba(var(--color-primary),0.8)]' : 'scale-100 drop-shadow-[0_0_20px_rgba(var(--color-primary),0.4)]'}`}>
-                    <span className="text-3xl align-top mt-2 inline-block mr-1 opacity-60">R$</span>
+                  <div className={`text-7xl font-black text-primary transition-all duration-500 flex items-baseline ${isNewBid ? 'scale-110 drop-shadow-[0_0_50px_rgba(var(--color-primary),1)]' : 'scale-100 drop-shadow-[0_0_30px_rgba(var(--color-primary),0.6)]'}`}>
+                    <span className="text-3xl align-top mt-2 inline-block mr-2 opacity-60">R$</span>
                     {auction.current_price?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                   </div>
                 </div>
