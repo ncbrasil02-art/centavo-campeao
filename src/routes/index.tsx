@@ -49,19 +49,35 @@ function Index() {
     fetchData();
 
     // Subscribe to changes in auctions table
-    const channel = supabase
-      .channel('public:auctions')
+    const auctionsChannel = supabase
+      .channel('index_auctions')
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'auctions' },
-        (payload) => {
+        () => {
+          // We only need to re-fetch when a NEW auction starts or one ends (status change)
+          // Since individual bids are handled inside AuctionCard, we don't need to re-fetch the list
+          // But to keep the order correct if status changes, we fetch.
           fetchData(); 
         }
       )
       .subscribe();
 
+    // Subscribe to new winners
+    const winnersChannel = supabase
+      .channel('index_winners')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'winners' },
+        () => {
+          fetchData(); // Re-fetch winners list
+        }
+      )
+      .subscribe();
+
     return () => {
-      supabase.removeChannel(channel);
+      supabase.removeChannel(auctionsChannel);
+      supabase.removeChannel(winnersChannel);
     };
   }, []);
 
