@@ -14,6 +14,8 @@ import { Progress } from "@/components/ui/progress";
 
 const BID_SOUND_URL = "https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3";
 
+let CACHED_INCENTIVES: string[] = [];
+
 const INCENTIVE_PHRASES = [
   "🔥 Este produto é o máximo!",
   "👀 Tem poucas pessoas disputando!",
