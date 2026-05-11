@@ -14,6 +14,40 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+import { Star, Quote } from "lucide-react";
+
+function TestimonialCard({ name, content, avatarUrl, rating }: { name: string, content: string, avatarUrl: string, rating: number }) {
+  return (
+    <div className="group relative p-6 rounded-[32px] bg-white/[0.03] border border-white/5 hover:border-primary/30 transition-all duration-500 hover:-translate-y-2">
+      <div className="absolute top-6 right-8 text-primary/10 group-hover:text-primary/20 transition-colors">
+        <Quote className="w-12 h-12 rotate-180" />
+      </div>
+      
+      <div className="flex flex-col h-full gap-6 relative z-10">
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-white/10 group-hover:border-primary/40 transition-all shadow-2xl">
+            <img src={avatarUrl} alt={name} className="w-full h-full object-cover" />
+          </div>
+          <div>
+            <h4 className="font-black text-white italic uppercase tracking-tighter text-sm">{name}</h4>
+            <div className="flex gap-0.5 mt-1">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className={`w-3 h-3 ${i < rating ? 'text-yellow-500 fill-yellow-500' : 'text-white/10'}`} />
+              ))}
+            </div>
+          </div>
+        </div>
+        
+        <p className="text-white/60 text-sm leading-relaxed italic">
+          "{content}"
+        </p>
+      </div>
+      
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-[32px]"></div>
+    </div>
+  );
+}
+
 function WinnerCard({ name, product, price, saving, avatarUrl, productImage }: { name: string, product: string, price: string, saving: string, avatarUrl?: string, productImage?: string }) {
   return (
     <div className="group relative p-1 rounded-[32px] bg-gradient-to-br from-primary/20 via-white/5 to-transparent border border-white/10 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-primary/20 overflow-hidden">
