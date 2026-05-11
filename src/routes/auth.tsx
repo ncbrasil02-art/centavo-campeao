@@ -10,6 +10,14 @@ import { toast } from "sonner";
 import { Gavel, Mail, Lock, User, Phone, MapPin, Hash } from "lucide-react";
 
 export const Route = createFileRoute("/auth")({
+  beforeLoad: async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      throw redirect({
+        to: "/",
+      });
+    }
+  },
   component: AuthPage,
 });
 
