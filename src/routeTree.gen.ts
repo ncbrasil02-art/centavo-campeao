@@ -16,6 +16,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AuctionsIdRouteImport } from './routes/auctions.$id'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
+import { Route as AdminTestimonialsRouteImport } from './routes/admin/testimonials'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as AdminSalesRouteImport } from './routes/admin/sales'
 import { Route as AdminRobotsRouteImport } from './routes/admin/robots'
@@ -56,6 +57,11 @@ const AuctionsIdRoute = AuctionsIdRouteImport.update({
 const AdminUsersRoute = AdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTestimonialsRoute = AdminTestimonialsRouteImport.update({
+  id: '/testimonials',
+  path: '/testimonials',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminSettingsRoute = AdminSettingsRouteImport.update({
@@ -100,6 +106,7 @@ export interface FileRoutesByFullPath {
   '/admin/robots': typeof AdminRobotsRoute
   '/admin/sales': typeof AdminSalesRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/testimonials': typeof AdminTestimonialsRoute
   '/admin/users': typeof AdminUsersRoute
   '/auctions/$id': typeof AuctionsIdRoute
   '/admin/': typeof AdminIndexRoute
@@ -114,6 +121,7 @@ export interface FileRoutesByTo {
   '/admin/robots': typeof AdminRobotsRoute
   '/admin/sales': typeof AdminSalesRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/testimonials': typeof AdminTestimonialsRoute
   '/admin/users': typeof AdminUsersRoute
   '/auctions/$id': typeof AuctionsIdRoute
   '/admin': typeof AdminIndexRoute
@@ -130,6 +138,7 @@ export interface FileRoutesById {
   '/admin/robots': typeof AdminRobotsRoute
   '/admin/sales': typeof AdminSalesRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/testimonials': typeof AdminTestimonialsRoute
   '/admin/users': typeof AdminUsersRoute
   '/auctions/$id': typeof AuctionsIdRoute
   '/admin/': typeof AdminIndexRoute
@@ -147,6 +156,7 @@ export interface FileRouteTypes {
     | '/admin/robots'
     | '/admin/sales'
     | '/admin/settings'
+    | '/admin/testimonials'
     | '/admin/users'
     | '/auctions/$id'
     | '/admin/'
@@ -161,6 +171,7 @@ export interface FileRouteTypes {
     | '/admin/robots'
     | '/admin/sales'
     | '/admin/settings'
+    | '/admin/testimonials'
     | '/admin/users'
     | '/auctions/$id'
     | '/admin'
@@ -176,6 +187,7 @@ export interface FileRouteTypes {
     | '/admin/robots'
     | '/admin/sales'
     | '/admin/settings'
+    | '/admin/testimonials'
     | '/admin/users'
     | '/auctions/$id'
     | '/admin/'
@@ -240,6 +252,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUsersRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/testimonials': {
+      id: '/admin/testimonials'
+      path: '/testimonials'
+      fullPath: '/admin/testimonials'
+      preLoaderRoute: typeof AdminTestimonialsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/settings': {
       id: '/admin/settings'
       path: '/settings'
@@ -292,6 +311,7 @@ interface AdminRouteChildren {
   AdminRobotsRoute: typeof AdminRobotsRoute
   AdminSalesRoute: typeof AdminSalesRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminTestimonialsRoute: typeof AdminTestimonialsRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
@@ -303,6 +323,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminRobotsRoute: AdminRobotsRoute,
   AdminSalesRoute: AdminSalesRoute,
   AdminSettingsRoute: AdminSettingsRoute,
+  AdminTestimonialsRoute: AdminTestimonialsRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
