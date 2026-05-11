@@ -209,6 +209,7 @@ export type Database = {
           created_at: string
           full_name: string | null
           id: string
+          is_admin: boolean | null
           is_bot: boolean | null
           phone: string | null
           state: string | null
@@ -222,6 +223,7 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           id: string
+          is_admin?: boolean | null
           is_bot?: boolean | null
           phone?: string | null
           state?: string | null
@@ -235,6 +237,7 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           id?: string
+          is_admin?: boolean | null
           is_bot?: boolean | null
           phone?: string | null
           state?: string | null
@@ -402,6 +405,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_bids_to_user: {
+        Args: { p_amount: number; p_user_id: string }
+        Returns: undefined
+      }
       get_server_time: { Args: never; Returns: string }
       place_bid: {
         Args: { p_auction_id: string; p_user_id: string }
