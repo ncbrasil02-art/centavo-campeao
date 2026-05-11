@@ -10,6 +10,16 @@ import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 
 export function Hero() {
+  const { getAdjustedNow } = useTimeSync();
+  const [currentTime, setCurrentTime] = useState<Date>(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date(getAdjustedNow()));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [getAdjustedNow]);
+
   const [onlineUsers, setOnlineUsers] = useState(128);
   const [banners, setBanners] = useState<any[]>([]);
   const [phrases, setPhrases] = useState<string[]>([
