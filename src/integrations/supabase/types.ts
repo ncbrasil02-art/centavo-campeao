@@ -21,6 +21,7 @@ export type Database = {
           current_price: number | null
           end_time: string | null
           id: string
+          is_finalizing: boolean | null
           last_bidder_id: string | null
           product_id: string | null
           robot_enabled: boolean | null
@@ -34,6 +35,7 @@ export type Database = {
           current_price?: number | null
           end_time?: string | null
           id?: string
+          is_finalizing?: boolean | null
           last_bidder_id?: string | null
           product_id?: string | null
           robot_enabled?: boolean | null
@@ -47,6 +49,7 @@ export type Database = {
           current_price?: number | null
           end_time?: string | null
           id?: string
+          is_finalizing?: boolean | null
           last_bidder_id?: string | null
           product_id?: string | null
           robot_enabled?: boolean | null
