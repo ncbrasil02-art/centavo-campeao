@@ -66,6 +66,13 @@ export type Database = {
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "auctions_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "v_home_live_auctions"
+            referencedColumns: ["product_id"]
+          },
         ]
       }
       banners: {
@@ -165,6 +172,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "bids_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: false
+            referencedRelation: "v_home_live_auctions"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "bids_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
@@ -201,6 +215,13 @@ export type Database = {
             columns: ["auction_id"]
             isOneToOne: false
             referencedRelation: "auctions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_messages_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: false
+            referencedRelation: "v_home_live_auctions"
             referencedColumns: ["id"]
           },
           {
@@ -324,6 +345,13 @@ export type Database = {
             columns: ["auction_id"]
             isOneToOne: false
             referencedRelation: "auctions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "robot_settings_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: false
+            referencedRelation: "v_home_live_auctions"
             referencedColumns: ["id"]
           },
         ]
@@ -509,6 +537,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "winners_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: true
+            referencedRelation: "v_home_live_auctions"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "winners_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
@@ -519,7 +554,37 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      v_home_live_auctions: {
+        Row: {
+          bid_count: number | null
+          current_price: number | null
+          end_time: string | null
+          id: string | null
+          last_bidder_avatar_url: string | null
+          last_bidder_username: string | null
+          product_id: string | null
+          product_images: string[] | null
+          product_market_value: number | null
+          product_name: string | null
+          robot_enabled: boolean | null
+          status: string | null
+        }
+        Relationships: []
+      }
+      v_home_recent_winners: {
+        Row: {
+          created_at: string | null
+          final_price: number | null
+          id: string | null
+          product_images: string[] | null
+          product_name: string | null
+          savings_percentage: number | null
+          winner_avatar_url: string | null
+          winner_name: string | null
+          winner_username: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       add_bids_to_user: {
