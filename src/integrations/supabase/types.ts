@@ -317,28 +317,34 @@ export type Database = {
         Row: {
           amount: number
           created_at: string
+          description: string | null
           id: string
           package_id: string | null
           payment_method: string | null
           status: string | null
+          type: string | null
           user_id: string | null
         }
         Insert: {
           amount: number
           created_at?: string
+          description?: string | null
           id?: string
           package_id?: string | null
           payment_method?: string | null
           status?: string | null
+          type?: string | null
           user_id?: string | null
         }
         Update: {
           amount?: number
           created_at?: string
+          description?: string | null
           id?: string
           package_id?: string | null
           payment_method?: string | null
           status?: string | null
+          type?: string | null
           user_id?: string | null
         }
         Relationships: [
