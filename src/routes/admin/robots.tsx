@@ -196,6 +196,7 @@ function AdminRobotsPage() {
                   <TableHead className="text-white/60 font-bold">Produto</TableHead>
                   <TableHead className="text-white/60 font-bold">Status Robô</TableHead>
                   <TableHead className="text-white/60 font-bold">Delays (Min/Max)</TableHead>
+                  <TableHead className="text-white/60 font-bold">Disputa Interna</TableHead>
                   <TableHead className="text-white/60 font-bold">Lances Atuais</TableHead>
                   <TableHead className="text-white/60 font-bold text-right">Ações</TableHead>
                 </TableRow>
@@ -223,6 +224,26 @@ function AdminRobotsPage() {
                           <Badge variant="outline" className={settings.active ? "border-primary text-primary bg-primary/10" : "border-white/10 text-white/40"}>
                             {settings.active ? "ATIVO" : "OFF"}
                           </Badge>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex flex-col gap-2">
+                          <div className="flex items-center gap-3">
+                            <Switch 
+                              checked={settings.inner_dispute_enabled} 
+                              onCheckedChange={() => toggleInnerDispute(settings.id, settings.inner_dispute_enabled)}
+                              className="data-[state=checked]:bg-amber-500"
+                              disabled={!settings.active}
+                            />
+                            <Badge variant="outline" className={settings.inner_dispute_enabled ? "border-amber-500 text-amber-500 bg-amber-500/10" : "border-white/10 text-white/40"}>
+                              {settings.inner_dispute_enabled ? "ROBÔ vs ROBÔ" : "OFF"}
+                            </Badge>
+                          </div>
+                          {settings.inner_dispute_enabled && settings.inner_dispute_end_at && (
+                            <span className="text-[9px] text-amber-500/60 font-bold uppercase">
+                              Expira em: {new Date(settings.inner_dispute_end_at).toLocaleTimeString()}
+                            </span>
+                          )}
                         </div>
                       </TableCell>
                       <TableCell>
