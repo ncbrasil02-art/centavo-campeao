@@ -112,7 +112,7 @@ function Index() {
 
 
   async function fetchData() {
-    const [auctionsRes, winnersRes, finishedRes] = await Promise.all([
+    const [auctionsRes, winnersRes, finishedRes, testimonialsRes] = await Promise.all([
       supabase
         .from("v_home_live_auctions")
         .select("*")
@@ -133,12 +133,19 @@ function Index() {
         `)
         .eq("status", "finished")
         .order("end_time", { ascending: false })
-        .limit(8)
+        .limit(8),
+      supabase
+        .from("testimonials")
+        .select("*")
+        .eq("active", true)
+        .order("created_at", { ascending: false })
+        .limit(6)
     ]);
 
     if (!auctionsRes.error) setAuctions(auctionsRes.data || []);
     if (!winnersRes.error) setWinners(winnersRes.data || []);
     if (!finishedRes.error) setFinishedAuctions(finishedRes.data || []);
+    if (!testimonialsRes.error) setTestimonials(testimonialsRes.data || []);
     
     setLoading(false);
   }
