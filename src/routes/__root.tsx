@@ -119,12 +119,16 @@ function RootShell({ children }: { children: React.ReactNode }) {
   );
 }
 
+import { SettingsProvider } from "@/hooks/useSettings";
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <SettingsProvider>
+        <Outlet />
+      </SettingsProvider>
     </QueryClientProvider>
   );
 }
