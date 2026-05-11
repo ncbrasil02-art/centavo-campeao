@@ -52,7 +52,8 @@ function AdminAuctions() {
     end_time: "",
     status: "scheduled",
     robot_enabled: true,
-    timer_duration: 15
+    timer_duration: 15,
+    is_finalizing: false
   });
 
   useEffect(() => {
