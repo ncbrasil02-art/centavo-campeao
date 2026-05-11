@@ -127,15 +127,19 @@ function AdminAuctions() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    const loadingToast = toast.loading("Salvando leilão...");
     try {
       let finalProductId = formData.product_id;
 
+      // Handle new product creation if enabled
       if (formData.is_new_product && !editingAuction) {
         if (!formData.new_product_name) {
+          toast.dismiss(loadingToast);
           toast.error("Nome do produto é obrigatório");
           return;
         }
 
+        console.log("Creating new product:", formData.new_product_name);
         const { data: newProduct, error: productError } = await supabase
           .from("products")
           .insert([{
@@ -149,13 +153,17 @@ function AdminAuctions() {
 
         if (productError) {
           console.error("Error creating product:", productError);
+          toast.dismiss(loadingToast);
           toast.error(`Erro ao criar produto: ${productError.message}`);
           return;
         }
+        
+        console.log("Product created successfully:", newProduct.id);
         finalProductId = newProduct.id;
       }
 
       if (!finalProductId) {
+        toast.dismiss(loadingToast);
         toast.error("Selecione um produto ou cadastre um novo");
         return;
       }
@@ -197,7 +205,8 @@ function AdminAuctions() {
           toast.error(`Erro ao atualizar: ${error.message}`);
           return;
         }
-        toast.success("Leilão atualizado");
+        toast.dismiss(loadingToast);
+        toast.success("Leilão atualizado com sucesso!");
       } else {
         const { error } = await supabase
           .from("auctions")
@@ -209,9 +218,11 @@ function AdminAuctions() {
         
         if (error) {
           console.error("Error creating auction:", error);
-          toast.error(`Erro ao criar: ${error.message}`);
+          toast.dismiss(loadingToast);
+          toast.error(`Erro ao criar leilão: ${error.message}`);
           return;
         }
+        toast.dismiss(loadingToast);
         toast.success("Leilão criado com sucesso!");
       }
 
@@ -219,9 +230,10 @@ function AdminAuctions() {
       setEditingAuction(null);
       setFormData(initialFormData);
       fetchData();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error saving auction:", error);
-      toast.error("Erro ao salvar leilão");
+      toast.dismiss(loadingToast);
+      toast.error(`Erro inesperado: ${error.message || "Erro desconhecido"}`);
     }
   }
 

@@ -38,6 +38,7 @@ function WinnerCard({ name, product, price, saving, avatarUrl }: { name: string,
 
 function Index() {
   const [auctions, setAuctions] = useState<any[]>([]);
+  const [finishedAuctions, setFinishedAuctions] = useState<any[]>([]);
   const [winners, setWinners] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showChat, setShowChat] = useState(false);
@@ -85,7 +86,7 @@ function Index() {
 
 
   async function fetchData() {
-    const [auctionsRes, winnersRes] = await Promise.all([
+    const [auctionsRes, winnersRes, finishedRes] = await Promise.all([
       supabase
         .from("v_home_live_auctions")
         .select("*")
@@ -96,11 +97,22 @@ function Index() {
         .from("v_home_recent_winners")
         .select("*")
         .order("created_at", { ascending: false })
-        .limit(3)
+        .limit(3),
+      supabase
+        .from("auctions")
+        .select(`
+          *,
+          product:products(*),
+          last_bidder:profiles(username, avatar_url)
+        `)
+        .eq("status", "finished")
+        .order("end_time", { ascending: false })
+        .limit(8)
     ]);
 
     if (!auctionsRes.error) setAuctions(auctionsRes.data || []);
     if (!winnersRes.error) setWinners(winnersRes.data || []);
+    if (!finishedRes.error) setFinishedAuctions(finishedRes.data || []);
     
     setLoading(false);
   }
@@ -158,6 +170,7 @@ function Index() {
             </div>
           </section>
 
+
           {/* How it Works Section */}
           <section className="py-24 relative overflow-hidden">
             <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] -z-10"></div>
@@ -207,6 +220,25 @@ function Index() {
               </div>
             </div>
           </section>
+
+          {/* Finished Auctions Section */}
+          {finishedAuctions.length > 0 && (
+            <section className="py-20 bg-black/40 border-y border-white/5">
+              <div className="container mx-auto px-4">
+                <div className="mb-12">
+                  <Badge variant="outline" className="mb-4 border-white/20 bg-white/5 text-white/60 uppercase tracking-widest">GALERIA DE ARREMATADOS</Badge>
+                  <h2 className="text-4xl font-black tracking-tight text-white italic uppercase">Leilões <span className="text-white/40">Encerrados</span></h2>
+                  <p className="text-white/20 mt-2">Veja os últimos produtos que foram arrematados com sucesso na plataforma.</p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 opacity-60 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-700">
+                  {finishedAuctions.map((auction) => (
+                    <AuctionCard key={auction.id} auction={auction} />
+                  ))}
+                </div>
+              </div>
+            </section>
+          )}
 
           {/* Footer */}
           <footer className="py-12 border-t border-white/10">
