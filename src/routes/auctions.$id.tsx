@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Clock, User, Gavel, ShieldCheck, Zap, ArrowLeft, Share2, Info, MessageSquare, History, Trophy, Volume2, VolumeX } from "lucide-react";
+import { Clock, User, Gavel, ShieldCheck, Zap, ArrowLeft, Share2, Info, MessageSquare, History, Trophy, Volume2, VolumeX, Calendar } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -107,16 +107,26 @@ function AuctionPage() {
   }, [id]);
 
   useEffect(() => {
-    if (!auction?.end_time || isFinished) return;
+    if ((!auction?.end_time && !auction?.start_time) || isFinished) return;
 
-    const calculateTimeLeft = () => {
+    const calculateTimeLeft = async () => {
+      const isScheduled = auction.status === 'scheduled';
+      const targetTime = isScheduled ? auction.start_time : auction.end_time;
+      if (!targetTime) return;
+
       const now = getAdjustedNow();
-      const end = new Date(auction.end_time).getTime();
-      const diff = Math.max(0, (end - now) / 1000);
+      const target = new Date(targetTime).getTime();
+      const diff = Math.max(0, (target - now) / 1000);
       
       setTimeLeft(diff);
 
-      if (diff <= 0 && auction.status === 'live') {
+      if (isScheduled && diff <= 0) {
+        console.log("Scheduled auction reached zero on detail page, refreshing...");
+        await supabase.rpc('tick_auctions');
+        fetchAuction();
+      }
+
+      if (!isScheduled && diff <= 0 && auction.status === 'live') {
         // Auction just finished
         if (!confettiFired.current) {
           import("canvas-confetti").then((m) => {
@@ -261,11 +271,6 @@ function AuctionPage() {
 
   if (!auction) return null;
 
-  const formatTime = (seconds: number) => {
-    const s = Math.floor(seconds);
-    const ms = Math.floor((seconds % 1) * 100);
-    return `${s.toString().padStart(2, '0')}:${ms.toString().padStart(2, '0')}`;
-  };
 
 
   return (
@@ -307,6 +312,8 @@ function AuctionPage() {
                 <div className="absolute top-6 left-6 z-20 flex flex-col gap-3">
                   {auction.status === 'finished' ? (
                     <Badge variant="outline" className="bg-black/60 backdrop-blur-md border-white/20 px-4 py-2 text-lg font-black italic">ENCERRADO</Badge>
+                  ) : auction.status === 'scheduled' ? (
+                    <Badge className="bg-blue-500 border-none px-4 py-2 text-lg font-black italic shadow-[0_0_20px_rgba(59,130,246,0.5)]">AGENDADO</Badge>
                   ) : auction.is_finalizing ? (
                     <Badge className="bg-orange-500 border-none px-4 py-2 text-lg font-black italic shadow-[0_0_20px_rgba(249,115,22,0.5)]">FINALIZANDO</Badge>
                   ) : (
@@ -316,6 +323,32 @@ function AuctionPage() {
                     {discount}% ECONOMIA
                   </Badge>
                 </div>
+
+                {auction.status === 'scheduled' && auction.start_time && (
+                  <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px]">
+                    <div className="bg-primary/70 backdrop-blur-md py-8 px-12 flex flex-col items-center justify-center shadow-[0_0_50px_rgba(var(--color-primary),0.3)] border-y border-white/20 rotate-[-2deg] scale-110">
+                      <span className="text-sm font-black uppercase tracking-[0.4em] text-black/90 mb-3">COMEÇA EM</span>
+                      <div className="flex gap-2">
+                        <div className="bg-black/90 rounded-xl px-5 py-3 min-w-[100px] flex items-center justify-center shadow-2xl border border-white/10">
+                          <span className="text-6xl font-black text-primary tabular-nums tracking-tighter">
+                            {Math.floor(timeLeft).toString().padStart(2, '0')}
+                          </span>
+                        </div>
+                        <div className="bg-black/70 rounded-xl px-3 py-3 flex items-end shadow-2xl border border-white/10">
+                          <span className="text-3xl font-black text-primary/80 tabular-nums">
+                            ,{Math.floor((timeLeft % 1) * 100).toString().padStart(2, '0')}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="mt-4 flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/20 border border-black/10">
+                        <Calendar className="w-4 h-4 text-black/70" />
+                        <span className="text-xs font-bold text-black/80 uppercase tracking-widest">
+                          {new Date(auction.start_time).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })} às {new Date(auction.start_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 <div className="absolute top-6 right-6 z-20 flex gap-2">
                   <Button 
                     variant="ghost" 
@@ -428,26 +461,47 @@ function AuctionPage() {
 
                 <div className="relative space-y-4">
                   <div className="grid grid-cols-2 gap-6 relative z-10">
-                    <div className="flex flex-col gap-3 p-6 rounded-[28px] bg-white/5 border border-white/10 transition-colors hover:bg-white/10">
+                    <div className={`flex flex-col gap-3 p-6 rounded-[28px] bg-white/5 border border-white/10 transition-all duration-300 ${
+                      timeLeft <= 8 && !isFinished ? 'scale-105 bg-red-500/5 border-red-500/20' : ''
+                    }`}>
                       <span className="text-[10px] text-white/40 font-black uppercase tracking-widest flex items-center gap-2">
-                        <Clock className="w-3 h-3 text-primary" /> Cronômetro
+                        <Clock className={`w-3 h-3 ${timeLeft <= 8 && !isFinished ? 'text-red-500 animate-spin' : 'text-primary'}`} /> Tempo Restante
                       </span>
-                      <div className={`text-4xl font-mono font-black transition-all duration-300 ${
-                        timeLeft <= 5 && !isFinished 
-                          ? 'text-red-500 animate-pulse scale-110 drop-shadow-[0_0_15px_rgba(239,68,68,0.7)]' 
-                          : timeLeft <= 10 && !isFinished
-                          ? 'text-orange-500'
-                          : isFinished ? 'text-white/20' : 'text-white'
-                      }`}>
-                        {isFinished ? "00:00" : formatTime(timeLeft)}
+                      <div className="flex items-center gap-2">
+                        <div className={`relative flex items-center justify-center min-w-[80px] py-3 rounded-2xl border border-white/10 overflow-hidden shadow-2xl transition-all duration-300 ${
+                          timeLeft <= 8 && !isFinished 
+                            ? 'bg-gradient-to-br from-red-600/60 to-red-900/80 border-red-500 animate-pulse' 
+                            : 'bg-gradient-to-br from-black/80 to-black/60'
+                        }`}>
+                          <span className={`text-5xl font-black tabular-nums tracking-tighter ${
+                            timeLeft <= 8 && !isFinished ? 'text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.6)]' : 'text-white'
+                          }`}>
+                            {isFinished ? "00" : Math.floor(timeLeft).toString().padStart(2, '0')}
+                          </span>
+                          {timeLeft <= 8 && !isFinished && (
+                            <div className="absolute inset-0 bg-white/10 animate-[ping_1.5s_ease-in-out_infinite]"></div>
+                          )}
+                        </div>
+                        <div className={`flex items-end py-2 px-2 rounded-xl border border-white/5 bg-black/40 ${
+                          timeLeft <= 8 && !isFinished ? 'border-red-500/30' : ''
+                        }`}>
+                          <span className={`text-xl font-black tabular-nums ${
+                            timeLeft <= 8 && !isFinished ? 'text-red-400' : 'text-white/40'
+                          }`}>
+                            ,{isFinished ? "00" : Math.floor((timeLeft % 1) * 100).toString().padStart(2, '0')}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                    <div className="flex flex-col gap-3 p-6 rounded-[28px] bg-white/5 border border-white/10 transition-colors hover:bg-white/10">
+                    <div className="flex flex-col gap-4 p-6 rounded-[28px] bg-white/5 border border-white/10 transition-colors hover:bg-white/10">
                       <span className="text-[10px] text-white/40 font-black uppercase tracking-widest flex items-center gap-2">
-                        <History className="w-3 h-3 text-primary" /> Total Bids
+                        <History className="w-3 h-3 text-primary" /> Total de Lances
                       </span>
-                      <div className="text-4xl font-black text-white">
+                      <div className="text-5xl font-black text-white">
                         {auction.bid_count || 0}
+                      </div>
+                      <div className="text-[10px] font-bold text-white/20 uppercase tracking-widest">
+                        Duração: {timerDuration}s
                       </div>
                     </div>
                   </div>

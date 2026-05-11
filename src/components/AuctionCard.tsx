@@ -225,23 +225,28 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         </Link>
 
         {isScheduled && auction.start_time && (
-          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 bg-primary/95 backdrop-blur-xl py-6 flex flex-col items-center justify-center z-20 shadow-[0_0_50px_rgba(var(--color-primary),0.4)] border-y-2 border-white/30 rotate-[-5deg] scale-110 origin-center">
-            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.2)_0%,_transparent_70%)] animate-pulse"></div>
-            <span className="text-[11px] font-black uppercase tracking-[0.4em] text-black/80 mb-2 relative z-10">COMEÇA EM</span>
+          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 bg-primary/70 backdrop-blur-md py-6 flex flex-col items-center justify-center z-20 shadow-[0_0_50px_rgba(var(--color-primary),0.3)] border-y border-white/20 rotate-[-3deg] scale-110 origin-center">
+            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.1)_0%,_transparent_70%)] animate-pulse"></div>
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-black/90 mb-1 relative z-10">COMEÇA EM</span>
             <div className="flex flex-col items-center relative z-10">
-              <span className="text-4xl font-black text-black italic leading-none mb-2 drop-shadow-sm tabular-nums">
-                {timeParts.s}<span className="text-xl opacity-60 ml-0.5">,{timeParts.ms}</span>
-              </span>
-              <div className="flex flex-col items-center gap-1">
-                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-black/10 border border-black/5">
-                  <Calendar className="w-3 h-3 text-black/60" />
-                  <span className="text-[10px] font-bold text-black/60 uppercase tracking-widest">
-                    {new Date(auction.start_time).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })} às {new Date(auction.start_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+              <div className="flex gap-1 mb-2">
+                <div className="bg-black/80 rounded-lg px-3 py-2 min-w-[60px] flex items-center justify-center shadow-xl border border-white/10">
+                  <span className="text-3xl font-black text-primary tabular-nums tracking-tighter">
+                    {timeParts.s}
                   </span>
                 </div>
-                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-black/10 border border-black/5">
-                  <Clock className="w-3 h-3 text-black/60" />
-                  <span className="text-[10px] font-bold text-black/60 uppercase tracking-widest">Prepare seus lances</span>
+                <div className="bg-black/60 rounded-lg px-2 py-2 flex items-end shadow-xl border border-white/10">
+                  <span className="text-xl font-black text-primary/80 tabular-nums">
+                    ,{timeParts.ms}
+                  </span>
+                </div>
+              </div>
+              <div className="flex flex-col items-center gap-1">
+                <div className="flex items-center gap-2 px-3 py-0.5 rounded-full bg-black/20 border border-black/5">
+                  <Calendar className="w-2.5 h-2.5 text-black/70" />
+                  <span className="text-[9px] font-bold text-black/70 uppercase tracking-widest">
+                    {new Date(auction.start_time).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })} às {new Date(auction.start_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                  </span>
                 </div>
               </div>
             </div>
@@ -340,23 +345,34 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
                 R$ {auction.current_price?.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) || "0,01"}
               </span>
             </div>
-            <div className="relative flex flex-col items-end">
+            <div className={`relative flex flex-col items-end transition-all duration-300 ${timeLeft <= 8 && !isFinished ? 'scale-105' : ''}`}>
               <span className="mb-1 text-[9px] font-black uppercase tracking-widest text-white/40">
                 Tempo
               </span>
-              <div className={`flex items-center gap-1 font-mono text-3xl font-black transition-colors duration-300 ${
-                timeLeft <= 5 && !isFinished 
-                  ? 'text-red-500 animate-pulse scale-110 drop-shadow-[0_0_10px_rgba(239,68,68,0.7)]' 
-                  : timeLeft <= 10 && !isFinished
-                  ? 'text-orange-500'
-                  : isFinished ? 'text-white/20' : 'text-white'
-              }`}>
-                <Clock className={`h-5 w-5 ${timeLeft <= 5 && !isFinished ? 'animate-spin' : ''}`} />
-                {isFinished ? "00,00" : (
-                  <span className="flex items-baseline tabular-nums">
-                    {timeParts.s}<span className="text-lg opacity-60 ml-0.5">,{timeParts.ms}</span>
+              <div className="flex items-center gap-1.5">
+                <div className={`relative flex items-center justify-center min-w-[50px] py-1.5 rounded-xl border border-white/10 overflow-hidden shadow-2xl transition-all duration-300 ${
+                  timeLeft <= 8 && !isFinished 
+                    ? 'bg-gradient-to-br from-red-600/40 to-red-900/60 border-red-500/50 animate-pulse' 
+                    : 'bg-gradient-to-br from-black/60 to-black/40'
+                }`}>
+                  <span className={`text-2xl font-black tabular-nums tracking-tighter ${
+                    timeLeft <= 8 && !isFinished ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'text-white'
+                  }`}>
+                    {isFinished ? "00" : timeParts.s}
                   </span>
-                )}
+                  {timeLeft <= 8 && !isFinished && (
+                    <div className="absolute inset-0 bg-red-500/10 animate-[ping_1.5s_ease-in-out_infinite]"></div>
+                  )}
+                </div>
+                <div className={`flex items-end py-1.5 px-1.5 rounded-lg border border-white/5 bg-black/40 ${
+                   timeLeft <= 8 && !isFinished ? 'border-red-500/20' : ''
+                }`}>
+                  <span className={`text-sm font-black tabular-nums ${
+                    timeLeft <= 8 && !isFinished ? 'text-red-400' : 'text-white/40'
+                  }`}>
+                    ,{isFinished ? "00" : timeParts.ms}
+                  </span>
+                </div>
               </div>
               {showBonus && (
                 <div className="absolute -top-8 right-0 animate-bounce rounded-lg border border-primary/30 bg-primary/20 px-2 py-1 text-[10px] font-black text-primary backdrop-blur-sm">
