@@ -125,6 +125,7 @@ function AuctionPage() {
       const target = new Date(targetTime).getTime();
       const diff = Math.max(0, (target - now) / 1000);
       
+      // Atomic update to ensure all viewers see the exact same value
       setTimeLeft(diff);
 
       if (isScheduled && diff <= 0) {
