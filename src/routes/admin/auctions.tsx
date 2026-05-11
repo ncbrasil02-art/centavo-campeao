@@ -124,9 +124,17 @@ function AdminAuctions() {
       } else {
         const { error } = await supabase
           .from("auctions")
-          .insert([payload]);
-        if (error) throw error;
-        toast.success("Leilão criado");
+          .insert([{ 
+            ...payload,
+            current_price: 0.01,
+            bid_count: 0
+          }]);
+        if (error) {
+          console.error("Error creating auction:", error);
+          toast.error(`Erro ao criar: ${error.message}`);
+          return;
+        }
+        toast.success("Leilão criado com sucesso!");
       }
 
       setIsDialogOpen(false);
