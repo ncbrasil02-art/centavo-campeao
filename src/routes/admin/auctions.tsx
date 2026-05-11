@@ -147,7 +147,8 @@ function AdminAuctions() {
       status: auction.status,
       robot_enabled: auction.robot_enabled,
       timer_duration: auction.timer_duration || 15,
-      is_finalizing: auction.is_finalizing || false
+      is_finalizing: auction.is_finalizing || false,
+      target_winner: auction.target_winner || "random"
     });
     setIsDialogOpen(true);
   }
