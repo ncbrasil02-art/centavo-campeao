@@ -345,7 +345,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
                 R$ {auction.current_price?.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) || "0,01"}
               </span>
             </div>
-            <div className={`relative flex flex-col items-end transition-all duration-300 ${timeLeft <= 8 && !isFinished ? 'scale-105' : ''}`}>
+            <div className={`relative flex flex-col items-end transition-all duration-300 ${timeLeft <= 8 && !isFinished ? 'drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]' : ''}`}>
               <span className="mb-1 text-[9px] font-black uppercase tracking-widest text-white/40">
                 Tempo
               </span>
