@@ -85,16 +85,18 @@ function AdminAuctions() {
       const startTime = new Date(formData.start_time);
       const timerDuration = formData.timer_duration;
       
-      // Se end_time não foi definido manualmente, ou é novo leilão, podemos sugerir o start + timer
-      let endTime = new Date(formData.end_time);
-      if (!formData.end_time) {
-        endTime = new Date(startTime.getTime() + (timerDuration * 1000));
+      // Se end_time não foi definido manualmente, calculamos o inicial
+      let endTime;
+      if (formData.end_time) {
+        endTime = new Date(formData.end_time).toISOString();
+      } else {
+        endTime = new Date(startTime.getTime() + (timerDuration * 1000)).toISOString();
       }
 
       const payload = {
         ...formData,
         start_time: startTime.toISOString(),
-        end_time: endTime.toISOString(),
+        end_time: endTime,
       };
 
       if (editingAuction) {
