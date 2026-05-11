@@ -4,11 +4,12 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { User, LogOut, Wallet, Gavel, LayoutDashboard } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getFallbackAvatarUrl } from "@/lib/constants";
+import { useSettings } from "@/hooks/useSettings";
 
 export function Navbar() {
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
+  const { site_name, logo_url } = useSettings();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -47,13 +48,19 @@ export function Navbar() {
     <nav className="sticky top-0 z-50 w-full border-b border-white/10 bg-background/80 backdrop-blur-md">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link to="/" className="flex items-center gap-2 group">
-          <div className="relative">
-            <Gavel className="h-8 w-8 text-primary transition-transform group-hover:rotate-12" />
-            <div className="absolute -inset-1 rounded-full bg-primary/20 blur-sm"></div>
-          </div>
-          <span className="text-2xl font-bold tracking-tighter text-white">
-            LANCE<span className="text-primary">CERTO</span>
-          </span>
+          {logo_url ? (
+            <img src={logo_url} alt={site_name} className="h-10 object-contain" />
+          ) : (
+            <>
+              <div className="relative">
+                <Gavel className="h-8 w-8 text-primary transition-transform group-hover:rotate-12" />
+                <div className="absolute -inset-1 rounded-full bg-primary/20 blur-sm"></div>
+              </div>
+              <span className="text-2xl font-bold tracking-tighter text-white">
+                {site_name.split(' ')[0]}<span className="text-primary">{site_name.split(' ').slice(1).join('')}</span>
+              </span>
+            </>
+          )}
         </Link>
 
         <div className="hidden items-center gap-8 md:flex">
