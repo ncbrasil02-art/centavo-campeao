@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 import { Link } from "@tanstack/react-router";
 import { useTimeSync } from "@/hooks/useTimeSync";
 import { supabase } from "@/integrations/supabase/client";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
