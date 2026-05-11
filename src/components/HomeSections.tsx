@@ -167,6 +167,11 @@ export function Hero() {
         {/* Luzes e Brilhos Neon */}
         <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[150px] animate-pulse"></div>
         <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-accent/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '1s' }}></div>
+        
+        {/* Feixes de Luz Estilizados */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1px] h-full bg-gradient-to-b from-primary/40 via-transparent to-transparent opacity-20"></div>
+        <div className="absolute top-0 left-[30%] w-[1px] h-full bg-gradient-to-b from-primary/20 via-transparent to-transparent opacity-10 rotate-12"></div>
+        <div className="absolute top-0 left-[70%] w-[1px] h-full bg-gradient-to-b from-primary/20 via-transparent to-transparent opacity-10 -rotate-12"></div>
       </div>
 
       {/* Elementos 3D Flutuantes (Ícones) */}
