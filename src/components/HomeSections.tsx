@@ -168,22 +168,19 @@ export function Hero() {
           </Badge>
           
           <div className="h-[120px] md:h-[180px] flex items-center justify-center mb-6 overflow-hidden">
-            <AnimatePresence mode="wait">
-              <motion.h1
-                key={textIndex}
-                initial={{ y: 40, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: -40, opacity: 0 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-                className="text-4xl md:text-7xl font-black tracking-tight text-white leading-tight"
-              >
-                {phrases[textIndex].includes("centavos!") ? (
-                  <>
-                    Arremate produtos incríveis por <span className="text-primary italic">centavos!</span>
-                  </>
-                ) : phrases[textIndex]}
-              </motion.h1>
-            </AnimatePresence>
+            <motion.h1
+              key={textIndex}
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className="text-4xl md:text-7xl font-black tracking-tight text-white leading-tight"
+            >
+              {phrases[textIndex].includes("centavos!") ? (
+                <>
+                  Arremate produtos incríveis por <span className="text-primary italic">centavos!</span>
+                </>
+              ) : phrases[textIndex]}
+            </motion.h1>
           </div>
           
           <p className="text-xl text-white/60 mb-10 max-w-2xl leading-relaxed">
