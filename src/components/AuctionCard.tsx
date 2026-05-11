@@ -227,14 +227,18 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         {isScheduled && auction.start_time && (
           <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 bg-primary/95 backdrop-blur-xl py-6 flex flex-col items-center justify-center z-20 shadow-[0_0_50px_rgba(var(--color-primary),0.4)] border-y-2 border-white/30 rotate-[-5deg] scale-110 origin-center">
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.2)_0%,_transparent_70%)] animate-pulse"></div>
-            <span className="text-[11px] font-black uppercase tracking-[0.4em] text-black/80 mb-2 relative z-10">AGENDADO PARA</span>
+            <span className="text-[11px] font-black uppercase tracking-[0.4em] text-black/80 mb-2 relative z-10">COMEÇA EM</span>
             <div className="flex flex-col items-center relative z-10">
-              <span className="text-2xl font-black text-black italic leading-none mb-1 drop-shadow-sm">
-                {new Date(auction.start_time).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}
+              <span className="text-4xl font-black text-black italic leading-none mb-2 drop-shadow-sm tabular-nums">
+                {timeParts.s}<span className="text-xl opacity-60 ml-0.5">,{timeParts.ms}</span>
               </span>
-              <span className="text-3xl font-black text-black italic leading-none mb-2 drop-shadow-sm">
-                {new Date(auction.start_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
-              </span>
+              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-black/10 border border-black/5">
+                <Calendar className="w-3 h-3 text-black/60" />
+                <span className="text-[10px] font-bold text-black/60 uppercase tracking-widest">
+                  {new Date(auction.start_time).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })} às {new Date(auction.start_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                </span>
+              </div>
+            </div>
               <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-black/10 border border-black/5">
                 <Clock className="w-3 h-3 text-black/60" />
                 <span className="text-[10px] font-bold text-black/60 uppercase tracking-widest">Prepare seus lances</span>
