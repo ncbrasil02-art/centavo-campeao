@@ -89,8 +89,7 @@ function Index() {
       
       // Process robot bids
       await supabase.rpc('process_robot_bids');
-    }, 5000); // Every 5 seconds is enough for the tick, 
-              // but for robots in the last 10s, maybe 2s is better.
+    }, 2000); // Every 2 seconds to keep robot activity snappy and auctions updated
 
     return () => clearInterval(interval);
   }, []);
