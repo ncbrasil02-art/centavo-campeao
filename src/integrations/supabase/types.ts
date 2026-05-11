@@ -562,11 +562,15 @@ export type Database = {
           current_price: number | null
           end_time: string | null
           id: string | null
+          is_finalizing: boolean | null
           last_bidder: Json | null
           product: Json | null
           product_id: string | null
           robot_enabled: boolean | null
+          start_time: string | null
           status: string | null
+          target_winner: string | null
+          timer_duration: number | null
         }
         Relationships: [
           {
