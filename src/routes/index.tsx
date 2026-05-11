@@ -239,6 +239,25 @@ function Index() {
             </div>
           </section>
 
+          {/* Finished Auctions Section */}
+          {finishedAuctions.length > 0 && (
+            <section className="py-20 bg-black/40 border-y border-white/5">
+              <div className="container mx-auto px-4">
+                <div className="mb-12">
+                  <Badge variant="outline" className="mb-4 border-white/20 bg-white/5 text-white/60 uppercase tracking-widest">GALERIA DE ARREMATADOS</Badge>
+                  <h2 className="text-4xl font-black tracking-tight text-white italic uppercase">Leilões <span className="text-white/40">Encerrados</span></h2>
+                  <p className="text-white/20 mt-2">Veja os últimos produtos que foram arrematados com sucesso na plataforma.</p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 opacity-60 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-700">
+                  {finishedAuctions.map((auction) => (
+                    <AuctionCard key={auction.id} auction={auction} />
+                  ))}
+                </div>
+              </div>
+            </section>
+          )}
+
           {/* Footer */}
           <footer className="py-12 border-t border-white/10">
             <div className="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6">
