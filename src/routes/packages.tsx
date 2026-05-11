@@ -63,12 +63,6 @@ function PackagesPage() {
     } finally {
       setBuying(null);
     }
-    } catch (error: any) {
-      console.error(error);
-      toast.error("Erro ao processar pagamento.");
-    } finally {
-      setBuying(null);
-    }
   };
 
   return (
