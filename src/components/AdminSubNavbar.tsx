@@ -15,7 +15,13 @@ export function AdminSubNavbar() {
   const navItems = [
     { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
     { label: "Usuários", href: "/admin/users", icon: Users },
+    { label: "Leilões", href: "/admin/auctions", icon: Gavel },
     { label: "Robôs", href: "/admin/robots", icon: Bot },
+    { label: "Pacotes", href: "/admin/packages", icon: History },
+    { label: "Vendas", href: "/admin/sales", icon: History },
+    { label: "Banners", href: "/admin/banners", icon: Settings },
+    { label: "Depoimentos", href: "/admin/testimonials", icon: Users },
+    { label: "Configurações", href: "/admin/settings", icon: Settings },
   ];
 
   return (
