@@ -13,7 +13,22 @@ export function Hero() {
   const [onlineUsers, setOnlineUsers] = useState(128);
   const [banners, setBanners] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [textIndex, setTextIndex] = useState(0);
   
+  const phrases = [
+    "Arremate produtos incríveis por centavos!",
+    "iPhones, Consoles e muito mais a partir de R$ 0,01",
+    "Economize até 99% nos seus produtos favoritos",
+    "A emoção do leilão em tempo real na sua tela"
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTextIndex((prev) => (prev + 1) % phrases.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 5000 })]);
 
   const scrollPrev = useCallback(() => {
@@ -89,9 +104,9 @@ export function Hero() {
             {banners.map((banner) => (
               <div key={banner.id} className="embla__slide flex-[0_0_100%] min-w-0 relative h-[400px] md:h-[600px]">
                 <img 
-                  src={banner.image_url} 
-                  alt={banner.title} 
-                  className="absolute inset-0 w-full h-full object-cover"
+                   src={banner.image_url} 
+                   alt={banner.title} 
+                   className="absolute inset-0 w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-transparent flex items-center">
                   <div className="container mx-auto px-4">
@@ -152,9 +167,24 @@ export function Hero() {
             VIVA A EMOÇÃO DO ARREMATE
           </Badge>
           
-          <h1 className="text-5xl md:text-7xl font-black tracking-tight text-white mb-6">
-            Arremate produtos incríveis por <span className="text-primary italic">centavos!</span>
-          </h1>
+          <div className="h-[120px] md:h-[180px] flex items-center justify-center mb-6 overflow-hidden">
+            <AnimatePresence mode="wait">
+              <motion.h1
+                key={textIndex}
+                initial={{ y: 40, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: -40, opacity: 0 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                className="text-4xl md:text-7xl font-black tracking-tight text-white leading-tight"
+              >
+                {phrases[textIndex].includes("centavos!") ? (
+                  <>
+                    Arremate produtos incríveis por <span className="text-primary italic">centavos!</span>
+                  </>
+                ) : phrases[textIndex]}
+              </motion.h1>
+            </AnimatePresence>
+          </div>
           
           <p className="text-xl text-white/60 mb-10 max-w-2xl leading-relaxed">
             A plataforma de leilões de centavos mais confiável, rápida e divertida do Brasil. iPhones, Consoles, TVs e muito mais a partir de R$ 0,01.
