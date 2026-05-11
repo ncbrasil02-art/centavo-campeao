@@ -53,7 +53,8 @@ function AdminAuctions() {
     status: "scheduled",
     robot_enabled: true,
     timer_duration: 15,
-    is_finalizing: false
+    is_finalizing: false,
+    target_winner: "random" as "robot" | "user" | "random"
   });
 
   useEffect(() => {
