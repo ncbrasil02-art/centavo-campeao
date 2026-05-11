@@ -5,7 +5,7 @@ import { Zap, ArrowRight, ShieldCheck, Clock, Wallet, Trophy, Star } from 'lucid
 import { Button } from '@/components/ui/button';
 import { Link } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/how-it-works' as any)({
+export const Route = createFileRoute('/how-it-works')({
   component: HowItWorks,
 });
 
