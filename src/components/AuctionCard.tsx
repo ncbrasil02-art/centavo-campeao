@@ -129,24 +129,40 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   }, [auction.id, getAdjustedNow]);
 
   const handleBid = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session) {
+      toast.error("Você precisa estar logado para dar lances!");
+      return;
+    }
+
     setLoading(true);
-    // Simulate bid for fictitious mode
-    setTimeout(() => {
-      playBidSound();
-      setIsNewBid(true);
-      setTimeLeft(30); // Reset to 30s as per fictitious mode
-      confettiFired.current = false;
-      setShowBonus(true);
-      setAuction((prev: any) => ({
-        ...prev,
-        current_price: (prev.current_price || 0) + 0.01,
-        last_bidder: { username: "Você", avatar_url: null }
-      }));
-      setTimeout(() => setShowBonus(false), 1000);
-      setTimeout(() => setIsNewBid(false), 800);
+    
+    try {
+      const { data, error } = await supabase.rpc('place_bid', {
+        p_auction_id: auction.id,
+        p_user_id: session.user.id
+      });
+
+      if (error) throw error;
+
+      const result = data as any;
+      if (!result.success) {
+        toast.error(result.message);
+      } else {
+        toast.success("Lance realizado com sucesso!");
+        playBidSound();
+        setIsNewBid(true);
+        setShowBonus(true);
+        setTimeout(() => setShowBonus(false), 1000);
+        setTimeout(() => setIsNewBid(false), 800);
+      }
+    } catch (err: any) {
+      console.error("Error bidding:", err);
+      toast.error(err.message || "Erro ao realizar lance.");
+    } finally {
       setLoading(false);
-      toast.success("Lance realizado! (Simulado)");
-    }, 300);
+    }
   };
 
   const formatTime = (seconds: number) => {
