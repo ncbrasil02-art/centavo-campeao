@@ -60,7 +60,9 @@ export function Navbar() {
           <Link to="/" className="text-sm font-medium text-white/70 transition-colors hover:text-primary">Leilões</Link>
           <Link to="/packages" className="text-sm font-medium text-white/70 transition-colors hover:text-primary">Comprar Lances</Link>
           {profile?.is_admin && (
-            <Link to="/admin/robots" className="text-sm font-medium text-white/70 transition-colors hover:text-primary">Painel Robôs</Link>
+            <Link to="/admin" className="text-sm font-medium text-white/70 transition-colors hover:text-primary flex items-center gap-1">
+              <LayoutDashboard className="w-4 h-4" /> Painel Admin
+            </Link>
           )}
         </div>
 
