@@ -13,7 +13,7 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Plus, Image as ImageIcon, Edit, Trash2, Layout, ExternalLink, Power } from "lucide-react";
+import { Plus, Image as ImageIcon, Edit, Trash2, Layout, ExternalLink, Power, Upload, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { 
   Dialog, 
@@ -36,6 +36,7 @@ function AdminBanners() {
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingBanner, setEditingBanner] = useState<any>(null);
+  const [uploading, setUploading] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     subtitle: "",
