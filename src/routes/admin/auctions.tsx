@@ -51,7 +51,8 @@ function AdminAuctions() {
     start_time: "",
     end_time: "",
     status: "scheduled",
-    robot_enabled: true
+    robot_enabled: true,
+    timer_duration: 15
   });
 
   useEffect(() => {
@@ -81,10 +82,19 @@ function AdminAuctions() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     try {
+      const startTime = new Date(formData.start_time);
+      const timerDuration = formData.timer_duration;
+      
+      // Se end_time não foi definido manualmente, ou é novo leilão, podemos sugerir o start + timer
+      let endTime = new Date(formData.end_time);
+      if (!formData.end_time) {
+        endTime = new Date(startTime.getTime() + (timerDuration * 1000));
+      }
+
       const payload = {
         ...formData,
-        start_time: new Date(formData.start_time).toISOString(),
-        end_time: new Date(formData.end_time).toISOString(),
+        start_time: startTime.toISOString(),
+        end_time: endTime.toISOString(),
       };
 
       if (editingAuction) {
@@ -131,7 +141,8 @@ function AdminAuctions() {
       start_time: format(new Date(auction.start_time), "yyyy-MM-dd'T'HH:mm"),
       end_time: format(new Date(auction.end_time), "yyyy-MM-dd'T'HH:mm"),
       status: auction.status,
-      robot_enabled: auction.robot_enabled
+      robot_enabled: auction.robot_enabled,
+      timer_duration: auction.timer_duration || 15
     });
     setIsDialogOpen(true);
   }
@@ -154,7 +165,7 @@ function AdminAuctions() {
             setIsDialogOpen(open);
             if (!open) {
               setEditingAuction(null);
-              setFormData({ product_id: "", start_time: "", end_time: "", status: "scheduled", robot_enabled: true });
+              setFormData({ product_id: "", start_time: "", end_time: "", status: "scheduled", robot_enabled: true, timer_duration: 15 });
             }
           }}>
             <DialogTrigger asChild>
