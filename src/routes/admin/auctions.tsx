@@ -354,7 +354,11 @@ function AdminAuctions() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <StatusBadge status={auction.status} isFinalizing={auction.is_finalizing} />
+                      <StatusBadge 
+                        status={auction.status} 
+                        isFinalizing={auction.is_finalizing} 
+                        targetWinner={auction.target_winner}
+                      />
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
