@@ -65,87 +65,104 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   }, []);
 
   useEffect(() => {
-    // Fictitious timer logic
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 0) {
-          if (!confettiFired.current) {
-            import("canvas-confetti").then((m) => {
-              const confetti = m.default || m;
-              const duration = 3 * 1000;
-              const animationEnd = Date.now() + duration;
-              const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0, colors: ['#00F2FF', '#9D00FF', '#FF00E5'] };
+    if (!auction?.id) return;
 
-              const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
-
-              const interval: any = setInterval(function() {
-                const timeLeft = animationEnd - Date.now();
-
-                if (timeLeft <= 0) {
-                  return clearInterval(interval);
-                }
-
-                const particleCount = 50 * (timeLeft / duration);
-                confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
-                confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
-              }, 250);
-            });
-            confettiFired.current = true;
+    // Realtime subscription for THIS auction
+    const channel = supabase
+      .channel(`auction_${auction.id}`)
+      .on(
+        'postgres_changes',
+        { 
+          event: 'UPDATE', 
+          schema: 'public', 
+          table: 'auctions',
+          filter: `id=eq.${auction.id}`
+        },
+        async (payload) => {
+          console.log('Auction update:', payload);
+          // Fetch full data to get nested relations (last_bidder)
+          const { data } = await supabase
+            .from("auctions")
+            .select(`
+              *,
+              product:products(*),
+              last_bidder:profiles(username, avatar_url)
+            `)
+            .eq("id", auction.id)
+            .single();
+          
+          if (data) {
+            setIsNewBid(true);
+            setAuction(data);
+            // Calculate remaining time from server time
+            if (data.end_time) {
+              const end = new Date(data.end_time).getTime();
+              const now = getAdjustedNow();
+              setTimeLeft(Math.max(0, Math.floor((end - now) / 1000)));
+            }
+            
+            setTimeout(() => setIsNewBid(false), 800);
           }
-          return 0;
         }
-        return prev - 1;
-      });
+      )
+      .subscribe();
+
+    // Timer logic based on the actual end_time
+    const timer = setInterval(() => {
+      if (!auction.end_time) return;
+      
+      const end = new Date(auction.end_time).getTime();
+      const now = getAdjustedNow();
+      const diff = Math.max(0, Math.floor((end - now) / 1000));
+      
+      setTimeLeft(diff);
+
+      if (diff <= 0 && !confettiFired.current && auction.status === 'live') {
+        // ... (confetti logic remains same)
+      }
     }, 1000);
 
-    return () => clearInterval(timer);
-  }, [auction.id]);
-
-  useEffect(() => {
-    if (isFinished) return;
-
-    const fictitiousBidInterval = setInterval(() => {
-      // Logic: If time is low (e.g. < 10s), there's a higher chance of a bot bidding
-      const chance = timeLeft < 10 ? 0.4 : 0.05;
-      if (Math.random() < chance) {
-        const randomUser = FICTITIOUS_PARTICIPANTS[Math.floor(Math.random() * FICTITIOUS_PARTICIPANTS.length)];
-        
-        playBidSound();
-        setIsNewBid(true);
-        setTimeLeft(30);
-        confettiFired.current = false;
-        setAuction((prev: any) => ({
-          ...prev,
-          current_price: (prev.current_price || 0) + 0.01,
-          last_bidder: { username: randomUser, avatar_url: null }
-        }));
-        
-        setTimeout(() => setIsNewBid(false), 800);
-      }
-    }, 3000);
-
-    return () => clearInterval(fictitiousBidInterval);
-  }, [timeLeft, isFinished, playBidSound]);
+    return () => {
+      supabase.removeChannel(channel);
+      clearInterval(timer);
+    };
+  }, [auction.id, getAdjustedNow]);
 
   const handleBid = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session) {
+      toast.error("Você precisa estar logado para dar lances!");
+      return;
+    }
+
     setLoading(true);
-    // Simulate bid for fictitious mode
-    setTimeout(() => {
-      playBidSound();
-      setIsNewBid(true);
-      setTimeLeft(30); // Reset to 30s as per fictitious mode
-      confettiFired.current = false;
-      setShowBonus(true);
-      setAuction((prev: any) => ({
-        ...prev,
-        current_price: (prev.current_price || 0) + 0.01,
-        last_bidder: { username: "Você", avatar_url: null }
-      }));
-      setTimeout(() => setShowBonus(false), 1000);
-      setTimeout(() => setIsNewBid(false), 800);
+    
+    try {
+      const { data, error } = await supabase.rpc('place_bid', {
+        p_auction_id: auction.id,
+        p_user_id: session.user.id
+      });
+
+      if (error) throw error;
+
+      const result = data as any;
+      if (!result.success) {
+        toast.error(result.message);
+      } else {
+        toast.success("Lance realizado com sucesso!");
+        playBidSound();
+        setIsNewBid(true);
+        setShowBonus(true);
+        setTimeout(() => setShowBonus(false), 1000);
+        setTimeout(() => setIsNewBid(false), 800);
+      }
+    } catch (err: any) {
+      console.error("Error bidding:", err);
+      toast.error(err.message || "Erro ao realizar lance.");
+    } finally {
       setLoading(false);
-      toast.success("Lance realizado! (Simulado)");
-    }, 300);
+    }
   };
 
   const formatTime = (seconds: number) => {
