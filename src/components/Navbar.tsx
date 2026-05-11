@@ -2,18 +2,30 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { User, LogOut, Wallet, Gavel, LayoutDashboard, Menu, X } from "lucide-react";
+import { User, LogOut, Wallet, Gavel, LayoutDashboard, Menu, X, Clock } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getFallbackAvatarUrl } from "@/lib/constants";
 import { useSettings } from "@/hooks/useSettings";
+import { useTimeSync } from "@/hooks/useTimeSync";
 import { motion, AnimatePresence } from "framer-motion";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 export function Navbar() {
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { site_name, logo_url } = useSettings();
+  const { getAdjustedNow } = useTimeSync();
+  const [currentTime, setCurrentTime] = useState<Date>(new Date());
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date(getAdjustedNow()));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [getAdjustedNow]);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -71,6 +83,14 @@ export function Navbar() {
 
         {/* Desktop Navigation */}
         <div className="hidden items-center gap-8 lg:flex">
+          <div className="flex flex-col items-center px-4 border-x border-white/5 bg-white/5 py-1 rounded-lg">
+            <span className="text-[9px] font-black text-primary/60 uppercase tracking-[0.2em] mb-0.5 flex items-center gap-1">
+              <Clock className="w-2.5 h-2.5" /> Horário Oficial
+            </span>
+            <span className="text-sm font-black tabular-nums text-white/90">
+              {format(currentTime, "HH:mm:ss", { locale: ptBR })}
+            </span>
+          </div>
           <Link to="/" className="text-sm font-medium text-white/70 transition-colors hover:text-primary">Leilões</Link>
           <Link to="/packages" className="text-sm font-medium text-white/70 transition-colors hover:text-primary">Comprar Lances</Link>
           {profile?.is_admin && (
@@ -146,6 +166,13 @@ export function Navbar() {
             className="lg:hidden border-t border-white/10 bg-background/95 backdrop-blur-xl overflow-hidden"
           >
             <div className="container mx-auto px-4 py-6 flex flex-col gap-4">
+              <div className="flex items-center justify-between p-2 mb-2 bg-primary/5 rounded-xl border border-primary/10">
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-black text-primary/60 uppercase tracking-widest">Horário de Brasília</span>
+                  <span className="text-xl font-black tabular-nums">{format(currentTime, "HH:mm:ss", { locale: ptBR })}</span>
+                </div>
+                <Clock className="w-6 h-6 text-primary/40" />
+              </div>
               <Link 
                 to="/" 
                 className="text-lg font-bold p-2 hover:text-primary transition-colors"
