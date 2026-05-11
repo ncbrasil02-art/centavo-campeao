@@ -32,6 +32,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -49,7 +50,8 @@ function AdminAuctions() {
     product_id: "",
     start_time: "",
     end_time: "",
-    status: "scheduled"
+    status: "scheduled",
+    robot_enabled: true
   });
 
   useEffect(() => {
@@ -128,7 +130,8 @@ function AdminAuctions() {
       product_id: auction.product_id,
       start_time: format(new Date(auction.start_time), "yyyy-MM-dd'T'HH:mm"),
       end_time: format(new Date(auction.end_time), "yyyy-MM-dd'T'HH:mm"),
-      status: auction.status
+      status: auction.status,
+      robot_enabled: auction.robot_enabled
     });
     setIsDialogOpen(true);
   }
@@ -222,6 +225,14 @@ function AdminAuctions() {
                       <SelectItem value="cancelled">Cancelado</SelectItem>
                     </SelectContent>
                   </Select>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Switch 
+                    checked={formData.robot_enabled} 
+                    onCheckedChange={v => setFormData({...formData, robot_enabled: v})}
+                  />
+                  <Label>Participação de Robôs</Label>
                 </div>
 
                 <DialogFooter className="pt-4">
