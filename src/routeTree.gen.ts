@@ -18,6 +18,7 @@ import { Route as AuctionsIdRouteImport } from './routes/auctions.$id'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as AdminRobotsRouteImport } from './routes/admin/robots'
+import { Route as AdminAuctionsRouteImport } from './routes/admin/auctions'
 
 const PackagesRoute = PackagesRouteImport.update({
   id: '/packages',
@@ -64,12 +65,18 @@ const AdminRobotsRoute = AdminRobotsRouteImport.update({
   path: '/robots',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAuctionsRoute = AdminAuctionsRouteImport.update({
+  id: '/auctions',
+  path: '/auctions',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/packages': typeof PackagesRoute
+  '/admin/auctions': typeof AdminAuctionsRoute
   '/admin/robots': typeof AdminRobotsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -80,6 +87,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/packages': typeof PackagesRoute
+  '/admin/auctions': typeof AdminAuctionsRoute
   '/admin/robots': typeof AdminRobotsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -92,6 +100,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/packages': typeof PackagesRoute
+  '/admin/auctions': typeof AdminAuctionsRoute
   '/admin/robots': typeof AdminRobotsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -105,6 +114,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/packages'
+    | '/admin/auctions'
     | '/admin/robots'
     | '/admin/settings'
     | '/admin/users'
@@ -115,6 +125,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/packages'
+    | '/admin/auctions'
     | '/admin/robots'
     | '/admin/settings'
     | '/admin/users'
@@ -126,6 +137,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/packages'
+    | '/admin/auctions'
     | '/admin/robots'
     | '/admin/settings'
     | '/admin/users'
@@ -206,10 +218,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRobotsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/auctions': {
+      id: '/admin/auctions'
+      path: '/auctions'
+      fullPath: '/admin/auctions'
+      preLoaderRoute: typeof AdminAuctionsRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
 interface AdminRouteChildren {
+  AdminAuctionsRoute: typeof AdminAuctionsRoute
   AdminRobotsRoute: typeof AdminRobotsRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminUsersRoute: typeof AdminUsersRoute
@@ -217,6 +237,7 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAuctionsRoute: AdminAuctionsRoute,
   AdminRobotsRoute: AdminRobotsRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminUsersRoute: AdminUsersRoute,
@@ -235,3 +256,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
