@@ -89,7 +89,7 @@ function Index() {
       supabase
         .from("v_home_live_auctions")
         .select("*")
-        .order("status", { ascending: false }) // 'scheduled' < 'live' in alpha, but wait...
+        .order("status", { ascending: true }) // 'live' first, then 'scheduled'
         .order("start_time", { ascending: true })
         .limit(12),
       supabase
