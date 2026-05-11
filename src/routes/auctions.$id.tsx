@@ -226,7 +226,7 @@ function AuctionPage() {
       const { data, error } = await supabase.rpc('place_bid', {
         p_auction_id: id,
         p_user_id: userData.user.id
-      });
+      }) as { data: any, error: any };
 
       if (error) {
         toast.error(error.message || "Erro ao dar lance");
@@ -386,7 +386,7 @@ function AuctionPage() {
                       </li>
                       <li className="flex gap-3">
                         <div className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</div>
-                        <p>Cada lance reinicia o cronômetro para <span className="text-white font-bold">15 segundos</span> (se estiver abaixo disso).</p>
+                        <p>Cada lance reinicia o cronômetro para <span className="text-white font-bold">{timerDuration} segundos</span>.</p>
                       </li>
                       <li className="flex gap-3">
                         <div className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</div>
