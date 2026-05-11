@@ -5,8 +5,16 @@ import { Navbar } from "@/components/Navbar";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Zap, ShieldCheck, Wallet, ArrowRight, Check } from "lucide-react";
+import { Zap, ShieldCheck, Wallet, ArrowRight, Check, CreditCard, Copy, Loader2, QrCode } from "lucide-react";
 import { toast } from "sonner";
+import { useSettings } from "@/hooks/useSettings";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/packages")({
   component: PackagesPage,
@@ -15,8 +23,11 @@ export const Route = createFileRoute("/packages")({
 function PackagesPage() {
   const [packages, setPackages] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [buying, setBuying] = useState<string | null>(null);
+  const [buying, setBuying] = useState<any | null>(null);
+  const [paymentStep, setPaymentStep] = useState<"method" | "pix" | "mercado-pago" | "processing">("method");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const navigate = useNavigate();
+  const settings = useSettings();
 
   useEffect(() => {
     fetchPackages();
@@ -32,8 +43,7 @@ function PackagesPage() {
     setLoading(false);
   }
 
-  const handlePurchase = async (pkg: any) => {
-    setBuying(pkg.id);
+  const handlePurchaseClick = async (pkg: any) => {
     const { data: { session } } = await supabase.auth.getSession();
     
     if (!session) {
@@ -42,10 +52,32 @@ function PackagesPage() {
       return;
     }
 
+    setBuying(pkg);
+    setPaymentStep("method");
+    setIsDialogOpen(true);
+  };
+
+  const handlePixPayment = async () => {
+    setPaymentStep("pix");
+  };
+
+  const handleMercadoPagoPayment = async () => {
+    setPaymentStep("processing");
+    // Simulate Mercado Pago flow
+    setTimeout(() => {
+      setPaymentStep("mercado-pago");
+    }, 1500);
+  };
+
+  const finalizePurchase = async () => {
+    if (!buying) return;
+    
+    setPaymentStep("processing");
     try {
-      // Call the secure RPC to purchase credits
+      // In a real app, this would be an edge function that verifies the payment
+      // For now, we use the buy_credits RPC for simulation/manual approval logic
       const { data, error: rpcError } = await supabase.rpc("buy_credits", {
-        p_package_id: pkg.id
+        p_package_id: buying.id
       });
 
       if (rpcError) throw rpcError;
@@ -56,13 +88,21 @@ function PackagesPage() {
         return;
       }
 
-      toast.success(`Sucesso! Você recebeu ${pkg.bid_amount} lances.`);
+      toast.success(`Sucesso! Você recebeu ${buying.bid_amount} lances.`);
+      setIsDialogOpen(false);
       navigate({ to: "/" });
     } catch (error: any) {
       console.error(error);
       toast.error("Erro ao processar pagamento.");
     } finally {
-      setBuying(null);
+      setPaymentStep("method");
+    }
+  };
+
+  const copyPixKey = () => {
+    if (settings.pix_key) {
+      navigator.clipboard.writeText(settings.pix_key);
+      toast.success("Chave PIX copiada!");
     }
   };
 
@@ -75,7 +115,7 @@ function PackagesPage() {
           <Badge variant="outline" className="mb-4 border-primary/30 bg-primary/10 text-primary uppercase">CRÉDITOS</Badge>
           <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-6 italic">Turbine seus <span className="text-primary">lances!</span></h1>
           <p className="text-white/40 text-lg leading-relaxed">
-            Escolha o pacote que melhor se adapta à sua estratégia. Créditos liberados instantaneamente via PIX.
+            Escolha o pacote que melhor se adapta à sua estratégia. Créditos liberados instantaneamente.
           </p>
         </div>
 
@@ -105,17 +145,124 @@ function PackagesPage() {
                 </CardContent>
                 <CardFooter>
                   <Button 
-                    onClick={() => handlePurchase(pkg)} 
-                    disabled={buying === pkg.id}
+                    onClick={() => handlePurchaseClick(pkg)} 
                     className="w-full bg-white/10 hover:bg-primary hover:text-primary-foreground text-white font-bold h-12 transition-all"
                   >
-                    {buying === pkg.id ? "PROCESSANDO..." : "COMPRAR AGORA"}
+                    COMPRAR AGORA
                   </Button>
                 </CardFooter>
               </Card>
             ))
           )}
         </div>
+
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent className="bg-zinc-900 border-white/10 text-white sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-black uppercase italic italic">
+                Finalizar <span className="text-primary">Compra</span>
+              </DialogTitle>
+              <DialogDescription className="text-white/40">
+                {buying?.name} - R$ {buying?.price.toFixed(2)}
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="py-6">
+              {paymentStep === "method" && (
+                <div className="grid grid-cols-1 gap-4">
+                  <Button 
+                    variant="outline" 
+                    className="h-20 border-white/10 hover:border-primary hover:bg-white/5 flex flex-col items-center justify-center gap-1"
+                    onClick={handlePixPayment}
+                  >
+                    <div className="flex items-center gap-2">
+                      <QrCode className="w-5 h-5 text-primary" />
+                      <span className="font-bold">Pagar com PIX</span>
+                    </div>
+                    <span className="text-[10px] text-white/40 uppercase font-black">Liberação Instantânea</span>
+                  </Button>
+
+                  <Button 
+                    variant="outline" 
+                    className="h-20 border-white/10 hover:border-primary hover:bg-white/5 flex flex-col items-center justify-center gap-1"
+                    onClick={handleMercadoPagoPayment}
+                  >
+                    <div className="flex items-center gap-2">
+                      <CreditCard className="w-5 h-5 text-blue-500" />
+                      <span className="font-bold">Mercado Pago</span>
+                    </div>
+                    <span className="text-[10px] text-white/40 uppercase font-black">Cartão ou Saldo MP</span>
+                  </Button>
+                </div>
+              )}
+
+              {paymentStep === "pix" && (
+                <div className="text-center space-y-6">
+                  <div className="w-48 h-48 bg-white p-2 mx-auto rounded-lg">
+                    {/* Placeholder for QR Code */}
+                    <div className="w-full h-full bg-zinc-100 flex items-center justify-center border-2 border-dashed border-zinc-300">
+                      <QrCode className="w-20 h-20 text-zinc-400" />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="p-3 bg-white/5 rounded-lg border border-white/10 text-left">
+                      <p className="text-[10px] text-white/40 uppercase font-black mb-1">Chave PIX</p>
+                      <div className="flex items-center justify-between gap-2">
+                        <code className="text-xs break-all">{settings.pix_key || "carregando..."}</code>
+                        <Button size="icon" variant="ghost" className="h-8 w-8 shrink-0" onClick={copyPixKey}>
+                          <Copy className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="p-3 bg-white/5 rounded-lg border border-white/10 text-left">
+                      <p className="text-[10px] text-white/40 uppercase font-black mb-1">Beneficiário</p>
+                      <p className="text-sm font-bold">{settings.pix_name || "Lance Certo"}</p>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 space-y-2">
+                    <Button className="w-full bg-primary font-bold" onClick={finalizePurchase}>
+                      Já realizei o pagamento
+                    </Button>
+                    <Button variant="ghost" className="w-full text-white/40 text-xs" onClick={() => setPaymentStep("method")}>
+                      Mudar forma de pagamento
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {paymentStep === "mercado-pago" && (
+                <div className="text-center space-y-6">
+                  <div className="py-8 space-y-4">
+                    <div className="w-16 h-16 rounded-full bg-blue-500/20 flex items-center justify-center mx-auto text-blue-500">
+                      <CreditCard className="w-8 h-8" />
+                    </div>
+                    <h4 className="font-bold text-lg">Integração Mercado Pago</h4>
+                    <p className="text-sm text-white/40">Clique no botão abaixo para concluir o pagamento em ambiente seguro.</p>
+                  </div>
+
+                  <div className="pt-4 space-y-2">
+                    <Button className="w-full bg-blue-600 hover:bg-blue-700 font-bold" onClick={finalizePurchase}>
+                      Ir para Pagamento
+                    </Button>
+                    <Button variant="ghost" className="w-full text-white/40 text-xs" onClick={() => setPaymentStep("method")}>
+                      Mudar forma de pagamento
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {paymentStep === "processing" && (
+                <div className="py-12 flex flex-col items-center justify-center gap-4">
+                  <Loader2 className="w-10 h-10 text-primary animate-spin" />
+                  <p className="text-white/40 animate-pulse">Processando transação...</p>
+                </div>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
 
         <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8">
           <Feature icon={<ShieldCheck className="w-6 h-6" />} title="Pagamento Seguro" description="Ambiente criptografado e certificado para sua total segurança." />

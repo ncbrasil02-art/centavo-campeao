@@ -13,7 +13,7 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Plus, Image as ImageIcon, Edit, Trash2, Layout, ExternalLink, Power } from "lucide-react";
+import { Plus, Image as ImageIcon, Edit, Trash2, Layout, ExternalLink, Power, Upload, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { 
   Dialog, 
@@ -36,6 +36,7 @@ function AdminBanners() {
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingBanner, setEditingBanner] = useState<any>(null);
+  const [uploading, setUploading] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     subtitle: "",
@@ -65,6 +66,36 @@ function AdminBanners() {
       setLoading(false);
     }
   }
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const fileExt = file.name.split(".").pop();
+      const fileName = `banner-${Math.random()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("site-assets")
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from("site-assets")
+        .getPublicUrl(filePath);
+
+      setFormData({ ...formData, image_url: publicUrl });
+      toast.success("Imagem carregada com sucesso!");
+    } catch (error) {
+      console.error("Error uploading banner:", error);
+      toast.error("Erro ao carregar imagem");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -192,10 +223,43 @@ function AdminBanners() {
                   </div>
                 </div>
                 
-                <div className="space-y-2">
-                  <Label>URL da Imagem</Label>
+                <div className="space-y-4">
+                  <Label>Imagem do Banner</Label>
+                  <div className="flex items-center gap-4">
+                    <div className="w-24 h-12 rounded bg-white/5 border border-white/10 overflow-hidden flex items-center justify-center">
+                      {formData.image_url ? (
+                        <img src={formData.image_url} alt="Preview" className="w-full h-full object-cover" />
+                      ) : (
+                        <ImageIcon className="w-6 h-6 text-white/20" />
+                      )}
+                    </div>
+                    <div className="flex-1 relative">
+                      <input
+                        type="file"
+                        id="banner-upload"
+                        className="hidden"
+                        accept="image/*"
+                        onChange={handleFileUpload}
+                        disabled={uploading}
+                      />
+                      <Button
+                        asChild
+                        variant="outline"
+                        className="w-full border-white/10 hover:bg-white/5 text-white"
+                        disabled={uploading}
+                      >
+                        <label htmlFor="banner-upload" className="cursor-pointer">
+                          {uploading ? (
+                            <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Carregando...</>
+                          ) : (
+                            <><Upload className="w-4 h-4 mr-2" /> Upload de Imagem</>
+                          )}
+                        </label>
+                      </Button>
+                    </div>
+                  </div>
                   <Input 
-                    placeholder="https://..."
+                    placeholder="Ou cole a URL da imagem aqui..."
                     value={formData.image_url}
                     onChange={e => setFormData({...formData, image_url: e.target.value})}
                     className="bg-white/5 border-white/10"
