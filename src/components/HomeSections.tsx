@@ -14,7 +14,7 @@ import Autoplay from 'embla-carousel-autoplay';
 
 export function Hero() {
   const { getAdjustedNow } = useTimeSync();
-  const [currentTime, setCurrentTime] = useState<Date>(new Date());
+  const [currentTime, setCurrentTime] = useState<Date | null>(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
