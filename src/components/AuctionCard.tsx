@@ -345,24 +345,36 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
                 R$ {auction.current_price?.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) || "0,01"}
               </span>
             </div>
-            <div className="relative flex flex-col items-end">
+            <div className={`relative flex flex-col items-end transition-all duration-300 ${timeLeft <= 8 && !isFinished ? 'scale-105' : ''}`}>
               <span className="mb-1 text-[9px] font-black uppercase tracking-widest text-white/40">
                 Tempo
               </span>
-              <div className={`flex items-center gap-1 font-mono text-3xl font-black transition-colors duration-300 ${
-                timeLeft <= 5 && !isFinished 
-                  ? 'text-red-500 animate-pulse scale-110 drop-shadow-[0_0_10px_rgba(239,68,68,0.7)]' 
-                  : timeLeft <= 10 && !isFinished
-                  ? 'text-orange-500'
-                  : isFinished ? 'text-white/20' : 'text-white'
-              }`}>
-                <Clock className={`h-5 w-5 ${timeLeft <= 5 && !isFinished ? 'animate-spin' : ''}`} />
-                {isFinished ? "00,00" : (
-                  <span className="flex items-baseline tabular-nums">
-                    {timeParts.s}<span className="text-lg opacity-60 ml-0.5">,{timeParts.ms}</span>
+              <div className="flex items-center gap-1.5">
+                <div className={`relative flex items-center justify-center min-w-[50px] py-1.5 rounded-xl border border-white/10 overflow-hidden shadow-2xl transition-all duration-300 ${
+                  timeLeft <= 8 && !isFinished 
+                    ? 'bg-gradient-to-br from-red-600/40 to-red-900/60 border-red-500/50 animate-pulse' 
+                    : 'bg-gradient-to-br from-black/60 to-black/40'
+                }`}>
+                  <span className={`text-2xl font-black tabular-nums tracking-tighter ${
+                    timeLeft <= 8 && !isFinished ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'text-white'
+                  }`}>
+                    {isFinished ? "00" : timeParts.s}
                   </span>
-                )}
+                  {timeLeft <= 8 && !isFinished && (
+                    <div className="absolute inset-0 bg-red-500/10 animate-[ping_1.5s_ease-in-out_infinite]"></div>
+                  )}
+                </div>
+                <div className={`flex items-end py-1.5 px-1.5 rounded-lg border border-white/5 bg-black/40 ${
+                   timeLeft <= 8 && !isFinished ? 'border-red-500/20' : ''
+                }`}>
+                  <span className={`text-sm font-black tabular-nums ${
+                    timeLeft <= 8 && !isFinished ? 'text-red-400' : 'text-white/40'
+                  }`}>
+                    ,{isFinished ? "00" : timeParts.ms}
+                  </span>
+                </div>
               </div>
+            </div>
               {showBonus && (
                 <div className="absolute -top-8 right-0 animate-bounce rounded-lg border border-primary/30 bg-primary/20 px-2 py-1 text-[10px] font-black text-primary backdrop-blur-sm">
                   +{timerDuration}s RESET
