@@ -107,16 +107,26 @@ function AuctionPage() {
   }, [id]);
 
   useEffect(() => {
-    if (!auction?.end_time || isFinished) return;
+    if ((!auction?.end_time && !auction?.start_time) || isFinished) return;
 
-    const calculateTimeLeft = () => {
+    const calculateTimeLeft = async () => {
+      const isScheduled = auction.status === 'scheduled';
+      const targetTime = isScheduled ? auction.start_time : auction.end_time;
+      if (!targetTime) return;
+
       const now = getAdjustedNow();
-      const end = new Date(auction.end_time).getTime();
-      const diff = Math.max(0, (end - now) / 1000);
+      const target = new Date(targetTime).getTime();
+      const diff = Math.max(0, (target - now) / 1000);
       
       setTimeLeft(diff);
 
-      if (diff <= 0 && auction.status === 'live') {
+      if (isScheduled && diff <= 0) {
+        console.log("Scheduled auction reached zero on detail page, refreshing...");
+        await supabase.rpc('tick_auctions');
+        fetchAuction();
+      }
+
+      if (!isScheduled && diff <= 0 && auction.status === 'live') {
         // Auction just finished
         if (!confettiFired.current) {
           import("canvas-confetti").then((m) => {
