@@ -32,6 +32,8 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   const { getAdjustedNow } = useTimeSync();
 
   const isFinished = timeLeft <= 0 || auction.status === 'finished';
+  const isScheduled = auction.status === 'scheduled';
+  const isFinalizing = auction.is_finalizing;
   const discount = auction.product?.market_value 
     ? Math.round((1 - (auction.current_price / auction.product.market_value)) * 100)
     : 0;
@@ -107,20 +109,21 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       )
       .subscribe();
 
-    // Timer logic based on the actual end_time with sub-second precision
+    // Timer logic based on the actual end_time (or start_time for scheduled)
     const timer = setInterval(() => {
-      if (!auction.end_time) return;
+      const targetTime = isScheduled ? auction.start_time : auction.end_time;
+      if (!targetTime) return;
       
-      const end = new Date(auction.end_time).getTime();
+      const target = new Date(targetTime).getTime();
       const now = getAdjustedNow();
-      const diff = Math.max(0, (end - now) / 1000);
+      const diff = Math.max(0, (target - now) / 1000);
       
       setTimeLeft(diff);
 
-      if (diff <= 0 && !confettiFired.current && auction.status === 'live') {
+      if (!isScheduled && diff <= 0 && !confettiFired.current && auction.status === 'live') {
         // ... (confetti logic remains same)
       }
-    }, 50); // Fast update for decimal smoothness
+    }, 50);
 
     return () => {
       supabase.removeChannel(channel);
@@ -197,14 +200,41 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           </div>
         </Link>
 
+        {isScheduled && auction.start_time && (
+          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 bg-primary/95 backdrop-blur-xl py-6 flex flex-col items-center justify-center z-20 shadow-[0_0_50px_rgba(var(--color-primary),0.4)] border-y-2 border-white/30 rotate-[-5deg] scale-110 origin-center">
+            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.2)_0%,_transparent_70%)] animate-pulse"></div>
+            <span className="text-[11px] font-black uppercase tracking-[0.4em] text-black/80 mb-2 relative z-10">AGENDADO PARA</span>
+            <div className="flex flex-col items-center relative z-10">
+              <span className="text-2xl font-black text-black italic leading-none mb-1 drop-shadow-sm">
+                {new Date(auction.start_time).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}
+              </span>
+              <span className="text-3xl font-black text-black italic leading-none mb-2 drop-shadow-sm">
+                {new Date(auction.start_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+              </span>
+              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-black/10 border border-black/5">
+                <Clock className="w-3 h-3 text-black/60" />
+                <span className="text-[10px] font-bold text-black/60 uppercase tracking-widest">Prepare seus lances</span>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Badges */}
         <div className="absolute left-4 top-4 flex flex-col gap-2">
           {isFinished ? (
-            <Badge variant="outline" className="border-white/10 bg-black/60 px-3 py-1 text-white/40 backdrop-blur-md">
+            <Badge variant="outline" className="border-white/10 bg-black/60 px-3 py-1 text-white/40 backdrop-blur-md font-bold uppercase italic">
               ENCERRADO
             </Badge>
+          ) : isScheduled ? (
+            <Badge className="bg-blue-500 px-3 py-1 text-white backdrop-blur-md font-bold uppercase italic shadow-[0_0_15px_rgba(59,130,246,0.5)]">
+              AGENDADO
+            </Badge>
+          ) : isFinalizing ? (
+            <Badge className="bg-orange-500 border-none px-3 py-1 text-white font-bold uppercase italic shadow-[0_0_20px_rgba(249,115,22,0.5)]">
+              FINALIZANDO
+            </Badge>
           ) : (
-            <Badge className="animate-pulse border-none bg-red-500 px-3 py-1 shadow-[0_0_15px_rgba(239,68,68,0.5)] hover:bg-red-600">
+            <Badge className="animate-pulse border-none bg-red-500 px-3 py-1 shadow-[0_0_15px_rgba(239,68,68,0.5)] hover:bg-red-600 font-bold uppercase italic">
               AO VIVO
             </Badge>
           )}
@@ -357,16 +387,18 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             e.stopPropagation();
             handleBid();
           }} 
-          disabled={isFinished || loading}
+          disabled={isFinished || isScheduled || loading}
           className={`h-14 w-full rounded-2xl text-lg font-black uppercase italic tracking-tighter transition-all relative overflow-hidden ${
             isFinished 
               ? 'cursor-not-allowed border border-white/5 bg-white/5 text-white/20' 
+              : isScheduled
+              ? 'cursor-not-allowed border border-white/10 bg-white/10 text-white/40'
               : timeLeft <= 5
               ? 'bg-red-600 text-white shadow-[0_0_30px_rgba(220,38,38,0.8)] animate-[pulse_0.5s_ease-in-out_infinite] hover:bg-red-700'
               : 'bg-primary text-primary-foreground shadow-[0_8px_25px_rgba(var(--color-primary),0.3)] hover:scale-[1.02] hover:bg-primary/90 active:scale-95'
           }`}
         >
-          {loading ? "..." : isFinished ? "ENCERRADO" : (
+          {loading ? "..." : isFinished ? "ENCERRADO" : isScheduled ? "AGUARDANDO INÍCIO" : (
             <span className="flex items-center gap-2">
               {timeLeft <= 5 ? "VAI PERDER! LANCE AGORA" : "Dar Lance"} <Zap className={`h-5 w-5 fill-current ${timeLeft <= 5 ? 'animate-bounce' : ''}`} />
             </span>

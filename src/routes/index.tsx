@@ -89,8 +89,9 @@ function Index() {
       supabase
         .from("v_home_live_auctions")
         .select("*")
-        .order("end_time", { ascending: true })
-        .limit(8),
+        .order("status", { ascending: false }) // 'scheduled' < 'live' in alpha, but wait...
+        .order("start_time", { ascending: true })
+        .limit(12),
       supabase
         .from("v_home_recent_winners")
         .select("*")
@@ -112,6 +113,15 @@ function Index() {
         {/* Main Content Area */}
         <div className="flex-1 overflow-y-auto scrollbar-hide">
           <Hero />
+
+          {/* Featured Auctions Header */}
+          <div className="container mx-auto px-4 mt-8">
+             <div className="flex items-center gap-4 mb-8">
+                <div className="h-[1px] flex-1 bg-white/10"></div>
+                <h2 className="text-sm font-black uppercase tracking-[0.5em] text-white/40 italic">Destaques da Semana</h2>
+                <div className="h-[1px] flex-1 bg-white/10"></div>
+             </div>
+          </div>
 
           {/* Live Auctions Section */}
           <section className="py-20 bg-black/20">
