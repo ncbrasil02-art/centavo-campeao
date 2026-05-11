@@ -521,6 +521,14 @@ export type Database = {
         Returns: undefined
       }
       buy_credits: { Args: { p_package_id: string }; Returns: Json }
+      complete_payment: {
+        Args: { p_external_id?: string; p_transaction_id: string }
+        Returns: Json
+      }
+      create_pending_payment: {
+        Args: { p_method: string; p_package_id: string }
+        Returns: Json
+      }
       get_server_time: { Args: never; Returns: string }
       place_bid: {
         Args: { p_auction_id: string; p_user_id: string }
