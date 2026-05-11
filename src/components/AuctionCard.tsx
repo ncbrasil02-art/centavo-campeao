@@ -339,7 +339,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           <div className="grid grid-cols-2 gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm relative z-10">
             <div className="flex flex-col">
               <span className="mb-1 text-[9px] font-black uppercase tracking-widest text-white/40">
-                Preço Atual
+                Você paga:
               </span>
               <span className={`text-2xl font-black text-primary transition-all duration-300 ${isNewBid ? 'scale-110 drop-shadow-[0_0_10px_rgba(var(--color-primary),0.5)]' : 'scale-100'}`}>
                 R$ {auction.current_price?.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) || "0,01"}

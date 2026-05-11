@@ -450,8 +450,11 @@ function AuctionPage() {
 
                 <div className="flex flex-col gap-3 p-8 rounded-[32px] bg-gradient-to-br from-white/10 to-transparent border border-white/10 backdrop-blur-xl shadow-inner group/price">
                   <div className="flex justify-between items-center">
-                    <span className="text-xs text-white/40 font-black uppercase tracking-[0.2em]">Preço Atual</span>
-                    <Badge variant="outline" className="border-green-500/30 text-green-500 bg-green-500/5 animate-pulse">VALOR DE REPASSE</Badge>
+                    <div className="flex flex-col">
+                      <span className="text-[10px] text-white/40 font-black uppercase tracking-[0.2em]">Valor de Arremate</span>
+                      <span className="text-[10px] text-primary/60 font-bold uppercase tracking-widest">(O quanto você pagará no final)</span>
+                    </div>
+                    <Badge variant="outline" className="border-green-500/30 text-green-500 bg-green-500/5 animate-pulse">LEILÃO DE CENTAVOS</Badge>
                   </div>
                   <div className={`text-7xl font-black text-primary transition-all duration-500 ${isNewBid ? 'scale-110 drop-shadow-[0_0_30px_rgba(var(--color-primary),0.6)]' : 'scale-100'}`}>
                     <span className="text-3xl align-top mt-2 inline-block mr-1 opacity-60">R$</span>
@@ -510,7 +513,7 @@ function AuctionPage() {
                   {!isFinished && (
                     <div className="px-1">
                       <Progress 
-                        value={(timeLeft / 30) * 100} 
+                        value={(timeLeft / timerDuration) * 100} 
                         className={`h-2 bg-white/5 transition-all duration-1000 ${
                           timeLeft <= 5 ? 'bg-red-500/20' : ''
                         }`}
