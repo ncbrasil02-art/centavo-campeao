@@ -16,7 +16,13 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AuctionsIdRouteImport } from './routes/auctions.$id'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
+import { Route as AdminTestimonialsRouteImport } from './routes/admin/testimonials'
+import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
+import { Route as AdminSalesRouteImport } from './routes/admin/sales'
 import { Route as AdminRobotsRouteImport } from './routes/admin/robots'
+import { Route as AdminPackagesRouteImport } from './routes/admin/packages'
+import { Route as AdminBannersRouteImport } from './routes/admin/banners'
+import { Route as AdminAuctionsRouteImport } from './routes/admin/auctions'
 
 const PackagesRoute = PackagesRouteImport.update({
   id: '/packages',
@@ -53,9 +59,39 @@ const AdminUsersRoute = AdminUsersRouteImport.update({
   path: '/users',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminTestimonialsRoute = AdminTestimonialsRouteImport.update({
+  id: '/testimonials',
+  path: '/testimonials',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSalesRoute = AdminSalesRouteImport.update({
+  id: '/sales',
+  path: '/sales',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminRobotsRoute = AdminRobotsRouteImport.update({
   id: '/robots',
   path: '/robots',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPackagesRoute = AdminPackagesRouteImport.update({
+  id: '/packages',
+  path: '/packages',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBannersRoute = AdminBannersRouteImport.update({
+  id: '/banners',
+  path: '/banners',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAuctionsRoute = AdminAuctionsRouteImport.update({
+  id: '/auctions',
+  path: '/auctions',
   getParentRoute: () => AdminRoute,
 } as any)
 
@@ -64,7 +100,13 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/packages': typeof PackagesRoute
+  '/admin/auctions': typeof AdminAuctionsRoute
+  '/admin/banners': typeof AdminBannersRoute
+  '/admin/packages': typeof AdminPackagesRoute
   '/admin/robots': typeof AdminRobotsRoute
+  '/admin/sales': typeof AdminSalesRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/testimonials': typeof AdminTestimonialsRoute
   '/admin/users': typeof AdminUsersRoute
   '/auctions/$id': typeof AuctionsIdRoute
   '/admin/': typeof AdminIndexRoute
@@ -73,7 +115,13 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/packages': typeof PackagesRoute
+  '/admin/auctions': typeof AdminAuctionsRoute
+  '/admin/banners': typeof AdminBannersRoute
+  '/admin/packages': typeof AdminPackagesRoute
   '/admin/robots': typeof AdminRobotsRoute
+  '/admin/sales': typeof AdminSalesRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/testimonials': typeof AdminTestimonialsRoute
   '/admin/users': typeof AdminUsersRoute
   '/auctions/$id': typeof AuctionsIdRoute
   '/admin': typeof AdminIndexRoute
@@ -84,7 +132,13 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/packages': typeof PackagesRoute
+  '/admin/auctions': typeof AdminAuctionsRoute
+  '/admin/banners': typeof AdminBannersRoute
+  '/admin/packages': typeof AdminPackagesRoute
   '/admin/robots': typeof AdminRobotsRoute
+  '/admin/sales': typeof AdminSalesRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/testimonials': typeof AdminTestimonialsRoute
   '/admin/users': typeof AdminUsersRoute
   '/auctions/$id': typeof AuctionsIdRoute
   '/admin/': typeof AdminIndexRoute
@@ -96,7 +150,13 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/packages'
+    | '/admin/auctions'
+    | '/admin/banners'
+    | '/admin/packages'
     | '/admin/robots'
+    | '/admin/sales'
+    | '/admin/settings'
+    | '/admin/testimonials'
     | '/admin/users'
     | '/auctions/$id'
     | '/admin/'
@@ -105,7 +165,13 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/packages'
+    | '/admin/auctions'
+    | '/admin/banners'
+    | '/admin/packages'
     | '/admin/robots'
+    | '/admin/sales'
+    | '/admin/settings'
+    | '/admin/testimonials'
     | '/admin/users'
     | '/auctions/$id'
     | '/admin'
@@ -115,7 +181,13 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/packages'
+    | '/admin/auctions'
+    | '/admin/banners'
+    | '/admin/packages'
     | '/admin/robots'
+    | '/admin/sales'
+    | '/admin/settings'
+    | '/admin/testimonials'
     | '/admin/users'
     | '/auctions/$id'
     | '/admin/'
@@ -180,6 +252,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUsersRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/testimonials': {
+      id: '/admin/testimonials'
+      path: '/testimonials'
+      fullPath: '/admin/testimonials'
+      preLoaderRoute: typeof AdminTestimonialsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/sales': {
+      id: '/admin/sales'
+      path: '/sales'
+      fullPath: '/admin/sales'
+      preLoaderRoute: typeof AdminSalesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/robots': {
       id: '/admin/robots'
       path: '/robots'
@@ -187,17 +280,50 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRobotsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/packages': {
+      id: '/admin/packages'
+      path: '/packages'
+      fullPath: '/admin/packages'
+      preLoaderRoute: typeof AdminPackagesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/banners': {
+      id: '/admin/banners'
+      path: '/banners'
+      fullPath: '/admin/banners'
+      preLoaderRoute: typeof AdminBannersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/auctions': {
+      id: '/admin/auctions'
+      path: '/auctions'
+      fullPath: '/admin/auctions'
+      preLoaderRoute: typeof AdminAuctionsRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
 interface AdminRouteChildren {
+  AdminAuctionsRoute: typeof AdminAuctionsRoute
+  AdminBannersRoute: typeof AdminBannersRoute
+  AdminPackagesRoute: typeof AdminPackagesRoute
   AdminRobotsRoute: typeof AdminRobotsRoute
+  AdminSalesRoute: typeof AdminSalesRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminTestimonialsRoute: typeof AdminTestimonialsRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAuctionsRoute: AdminAuctionsRoute,
+  AdminBannersRoute: AdminBannersRoute,
+  AdminPackagesRoute: AdminPackagesRoute,
   AdminRobotsRoute: AdminRobotsRoute,
+  AdminSalesRoute: AdminSalesRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
+  AdminTestimonialsRoute: AdminTestimonialsRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
