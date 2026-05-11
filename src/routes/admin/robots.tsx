@@ -115,6 +115,23 @@ function AdminRobotsPage() {
     }
   };
 
+  const toggleInnerDispute = async (settingsId: string, currentStatus: boolean, minutes: number = 50) => {
+    const endAt = !currentStatus ? new Date(Date.now() + minutes * 60 * 1000).toISOString() : null;
+    
+    const { error } = await supabase
+      .from("robot_settings")
+      .update({ 
+        inner_dispute_enabled: !currentStatus,
+        inner_dispute_end_at: endAt
+      })
+      .eq("id", settingsId);
+    
+    if (!error) {
+      toast.success(`Disputa interna ${!currentStatus ? 'ativada' : 'desativada'}`);
+      fetchAuctionsWithRobots();
+    }
+  };
+
   const updateDelay = async (settingsId: string, min: number, max: number) => {
     const { error } = await supabase
       .from("robot_settings")
