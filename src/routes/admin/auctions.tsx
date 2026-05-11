@@ -211,13 +211,12 @@ function AdminAuctions() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Fim</Label>
+                    <Label>Fim (Opcional)</Label>
                     <Input 
                       type="datetime-local" 
                       value={formData.end_time} 
                       onChange={e => setFormData({...formData, end_time: e.target.value})}
                       className="bg-white/5 border-white/10"
-                      required
                     />
                   </div>
                 </div>
