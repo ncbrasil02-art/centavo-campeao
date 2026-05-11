@@ -12,22 +12,38 @@ import Autoplay from 'embla-carousel-autoplay';
 export function Hero() {
   const [onlineUsers, setOnlineUsers] = useState(128);
   const [banners, setBanners] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [textIndex, setTextIndex] = useState(0);
-  
-  const phrases = [
+  const [phrases, setPhrases] = useState<string[]>([
     "Arremate produtos incríveis por centavos!",
     "iPhones, Consoles e muito mais a partir de R$ 0,01",
     "Economize até 99% nos seus produtos favoritos",
     "A emoção do leilão em tempo real na sua tela"
-  ];
+  ]);
+  const [loading, setLoading] = useState(true);
+  const [textIndex, setTextIndex] = useState(0);
 
   useEffect(() => {
+    fetchPhrases();
+  }, []);
+
+  async function fetchPhrases() {
+    const { data } = await supabase
+      .from("app_phrases")
+      .select("text")
+      .eq("type", "hero")
+      .eq("active", true);
+    
+    if (data && data.length > 0) {
+      setPhrases(data.map(p => p.text));
+    }
+  }
+
+  useEffect(() => {
+    if (phrases.length === 0) return;
     const timer = setInterval(() => {
       setTextIndex((prev) => (prev + 1) % phrases.length);
     }, 4000);
     return () => clearInterval(timer);
-  }, []);
+  }, [phrases]);
 
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 5000 })]);
 
