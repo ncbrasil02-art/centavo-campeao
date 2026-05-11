@@ -272,6 +272,28 @@ function AdminAuctions() {
                   </Select>
                 </div>
 
+                <div className="space-y-2">
+                  <Label>Ganhador Alvo</Label>
+                  <Select 
+                    value={formData.target_winner} 
+                    onValueChange={(v: any) => setFormData({...formData, target_winner: v})}
+                  >
+                    <SelectTrigger className="bg-white/5 border-white/10">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-zinc-800 border-white/10 text-white">
+                      <SelectItem value="random">Aleatório (Normal)</SelectItem>
+                      <SelectItem value="robot">Forçar Robô (Garantido)</SelectItem>
+                      <SelectItem value="user">Forçar Usuário Real</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-[10px] text-white/40 italic">
+                    {formData.target_winner === 'robot' ? 'O robô cobrirá TODOS os lances de usuários reais.' : 
+                     formData.target_winner === 'user' ? 'Os robôs não darão lances nos últimos segundos.' : 
+                     'Os robôs agirão conforme a chance configurada.'}
+                  </p>
+                </div>
+
                 <div className="flex items-center gap-2">
                   <Switch 
                     checked={formData.robot_enabled} 
