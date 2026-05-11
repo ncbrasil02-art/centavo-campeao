@@ -13,7 +13,7 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Plus, Image as ImageIcon, Edit, Trash2, Layout, ExternalLink, Power, Upload, Loader2 } from "lucide-react";
+import { Plus, Image as ImageIcon, Edit, Trash2, Layout, ExternalLink, Power, Upload, Loader2, Calendar } from "lucide-react";
 import { toast } from "sonner";
 import { 
   Dialog, 
@@ -26,6 +26,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 export const Route = createFileRoute("/admin/banners")({
   component: AdminBanners,
@@ -43,7 +45,9 @@ function AdminBanners() {
     image_url: "",
     link_url: "",
     order_index: 0,
-    active: true
+    active: true,
+    start_at: "",
+    end_at: ""
   });
 
   useEffect(() => {
