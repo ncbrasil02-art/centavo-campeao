@@ -364,12 +364,15 @@ function AdminAuctions() {
   );
 }
 
-function StatusBadge({ status }: { status: string }) {
+function StatusBadge({ status, isFinalizing }: { status: string, isFinalizing?: boolean }) {
+  const effectiveStatus = (status === 'live' && isFinalizing) ? 'finalizing' : status;
+  
   const styles = {
     scheduled: "bg-blue-500/10 text-blue-500 border-blue-500/20",
     live: "bg-green-500/10 text-green-500 border-green-500/20",
     finished: "bg-white/10 text-white/40 border-white/10",
-    cancelled: "bg-red-500/10 text-red-500 border-red-500/20"
+    cancelled: "bg-red-500/10 text-red-500 border-red-500/20",
+    finalizing: "bg-orange-500/10 text-orange-500 border-orange-500/20"
   };
   
   const labels = {
@@ -379,14 +382,10 @@ function StatusBadge({ status }: { status: string }) {
     cancelled: "Cancelado",
     finalizing: "Finalizando"
   };
-  
-  const statusToDisplay = status === 'live' && (window as any).is_finalizing_temp ? 'finalizing' : status; 
-  // Wait, I should probably pass is_finalizing to StatusBadge.
-
 
   return (
-    <span className={`px-2 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${styles[status as keyof typeof styles]}`}>
-      {labels[status as keyof typeof labels] || status}
+    <span className={`px-2 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${styles[effectiveStatus as keyof typeof styles]}`}>
+      {labels[effectiveStatus as keyof typeof labels] || status}
     </span>
   );
 }
