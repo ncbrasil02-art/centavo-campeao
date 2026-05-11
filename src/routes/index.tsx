@@ -14,22 +14,47 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-function WinnerCard({ name, product, price, saving, avatarUrl }: { name: string, product: string, price: string, saving: string, avatarUrl?: string }) {
+function WinnerCard({ name, product, price, saving, avatarUrl, productImage }: { name: string, product: string, price: string, saving: string, avatarUrl?: string, productImage?: string }) {
   return (
-    <div className="p-6 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-4 hover:border-primary/50 transition-all group">
-      <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center overflow-hidden shrink-0 border-2 border-primary/20 group-hover:border-primary transition-all">
-        <img 
-          src={avatarUrl || getFallbackAvatarUrl(name)} 
-          className="w-full h-full object-cover" 
-          onError={(e) => (e.target as HTMLImageElement).src = getFallbackAvatarUrl(name)} 
-        />
-      </div>
-      <div>
-        <h4 className="font-bold text-white group-hover:text-primary transition-colors">{name}</h4>
-        <p className="text-xs text-white/60 mb-1">{product}</p>
-        <div className="flex items-center gap-2">
-          <Badge className="bg-green-500/10 text-green-500 border-green-500/20 text-[10px]">{saving} OFF</Badge>
-          <span className="font-black text-sm text-primary">{price}</span>
+    <div className="group relative p-1 rounded-[32px] bg-gradient-to-br from-primary/20 via-white/5 to-transparent border border-white/10 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-primary/20 overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_rgba(var(--color-primary),0.1),_transparent_70%)]"></div>
+      
+      <div className="relative bg-zinc-950/80 rounded-[30px] p-6 flex flex-col gap-6 backdrop-blur-xl">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="relative w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center overflow-hidden border-2 border-primary/30 group-hover:border-primary transition-all shadow-xl shadow-black/50">
+              <img 
+                src={avatarUrl || getFallbackAvatarUrl(name)} 
+                className="w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all" 
+                onError={(e) => (e.target as HTMLImageElement).src = getFallbackAvatarUrl(name)} 
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+            </div>
+            <div>
+              <h4 className="font-black text-white italic uppercase tracking-tighter group-hover:text-primary transition-colors">{name}</h4>
+              <div className="flex items-center gap-1.5">
+                <div className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_5px_rgba(34,197,94,0.8)]"></div>
+                <span className="text-[10px] font-black text-white/40 uppercase tracking-widest">Arrematou com Sucesso</span>
+              </div>
+            </div>
+          </div>
+          <Badge className="bg-primary/10 text-primary border-primary/20 font-black italic uppercase text-[10px]">#{Math.floor(Math.random() * 900) + 100}</Badge>
+        </div>
+
+        <div className="flex items-center gap-4 bg-white/5 rounded-2xl p-4 border border-white/5 group-hover:bg-white/10 transition-all">
+          <div className="w-20 h-20 rounded-xl bg-black/40 p-2 shrink-0 border border-white/5 overflow-hidden">
+            <img src={productImage || "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=200&auto=format&fit=crop"} className="w-full h-full object-contain mix-blend-lighten" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-black text-white/80 uppercase truncate italic leading-tight mb-2">{product}</p>
+            <div className="flex items-center gap-3">
+              <div className="flex flex-col">
+                <span className="text-[9px] font-black text-white/30 uppercase tracking-widest">Pagou apenas</span>
+                <span className="font-black text-xl text-primary drop-shadow-[0_0_10px_rgba(var(--color-primary),0.3)]">{price}</span>
+              </div>
+              <Badge className="bg-green-500/20 text-green-500 border-green-500/20 font-black text-[10px] uppercase">{saving} OFF</Badge>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -194,8 +219,8 @@ function Index() {
             <div className="container mx-auto px-4">
               <div className="text-center mb-16">
                 <Badge variant="outline" className="mb-4 border-primary/30 bg-primary/10 text-primary uppercase">GALERIA DE HONRA</Badge>
-                <h2 className="text-4xl font-black tracking-tight text-white mb-4 italic">Últimos <span className="text-primary">Ganhadores</span></h2>
-                <p className="text-white/40">Pessoas reais, economias reais. Veja quem já levou o prêmio para casa.</p>
+                <h2 className="text-4xl font-black tracking-tight text-white mb-4 italic uppercase">Ranking de <span className="text-primary">Ganhadores</span></h2>
+                <p className="text-white/40">Pessoas reais, economias reais. Veja quem já levou o prêmio para casa esta semana.</p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -206,15 +231,16 @@ function Index() {
                       name={winner.profile?.full_name || winner.profile?.username || "Ganhador"}
                       product={winner.auction?.product?.name || "Produto"}
                       price={`R$ ${Number(winner.final_price).toFixed(2)}`}
-                      saving={`${Math.round((1 - (winner.final_price / 1000)) * 100)}%`} // Rough estimate since I don't have original price here easily
+                      saving={`${winner.savings_percentage}%`}
                       avatarUrl={winner.profile?.avatar_url}
+                      productImage={winner.auction?.product?.image}
                     />
                   ))
                 ) : (
                   <>
-                    <WinnerCard name="Mateus Oliveira" product="iPhone 15 Pro Max" price="R$ 142,50" saving="98%" />
-                    <WinnerCard name="Juliana Costa" product="PlayStation 5" price="R$ 89,12" saving="97%" />
-                    <WinnerCard name="Ricardo Silva" product="MacBook Air M2" price="R$ 210,00" saving="96%" />
+                    <WinnerCard name="Mateus Oliveira" product="iPhone 15 Pro Max" price="R$ 142,50" saving="98%" productImage="https://images.unsplash.com/photo-1696446701796-da61225697cc?auto=format&fit=crop&q=80&w=400" />
+                    <WinnerCard name="Juliana Costa" product="PlayStation 5 Slim" price="R$ 89,12" saving="97%" productImage="https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?auto=format&fit=crop&q=80&w=400" />
+                    <WinnerCard name="Ricardo Silva" product="MacBook Air M3" price="R$ 210,00" saving="96%" productImage="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&q=80&w=400" />
                   </>
                 )}
               </div>
