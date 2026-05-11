@@ -221,6 +221,19 @@ function AdminAuctions() {
                 </div>
 
                 <div className="space-y-2">
+                  <Label>Cronômetro (segundos)</Label>
+                  <Input 
+                    type="number" 
+                    value={formData.timer_duration} 
+                    onChange={e => setFormData({...formData, timer_duration: parseInt(e.target.value) || 15})}
+                    className="bg-white/5 border-white/10"
+                    min="1"
+                    required
+                  />
+                  <p className="text-[10px] text-white/40">Tempo inicial e tempo resetado a cada lance</p>
+                </div>
+
+                <div className="space-y-2">
                   <Label>Status</Label>
                   <Select 
                     value={formData.status} 
