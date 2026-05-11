@@ -54,10 +54,13 @@ export function Hero() {
 
   async function fetchBanners() {
     try {
+      const now = new Date().toISOString();
       const { data, error } = await supabase
         .from("banners")
         .select("*")
         .eq("active", true)
+        .or(`start_at.is.null,start_at.lte.${now}`)
+        .or(`end_at.is.null,end_at.gte.${now}`)
         .order("order_index", { ascending: true });
       
       if (error) throw error;
