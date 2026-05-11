@@ -28,27 +28,9 @@ function AdminRobotsPage() {
   const { getAdjustedNow } = useTimeSync();
 
   useEffect(() => {
-    checkAdmin();
     fetchAuctionsWithRobots();
     fetchRobotUsers();
   }, []);
-
-  useEffect(() => {
-    automationRef.current = automationActive;
-    if (automationActive) {
-      const interval = setInterval(runAutomation, 1500); // Poll every 1.5s
-      return () => clearInterval(interval);
-    }
-  }, [automationActive]);
-
-  async function checkAdmin() {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      navigate({ to: "/auth" });
-      return;
-    }
-    setIsAdmin(true);
-  }
 
   async function fetchRobotUsers() {
     const { data } = await supabase
