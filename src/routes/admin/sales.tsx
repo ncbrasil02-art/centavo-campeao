@@ -51,12 +51,20 @@ function AdminSales() {
 
   async function updateStatus(id: string, status: string) {
     try {
-      const { error } = await supabase
-        .from("transactions")
-        .update({ status })
-        .eq("id", id);
+      if (status === "completed") {
+        const { error } = await supabase.rpc("complete_payment", {
+          p_transaction_id: id,
+          p_external_id: "Manual Admin"
+        });
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from("transactions")
+          .update({ status })
+          .eq("id", id);
+        if (error) throw error;
+      }
       
-      if (error) throw error;
       toast.success("Status atualizado");
       fetchSales();
     } catch (error) {

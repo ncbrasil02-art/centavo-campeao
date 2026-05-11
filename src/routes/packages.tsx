@@ -58,26 +58,47 @@ function PackagesPage() {
   };
 
   const handlePixPayment = async () => {
-    setPaymentStep("pix");
+    if (!buying) return;
+    setPaymentStep("processing");
+    try {
+      const { data, error } = await supabase.rpc("create_pending_payment", {
+        p_package_id: buying.id,
+        p_method: "pix"
+      });
+      if (error) throw error;
+      setBuying({ ...buying, transaction_id: (data as any).transaction_id });
+      setPaymentStep("pix");
+    } catch (err) {
+      toast.error("Erro ao iniciar PIX");
+      setPaymentStep("method");
+    }
   };
 
   const handleMercadoPagoPayment = async () => {
+    if (!buying) return;
     setPaymentStep("processing");
-    // Simulate Mercado Pago flow
-    setTimeout(() => {
-      setPaymentStep("mercado-pago");
-    }, 1500);
+    try {
+      const { data, error } = await supabase.rpc("create_pending_payment", {
+        p_package_id: buying.id,
+        p_method: "mercado_pago"
+      });
+      if (error) throw error;
+      setBuying({ ...buying, transaction_id: (data as any).transaction_id });
+      // Simulate MP preference creation
+      setTimeout(() => setPaymentStep("mercado-pago"), 1000);
+    } catch (err) {
+      toast.error("Erro ao iniciar Mercado Pago");
+      setPaymentStep("method");
+    }
   };
 
   const finalizePurchase = async () => {
-    if (!buying) return;
+    if (!buying?.transaction_id) return;
     
     setPaymentStep("processing");
     try {
-      // In a real app, this would be an edge function that verifies the payment
-      // For now, we use the buy_credits RPC for simulation/manual approval logic
-      const { data, error: rpcError } = await supabase.rpc("buy_credits", {
-        p_package_id: buying.id
+      const { data, error: rpcError } = await supabase.rpc("complete_payment", {
+        p_transaction_id: buying.transaction_id
       });
 
       if (rpcError) throw rpcError;
@@ -96,6 +117,7 @@ function PackagesPage() {
       toast.error("Erro ao processar pagamento.");
     } finally {
       setPaymentStep("method");
+      setBuying(null);
     }
   };
 
