@@ -224,11 +224,24 @@ function Index() {
                   ))}
                 </div>
               ) : auctions.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {auctions.map((auction) => (
-                    <AuctionCard key={auction.id} auction={auction} />
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+                >
+                  {auctions.map((auction, idx) => (
+                    <motion.div
+                      key={auction.id}
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: idx * 0.1 }}
+                    >
+                      <AuctionCard auction={auction} />
+                    </motion.div>
                   ))}
-                </div>
+                </motion.div>
               ) : (
                 <div className="text-center py-20 bg-white/5 rounded-3xl border border-dashed border-white/10">
                   <p className="text-white/40">Nenhum leilão ao vivo no momento.</p>
