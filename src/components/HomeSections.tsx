@@ -157,10 +157,50 @@ export function Hero() {
   }
 
   return (
-    <section className="relative overflow-hidden pt-20 pb-12 lg:pt-32 lg:pb-24">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/10 rounded-full blur-[120px] -z-10"></div>
+    <section className="relative overflow-hidden pt-20 pb-12 lg:pt-32 lg:pb-24 bg-[#0a0a0c]">
+      {/* Imagem de Fundo 3D Gaming */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-20 mix-blend-overlay"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-background"></div>
+        
+        {/* Luzes e Brilhos Neon */}
+        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[150px] animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-accent/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '1s' }}></div>
+      </div>
+
+      {/* Elementos 3D Flutuantes (Ícones) */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
+        <motion.div 
+          animate={{ y: [0, -20, 0], rotate: [12, 15, 12] }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-20 right-[15%] text-primary/10"
+        >
+          <Gavel className="w-64 h-64 drop-shadow-[0_0_50px_rgba(var(--color-primary),0.5)] opacity-40" />
+        </motion.div>
+
+        <motion.div 
+          animate={{ y: [0, 20, 0], rotate: [-10, -5, -10] }}
+          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-40 left-[10%] text-primary/5"
+        >
+          <Clock className="w-48 h-48 drop-shadow-[0_0_40px_rgba(var(--color-primary),0.3)] opacity-30" />
+        </motion.div>
+
+        <motion.div 
+          animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-1/2 left-[5%] w-2 h-2 bg-primary rounded-full shadow-[0_0_15px_var(--primary)]"
+        ></motion.div>
+        
+        <motion.div 
+          animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.4, 0.2] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          className="absolute bottom-1/4 right-[5%] w-3 h-3 bg-primary rounded-full shadow-[0_0_20px_var(--primary)]"
+        ></motion.div>
+      </div>
       
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 relative z-20">
         <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
           <Badge variant="outline" className="mb-6 py-1 px-4 border-primary/30 bg-primary/10 text-primary animate-pulse">
             <Sparkles className="w-3 h-3 mr-2" />
