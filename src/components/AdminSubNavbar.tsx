@@ -5,7 +5,8 @@ import {
   Bot, 
   Settings, 
   Gavel,
-  History
+  History,
+  Package
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -15,6 +16,7 @@ export function AdminSubNavbar() {
   const navItems = [
     { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
     { label: "Usuários", href: "/admin/users", icon: Users },
+    { label: "Lotes", href: "/admin/products", icon: Package },
     { label: "Leilões", href: "/admin/auctions", icon: Gavel },
     { label: "Robôs", href: "/admin/robots", icon: Bot },
     { label: "Pacotes", href: "/admin/packages", icon: History },
