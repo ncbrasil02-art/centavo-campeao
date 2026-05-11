@@ -54,17 +54,25 @@ export function Hero() {
 
   async function fetchBanners() {
     try {
-      const now = new Date().toISOString();
       const { data, error } = await supabase
         .from("banners")
         .select("*")
         .eq("active", true)
-        .or(`start_at.is.null,start_at.lte.${now}`)
-        .or(`end_at.is.null,end_at.gte.${now}`)
         .order("order_index", { ascending: true });
       
       if (error) throw error;
-      setBanners(data || []);
+      
+      const now = new Date();
+      const filtered = (data || []).filter(banner => {
+        const start = banner.start_at ? new Date(banner.start_at) : null;
+        const end = banner.end_at ? new Date(banner.end_at) : null;
+        
+        if (start && start > now) return false;
+        if (end && end < now) return false;
+        return true;
+      });
+
+      setBanners(filtered);
     } catch (error) {
       console.error("Error fetching banners:", error);
     } finally {
