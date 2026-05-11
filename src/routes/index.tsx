@@ -14,6 +14,40 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+import { Star, Quote } from "lucide-react";
+
+function TestimonialCard({ name, content, avatarUrl, rating }: { name: string, content: string, avatarUrl: string, rating: number }) {
+  return (
+    <div className="group relative p-6 rounded-[32px] bg-white/[0.03] border border-white/5 hover:border-primary/30 transition-all duration-500 hover:-translate-y-2">
+      <div className="absolute top-6 right-8 text-primary/10 group-hover:text-primary/20 transition-colors">
+        <Quote className="w-12 h-12 rotate-180" />
+      </div>
+      
+      <div className="flex flex-col h-full gap-6 relative z-10">
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-white/10 group-hover:border-primary/40 transition-all shadow-2xl">
+            <img src={avatarUrl} alt={name} className="w-full h-full object-cover" />
+          </div>
+          <div>
+            <h4 className="font-black text-white italic uppercase tracking-tighter text-sm">{name}</h4>
+            <div className="flex gap-0.5 mt-1">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className={`w-3 h-3 ${i < rating ? 'text-yellow-500 fill-yellow-500' : 'text-white/10'}`} />
+              ))}
+            </div>
+          </div>
+        </div>
+        
+        <p className="text-white/60 text-sm leading-relaxed italic">
+          "{content}"
+        </p>
+      </div>
+      
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-[32px]"></div>
+    </div>
+  );
+}
+
 function WinnerCard({ name, product, price, saving, avatarUrl, productImage }: { name: string, product: string, price: string, saving: string, avatarUrl?: string, productImage?: string }) {
   return (
     <div className="group relative p-1 rounded-[32px] bg-gradient-to-br from-primary/20 via-white/5 to-transparent border border-white/10 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-primary/20 overflow-hidden">
@@ -65,6 +99,7 @@ function Index() {
   const [auctions, setAuctions] = useState<any[]>([]);
   const [finishedAuctions, setFinishedAuctions] = useState<any[]>([]);
   const [winners, setWinners] = useState<any[]>([]);
+  const [testimonials, setTestimonials] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showChat, setShowChat] = useState(false);
   const [isChatExpanded, setIsChatExpanded] = useState(false);
@@ -111,7 +146,7 @@ function Index() {
 
 
   async function fetchData() {
-    const [auctionsRes, winnersRes, finishedRes] = await Promise.all([
+    const [auctionsRes, winnersRes, finishedRes, testimonialsRes] = await Promise.all([
       supabase
         .from("v_home_live_auctions")
         .select("*")
@@ -132,12 +167,19 @@ function Index() {
         `)
         .eq("status", "finished")
         .order("end_time", { ascending: false })
-        .limit(8)
+        .limit(8),
+      supabase
+        .from("testimonials")
+        .select("*")
+        .eq("active", true)
+        .order("created_at", { ascending: false })
+        .limit(6)
     ]);
 
     if (!auctionsRes.error) setAuctions(auctionsRes.data || []);
     if (!winnersRes.error) setWinners(winnersRes.data || []);
     if (!finishedRes.error) setFinishedAuctions(finishedRes.data || []);
+    if (!testimonialsRes.error) setTestimonials(testimonialsRes.data || []);
     
     setLoading(false);
   }
@@ -265,6 +307,38 @@ function Index() {
               </div>
             </section>
           )}
+
+          {/* Testimonials Section */}
+          <section className="py-24 bg-zinc-950/40 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+            <div className="container mx-auto px-4">
+              <div className="text-center mb-16">
+                <Badge variant="outline" className="mb-4 border-primary/30 bg-primary/10 text-primary uppercase tracking-widest text-[10px]">COMMUNITY FEEDBACK</Badge>
+                <h2 className="text-4xl font-black tracking-tight text-white mb-4 italic uppercase">Voz da <span className="text-primary">Comunidade</span></h2>
+                <p className="text-white/40 max-w-2xl mx-auto">Milhares de usuários já vivenciaram a adrenalina do Lance Certo. Confira o que eles estão dizendo sobre a experiência.</p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {testimonials.length > 0 ? (
+                  testimonials.map((t) => (
+                    <TestimonialCard 
+                      key={t.id}
+                      name={t.name}
+                      content={t.content}
+                      avatarUrl={t.avatar_url || getFallbackAvatarUrl(t.name)}
+                      rating={t.rating}
+                    />
+                  ))
+                ) : (
+                  <>
+                    <TestimonialCard name="Felipe Souza" rating={5} avatarUrl="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop" content="Mano, o sistema é muito rápido! Dei o lance faltando 1s e levei meu PS5 Slim. A adrenalina é insana!" />
+                    <TestimonialCard name="Ana Oliveira" rating={5} avatarUrl="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&auto=format&fit=crop" content="Ainda não ganhei meu iPhone 15, mas a experiência de disputar nos últimos segundos é viciante. Transparência total." />
+                    <TestimonialCard name="Ricardo Tech" rating={5} avatarUrl="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200&auto=format&fit=crop" content="A sincronização de milissegundos é o diferencial. Sem lag, sem erro. O site é muito bem feito!" />
+                  </>
+                )}
+              </div>
+            </div>
+          </section>
 
           {/* Footer */}
           <footer className="py-12 border-t border-white/10">
