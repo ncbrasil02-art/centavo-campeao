@@ -374,7 +374,6 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
                   </span>
                 </div>
               </div>
-            </div>
               {showBonus && (
                 <div className="absolute -top-8 right-0 animate-bounce rounded-lg border border-primary/30 bg-primary/20 px-2 py-1 text-[10px] font-black text-primary backdrop-blur-sm">
                   +{timerDuration}s RESET
