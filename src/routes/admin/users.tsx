@@ -76,10 +76,10 @@ function AdminUsersPage() {
     setLoading(false);
   }
 
-  const handleUpdateRole = async (userId: string, field: string, value: boolean) => {
+  const handleUpdateRole = async (userId: string, field: 'is_bot' | 'is_admin', value: boolean) => {
     const { error } = await supabase
       .from("profiles")
-      .update({ [field]: value })
+      .update({ [field]: value } as any)
       .eq("id", userId);
 
     if (error) {
