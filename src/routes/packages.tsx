@@ -15,6 +15,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { useSearch } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/packages")({
   component: PackagesPage,
@@ -28,10 +29,16 @@ function PackagesPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const navigate = useNavigate();
   const settings = useSettings();
+  const search = useSearch({ from: "/packages" }) as any;
 
   useEffect(() => {
     fetchPackages();
-  }, []);
+    if (search.status === "success") {
+      toast.success("Pagamento aprovado! Seus lances serão creditados em instantes.");
+    } else if (search.status === "failure") {
+      toast.error("O pagamento não pôde ser concluído.");
+    }
+  }, [search.status]);
 
   async function fetchPackages() {
     const { data, error } = await supabase
