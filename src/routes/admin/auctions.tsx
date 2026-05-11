@@ -48,6 +48,8 @@ function AdminAuctions() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingAuction, setEditingAuction] = useState<any>(null);
   
+  const [uploading, setUploading] = useState(false);
+  
   const initialFormData = {
     product_id: "",
     new_product_name: "",
@@ -89,6 +91,39 @@ function AdminAuctions() {
       setLoading(false);
     }
   }
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const fileExt = file.name.split(".").pop();
+      const fileName = `product-${Math.random()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("site-assets")
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from("site-assets")
+        .getPublicUrl(filePath);
+
+      setFormData(prev => ({ 
+        ...prev, 
+        new_product_images: [...prev.new_product_images, publicUrl] 
+      }));
+      toast.success("Imagem carregada com sucesso!");
+    } catch (error) {
+      console.error("Error uploading product image:", error);
+      toast.error("Erro ao carregar imagem");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -180,6 +215,11 @@ function AdminAuctions() {
     setEditingAuction(auction);
     setFormData({
       product_id: auction.product_id,
+      new_product_name: "",
+      new_product_description: "",
+      new_product_market_value: 0,
+      new_product_images: [],
+      is_new_product: false,
       start_time: format(new Date(auction.start_time), "yyyy-MM-dd'T'HH:mm"),
       end_time: auction.end_time ? format(new Date(auction.end_time), "yyyy-MM-dd'T'HH:mm") : "",
       status: auction.status,
