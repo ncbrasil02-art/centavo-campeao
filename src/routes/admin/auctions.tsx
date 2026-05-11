@@ -84,10 +84,19 @@ function AdminAuctions() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     try {
+      if (!formData.product_id) {
+        toast.error("Selecione um produto");
+        return;
+      }
+
       const startTime = new Date(formData.start_time);
+      if (isNaN(startTime.getTime())) {
+        toast.error("Data de início inválida");
+        return;
+      }
+
       const timerDuration = formData.timer_duration;
       
-      // Se end_time não foi definido manualmente, calculamos o inicial
       let endTime;
       if (formData.end_time) {
         endTime = new Date(formData.end_time).toISOString();
@@ -96,9 +105,13 @@ function AdminAuctions() {
       }
 
       const payload = {
-        ...formData,
+        product_id: formData.product_id,
         start_time: startTime.toISOString(),
         end_time: endTime,
+        status: formData.status,
+        robot_enabled: formData.robot_enabled,
+        timer_duration: formData.timer_duration,
+        target_winner: formData.target_winner
       };
 
       if (editingAuction) {
