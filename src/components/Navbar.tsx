@@ -92,7 +92,7 @@ export function Navbar() {
               </div>
               
               {profile?.is_admin && (
-                <Button variant="outline" size="sm" className="hidden md:flex border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 gap-2 h-9" asChild>
+                <Button variant="outline" size="sm" className="flex border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 gap-2 h-9" asChild>
                   <Link to="/admin">
                     <LayoutDashboard className="w-4 h-4" /> Admin
                   </Link>
