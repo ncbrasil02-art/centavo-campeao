@@ -296,6 +296,31 @@ function AdminBanners() {
                   </div>
                 </div>
 
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-2">
+                      <Calendar className="w-3 h-3 text-primary" /> Início (Agendado)
+                    </Label>
+                    <Input 
+                      type="datetime-local"
+                      value={formData.start_at}
+                      onChange={e => setFormData({...formData, start_at: e.target.value})}
+                      className="bg-white/5 border-white/10"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-2">
+                      <Calendar className="w-3 h-3 text-primary" /> Fim (Agendado)
+                    </Label>
+                    <Input 
+                      type="datetime-local"
+                      value={formData.end_at}
+                      onChange={e => setFormData({...formData, end_at: e.target.value})}
+                      className="bg-white/5 border-white/10"
+                    />
+                  </div>
+                </div>
+
                 <div className="flex items-center gap-2">
                   <Switch 
                     checked={formData.active} 
