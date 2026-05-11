@@ -257,13 +257,13 @@ function AdminDashboard() {
               <h3 className="font-bold text-xl mb-4 relative z-10">Atalhos Administrativos</h3>
               <div className="grid grid-cols-1 gap-3 relative z-10">
                 <Button variant="secondary" className="justify-start bg-white/5 hover:bg-white/10 border-white/10" asChild>
-                  <Link to="/admin/robots">Painel de Automação</Link>
+                  <Link to="/admin/products">Gerenciar Lotes (Produtos)</Link>
                 </Button>
                 <Button variant="secondary" className="justify-start bg-white/5 hover:bg-white/10 border-white/10" asChild>
-                  <Link to="/admin/users">Listagem de Usuários</Link>
+                  <Link to="/admin/packages">Configurar Pacotes de Lances</Link>
                 </Button>
-                <Button variant="secondary" className="justify-start bg-white/5 hover:bg-white/10 border-white/10" disabled>
-                  Configurações Globais
+                <Button variant="secondary" className="justify-start bg-white/5 hover:bg-white/10 border-white/10" asChild>
+                  <Link to="/admin/settings">Configurações Globais</Link>
                 </Button>
               </div>
             </Card>
