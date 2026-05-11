@@ -310,8 +310,10 @@ function AuctionPage() {
                   }}
                 />
                 <div className="absolute top-6 left-6 z-20 flex flex-col gap-3">
-                  {isFinished ? (
+                  {auction.status === 'finished' ? (
                     <Badge variant="outline" className="bg-black/60 backdrop-blur-md border-white/20 px-4 py-2 text-lg font-black italic">ENCERRADO</Badge>
+                  ) : auction.is_finalizing ? (
+                    <Badge className="bg-orange-500 border-none px-4 py-2 text-lg font-black italic shadow-[0_0_20px_rgba(249,115,22,0.5)]">FINALIZANDO</Badge>
                   ) : (
                     <Badge className="bg-red-500 hover:bg-red-600 animate-pulse border-none px-4 py-2 text-lg font-black italic shadow-[0_0_20px_rgba(239,68,68,0.5)]">AO VIVO</Badge>
                   )}

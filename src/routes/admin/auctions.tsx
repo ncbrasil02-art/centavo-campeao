@@ -13,7 +13,7 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Plus, Gavel, Calendar, Clock, Edit, Trash2, CheckCircle, XCircle } from "lucide-react";
+import { Plus, Gavel, Calendar, Clock, Edit, Trash2, CheckCircle, XCircle, Power } from "lucide-react";
 import { toast } from "sonner";
 import { 
   Dialog, 
@@ -52,7 +52,8 @@ function AdminAuctions() {
     end_time: "",
     status: "scheduled",
     robot_enabled: true,
-    timer_duration: 15
+    timer_duration: 15,
+    is_finalizing: false
   });
 
   useEffect(() => {
@@ -85,16 +86,18 @@ function AdminAuctions() {
       const startTime = new Date(formData.start_time);
       const timerDuration = formData.timer_duration;
       
-      // Se end_time não foi definido manualmente, ou é novo leilão, podemos sugerir o start + timer
-      let endTime = new Date(formData.end_time);
-      if (!formData.end_time) {
-        endTime = new Date(startTime.getTime() + (timerDuration * 1000));
+      // Se end_time não foi definido manualmente, calculamos o inicial
+      let endTime;
+      if (formData.end_time) {
+        endTime = new Date(formData.end_time).toISOString();
+      } else {
+        endTime = new Date(startTime.getTime() + (timerDuration * 1000)).toISOString();
       }
 
       const payload = {
         ...formData,
         start_time: startTime.toISOString(),
-        end_time: endTime.toISOString(),
+        end_time: endTime,
       };
 
       if (editingAuction) {
@@ -139,12 +142,29 @@ function AdminAuctions() {
     setFormData({
       product_id: auction.product_id,
       start_time: format(new Date(auction.start_time), "yyyy-MM-dd'T'HH:mm"),
-      end_time: format(new Date(auction.end_time), "yyyy-MM-dd'T'HH:mm"),
+      end_time: auction.end_time ? format(new Date(auction.end_time), "yyyy-MM-dd'T'HH:mm") : "",
       status: auction.status,
       robot_enabled: auction.robot_enabled,
-      timer_duration: auction.timer_duration || 15
+      timer_duration: auction.timer_duration || 15,
+      is_finalizing: auction.is_finalizing || false
     });
     setIsDialogOpen(true);
+  }
+
+  async function toggleFinalize(auction: any) {
+    try {
+      const { error } = await supabase
+        .from("auctions")
+        .update({ is_finalizing: !auction.is_finalizing })
+        .eq("id", auction.id);
+      
+      if (error) throw error;
+      toast.success(auction.is_finalizing ? "Finalização cancelada" : "Leilão entrando em fase de finalização");
+      fetchData();
+    } catch (error) {
+      console.error("Error toggling finalize:", error);
+      toast.error("Erro ao alterar estado de finalização");
+    }
   }
 
   return (
@@ -165,7 +185,7 @@ function AdminAuctions() {
             setIsDialogOpen(open);
             if (!open) {
               setEditingAuction(null);
-              setFormData({ product_id: "", start_time: "", end_time: "", status: "scheduled", robot_enabled: true, timer_duration: 15 });
+              setFormData({ product_id: "", start_time: "", end_time: "", status: "scheduled", robot_enabled: true, timer_duration: 15, is_finalizing: false });
             }
           }}>
             <DialogTrigger asChild>
@@ -209,13 +229,12 @@ function AdminAuctions() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Fim</Label>
+                    <Label>Fim (Opcional)</Label>
                     <Input 
                       type="datetime-local" 
                       value={formData.end_time} 
                       onChange={e => setFormData({...formData, end_time: e.target.value})}
                       className="bg-white/5 border-white/10"
-                      required
                     />
                   </div>
                 </div>
@@ -275,7 +294,7 @@ function AdminAuctions() {
               <TableRow className="border-white/5">
                 <TableHead className="text-white/40 font-bold uppercase text-[10px]">Produto</TableHead>
                 <TableHead className="text-white/40 font-bold uppercase text-[10px]">Início</TableHead>
-                <TableHead className="text-white/40 font-bold uppercase text-[10px]">Fim</TableHead>
+                <TableHead className="text-white/40 font-bold uppercase text-[10px]">Expira em</TableHead>
                 <TableHead className="text-white/40 font-bold uppercase text-[10px]">Lances</TableHead>
                 <TableHead className="text-white/40 font-bold uppercase text-[10px]">Status</TableHead>
                 <TableHead className="text-white/40 font-bold uppercase text-[10px] text-right">Ações</TableHead>
@@ -311,10 +330,21 @@ function AdminAuctions() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <StatusBadge status={auction.status} />
+                      <StatusBadge status={auction.status} isFinalizing={auction.is_finalizing} />
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
+                        {auction.status === 'live' && (
+                          <Button 
+                            size="icon" 
+                            variant="ghost" 
+                            className={`h-8 w-8 ${auction.is_finalizing ? 'text-orange-500 bg-orange-500/10' : 'text-green-500 hover:bg-green-500/10'}`} 
+                            title={auction.is_finalizing ? "Cancelar Finalização" : "Finalizar Leilão"}
+                            onClick={() => toggleFinalize(auction)}
+                          >
+                            <Power className="w-4 h-4" />
+                          </Button>
+                        )}
                         <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-primary/20 text-primary" onClick={() => handleEdit(auction)}>
                           <Edit className="w-4 h-4" />
                         </Button>
@@ -334,24 +364,28 @@ function AdminAuctions() {
   );
 }
 
-function StatusBadge({ status }: { status: string }) {
+function StatusBadge({ status, isFinalizing }: { status: string, isFinalizing?: boolean }) {
+  const effectiveStatus = (status === 'live' && isFinalizing) ? 'finalizing' : status;
+  
   const styles = {
     scheduled: "bg-blue-500/10 text-blue-500 border-blue-500/20",
     live: "bg-green-500/10 text-green-500 border-green-500/20",
     finished: "bg-white/10 text-white/40 border-white/10",
-    cancelled: "bg-red-500/10 text-red-500 border-red-500/20"
+    cancelled: "bg-red-500/10 text-red-500 border-red-500/20",
+    finalizing: "bg-orange-500/10 text-orange-500 border-orange-500/20"
   };
   
   const labels = {
     scheduled: "Agendado",
     live: "Ativo",
     finished: "Finalizado",
-    cancelled: "Cancelado"
+    cancelled: "Cancelado",
+    finalizing: "Finalizando"
   };
 
   return (
-    <span className={`px-2 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${styles[status as keyof typeof styles]}`}>
-      {labels[status as keyof typeof labels] || status}
+    <span className={`px-2 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${styles[effectiveStatus as keyof typeof styles]}`}>
+      {labels[effectiveStatus as keyof typeof labels] || status}
     </span>
   );
 }

@@ -120,6 +120,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 import { SettingsProvider } from "@/hooks/useSettings";
+import { Heartbeat } from "@/components/Heartbeat";
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
@@ -127,6 +128,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <SettingsProvider>
+        <Heartbeat />
         <Outlet />
       </SettingsProvider>
     </QueryClientProvider>
