@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Clock, User, MessageSquare, Zap, Eye, Volume2, VolumeX } from "lucide-react";
+import { Clock, User, MessageSquare, Zap, Eye, Volume2, VolumeX, Calendar } from "lucide-react";
 import { AuctionChat } from "./AuctionChat";
 import { toast } from "sonner";
 import { FALLBACK_PRODUCT_IMAGE, getFallbackAvatarUrl, FICTITIOUS_PARTICIPANTS } from "@/lib/constants";
@@ -100,7 +100,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             if (data.end_time) {
               const end = new Date(data.end_time).getTime();
               const now = getAdjustedNow();
-              setTimeLeft(Math.max(0, Math.floor((end - now) / 1000)));
+              setTimeLeft(Math.max(0, (end - now) / 1000));
             }
             
             setTimeout(() => setIsNewBid(false), 800);
@@ -110,7 +110,8 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       .subscribe();
 
     // Timer logic based on the actual end_time (or start_time for scheduled)
-    const timer = setInterval(() => {
+    let isRefreshing = false;
+    const timer = setInterval(async () => {
       const targetTime = isScheduled ? auction.start_time : auction.end_time;
       if (!targetTime) return;
       
@@ -120,16 +121,34 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       
       setTimeLeft(diff);
 
-      if (!isScheduled && diff <= 0 && !confettiFired.current && auction.status === 'live') {
-        // ... (confetti logic remains same)
+      // Handle transition from scheduled to live
+      if (isScheduled && diff <= 0 && !isRefreshing) {
+        isRefreshing = true;
+        console.log("Scheduled auction reached zero, refreshing...");
+        // Call tick_auctions to ensure server status is updated
+        await supabase.rpc('tick_auctions');
+        const { data } = await supabase
+          .from("v_home_live_auctions")
+          .select("*")
+          .eq("id", auction.id)
+          .single();
+        
+        if (data && data.status !== 'scheduled') {
+          setAuction(data);
+        }
+        isRefreshing = false;
       }
-    }, 50);
+
+      if (!isScheduled && diff <= 0 && !confettiFired.current && auction.status === 'live') {
+        // ... confetti logic if needed
+      }
+    }, 10); // Run more frequently for decimal precision
 
     return () => {
       supabase.removeChannel(channel);
       clearInterval(timer);
     };
-  }, [auction.id, getAdjustedNow]);
+  }, [auction.id, isScheduled, getAdjustedNow, auction.start_time, auction.end_time, auction.status]);
 
   const handleBid = async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -168,11 +187,16 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
     }
   };
 
-  const formatTime = (seconds: number) => {
+  const formatTimeParts = (seconds: number) => {
     const s = Math.floor(seconds);
     const ms = Math.floor((seconds % 1) * 100);
-    return `${s.toString().padStart(2, '0')}:${ms.toString().padStart(2, '0')}`;
+    return {
+      s: s.toString().padStart(2, '0'),
+      ms: ms.toString().padStart(2, '0')
+    };
   };
+
+  const timeParts = formatTimeParts(timeLeft);
 
   const timePercentage = (timeLeft / timerDuration) * 100;
 
@@ -203,17 +227,22 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         {isScheduled && auction.start_time && (
           <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 bg-primary/95 backdrop-blur-xl py-6 flex flex-col items-center justify-center z-20 shadow-[0_0_50px_rgba(var(--color-primary),0.4)] border-y-2 border-white/30 rotate-[-5deg] scale-110 origin-center">
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.2)_0%,_transparent_70%)] animate-pulse"></div>
-            <span className="text-[11px] font-black uppercase tracking-[0.4em] text-black/80 mb-2 relative z-10">AGENDADO PARA</span>
+            <span className="text-[11px] font-black uppercase tracking-[0.4em] text-black/80 mb-2 relative z-10">COMEÇA EM</span>
             <div className="flex flex-col items-center relative z-10">
-              <span className="text-2xl font-black text-black italic leading-none mb-1 drop-shadow-sm">
-                {new Date(auction.start_time).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}
+              <span className="text-4xl font-black text-black italic leading-none mb-2 drop-shadow-sm tabular-nums">
+                {timeParts.s}<span className="text-xl opacity-60 ml-0.5">,{timeParts.ms}</span>
               </span>
-              <span className="text-3xl font-black text-black italic leading-none mb-2 drop-shadow-sm">
-                {new Date(auction.start_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
-              </span>
-              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-black/10 border border-black/5">
-                <Clock className="w-3 h-3 text-black/60" />
-                <span className="text-[10px] font-bold text-black/60 uppercase tracking-widest">Prepare seus lances</span>
+              <div className="flex flex-col items-center gap-1">
+                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-black/10 border border-black/5">
+                  <Calendar className="w-3 h-3 text-black/60" />
+                  <span className="text-[10px] font-bold text-black/60 uppercase tracking-widest">
+                    {new Date(auction.start_time).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })} às {new Date(auction.start_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-black/10 border border-black/5">
+                  <Clock className="w-3 h-3 text-black/60" />
+                  <span className="text-[10px] font-bold text-black/60 uppercase tracking-widest">Prepare seus lances</span>
+                </div>
               </div>
             </div>
           </div>
@@ -315,15 +344,19 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
               <span className="mb-1 text-[9px] font-black uppercase tracking-widest text-white/40">
                 Tempo
               </span>
-              <div className={`flex items-center gap-1 font-mono text-2xl font-bold transition-colors duration-300 ${
+              <div className={`flex items-center gap-1 font-mono text-3xl font-black transition-colors duration-300 ${
                 timeLeft <= 5 && !isFinished 
                   ? 'text-red-500 animate-pulse scale-110 drop-shadow-[0_0_10px_rgba(239,68,68,0.7)]' 
                   : timeLeft <= 10 && !isFinished
                   ? 'text-orange-500'
                   : isFinished ? 'text-white/20' : 'text-white'
               }`}>
-                <Clock className={`h-4 w-4 ${timeLeft <= 5 && !isFinished ? 'animate-spin' : ''}`} />
-                {isFinished ? "00:00" : formatTime(timeLeft)}
+                <Clock className={`h-5 w-5 ${timeLeft <= 5 && !isFinished ? 'animate-spin' : ''}`} />
+                {isFinished ? "00,00" : (
+                  <span className="flex items-baseline tabular-nums">
+                    {timeParts.s}<span className="text-lg opacity-60 ml-0.5">,{timeParts.ms}</span>
+                  </span>
+                )}
               </div>
               {showBonus && (
                 <div className="absolute -top-8 right-0 animate-bounce rounded-lg border border-primary/30 bg-primary/20 px-2 py-1 text-[10px] font-black text-primary backdrop-blur-sm">
