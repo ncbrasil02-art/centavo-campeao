@@ -303,29 +303,116 @@ function AdminAuctions() {
                 <Plus className="w-4 h-4 mr-2" /> Novo Leilão
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-zinc-900 border-white/10 text-white sm:max-w-[425px]">
+            <DialogContent className="bg-zinc-900 border-white/10 text-white sm:max-w-[550px] max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle className="text-2xl font-black uppercase italic">
                   {editingAuction ? "Editar" : "Novo"} <span className="text-primary">Leilão</span>
                 </DialogTitle>
               </DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4 py-4">
-                <div className="space-y-2">
-                  <Label>Produto</Label>
-                  <Select 
-                    value={formData.product_id} 
-                    onValueChange={(v) => setFormData({...formData, product_id: v})}
-                  >
-                    <SelectTrigger className="bg-white/5 border-white/10">
-                      <SelectValue placeholder="Selecione um produto" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-zinc-800 border-white/10 text-white">
-                      {products.map(p => (
-                        <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                <div className="flex items-center gap-2 mb-4 bg-white/5 p-3 rounded-lg border border-white/10">
+                  <Switch 
+                    checked={formData.is_new_product} 
+                    onCheckedChange={v => setFormData({...formData, is_new_product: v})}
+                    disabled={!!editingAuction}
+                  />
+                  <div>
+                    <Label className="text-sm font-bold">Cadastrar Novo Produto</Label>
+                    <p className="text-[10px] text-white/40 leading-none">Crie o produto e o leilão ao mesmo tempo</p>
+                  </div>
                 </div>
+
+                {!formData.is_new_product ? (
+                  <div className="space-y-2">
+                    <Label>Produto Existente</Label>
+                    <Select 
+                      value={formData.product_id} 
+                      onValueChange={(v) => setFormData({...formData, product_id: v})}
+                    >
+                      <SelectTrigger className="bg-white/5 border-white/10">
+                        <SelectValue placeholder="Selecione um produto" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-zinc-800 border-white/10 text-white">
+                        {products.map(p => (
+                          <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                ) : (
+                  <div className="space-y-4 p-4 rounded-lg border border-primary/20 bg-primary/5">
+                    <div className="space-y-2">
+                      <Label>Nome do Produto</Label>
+                      <Input 
+                        placeholder="Ex: iPhone 15 Pro" 
+                        value={formData.new_product_name}
+                        onChange={e => setFormData({...formData, new_product_name: e.target.value})}
+                        className="bg-zinc-950 border-white/10"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label>Descrição Completa</Label>
+                      <Textarea 
+                        placeholder="Detalhes, especificações, etc." 
+                        value={formData.new_product_description}
+                        onChange={e => setFormData({...formData, new_product_description: e.target.value})}
+                        className="bg-zinc-950 border-white/10 min-h-[80px]"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Valor de Mercado (R$)</Label>
+                      <Input 
+                        type="number"
+                        value={formData.new_product_market_value}
+                        onChange={e => setFormData({...formData, new_product_market_value: parseFloat(e.target.value) || 0})}
+                        className="bg-zinc-950 border-white/10"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Imagens</Label>
+                      <div className="grid grid-cols-4 gap-2">
+                        {formData.new_product_images.map((img, idx) => (
+                          <div key={idx} className="relative group aspect-square rounded-lg bg-zinc-950 border border-white/10 overflow-hidden">
+                            <img src={img} alt="" className="w-full h-full object-cover" />
+                            <button 
+                              type="button"
+                              className="absolute top-1 right-1 bg-red-500 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                              onClick={() => setFormData({...formData, new_product_images: formData.new_product_images.filter((_, i) => i !== idx)})}
+                            >
+                              <Trash2 className="w-3 h-3 text-white" />
+                            </button>
+                          </div>
+                        ))}
+                        <div className="relative aspect-square">
+                          <input
+                            type="file"
+                            id="auction-product-upload"
+                            className="hidden"
+                            accept="image/*"
+                            onChange={handleFileUpload}
+                            disabled={uploading}
+                          />
+                          <label 
+                            htmlFor="auction-product-upload" 
+                            className="w-full h-full rounded-lg border-2 border-dashed border-white/10 flex flex-col items-center justify-center cursor-pointer hover:border-primary/50 transition-colors bg-zinc-950"
+                          >
+                            {uploading ? (
+                              <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                            ) : (
+                              <>
+                                <Plus className="w-6 h-6 text-white/20" />
+                                <span className="text-[10px] uppercase font-black text-white/20 mt-1">Add</span>
+                              </>
+                            )}
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
