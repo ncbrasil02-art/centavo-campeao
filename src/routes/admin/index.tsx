@@ -121,12 +121,15 @@ function AdminDashboard() {
             </p>
           </div>
           
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-4">
             <Button variant="outline" className="border-white/10 hover:bg-white/5" asChild>
-              <Link to="/admin/robots"><Bot className="w-4 h-4 mr-2" /> Gerenciar Robôs</Link>
+              <Link to="/admin/products"><Package className="w-4 h-4 mr-2" /> Gerenciar Lotes</Link>
+            </Button>
+            <Button variant="outline" className="border-white/10 hover:bg-white/5" asChild>
+              <Link to="/admin/packages"><TrendingUp className="w-4 h-4 mr-2" /> Pacotes de Lances</Link>
             </Button>
             <Button className="bg-primary text-primary-foreground font-bold" asChild>
-              <Link to="/admin/users"><Users className="w-4 h-4 mr-2" /> Gerenciar Usuários</Link>
+              <Link to="/admin/auctions"><Gavel className="w-4 h-4 mr-2" /> Novo Leilão</Link>
             </Button>
           </div>
         </div>
