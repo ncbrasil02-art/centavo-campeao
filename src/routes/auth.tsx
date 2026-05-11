@@ -44,6 +44,8 @@ function AuthPage() {
           data: {
             full_name: fullName,
             username,
+            cpf,
+            phone,
           }
         }
       });
@@ -51,18 +53,6 @@ function AuthPage() {
       if (error) throw error;
 
       if (data.user) {
-        // Create profile
-        const { error: profileError } = await supabase.from("profiles").insert({
-          id: data.user.id,
-          full_name: fullName,
-          username,
-          cpf,
-          phone,
-          bid_balance: 5, // 5 free bids
-        });
-
-        if (profileError) throw profileError;
-        
         toast.success("Cadastro realizado! Verifique seu e-mail.");
       }
     } catch (error: any) {
