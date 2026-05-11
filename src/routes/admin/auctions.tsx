@@ -53,7 +53,8 @@ function AdminAuctions() {
     status: "scheduled",
     robot_enabled: true,
     timer_duration: 15,
-    is_finalizing: false
+    is_finalizing: false,
+    target_winner: "random" as "robot" | "user" | "random"
   });
 
   useEffect(() => {
@@ -146,7 +147,8 @@ function AdminAuctions() {
       status: auction.status,
       robot_enabled: auction.robot_enabled,
       timer_duration: auction.timer_duration || 15,
-      is_finalizing: auction.is_finalizing || false
+      is_finalizing: auction.is_finalizing || false,
+      target_winner: auction.target_winner || "random"
     });
     setIsDialogOpen(true);
   }
@@ -185,7 +187,7 @@ function AdminAuctions() {
             setIsDialogOpen(open);
             if (!open) {
               setEditingAuction(null);
-              setFormData({ product_id: "", start_time: "", end_time: "", status: "scheduled", robot_enabled: true, timer_duration: 15, is_finalizing: false });
+              setFormData({ product_id: "", start_time: "", end_time: "", status: "scheduled", robot_enabled: true, timer_duration: 15, is_finalizing: false, target_winner: "random" });
             }
           }}>
             <DialogTrigger asChild>
@@ -270,6 +272,28 @@ function AdminAuctions() {
                   </Select>
                 </div>
 
+                <div className="space-y-2">
+                  <Label>Ganhador Alvo</Label>
+                  <Select 
+                    value={formData.target_winner} 
+                    onValueChange={(v: any) => setFormData({...formData, target_winner: v})}
+                  >
+                    <SelectTrigger className="bg-white/5 border-white/10">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-zinc-800 border-white/10 text-white">
+                      <SelectItem value="random">Aleatório (Normal)</SelectItem>
+                      <SelectItem value="robot">Forçar Robô (Garantido)</SelectItem>
+                      <SelectItem value="user">Forçar Usuário Real</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-[10px] text-white/40 italic">
+                    {formData.target_winner === 'robot' ? 'O robô cobrirá TODOS os lances de usuários reais.' : 
+                     formData.target_winner === 'user' ? 'Os robôs não darão lances nos últimos segundos.' : 
+                     'Os robôs agirão conforme a chance configurada.'}
+                  </p>
+                </div>
+
                 <div className="flex items-center gap-2">
                   <Switch 
                     checked={formData.robot_enabled} 
@@ -330,7 +354,11 @@ function AdminAuctions() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <StatusBadge status={auction.status} isFinalizing={auction.is_finalizing} />
+                      <StatusBadge 
+                        status={auction.status} 
+                        isFinalizing={auction.is_finalizing} 
+                        targetWinner={auction.target_winner}
+                      />
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
@@ -364,7 +392,7 @@ function AdminAuctions() {
   );
 }
 
-function StatusBadge({ status, isFinalizing }: { status: string, isFinalizing?: boolean }) {
+function StatusBadge({ status, isFinalizing, targetWinner }: { status: string, isFinalizing?: boolean, targetWinner?: string }) {
   const effectiveStatus = (status === 'live' && isFinalizing) ? 'finalizing' : status;
   
   const styles = {
@@ -377,7 +405,7 @@ function StatusBadge({ status, isFinalizing }: { status: string, isFinalizing?: 
   
   const labels = {
     scheduled: "Agendado",
-    live: "Ativo",
+    live: `Ativo (${targetWinner === 'robot' ? 'Robô Ganha' : targetWinner === 'user' ? 'Usuário Ganha' : 'Aleatório'})`,
     finished: "Finalizado",
     cancelled: "Cancelado",
     finalizing: "Finalizando"
