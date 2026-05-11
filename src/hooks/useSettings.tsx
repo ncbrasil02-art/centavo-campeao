@@ -71,6 +71,9 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
           if (newData.primary_color) {
             document.documentElement.style.setProperty("--primary", newData.primary_color);
           }
+          if (newData.secondary_color) {
+            document.documentElement.style.setProperty("--secondary", newData.secondary_color);
+          }
           if (newData.site_name) {
             document.title = newData.site_name;
           }
