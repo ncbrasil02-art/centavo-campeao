@@ -65,6 +65,39 @@ export type Database = {
           },
         ]
       }
+      banners: {
+        Row: {
+          active: boolean | null
+          created_at: string | null
+          id: string
+          image_url: string
+          link_url: string | null
+          order_index: number | null
+          subtitle: string | null
+          title: string | null
+        }
+        Insert: {
+          active?: boolean | null
+          created_at?: string | null
+          id?: string
+          image_url: string
+          link_url?: string | null
+          order_index?: number | null
+          subtitle?: string | null
+          title?: string | null
+        }
+        Update: {
+          active?: boolean | null
+          created_at?: string | null
+          id?: string
+          image_url?: string
+          link_url?: string | null
+          order_index?: number | null
+          subtitle?: string | null
+          title?: string | null
+        }
+        Relationships: []
+      }
       bid_packages: {
         Row: {
           bid_amount: number
@@ -310,6 +343,75 @@ export type Database = {
           id?: string
           state?: string | null
           username?: string
+        }
+        Relationships: []
+      }
+      site_settings: {
+        Row: {
+          id: string
+          logo_url: string | null
+          mercado_pago_access_token: string | null
+          mercado_pago_public_key: string | null
+          pix_key: string | null
+          pix_name: string | null
+          primary_color: string | null
+          secondary_color: string | null
+          site_name: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          logo_url?: string | null
+          mercado_pago_access_token?: string | null
+          mercado_pago_public_key?: string | null
+          pix_key?: string | null
+          pix_name?: string | null
+          primary_color?: string | null
+          secondary_color?: string | null
+          site_name?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          logo_url?: string | null
+          mercado_pago_access_token?: string | null
+          mercado_pago_public_key?: string | null
+          pix_key?: string | null
+          pix_name?: string | null
+          primary_color?: string | null
+          secondary_color?: string | null
+          site_name?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      testimonials: {
+        Row: {
+          active: boolean | null
+          avatar_url: string | null
+          content: string
+          created_at: string | null
+          id: string
+          name: string
+          rating: number | null
+        }
+        Insert: {
+          active?: boolean | null
+          avatar_url?: string | null
+          content: string
+          created_at?: string | null
+          id?: string
+          name: string
+          rating?: number | null
+        }
+        Update: {
+          active?: boolean | null
+          avatar_url?: string | null
+          content?: string
+          created_at?: string | null
+          id?: string
+          name?: string
+          rating?: number | null
         }
         Relationships: []
       }
