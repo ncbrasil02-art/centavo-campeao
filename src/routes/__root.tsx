@@ -72,7 +72,13 @@ function ErrorComponent({ error, reset }: { error: any; reset: () => void }) {
   );
 }
 
-export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+export const Route = createRootRouteWithContext<{ 
+  queryClient: QueryClient;
+  auth?: {
+    session: any;
+    profile: any;
+  };
+}>()({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
