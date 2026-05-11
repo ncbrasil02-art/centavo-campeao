@@ -109,20 +109,21 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       )
       .subscribe();
 
-    // Timer logic based on the actual end_time with sub-second precision
+    // Timer logic based on the actual end_time (or start_time for scheduled)
     const timer = setInterval(() => {
-      if (!auction.end_time) return;
+      const targetTime = isScheduled ? auction.start_time : auction.end_time;
+      if (!targetTime) return;
       
-      const end = new Date(auction.end_time).getTime();
+      const target = new Date(targetTime).getTime();
       const now = getAdjustedNow();
-      const diff = Math.max(0, (end - now) / 1000);
+      const diff = Math.max(0, (target - now) / 1000);
       
       setTimeLeft(diff);
 
-      if (diff <= 0 && !confettiFired.current && auction.status === 'live') {
+      if (!isScheduled && diff <= 0 && !confettiFired.current && auction.status === 'live') {
         // ... (confetti logic remains same)
       }
-    }, 50); // Fast update for decimal smoothness
+    }, 50);
 
     return () => {
       supabase.removeChannel(channel);
