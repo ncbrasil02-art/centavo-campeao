@@ -41,6 +41,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   const [mounted, setMounted] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [incentivePhrase, setIncentivePhrase] = useState("");
+  const [activeWatchers, setActiveWatchers] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const confettiFired = useRef(false);
   const { getAdjustedNow } = useTimeSync();
@@ -55,10 +56,15 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   useEffect(() => {
     // Randomize initial phrase
     setIncentivePhrase(INCENTIVE_PHRASES[Math.floor(Math.random() * INCENTIVE_PHRASES.length)]);
+    setActiveWatchers(Math.floor(Math.random() * 45) + 12);
     
     // Rotate phrases every 8-12 seconds
     const interval = setInterval(() => {
       setIncentivePhrase(INCENTIVE_PHRASES[Math.floor(Math.random() * INCENTIVE_PHRASES.length)]);
+      setActiveWatchers(prev => {
+        const change = Math.floor(Math.random() * 7) - 3;
+        return Math.max(5, prev + change);
+      });
     }, Math.random() * 4000 + 8000);
 
     return () => clearInterval(interval);
@@ -367,6 +373,14 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
               R$ {auction.product?.market_value?.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) || "0,00"}
             </span>
           </div>
+          {!isFinished && !isScheduled && (
+            <div className="flex items-center gap-1.5 mt-1.5">
+              <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.8)]"></div>
+              <span className="text-[9px] font-black text-white/40 uppercase tracking-widest">
+                {activeWatchers} pessoas disputando agora
+              </span>
+            </div>
+          )}
         </div>
 
         <div className="relative space-y-2">
