@@ -1,27 +1,116 @@
-import { Navbar } from "@/components/Navbar";
+import { useState, useEffect, useCallback } from "react";
+import { Link } from "@tanstack/react-router";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { Users, Star, Trophy, ArrowRight, Play, Clock, Sparkles } from "lucide-react";
-import { Link } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
-import { AuctionCard } from "./AuctionCard";
+import { Users, Star, Trophy, ArrowRight, Play, Clock, Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
+import useEmblaCarousel from 'embla-carousel-react';
+import Autoplay from 'embla-carousel-autoplay';
 
 export function Hero() {
   const [onlineUsers, setOnlineUsers] = useState(128);
+  const [banners, setBanners] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 5000 })]);
+
+  const scrollPrev = useCallback(() => {
+    if (emblaApi) emblaApi.scrollPrev();
+  }, [emblaApi]);
+
+  const scrollNext = useCallback(() => {
+    if (emblaApi) emblaApi.scrollNext();
+  }, [emblaApi]);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setOnlineUsers(prev => prev + (Math.random() > 0.5 ? 1 : -1));
     }, 5000);
+    fetchBanners();
     return () => clearInterval(interval);
   }, []);
 
+  async function fetchBanners() {
+    try {
+      const { data, error } = await supabase
+        .from("banners")
+        .select("*")
+        .eq("active", true)
+        .order("order_index", { ascending: true });
+      
+      if (error) throw error;
+      setBanners(data || []);
+    } catch (error) {
+      console.error("Error fetching banners:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  if (!loading && banners.length > 0) {
+    return (
+      <section className="relative w-full overflow-hidden bg-background">
+        <div className="embla" ref={emblaRef}>
+          <div className="embla__container flex">
+            {banners.map((banner) => (
+              <div key={banner.id} className="embla__slide flex-[0_0_100%] min-w-0 relative h-[400px] md:h-[600px]">
+                <img 
+                  src={banner.image_url} 
+                  alt={banner.title} 
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-transparent flex items-center">
+                  <div className="container mx-auto px-4">
+                    <div className="max-w-2xl space-y-6">
+                      {banner.title && (
+                        <h2 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter text-white drop-shadow-lg">
+                          {banner.title}
+                        </h2>
+                      )}
+                      {banner.subtitle && (
+                        <p className="text-lg md:text-2xl text-white/80 font-medium drop-shadow-md">
+                          {banner.subtitle}
+                        </p>
+                      )}
+                      {banner.link_url && (
+                        <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase italic tracking-widest" asChild>
+                          <Link to={banner.link_url as any}>
+                            Participar Agora <ArrowRight className="ml-2 w-5 h-5" />
+                          </Link>
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        {banners.length > 1 && (
+          <>
+            <button 
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md flex items-center justify-center text-white transition-all z-10 border border-white/10"
+              onClick={scrollPrev}
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+            <button 
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md flex items-center justify-center text-white transition-all z-10 border border-white/10"
+              onClick={scrollNext}
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
+          </>
+        )}
+      </section>
+    );
+  }
+
   return (
     <section className="relative overflow-hidden pt-20 pb-12 lg:pt-32 lg:pb-24">
-      {/* Background Decor */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/10 rounded-full blur-[120px] -z-10"></div>
-      <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-accent/5 rounded-full blur-[100px] -z-10"></div>
       
       <div className="container mx-auto px-4">
         <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
