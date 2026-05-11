@@ -121,6 +121,8 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 import { SettingsProvider } from "@/hooks/useSettings";
 import { Heartbeat } from "@/components/Heartbeat";
+import { PromotionalMessages } from "@/components/PromotionalMessages";
+import { Toaster } from "@/components/ui/sonner";
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
@@ -129,7 +131,9 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <SettingsProvider>
         <Heartbeat />
+        <PromotionalMessages />
         <Outlet />
+        <Toaster position="top-right" richColors />
       </SettingsProvider>
     </QueryClientProvider>
   );
