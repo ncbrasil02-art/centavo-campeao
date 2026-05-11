@@ -112,7 +112,7 @@ function AuctionPage() {
     const calculateTimeLeft = () => {
       const now = getAdjustedNow();
       const end = new Date(auction.end_time).getTime();
-      const diff = Math.max(0, Math.floor((end - now) / 1000));
+      const diff = Math.max(0, (end - now) / 1000);
       
       setTimeLeft(diff);
 
@@ -145,7 +145,7 @@ function AuctionPage() {
     };
 
     calculateTimeLeft();
-    const timer = setInterval(calculateTimeLeft, 1000);
+    const timer = setInterval(calculateTimeLeft, 50);
 
     return () => clearInterval(timer);
   }, [auction?.end_time, auction?.status, getAdjustedNow, isFinished]);
