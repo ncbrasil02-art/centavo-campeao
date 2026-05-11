@@ -154,7 +154,7 @@ function AdminAuctions() {
             setIsDialogOpen(open);
             if (!open) {
               setEditingAuction(null);
-              setFormData({ product_id: "", start_time: "", end_time: "", status: "scheduled" });
+              setFormData({ product_id: "", start_time: "", end_time: "", status: "scheduled", robot_enabled: true });
             }
           }}>
             <DialogTrigger asChild>
