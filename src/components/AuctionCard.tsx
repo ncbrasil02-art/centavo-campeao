@@ -202,11 +202,19 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         {/* Badges */}
         <div className="absolute left-4 top-4 flex flex-col gap-2">
           {isFinished ? (
-            <Badge variant="outline" className="border-white/10 bg-black/60 px-3 py-1 text-white/40 backdrop-blur-md">
+            <Badge variant="outline" className="border-white/10 bg-black/60 px-3 py-1 text-white/40 backdrop-blur-md font-bold uppercase italic">
               ENCERRADO
             </Badge>
+          ) : isScheduled ? (
+            <Badge className="bg-blue-500 px-3 py-1 text-white backdrop-blur-md font-bold uppercase italic shadow-[0_0_15px_rgba(59,130,246,0.5)]">
+              AGENDADO
+            </Badge>
+          ) : isFinalizing ? (
+            <Badge className="bg-orange-500 border-none px-3 py-1 text-white font-bold uppercase italic shadow-[0_0_20px_rgba(249,115,22,0.5)]">
+              FINALIZANDO
+            </Badge>
           ) : (
-            <Badge className="animate-pulse border-none bg-red-500 px-3 py-1 shadow-[0_0_15px_rgba(239,68,68,0.5)] hover:bg-red-600">
+            <Badge className="animate-pulse border-none bg-red-500 px-3 py-1 shadow-[0_0_15px_rgba(239,68,68,0.5)] hover:bg-red-600 font-bold uppercase italic">
               AO VIVO
             </Badge>
           )}
