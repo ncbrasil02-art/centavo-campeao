@@ -577,10 +577,10 @@ function AuctionPage() {
                     disabled={isFinished || bidLoading}
                     className={`w-full h-24 text-3xl font-black uppercase italic tracking-tighter transition-all rounded-[32px] group/btn relative overflow-hidden ${
                       isFinished 
-                        ? 'bg-white/5 text-white/20' 
+                        ? 'bg-white/5 text-white/20 cursor-not-allowed' 
                         : timeLeft <= 5
-                        ? 'bg-red-600 text-white animate-[pulse_0.6s_ease-in-out_infinite] shadow-[0_0_50px_rgba(220,38,38,0.6)]'
-                        : 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_20px_50px_rgba(var(--color-primary),0.4)] hover:-translate-y-1 active:translate-y-1'
+                        ? 'bg-red-600 text-white shadow-[0_0_60px_rgba(220,38,38,0.8)]'
+                        : 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_20px_50px_rgba(var(--color-primary),0.6)] hover:-translate-y-1 active:translate-y-1'
                     }`}
                   >
                     {!isFinished && (
