@@ -107,6 +107,8 @@ function AdminBanners() {
       const payload = {
         ...formData,
         order_index: Number(formData.order_index),
+        start_at: formData.start_at ? new Date(formData.start_at).toISOString() : null,
+        end_at: formData.end_at ? new Date(formData.end_at).toISOString() : null,
       };
 
       if (editingBanner) {
@@ -126,7 +128,7 @@ function AdminBanners() {
 
       setIsDialogOpen(false);
       setEditingBanner(null);
-      setFormData({ title: "", subtitle: "", image_url: "", link_url: "", order_index: 0, active: true });
+      setFormData({ title: "", subtitle: "", image_url: "", link_url: "", order_index: 0, active: true, start_at: "", end_at: "" });
       fetchBanners();
     } catch (error) {
       console.error("Error saving banner:", error);
@@ -170,7 +172,9 @@ function AdminBanners() {
       image_url: banner.image_url,
       link_url: banner.link_url || "",
       order_index: banner.order_index,
-      active: banner.active
+      active: banner.active,
+      start_at: banner.start_at ? format(new Date(banner.start_at), "yyyy-MM-dd'T'HH:mm") : "",
+      end_at: banner.end_at ? format(new Date(banner.end_at), "yyyy-MM-dd'T'HH:mm") : ""
     });
     setIsDialogOpen(true);
   }
