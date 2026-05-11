@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { User, LogOut, Wallet, Gavel, LayoutDashboard } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getFallbackAvatarUrl } from "@/lib/constants";
 import { useSettings } from "@/hooks/useSettings";
 
 export function Navbar() {
