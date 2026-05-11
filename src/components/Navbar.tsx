@@ -17,7 +17,7 @@ export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { site_name, logo_url } = useSettings();
   const { getAdjustedNow, synced } = useTimeSync();
-  const [currentTime, setCurrentTime] = useState<Date>(new Date());
+  const [currentTime, setCurrentTime] = useState<Date | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -88,7 +88,7 @@ export function Navbar() {
               {synced && <div className="w-1 h-1 rounded-full bg-green-500 animate-pulse shadow-[0_0_5px_rgba(34,197,94,0.8)]" title="Sincronizado em tempo real"></div>}
             </span>
             <span className="text-sm font-black tabular-nums text-white/90">
-              {format(currentTime, "HH:mm:ss", { locale: ptBR })}
+              {currentTime ? format(currentTime, "HH:mm:ss", { locale: ptBR }) : "--:--:--"}
             </span>
             <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-black/90 px-3 py-1 rounded text-[8px] font-bold text-white/60 opacity-0 group-hover/time:opacity-100 transition-opacity whitespace-nowrap border border-white/10 pointer-events-none">
               MILISSEGUNDOS SINCRONIZADOS COM O SERVIDOR
@@ -111,7 +111,7 @@ export function Navbar() {
               <Clock className="w-2 h-2" /> HORA
             </span>
             <span className="text-[10px] font-black tabular-nums text-white/90">
-              {format(currentTime, "HH:mm:ss", { locale: ptBR })}
+              {currentTime ? format(currentTime, "HH:mm:ss", { locale: ptBR }) : "--:--:--"}
             </span>
           </div>
 
@@ -183,7 +183,7 @@ export function Navbar() {
               <div className="flex items-center justify-between p-2 mb-2 bg-primary/5 rounded-xl border border-primary/10">
                 <div className="flex flex-col">
                   <span className="text-[10px] font-black text-primary/60 uppercase tracking-widest">Horário de Brasília</span>
-                  <span className="text-xl font-black tabular-nums">{format(currentTime, "HH:mm:ss", { locale: ptBR })}</span>
+                  <span className="text-xl font-black tabular-nums">{currentTime ? format(currentTime, "HH:mm:ss", { locale: ptBR }) : "--:--:--"}</span>
                 </div>
                 <Clock className="w-6 h-6 text-primary/40" />
               </div>
