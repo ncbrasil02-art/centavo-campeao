@@ -59,7 +59,9 @@ export function Navbar() {
         <div className="hidden items-center gap-8 md:flex">
           <Link to="/" className="text-sm font-medium text-white/70 transition-colors hover:text-primary">Leilões</Link>
           <Link to="/packages" className="text-sm font-medium text-white/70 transition-colors hover:text-primary">Comprar Lances</Link>
-          <Link to="/admin/robots" className="text-sm font-medium text-white/70 transition-colors hover:text-primary">Painel Robôs</Link>
+          {profile?.is_admin && (
+            <Link to="/admin/robots" className="text-sm font-medium text-white/70 transition-colors hover:text-primary">Painel Robôs</Link>
+          )}
         </div>
 
         <div className="flex items-center gap-4">

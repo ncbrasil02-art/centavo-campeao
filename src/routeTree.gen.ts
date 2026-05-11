@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PackagesRouteImport } from './routes/packages'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuctionsIdRouteImport } from './routes/auctions.$id'
 import { Route as AdminRobotsRouteImport } from './routes/admin/robots'
@@ -25,6 +26,11 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -36,13 +42,14 @@ const AuctionsIdRoute = AuctionsIdRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRobotsRoute = AdminRobotsRouteImport.update({
-  id: '/admin/robots',
-  path: '/admin/robots',
-  getParentRoute: () => rootRouteImport,
+  id: '/robots',
+  path: '/robots',
+  getParentRoute: () => AdminRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/packages': typeof PackagesRoute
   '/admin/robots': typeof AdminRobotsRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/packages': typeof PackagesRoute
   '/admin/robots': typeof AdminRobotsRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/packages': typeof PackagesRoute
   '/admin/robots': typeof AdminRobotsRoute
@@ -65,12 +74,19 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/packages' | '/admin/robots' | '/auctions/$id'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/auth'
+    | '/packages'
+    | '/admin/robots'
+    | '/auctions/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/packages' | '/admin/robots' | '/auctions/$id'
+  to: '/' | '/admin' | '/auth' | '/packages' | '/admin/robots' | '/auctions/$id'
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/auth'
     | '/packages'
     | '/admin/robots'
@@ -79,9 +95,9 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
   AuthRoute: typeof AuthRoute
   PackagesRoute: typeof PackagesRoute
-  AdminRobotsRoute: typeof AdminRobotsRoute
   AuctionsIdRoute: typeof AuctionsIdRoute
 }
 
@@ -101,6 +117,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -117,19 +140,29 @@ declare module '@tanstack/react-router' {
     }
     '/admin/robots': {
       id: '/admin/robots'
-      path: '/admin/robots'
+      path: '/robots'
       fullPath: '/admin/robots'
       preLoaderRoute: typeof AdminRobotsRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
   }
 }
 
+interface AdminRouteChildren {
+  AdminRobotsRoute: typeof AdminRobotsRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminRobotsRoute: AdminRobotsRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
   AuthRoute: AuthRoute,
   PackagesRoute: PackagesRoute,
-  AdminRobotsRoute: AdminRobotsRoute,
   AuctionsIdRoute: AuctionsIdRoute,
 }
 export const routeTree = rootRouteImport

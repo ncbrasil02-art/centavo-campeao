@@ -21,34 +21,16 @@ function AdminRobotsPage() {
   const [auctions, setAuctions] = useState<any[]>([]);
   const [robots, setRobots] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
+  
   const [automationActive, setAutomationActive] = useState(false);
   const automationRef = useRef<boolean>(false);
   const navigate = useNavigate();
   const { getAdjustedNow } = useTimeSync();
 
   useEffect(() => {
-    checkAdmin();
     fetchAuctionsWithRobots();
     fetchRobotUsers();
   }, []);
-
-  useEffect(() => {
-    automationRef.current = automationActive;
-    if (automationActive) {
-      const interval = setInterval(runAutomation, 1500); // Poll every 1.5s
-      return () => clearInterval(interval);
-    }
-  }, [automationActive]);
-
-  async function checkAdmin() {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      navigate({ to: "/auth" });
-      return;
-    }
-    setIsAdmin(true);
-  }
 
   async function fetchRobotUsers() {
     const { data } = await supabase
@@ -144,7 +126,7 @@ function AdminRobotsPage() {
     }
   };
 
-  if (!isAdmin) return null;
+  
 
   return (
     <div className="min-h-screen bg-background text-white">
