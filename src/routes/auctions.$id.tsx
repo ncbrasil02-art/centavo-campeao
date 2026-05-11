@@ -428,26 +428,47 @@ function AuctionPage() {
 
                 <div className="relative space-y-4">
                   <div className="grid grid-cols-2 gap-6 relative z-10">
-                    <div className="flex flex-col gap-3 p-6 rounded-[28px] bg-white/5 border border-white/10 transition-colors hover:bg-white/10">
+                    <div className={`flex flex-col gap-3 p-6 rounded-[28px] bg-white/5 border border-white/10 transition-all duration-300 ${
+                      timeLeft <= 8 && !isFinished ? 'scale-105 bg-red-500/5 border-red-500/20' : ''
+                    }`}>
                       <span className="text-[10px] text-white/40 font-black uppercase tracking-widest flex items-center gap-2">
-                        <Clock className="w-3 h-3 text-primary" /> Cronômetro
+                        <Clock className={`w-3 h-3 ${timeLeft <= 8 && !isFinished ? 'text-red-500 animate-spin' : 'text-primary'}`} /> Tempo Restante
                       </span>
-                      <div className={`text-4xl font-mono font-black transition-all duration-300 ${
-                        timeLeft <= 5 && !isFinished 
-                          ? 'text-red-500 animate-pulse scale-110 drop-shadow-[0_0_15px_rgba(239,68,68,0.7)]' 
-                          : timeLeft <= 10 && !isFinished
-                          ? 'text-orange-500'
-                          : isFinished ? 'text-white/20' : 'text-white'
-                      }`}>
-                        {isFinished ? "00:00" : formatTime(timeLeft)}
+                      <div className="flex items-center gap-2">
+                        <div className={`relative flex items-center justify-center min-w-[80px] py-3 rounded-2xl border border-white/10 overflow-hidden shadow-2xl transition-all duration-300 ${
+                          timeLeft <= 8 && !isFinished 
+                            ? 'bg-gradient-to-br from-red-600/60 to-red-900/80 border-red-500 animate-pulse' 
+                            : 'bg-gradient-to-br from-black/80 to-black/60'
+                        }`}>
+                          <span className={`text-5xl font-black tabular-nums tracking-tighter ${
+                            timeLeft <= 8 && !isFinished ? 'text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.6)]' : 'text-white'
+                          }`}>
+                            {isFinished ? "00" : Math.floor(timeLeft).toString().padStart(2, '0')}
+                          </span>
+                          {timeLeft <= 8 && !isFinished && (
+                            <div className="absolute inset-0 bg-white/10 animate-[ping_1.5s_ease-in-out_infinite]"></div>
+                          )}
+                        </div>
+                        <div className={`flex items-end py-2 px-2 rounded-xl border border-white/5 bg-black/40 ${
+                          timeLeft <= 8 && !isFinished ? 'border-red-500/30' : ''
+                        }`}>
+                          <span className={`text-xl font-black tabular-nums ${
+                            timeLeft <= 8 && !isFinished ? 'text-red-400' : 'text-white/40'
+                          }`}>
+                            ,{isFinished ? "00" : Math.floor((timeLeft % 1) * 100).toString().padStart(2, '0')}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                    <div className="flex flex-col gap-3 p-6 rounded-[28px] bg-white/5 border border-white/10 transition-colors hover:bg-white/10">
+                    <div className="flex flex-col gap-4 p-6 rounded-[28px] bg-white/5 border border-white/10 transition-colors hover:bg-white/10">
                       <span className="text-[10px] text-white/40 font-black uppercase tracking-widest flex items-center gap-2">
-                        <History className="w-3 h-3 text-primary" /> Total Bids
+                        <History className="w-3 h-3 text-primary" /> Total de Lances
                       </span>
-                      <div className="text-4xl font-black text-white">
+                      <div className="text-5xl font-black text-white">
                         {auction.bid_count || 0}
+                      </div>
+                      <div className="text-[10px] font-bold text-white/20 uppercase tracking-widest">
+                        Duração: {timerDuration}s
                       </div>
                     </div>
                   </div>
