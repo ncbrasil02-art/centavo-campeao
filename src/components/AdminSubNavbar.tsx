@@ -20,6 +20,7 @@ export function AdminSubNavbar() {
     { label: "Leilões", href: "/admin/auctions", icon: Gavel },
     { label: "Robôs", href: "/admin/robots", icon: Bot },
     { label: "Pacotes", href: "/admin/packages", icon: History },
+    { label: "Frases", href: "/admin/phrases", icon: Settings },
     { label: "Vendas", href: "/admin/sales", icon: History },
     { label: "Banners", href: "/admin/banners", icon: Settings },
     { label: "Depoimentos", href: "/admin/testimonials", icon: Users },

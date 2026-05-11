@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { FALLBACK_USER_IMAGE, getFallbackAvatarUrl } from "@/lib/constants";
+import { motion, AnimatePresence } from "framer-motion";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -224,11 +225,24 @@ function Index() {
                   ))}
                 </div>
               ) : auctions.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {auctions.map((auction) => (
-                    <AuctionCard key={auction.id} auction={auction} />
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+                >
+                  {auctions.map((auction, idx) => (
+                    <motion.div
+                      key={auction.id}
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: idx * 0.1 }}
+                    >
+                      <AuctionCard auction={auction} />
+                    </motion.div>
                   ))}
-                </div>
+                </motion.div>
               ) : (
                 <div className="text-center py-20 bg-white/5 rounded-3xl border border-dashed border-white/10">
                   <p className="text-white/40">Nenhum leilão ao vivo no momento.</p>
@@ -299,11 +313,25 @@ function Index() {
                   <p className="text-white/20 mt-2">Veja os últimos produtos que foram arrematados com sucesso na plataforma.</p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 opacity-60 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-700">
-                  {finishedAuctions.map((auction) => (
-                    <AuctionCard key={auction.id} auction={auction} />
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 opacity-60 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-700"
+                >
+                  {finishedAuctions.map((auction, idx) => (
+                    <motion.div
+                      key={auction.id}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: idx * 0.1 }}
+                      className="animate-float-slow"
+                    >
+                      <AuctionCard auction={auction} />
+                    </motion.div>
                   ))}
-                </div>
+                </motion.div>
               </div>
             </section>
           )}

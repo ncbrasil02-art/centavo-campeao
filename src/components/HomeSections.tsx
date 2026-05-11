@@ -1,6 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link } from "@tanstack/react-router";
+import { useTimeSync } from "@/hooks/useTimeSync";
 import { supabase } from "@/integrations/supabase/client";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -10,24 +13,50 @@ import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 
 export function Hero() {
+  const { getAdjustedNow } = useTimeSync();
+  const [currentTime, setCurrentTime] = useState<Date>(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date(getAdjustedNow()));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [getAdjustedNow]);
+
   const [onlineUsers, setOnlineUsers] = useState(128);
   const [banners, setBanners] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [textIndex, setTextIndex] = useState(0);
-  
-  const phrases = [
+  const [phrases, setPhrases] = useState<string[]>([
     "Arremate produtos incríveis por centavos!",
     "iPhones, Consoles e muito mais a partir de R$ 0,01",
     "Economize até 99% nos seus produtos favoritos",
     "A emoção do leilão em tempo real na sua tela"
-  ];
+  ]);
+  const [loading, setLoading] = useState(true);
+  const [textIndex, setTextIndex] = useState(0);
 
   useEffect(() => {
+    fetchPhrases();
+  }, []);
+
+  async function fetchPhrases() {
+    const { data } = await supabase
+      .from("app_phrases")
+      .select("text")
+      .eq("type", "hero")
+      .eq("active", true);
+    
+    if (data && data.length > 0) {
+      setPhrases(data.map(p => p.text));
+    }
+  }
+
+  useEffect(() => {
+    if (phrases.length === 0) return;
     const timer = setInterval(() => {
       setTextIndex((prev) => (prev + 1) % phrases.length);
     }, 4000);
     return () => clearInterval(timer);
-  }, []);
+  }, [phrases]);
 
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 5000 })]);
 
@@ -207,10 +236,20 @@ export function Hero() {
       
       <div className="container mx-auto px-4 relative z-20">
         <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
-          <Badge variant="outline" className="mb-6 py-1 px-4 border-primary/30 bg-primary/10 text-primary animate-pulse">
-            <Sparkles className="w-3 h-3 mr-2" />
-            VIVA A EMOÇÃO DO ARREMATE
-          </Badge>
+          <div className="flex flex-col items-center mb-8 reveal-on-scroll active">
+            <div className="bg-primary/10 border border-primary/20 rounded-full px-6 py-2 backdrop-blur-md shadow-[0_0_20px_rgba(var(--color-primary),0.2)]">
+              <div className="flex items-center gap-3">
+                <Clock className="w-5 h-5 text-primary animate-pulse" />
+                <div className="flex flex-col items-start">
+                  <span className="text-[10px] font-black text-primary/60 uppercase tracking-widest leading-none">Horário de Brasília</span>
+                  <span className="text-2xl font-black tabular-nums text-white neon-text leading-none mt-1">
+                    {format(currentTime, "HH:mm:ss", { locale: ptBR })}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
           
           <div className="h-[140px] md:h-[220px] flex items-center justify-center mb-6 overflow-hidden">
             <motion.h1

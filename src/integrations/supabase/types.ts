@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_phrases: {
+        Row: {
+          active: boolean | null
+          created_at: string | null
+          id: string
+          text: string
+          type: string
+        }
+        Insert: {
+          active?: boolean | null
+          created_at?: string | null
+          id?: string
+          text: string
+          type: string
+        }
+        Update: {
+          active?: boolean | null
+          created_at?: string | null
+          id?: string
+          text?: string
+          type?: string
+        }
+        Relationships: []
+      }
       auctions: {
         Row: {
           bid_count: number | null

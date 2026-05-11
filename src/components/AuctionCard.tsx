@@ -14,6 +14,8 @@ import { Progress } from "@/components/ui/progress";
 
 const BID_SOUND_URL = "https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3";
 
+let CACHED_INCENTIVES: string[] = [];
+
 const INCENTIVE_PHRASES = [
   "🔥 Este produto é o máximo!",
   "👀 Tem poucas pessoas disputando!",
@@ -54,13 +56,29 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
     : 0;
 
   useEffect(() => {
-    // Randomize initial phrase
-    setIncentivePhrase(INCENTIVE_PHRASES[Math.floor(Math.random() * INCENTIVE_PHRASES.length)]);
+    async function loadIncentives() {
+      if (CACHED_INCENTIVES.length > 0) {
+        setIncentivePhrase(CACHED_INCENTIVES[Math.floor(Math.random() * CACHED_INCENTIVES.length)]);
+        return;
+      }
+      const { data } = await supabase
+        .from("app_phrases")
+        .select("text")
+        .eq("type", "incentive")
+        .eq("active", true);
+      
+      const phrases = (data && data.length > 0) ? data.map(p => p.text) : INCENTIVE_PHRASES;
+      CACHED_INCENTIVES = phrases;
+      setIncentivePhrase(phrases[Math.floor(Math.random() * phrases.length)]);
+    }
+
+    loadIncentives();
     setActiveWatchers(Math.floor(Math.random() * 45) + 12);
     
     // Rotate phrases every 8-12 seconds
     const interval = setInterval(() => {
-      setIncentivePhrase(INCENTIVE_PHRASES[Math.floor(Math.random() * INCENTIVE_PHRASES.length)]);
+      const phrases = CACHED_INCENTIVES.length > 0 ? CACHED_INCENTIVES : INCENTIVE_PHRASES;
+      setIncentivePhrase(phrases[Math.floor(Math.random() * phrases.length)]);
       setActiveWatchers(prev => {
         const change = Math.floor(Math.random() * 7) - 3;
         return Math.max(5, prev + change);
@@ -233,7 +251,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   const timePercentage = (timeLeft / timerDuration) * 100;
 
   return (
-    <Card className="group relative flex flex-col h-full overflow-hidden rounded-[32px] border-white/10 bg-zinc-950/40 backdrop-blur-md transition-all duration-500 hover:border-primary/50 hover:shadow-[0_0_40px_rgba(var(--color-primary),0.3)] border-2">
+    <Card className={`group relative flex flex-col h-full overflow-hidden rounded-[32px] border-white/10 bg-zinc-950/40 backdrop-blur-md transition-all duration-500 hover:border-primary/50 hover:shadow-[0_0_40px_rgba(var(--color-primary),0.3)] border-2 ${!isFinished && !isScheduled ? 'animate-float-slow' : ''}`}>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_rgba(var(--color-primary),0.05),_transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity"></div>
       {/* Product Image Section */}
       <div className="relative aspect-square overflow-hidden rounded-t-[32px]">
