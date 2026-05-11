@@ -20,7 +20,8 @@ interface AuctionCardProps {
 
 export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   const [auction, setAuction] = useState(initialAuction);
-  const [timeLeft, setTimeLeft] = useState(30); // Fictitious mode: starts at 30s
+  const [timeLeft, setTimeLeft] = useState(0); 
+  const [timerDuration, setTimerDuration] = useState(initialAuction.timer_duration || 15);
   const [isNewBid, setIsNewBid] = useState(false);
   const [showBonus, setShowBonus] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -58,6 +59,9 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
 
   useEffect(() => {
     setAuction(initialAuction);
+    if (initialAuction.timer_duration) {
+      setTimerDuration(initialAuction.timer_duration);
+    }
   }, [initialAuction]);
 
   useEffect(() => {
@@ -167,7 +171,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
-  const timePercentage = (timeLeft / 30) * 100;
+  const timePercentage = (timeLeft / timerDuration) * 100;
 
   return (
     <Card className="group relative flex flex-col h-full overflow-hidden rounded-[32px] border-white/10 bg-white/5 transition-all duration-500 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/20">
@@ -293,7 +297,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
               </div>
               {showBonus && (
                 <div className="absolute -top-8 right-0 animate-bounce rounded-lg border border-primary/30 bg-primary/20 px-2 py-1 text-[10px] font-black text-primary backdrop-blur-sm">
-                  +30s RESET
+                  +{timerDuration}s RESET
                 </div>
               )}
             </div>
