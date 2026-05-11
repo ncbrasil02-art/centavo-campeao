@@ -98,22 +98,13 @@ function Index() {
   async function fetchData() {
     const [auctionsRes, winnersRes] = await Promise.all([
       supabase
-        .from("auctions")
-        .select(`
-          *,
-          product:products(*),
-          last_bidder:profiles(username, avatar_url)
-        `)
-        .eq("status", "live")
+        .from("v_home_live_auctions")
+        .select("*")
         .order("end_time", { ascending: true })
         .limit(8),
       supabase
-        .from("winners")
-        .select(`
-          *,
-          profile:profiles(full_name, avatar_url, username),
-          auction:auctions(product:products(name))
-        `)
+        .from("v_home_recent_winners")
+        .select("*")
         .order("created_at", { ascending: false })
         .limit(3)
     ]);

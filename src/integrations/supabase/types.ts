@@ -165,6 +165,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "bids_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: false
+            referencedRelation: "v_home_live_auctions"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "bids_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
@@ -201,6 +208,13 @@ export type Database = {
             columns: ["auction_id"]
             isOneToOne: false
             referencedRelation: "auctions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_messages_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: false
+            referencedRelation: "v_home_live_auctions"
             referencedColumns: ["id"]
           },
           {
@@ -324,6 +338,13 @@ export type Database = {
             columns: ["auction_id"]
             isOneToOne: false
             referencedRelation: "auctions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "robot_settings_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: false
+            referencedRelation: "v_home_live_auctions"
             referencedColumns: ["id"]
           },
         ]
@@ -509,6 +530,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "winners_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: true
+            referencedRelation: "v_home_live_auctions"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "winners_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
@@ -519,7 +547,39 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      v_home_live_auctions: {
+        Row: {
+          bid_count: number | null
+          current_price: number | null
+          end_time: string | null
+          id: string | null
+          last_bidder: Json | null
+          product: Json | null
+          product_id: string | null
+          robot_enabled: boolean | null
+          status: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auctions_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_home_recent_winners: {
+        Row: {
+          auction: Json | null
+          created_at: string | null
+          final_price: number | null
+          id: string | null
+          profile: Json | null
+          savings_percentage: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       add_bids_to_user: {
