@@ -82,12 +82,8 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           console.log('Auction update:', payload);
           // Fetch full data to get nested relations (last_bidder)
           const { data } = await supabase
-            .from("auctions")
-            .select(`
-              *,
-              product:products(*),
-              last_bidder:profiles(username, avatar_url)
-            `)
+            .from("v_home_live_auctions")
+            .select("*")
             .eq("id", auction.id)
             .single();
           
