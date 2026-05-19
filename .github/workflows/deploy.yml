@@ -27,7 +27,7 @@ jobs:
 
       - name: Criar .htaccess para SPA
         run: |
-          cat > dist/.htaccess << 'EOF'
+          cat > dist/client/.htaccess << 'EOF'
           Options -MultiViews
           RewriteEngine On
           RewriteCond %{REQUEST_FILENAME} !-f
@@ -40,6 +40,6 @@ jobs:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./dist/
+          local-dir: ./dist/client/
           server-dir: /public_html/
           dangerous-clean-slate: true
