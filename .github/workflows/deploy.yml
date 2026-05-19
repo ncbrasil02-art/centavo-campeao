@@ -1,36 +1,38 @@
 # Deploy workflow
 name: Build e Deploy para Hostinger
 
-
 on:
   push:
     branches:
       - main
 
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
-
     steps:
       - name: Checkout do repositorio
         uses: actions/checkout@v4
-
 
       - name: Instalar Bun
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
-
       - name: Instalar dependencias
         run: bun install
-
 
       - name: Build do projeto
         run: bun run build
 
+      - name: Criar .htaccess para SPA
+        run: |
+          cat > dist/.htaccess << 'EOF'
+          Options -MultiViews
+          RewriteEngine On
+          RewriteCond %{REQUEST_FILENAME} !-f
+          RewriteRule ^ index.html [QSA,L]
+          EOF
 
       - name: Deploy via FTP para Hostinger
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
@@ -41,4 +43,3 @@ jobs:
           local-dir: ./dist/
           server-dir: /public_html/
           dangerous-clean-slate: true
-
