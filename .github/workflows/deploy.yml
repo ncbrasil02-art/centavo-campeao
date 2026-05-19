@@ -23,7 +23,7 @@ jobs:
         run: bun install
 
       - name: Build do projeto
-        run: bun run build
+        run: bun run build:hostinger
 
       - name: Criar .htaccess para SPA
         run: |
