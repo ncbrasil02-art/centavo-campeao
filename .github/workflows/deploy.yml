@@ -1,0 +1,72 @@
+name: Deploy para Clientes (FTP Hostinger)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build do projeto (Vite)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Instalar Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Salvar pasta dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  deploy-centavodomilhao:
+    name: Deploy centavodomilhao.online
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar build
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Upload FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_HOST_CENTAVODOMILHAO }}
+          username: ${{ secrets.FTP_USER_CENTAVODOMILHAO }}
+          password: ${{ secrets.FTP_PASS_CENTAVODOMILHAO }}
+          local-dir: dist/
+          server-dir: /public_html/
+
+  deploy-lancecerto:
+    name: Deploy lancecerto.site
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar build
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Upload FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_HOST_LANCECERTO }}
+          username: ${{ secrets.FTP_USER_LANCECERTO }}
+          password: ${{ secrets.FTP_PASS_LANCECERTO }}
+          local-dir: dist/
+          server-dir: /public_html/
