@@ -1,4 +1,4 @@
-name: Deploy para Clientes (FTP Hostinger)
+hname: Deploy para Clientes (FTP Hostinger)
 
 on:
   push:
@@ -47,7 +47,7 @@ jobs:
           server: ${{ secrets.FTP_HOST_CENTAVODOMILHAO }}
           username: ${{ secrets.FTP_USER_CENTAVODOMILHAO }}
           password: ${{ secrets.FTP_PASS_CENTAVODOMILHAO }}
-          local-dir: dist/
+          local-dir: dist/client/
           server-dir: /public_html/
 
   deploy-lancecerto:
@@ -67,5 +67,5 @@ jobs:
           server: ${{ secrets.FTP_HOST_LANCECERTO }}
           username: ${{ secrets.FTP_USER_LANCECERTO }}
           password: ${{ secrets.FTP_PASS_LANCECERTO }}
-          local-dir: dist/
+          local-dir: dist/client/
           server-dir: /public_html/
