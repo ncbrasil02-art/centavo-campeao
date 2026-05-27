@@ -1,4 +1,4 @@
-hname: Deploy para Clientes (FTP Hostinger)
+name: Deploy para Clientes (FTP Hostinger)
 
 on:
   push:
