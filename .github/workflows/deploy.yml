@@ -53,6 +53,7 @@ jobs:
           password: ${{ secrets.FTP_PASS_CENTAVODOMILHAO }}
           local-dir: dist/client/
           server-dir: /public_html/
+          dangerous-clean-slate: true
 
   deploy-lancecerto:
     name: Deploy lancecerto.site
@@ -73,3 +74,4 @@ jobs:
           password: ${{ secrets.FTP_PASS_LANCECERTO }}
           local-dir: dist/client/
           server-dir: /public_html/
+          dangerous-clean-slate: true
