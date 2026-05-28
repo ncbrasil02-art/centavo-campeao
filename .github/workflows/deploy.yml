@@ -45,7 +45,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: static-site
-                    include-hidden-files: true
+          include-hidden-files: true
           path: dist/client/
 
   deploy-centavodomilhao:
