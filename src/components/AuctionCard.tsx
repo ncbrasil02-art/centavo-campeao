@@ -233,8 +233,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
     
     try {
       const { data, error } = await supabase.rpc('place_bid', {
-        p_auction_id: auction.id,
-        p_user_id: session.user.id
+        p_auction_id: auction.id
       });
 
       if (error) throw error;
