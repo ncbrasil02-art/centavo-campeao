@@ -250,8 +250,7 @@ function AuctionPage() {
       }
 
       const { data, error } = await supabase.rpc('place_bid', {
-        p_auction_id: id,
-        p_user_id: userData.user.id
+        p_auction_id: id
       }) as { data: any, error: any };
 
       if (error) {
