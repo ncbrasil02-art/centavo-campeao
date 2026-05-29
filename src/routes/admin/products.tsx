@@ -56,9 +56,9 @@ function AdminProducts() {
 
       if (error) throw error;
       setProducts(data || []);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching products:", error);
-      toast.error("Erro ao carregar produtos");
+      toast.error(`Erro ao carregar produtos: ${error.message || "Erro desconhecido"}`);
     } finally {
       setLoading(false);
     }

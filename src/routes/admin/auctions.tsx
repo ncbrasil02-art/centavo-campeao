@@ -82,9 +82,9 @@ function AdminAuctions() {
 
       setAuctions(auctionsRes.data || []);
       setProducts(productsRes.data || []);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching data:", error);
-      toast.error("Erro ao carregar dados");
+      toast.error(`Erro ao carregar dados: ${error.message || "Erro desconhecido"}`);
     } finally {
       setLoading(false);
     }
