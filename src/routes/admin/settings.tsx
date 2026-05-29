@@ -8,7 +8,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Settings, Save, Palette, CreditCard, Layout, Upload, Loader2, Image as ImageIcon } from "lucide-react";
+import { Settings, Save, Palette, CreditCard, Layout, Upload, Loader2, Image as ImageIcon, Type, Monitor } from "lucide-react";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
 
 export const Route = createFileRoute("/admin/settings")({
   component: AdminSettings,
@@ -28,6 +35,7 @@ function AdminSettings() {
     mercado_pago_access_token: "",
     pix_key: "",
     pix_name: "",
+    hero_display_mode: "phrases",
   });
 
   useEffect(() => {
@@ -53,6 +61,7 @@ function AdminSettings() {
           mercado_pago_access_token: data.mercado_pago_access_token || "",
           pix_key: data.pix_key || "",
           pix_name: data.pix_name || "",
+          hero_display_mode: data.hero_display_mode || "phrases",
         });
       }
     } catch (error) {
@@ -161,6 +170,35 @@ function AdminSettings() {
                 </div>
               </CardHeader>
               <CardContent className="p-6 space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="hero_mode">Modo de Exibição do Hero (Topo)</Label>
+                  <Select 
+                    value={settings.hero_display_mode} 
+                    onValueChange={(value) => setSettings({...settings, hero_display_mode: value})}
+                  >
+                    <SelectTrigger className="bg-white/5 border-white/10 h-12">
+                      <SelectValue placeholder="Selecione o modo" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-zinc-900 border-white/10 text-white">
+                      <SelectItem value="phrases">
+                        <div className="flex items-center gap-2">
+                          <Type className="w-4 h-4" />
+                          <span>Frases Rolantes (Mensagens)</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="banners">
+                        <div className="flex items-center gap-2">
+                          <Monitor className="w-4 h-4" />
+                          <span>Banners Hero de Produtos</span>
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-[10px] text-white/40 uppercase font-bold tracking-widest mt-1">
+                    Escolha o que será exibido no topo da página inicial.
+                  </p>
+                </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="site_name">Nome do Site</Label>
                   <Input 

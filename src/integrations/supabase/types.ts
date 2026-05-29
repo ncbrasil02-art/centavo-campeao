@@ -438,6 +438,7 @@ export type Database = {
       }
       site_settings: {
         Row: {
+          hero_display_mode: string | null
           id: string
           logo_url: string | null
           mercado_pago_access_token: string | null
@@ -450,6 +451,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          hero_display_mode?: string | null
           id?: string
           logo_url?: string | null
           mercado_pago_access_token?: string | null
@@ -462,6 +464,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          hero_display_mode?: string | null
           id?: string
           logo_url?: string | null
           mercado_pago_access_token?: string | null
