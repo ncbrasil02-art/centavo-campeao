@@ -152,6 +152,41 @@ function AdminUsersPage() {
           </div>
         </div>
 
+        {/* User's own profile quick actions */}
+        <div className="mb-8">
+          {users.find(u => u.is_admin && !u.is_bot) && (
+            <Card className="bg-primary/5 border-primary/20 overflow-hidden backdrop-blur-md">
+              <CardHeader className="py-4 border-b border-primary/10">
+                <CardTitle className="text-sm font-bold flex items-center gap-2">
+                  <Shield className="w-4 h-4 text-primary" /> Seu Perfil Administrativo
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                {users.filter(u => u.is_admin && !u.is_bot).map(me => (
+                  <div key={me.id} className="flex items-center gap-4 w-full justify-between">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="w-12 h-12 border-2 border-primary/20">
+                        <AvatarImage src={me.avatar_url || getFallbackAvatarUrl(me.username)} />
+                        <AvatarFallback className="bg-primary/20 text-primary">{me.username?.substring(0, 2).toUpperCase()}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-black text-lg">{me.username} <span className="text-[10px] bg-primary text-black px-1.5 py-0.5 rounded-sm ml-2">VOCÊ</span></p>
+                        <p className="text-sm text-white/40">Saldo atual: <span className="text-primary font-bold">{me.bid_balance || 0} lances</span></p>
+                      </div>
+                    </div>
+                    <Button 
+                      onClick={() => handleAddCredits(me.id)}
+                      className="bg-primary hover:bg-primary/90 text-black font-black"
+                    >
+                      <Wallet className="w-4 h-4 mr-2" /> RECARREGAR MEU SALDO
+                    </Button>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          )}
+        </div>
+
         <Card className="bg-white/5 border-white/10 overflow-hidden backdrop-blur-md">
           <CardHeader className="border-b border-white/5 bg-white/5 flex flex-row items-center justify-between">
             <div>
