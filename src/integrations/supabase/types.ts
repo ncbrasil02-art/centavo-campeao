@@ -438,11 +438,18 @@ export type Database = {
       }
       site_settings: {
         Row: {
+          favicon_url: string | null
+          fb_pixel_id: string | null
+          ga_id: string | null
+          google_site_verification: string | null
           hero_display_mode: string | null
           id: string
           logo_url: string | null
           mercado_pago_access_token: string | null
           mercado_pago_public_key: string | null
+          meta_description: string | null
+          meta_keywords: string | null
+          meta_title: string | null
           pix_key: string | null
           pix_name: string | null
           primary_color: string | null
@@ -451,11 +458,18 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          favicon_url?: string | null
+          fb_pixel_id?: string | null
+          ga_id?: string | null
+          google_site_verification?: string | null
           hero_display_mode?: string | null
           id?: string
           logo_url?: string | null
           mercado_pago_access_token?: string | null
           mercado_pago_public_key?: string | null
+          meta_description?: string | null
+          meta_keywords?: string | null
+          meta_title?: string | null
           pix_key?: string | null
           pix_name?: string | null
           primary_color?: string | null
@@ -464,11 +478,18 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          favicon_url?: string | null
+          fb_pixel_id?: string | null
+          ga_id?: string | null
+          google_site_verification?: string | null
           hero_display_mode?: string | null
           id?: string
           logo_url?: string | null
           mercado_pago_access_token?: string | null
           mercado_pago_public_key?: string | null
+          meta_description?: string | null
+          meta_keywords?: string | null
+          meta_title?: string | null
           pix_key?: string | null
           pix_name?: string | null
           primary_color?: string | null

@@ -7,8 +7,23 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Settings, Save, Palette, CreditCard, Layout, Upload, Loader2, Image as ImageIcon, Type, Monitor } from "lucide-react";
+import { 
+  Settings, 
+  Save, 
+  Palette, 
+  CreditCard, 
+  Layout, 
+  Upload, 
+  Loader2, 
+  Image as ImageIcon, 
+  Type, 
+  Monitor, 
+  Search, 
+  Globe, 
+  BarChart 
+} from "lucide-react";
 import { 
   Select, 
   SelectContent, 
@@ -24,11 +39,13 @@ export const Route = createFileRoute("/admin/settings")({
 function AdminSettings() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [uploading, setUploading] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [uploadingFavicon, setUploadingFavicon] = useState(false);
   const [settings, setSettings] = useState({
     id: "",
     site_name: "",
     logo_url: "",
+    favicon_url: "",
     primary_color: "",
     secondary_color: "",
     mercado_pago_public_key: "",
@@ -36,6 +53,12 @@ function AdminSettings() {
     pix_key: "",
     pix_name: "",
     hero_display_mode: "phrases",
+    ga_id: "",
+    fb_pixel_id: "",
+    meta_title: "",
+    meta_description: "",
+    meta_keywords: "",
+    google_site_verification: "",
   });
 
   useEffect(() => {
@@ -55,6 +78,7 @@ function AdminSettings() {
           id: data.id,
           site_name: data.site_name || "",
           logo_url: data.logo_url || "",
+          favicon_url: data.favicon_url || "",
           primary_color: data.primary_color || "#8B5CF6",
           secondary_color: data.secondary_color || "#7C3AED",
           mercado_pago_public_key: data.mercado_pago_public_key || "",
@@ -62,6 +86,12 @@ function AdminSettings() {
           pix_key: data.pix_key || "",
           pix_name: data.pix_name || "",
           hero_display_mode: data.hero_display_mode || "phrases",
+          ga_id: data.ga_id || "",
+          fb_pixel_id: data.fb_pixel_id || "",
+          meta_title: data.meta_title || "",
+          meta_description: data.meta_description || "",
+          meta_keywords: data.meta_keywords || "",
+          google_site_verification: data.google_site_verification || "",
         });
       }
     } catch (error) {
@@ -72,14 +102,16 @@ function AdminSettings() {
     }
   }
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>, type: 'logo' | 'favicon') => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    setUploading(true);
+    if (type === 'logo') setUploadingLogo(true);
+    else setUploadingFavicon(true);
+
     try {
       const fileExt = file.name.split(".").pop();
-      const fileName = `logo-${Math.random()}.${fileExt}`;
+      const fileName = `${type}-${Math.random()}.${fileExt}`;
       const filePath = `${fileName}`;
 
       const { error: uploadError } = await supabase.storage
@@ -92,13 +124,14 @@ function AdminSettings() {
         .from("site-assets")
         .getPublicUrl(filePath);
 
-      setSettings({ ...settings, logo_url: publicUrl });
-      toast.success("Logotipo carregado com sucesso!");
+      setSettings({ ...settings, [type === 'logo' ? 'logo_url' : 'favicon_url']: publicUrl });
+      toast.success(`${type === 'logo' ? 'Logotipo' : 'Favicon'} carregado com sucesso!`);
     } catch (error) {
-      console.error("Error uploading logo:", error);
-      toast.error("Erro ao carregar logotipo");
+      console.error(`Error uploading ${type}:`, error);
+      toast.error(`Erro ao carregar ${type}`);
     } finally {
-      setUploading(false);
+      if (type === 'logo') setUploadingLogo(false);
+      else setUploadingFavicon(false);
     }
   };
 
@@ -112,10 +145,6 @@ function AdminSettings() {
 
       if (error) throw error;
       toast.success("Configurações salvas com sucesso!");
-      
-      // Force update context/CSS
-      document.documentElement.style.setProperty("--primary", settings.primary_color);
-      document.title = settings.site_name;
     } catch (error) {
       console.error("Error saving settings:", error);
       toast.error("Erro ao salvar configurações");
@@ -141,7 +170,7 @@ function AdminSettings() {
             <h1 className="text-3xl font-black italic uppercase tracking-tighter">
               Configurações <span className="text-primary">Gerais</span>
             </h1>
-            <p className="text-white/40">Personalize a aparência e meios de pagamento do seu site</p>
+            <p className="text-white/40">Personalize a aparência, SEO e integrações do seu site</p>
           </div>
           <Button 
             className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-8" 
@@ -157,7 +186,7 @@ function AdminSettings() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Visual Settings */}
+          {/* Identity & Hero Section */}
           <div className="space-y-8">
             <Card className="bg-white/5 border-white/10 overflow-hidden backdrop-blur-md">
               <CardHeader className="border-b border-white/5 bg-white/[0.02]">
@@ -165,11 +194,22 @@ function AdminSettings() {
                   <Layout className="w-5 h-5 text-primary" />
                   <div>
                     <CardTitle className="text-lg">Identidade Visual</CardTitle>
-                    <CardDescription className="text-white/40">Nome e logo da plataforma</CardDescription>
+                    <CardDescription className="text-white/40">Nome, logo e modo de exibição</CardDescription>
                   </div>
                 </div>
               </CardHeader>
               <CardContent className="p-6 space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="site_name">Nome do Site</Label>
+                  <Input 
+                    id="site_name" 
+                    value={settings.site_name || ""} 
+                    onChange={(e) => setSettings({...settings, site_name: e.target.value})}
+                    placeholder="Ex: Leilão Top"
+                    className="bg-white/5 border-white/10 h-12"
+                  />
+                </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="hero_mode">Modo de Exibição do Hero (Topo)</Label>
                   <Select 
@@ -194,60 +234,76 @@ function AdminSettings() {
                       </SelectItem>
                     </SelectContent>
                   </Select>
-                  <p className="text-[10px] text-white/40 uppercase font-bold tracking-widest mt-1">
-                    Escolha o que será exibido no topo da página inicial.
-                  </p>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="site_name">Nome do Site</Label>
-                  <Input 
-                    id="site_name" 
-                    value={settings.site_name || ""} 
-                    onChange={(e) => setSettings({...settings, site_name: e.target.value})}
-                    placeholder="Ex: Leilão Top"
-                    className="bg-white/5 border-white/10 h-12"
-                  />
                 </div>
                 
-                <div className="space-y-4">
-                  <Label>Logotipo do Site</Label>
-                  <div className="flex items-center gap-6">
-                    <div className="w-24 h-24 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden">
-                      {settings.logo_url ? (
-                        <img src={settings.logo_url} alt="Logo preview" className="max-w-full max-h-full object-contain p-2" />
-                      ) : (
-                        <ImageIcon className="w-8 h-8 text-white/20" />
-                      )}
-                    </div>
-                    <div className="flex-1 space-y-2">
-                      <div className="relative">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
+                  <div className="space-y-4">
+                    <Label>Logotipo</Label>
+                    <div className="flex flex-col items-center gap-4">
+                      <div className="w-full h-32 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden">
+                        {settings.logo_url ? (
+                          <img src={settings.logo_url} alt="Logo preview" className="max-w-full max-h-full object-contain p-2" />
+                        ) : (
+                          <ImageIcon className="w-8 h-8 text-white/20" />
+                        )}
+                      </div>
+                      <div className="w-full">
                         <input
                           type="file"
                           id="logo-upload"
                           className="hidden"
                           accept="image/*"
-                          onChange={handleFileUpload}
-                          disabled={uploading}
+                          onChange={(e) => handleFileUpload(e, 'logo')}
+                          disabled={uploadingLogo}
                         />
                         <Button
                           asChild
                           variant="outline"
+                          size="sm"
                           className="w-full border-white/10 hover:bg-white/5 text-white"
-                          disabled={uploading}
+                          disabled={uploadingLogo}
                         >
                           <label htmlFor="logo-upload" className="cursor-pointer">
-                            {uploading ? (
-                              <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Carregando...</>
-                            ) : (
-                              <><Upload className="w-4 h-4 mr-2" /> Alterar Logotipo</>
-                            )}
+                            {uploadingLogo ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4 mr-2" />}
+                            Alterar Logo
                           </label>
                         </Button>
                       </div>
-                      <p className="text-[10px] text-white/40 uppercase font-bold tracking-widest">
-                        Recomendado: PNG ou SVG transparente, 512x512px
-                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <Label>Favicon (Ícone)</Label>
+                    <div className="flex flex-col items-center gap-4">
+                      <div className="w-full h-32 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden">
+                        {settings.favicon_url ? (
+                          <img src={settings.favicon_url} alt="Favicon preview" className="w-12 h-12 object-contain" />
+                        ) : (
+                          <Globe className="w-8 h-8 text-white/20" />
+                        )}
+                      </div>
+                      <div className="w-full">
+                        <input
+                          type="file"
+                          id="favicon-upload"
+                          className="hidden"
+                          accept="image/*"
+                          onChange={(e) => handleFileUpload(e, 'favicon')}
+                          disabled={uploadingFavicon}
+                        />
+                        <Button
+                          asChild
+                          variant="outline"
+                          size="sm"
+                          className="w-full border-white/10 hover:bg-white/5 text-white"
+                          disabled={uploadingFavicon}
+                        >
+                          <label htmlFor="favicon-upload" className="cursor-pointer">
+                            {uploadingFavicon ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4 mr-2" />}
+                            Alterar Favicon
+                          </label>
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -259,8 +315,8 @@ function AdminSettings() {
                 <div className="flex items-center gap-2">
                   <Palette className="w-5 h-5 text-primary" />
                   <div>
-                    <CardTitle className="text-lg">Paleta de Cores</CardTitle>
-                    <CardDescription className="text-white/40">Cores principais do sistema</CardDescription>
+                    <CardTitle className="text-lg">Cores do Sistema</CardTitle>
+                    <CardDescription className="text-white/40">Identidade visual de cores</CardDescription>
                   </div>
                 </div>
               </CardHeader>
@@ -313,24 +369,111 @@ function AdminSettings() {
                     </div>
                   </div>
                 </div>
-                <div className="p-4 rounded-lg bg-primary/10 border border-primary/20">
-                  <p className="text-xs text-primary/80 leading-relaxed font-medium">
-                    A cor primária é aplicada automaticamente em botões, links e destaques em toda a plataforma.
-                  </p>
-                </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* Payment Settings */}
+          {/* SEO & Integrations */}
           <div className="space-y-8">
             <Card className="bg-white/5 border-white/10 overflow-hidden backdrop-blur-md">
               <CardHeader className="border-b border-white/5 bg-white/[0.02]">
                 <div className="flex items-center gap-2">
-                  <CreditCard className="w-5 h-5 text-blue-500" />
+                  <Search className="w-5 h-5 text-green-500" />
                   <div>
-                    <CardTitle className="text-lg">Mercado Pago</CardTitle>
-                    <CardDescription className="text-white/40">Integração para pagamentos automáticos</CardDescription>
+                    <CardTitle className="text-lg">SEO & Indexação Google</CardTitle>
+                    <CardDescription className="text-white/40">Meta tags e otimização para buscas</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="p-6 space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="meta_title">Título SEO (Meta Title)</Label>
+                  <Input 
+                    id="meta_title" 
+                    value={settings.meta_title || ""} 
+                    onChange={(e) => setSettings({...settings, meta_title: e.target.value})}
+                    placeholder="Título otimizado para o Google"
+                    className="bg-white/5 border-white/10 h-12"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="meta_description">Descrição SEO (Meta Description)</Label>
+                  <Textarea 
+                    id="meta_description" 
+                    value={settings.meta_description || ""} 
+                    onChange={(e) => setSettings({...settings, meta_description: e.target.value})}
+                    placeholder="Descrição que aparece nos resultados de busca"
+                    className="bg-white/5 border-white/10 min-h-[100px]"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="meta_keywords">Palavras-chave (Separadas por vírgula)</Label>
+                  <Input 
+                    id="meta_keywords" 
+                    value={settings.meta_keywords || ""} 
+                    onChange={(e) => setSettings({...settings, meta_keywords: e.target.value})}
+                    placeholder="leilão, centavos, arremate, iphone"
+                    className="bg-white/5 border-white/10 h-12"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="google_verify">Google Site Verification Code</Label>
+                  <Input 
+                    id="google_verify" 
+                    value={settings.google_site_verification || ""} 
+                    onChange={(e) => setSettings({...settings, google_site_verification: e.target.value})}
+                    placeholder="Código de verificação do Google Search Console"
+                    className="bg-white/5 border-white/10 h-12"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/5 border-white/10 overflow-hidden backdrop-blur-md">
+              <CardHeader className="border-b border-white/5 bg-white/[0.02]">
+                <div className="flex items-center gap-2">
+                  <Globe className="w-5 h-5 text-blue-500" />
+                  <div>
+                    <CardTitle className="text-lg">Rastreamento & Analytics</CardTitle>
+                    <CardDescription className="text-white/40">Google Analytics e Pixel do Facebook</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="p-6 space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="ga_id" className="flex items-center gap-2">
+                    <BarChart className="w-4 h-4 text-orange-500" /> ID Google Analytics (G-XXXXX)
+                  </Label>
+                  <Input 
+                    id="ga_id" 
+                    value={settings.ga_id || ""} 
+                    onChange={(e) => setSettings({...settings, ga_id: e.target.value})}
+                    placeholder="G-XXXXXXXXXX"
+                    className="bg-white/5 border-white/10 h-12"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="fb_pixel_id" className="flex items-center gap-2">
+                    <Globe className="w-4 h-4 text-blue-600" /> ID Facebook Pixel
+                  </Label>
+                  <Input 
+                    id="fb_pixel_id" 
+                    value={settings.fb_pixel_id || ""} 
+                    onChange={(e) => setSettings({...settings, fb_pixel_id: e.target.value})}
+                    placeholder="123456789012345"
+                    className="bg-white/5 border-white/10 h-12"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/5 border-white/10 overflow-hidden backdrop-blur-md">
+              <CardHeader className="border-b border-white/5 bg-white/[0.02]">
+                <div className="flex items-center gap-2">
+                  <CreditCard className="w-5 h-5 text-primary" />
+                  <div>
+                    <CardTitle className="text-lg">Pagamentos Mercado Pago</CardTitle>
+                    <CardDescription className="text-white/40">Chaves de API para checkout</CardDescription>
                   </div>
                 </div>
               </CardHeader>
@@ -353,46 +496,6 @@ function AdminSettings() {
                     value={settings.mercado_pago_access_token || ""} 
                     onChange={(e) => setSettings({...settings, mercado_pago_access_token: e.target.value})}
                     placeholder="APP_USR-..."
-                    className="bg-white/5 border-white/10 h-12"
-                  />
-                </div>
-                <div className="flex items-start gap-3 p-4 rounded-lg bg-blue-500/10 border border-blue-500/20">
-                  <div className="text-xs text-blue-400 space-y-1">
-                    <p className="font-bold uppercase tracking-wider">Atenção:</p>
-                    <p>Mantenha suas chaves em segredo. Elas são necessárias para processar vendas de pacotes de lances.</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white/5 border-white/10 overflow-hidden backdrop-blur-md">
-              <CardHeader className="border-b border-white/5 bg-white/[0.02]">
-                <div className="flex items-center gap-2">
-                  <CreditCard className="w-5 h-5 text-green-500" />
-                  <div>
-                    <CardTitle className="text-lg">Pagamento PIX (Manual)</CardTitle>
-                    <CardDescription className="text-white/40">Dados para transferência direta</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="p-6 space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="pix_key">Chave PIX</Label>
-                  <Input 
-                    id="pix_key" 
-                    value={settings.pix_key || ""} 
-                    onChange={(e) => setSettings({...settings, pix_key: e.target.value})}
-                    placeholder="E-mail, CPF, Telefone ou Chave Aleatória"
-                    className="bg-white/5 border-white/10 h-12"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="pix_name">Nome do Beneficiário</Label>
-                  <Input 
-                    id="pix_name" 
-                    value={settings.pix_name || ""} 
-                    onChange={(e) => setSettings({...settings, pix_name: e.target.value})}
-                    placeholder="Nome completo ou Razão Social"
                     className="bg-white/5 border-white/10 h-12"
                   />
                 </div>
