@@ -10,6 +10,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { FALLBACK_USER_IMAGE, getFallbackAvatarUrl } from "@/lib/constants";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -177,10 +178,22 @@ function Index() {
         .limit(20)
     ]);
 
-    if (!auctionsRes.error) setAuctions(auctionsRes.data || []);
-    if (!winnersRes.error) setWinners(winnersRes.data || []);
-    if (!finishedRes.error) setFinishedAuctions(finishedRes.data || []);
-    if (!testimonialsRes.error) setTestimonials(testimonialsRes.data || []);
+    if (auctionsRes.error) {
+      console.error("Error fetching live auctions:", auctionsRes.error);
+      toast.error(`Erro ao carregar leilões: ${auctionsRes.error.message}`);
+    } else {
+      setAuctions(auctionsRes.data || []);
+    }
+    
+    if (winnersRes.error) console.error("Error fetching winners:", winnersRes.error);
+    if (finishedRes.error) {
+      console.error("Error fetching finished auctions:", finishedRes.error);
+      toast.error(`Erro ao carregar encerrados: ${finishedRes.error.message}`);
+    } else {
+      setFinishedAuctions(finishedRes.data || []);
+    }
+    
+    if (testimonialsRes.error) console.error("Error fetching testimonials:", testimonialsRes.error);
     
     setLoading(false);
   }

@@ -724,6 +724,7 @@ export type Database = {
       process_robot_bids: { Args: never; Returns: Json }
       slugify: { Args: { v_text: string }; Returns: string }
       tick_auctions: { Args: never; Returns: Json }
+      unaccent: { Args: { "": string }; Returns: string }
     }
     Enums: {
       [_ in never]: never
