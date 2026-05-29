@@ -45,6 +45,9 @@ function AdminAuctions() {
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingAuction, setEditingAuction] = useState<any>(null);
+  const [page, setPage] = useState(1);
+  const auctionsPerPage = 10;
+
   
   const [uploading, setUploading] = useState(false);
   
