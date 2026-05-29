@@ -549,10 +549,12 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         >
           <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.2)_50%,transparent_75%)] bg-[length:250%_250%] animate-[shimmer_3s_infinite] group-hover/bidbtn:animate-[shimmer_1.5s_infinite]"></div>
           {loading ? "..." : isFinished ? (
-            <div className="flex flex-col items-center justify-center leading-tight">
-              <span className="text-xs font-black uppercase tracking-widest text-green-500/60">Arrematado em</span>
-              <span className="text-sm font-black italic">
-                {auction.end_time ? format(new Date(auction.end_time), "dd/MM 'às' HH:mm", { locale: ptBR }) : "Concluído"}
+            <div className="flex flex-col items-center justify-center leading-tight gap-1">
+              <span className="text-[10px] font-black uppercase tracking-widest text-green-500/80">
+                Arrematado por {auction.last_bidder?.username || "Ganhador"}
+              </span>
+              <span className="text-xs font-black italic text-white/60">
+                {auction.end_time ? format(new Date(auction.end_time), "dd/MM 'às' HH:mm", { locale: ptBR }) : "Finalizado"}
               </span>
             </div>
           ) : isScheduled ? "AGUARDANDO INÍCIO" : (
