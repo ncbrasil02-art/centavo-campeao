@@ -16,6 +16,8 @@ import { FALLBACK_PRODUCT_IMAGE, getFallbackAvatarUrl, FICTITIOUS_PARTICIPANTS }
 import { Progress } from "@/components/ui/progress";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { useRecentWinners } from "@/hooks/useRecentWinners";
+
 
 const BID_SOUND_URL = "https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3";
 
@@ -41,6 +43,8 @@ function AuctionPage() {
   const confettiFired = useRef(false);
   const navigate = useNavigate();
   const { getAdjustedNow } = useTimeSync();
+  const { currentWinner, hasWinners } = useRecentWinners();
+
 
   const isFinished = auction?.status === 'finished';
   const isTimeUp = timeLeft <= 0 && !isFinished;
@@ -612,8 +616,13 @@ function AuctionPage() {
                         {isFinished ? "Grande Arrematador" : "Vantagem Atual"}
                       </span>
                       <span className={`text-xl font-black transition-all italic uppercase ${isNewBid ? 'text-primary scale-105 origin-left' : isFinished ? 'text-green-500' : 'text-white group-hover/bidder:text-primary'}`}>
-                        {auction.last_bidder?.username || (isFinished ? "Encerrado" : "Nenhum lance")}
+                        {auction.last_bidder?.username || (isFinished ? "Encerrado" : (auction.status === 'scheduled' || !auction.last_bidder?.username) && currentWinner ? (
+                          <span className="animate-in fade-in slide-in-from-right-4 duration-500">
+                            {currentWinner.winner_name} levou {currentWinner.product_name}
+                          </span>
+                        ) : "Nenhum lance")}
                       </span>
+
                     </div>
                   </div>
                   {showBonus && (
@@ -717,7 +726,14 @@ function AuctionPage() {
                     <div className="inline-flex p-4 rounded-full bg-white/5 text-white/10">
                       <Zap className="w-12 h-12" />
                     </div>
-                    <p className="text-white/20 font-black uppercase tracking-[0.2em] italic text-sm">Aguardando lance inicial...</p>
+                    <p className="text-white/20 font-black uppercase tracking-[0.2em] italic text-sm">
+                      {auction.status === 'scheduled' && currentWinner ? (
+                        <span className="animate-in fade-in slide-in-from-right-4 duration-500 text-primary/60">
+                          {currentWinner.winner_name} arrematou {currentWinner.product_name}
+                        </span>
+                      ) : "Aguardando lance inicial..."}
+                    </p>
+
                   </div>
                 )}
               </div>

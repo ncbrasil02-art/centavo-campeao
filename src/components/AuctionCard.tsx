@@ -13,6 +13,7 @@ import { FALLBACK_PRODUCT_IMAGE, getFallbackAvatarUrl, FICTITIOUS_PARTICIPANTS }
 import { Progress } from "@/components/ui/progress";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { useRecentWinners } from "@/hooks/useRecentWinners";
 
 const BID_SOUND_URL = "https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3";
 
@@ -49,6 +50,8 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const confettiFired = useRef(false);
   const { getAdjustedNow } = useTimeSync();
+  const { currentWinner, hasWinners } = useRecentWinners();
+
 
   const isFinished = timeLeft <= 0 || auction.status === 'finished';
   const isScheduled = auction.status === 'scheduled';
@@ -570,13 +573,18 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             <span className={`text-[9px] font-black uppercase tracking-widest transition-colors ${
               isNewBid ? 'text-primary' : isFinished ? 'text-green-500' : 'text-white/30'
             }`}>
-              {isFinished ? "🏆 Vencedor" : "Último Lance"}
+              {isFinished ? "🏆 Vencedor" : (isScheduled || !auction.last_bidder?.username) && hasWinners ? "Últimos Ganhadores" : "Último Lance"}
             </span>
             <span className={`truncate text-sm font-bold transition-all ${
               isNewBid ? 'text-primary scale-105 origin-left' : isFinished ? 'text-green-500' : 'text-white'
             }`}>
-              {auction.last_bidder?.username || "Aguardando..."}
+              {auction.last_bidder?.username || ((isScheduled || !auction.last_bidder?.username) && currentWinner ? (
+                <span className="animate-in fade-in slide-in-from-right-4 duration-500">
+                  {currentWinner.winner_name} levou {currentWinner.product_name}
+                </span>
+              ) : "Aguardando...")}
             </span>
+
           </div>
           {isNewBid && (
             <div className="ml-auto">
