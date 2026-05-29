@@ -61,7 +61,11 @@ function AdminAuctions() {
     robot_enabled: true,
     timer_duration: 15,
     is_finalizing: false,
-    target_winner: "random" as "robot" | "user" | "random"
+    target_winner: "random" as "robot" | "user" | "random",
+    robot_min_delay: 1,
+    robot_max_delay: 5,
+    robot_bid_chance: 0.3,
+    robot_active: true
   };
 
   const [formData, setFormData] = useState(initialFormData);
