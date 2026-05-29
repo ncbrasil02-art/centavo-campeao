@@ -11,7 +11,7 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Wallet, Search, Filter, Download, CheckCircle, XCircle, Clock } from "lucide-react";
+import { Wallet, Search, Filter, Download, CheckCircle, XCircle, Clock, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { format } from "date-fns";
