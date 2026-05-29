@@ -371,6 +371,7 @@ export type Database = {
           id: string
           inner_dispute_enabled: boolean | null
           inner_dispute_end_at: string | null
+          last_robot_bid_at: string | null
           max_bids_per_robot: number | null
           max_delay: number | null
           min_delay: number | null
@@ -384,6 +385,7 @@ export type Database = {
           id?: string
           inner_dispute_enabled?: boolean | null
           inner_dispute_end_at?: string | null
+          last_robot_bid_at?: string | null
           max_bids_per_robot?: number | null
           max_delay?: number | null
           min_delay?: number | null
@@ -397,6 +399,7 @@ export type Database = {
           id?: string
           inner_dispute_enabled?: boolean | null
           inner_dispute_end_at?: string | null
+          last_robot_bid_at?: string | null
           max_bids_per_robot?: number | null
           max_delay?: number | null
           min_delay?: number | null

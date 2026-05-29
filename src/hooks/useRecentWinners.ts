@@ -61,10 +61,10 @@ export function useRecentWinners() {
   useEffect(() => {
     if (winners.length <= 1) return;
 
-    // Slow down rotation - every 8 seconds
+    // Slow down rotation - every 12 seconds
     const interval = setInterval(() => {
       setCurrentIndex(prev => (prev + 1) % winners.length);
-    }, 8000);
+    }, 12000);
 
     return () => clearInterval(interval);
   }, [winners]);

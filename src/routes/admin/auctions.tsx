@@ -305,7 +305,28 @@ function AdminAuctions() {
     setIsDialogOpen(true);
   }
 
-  async function toggleFinalize(auction: any) {
+  async function handleConfirmWinner(auctionId: string) {
+    const loadingToast = toast.loading("Confirmando ganhador...");
+    try {
+      const { data, error } = await supabase.rpc('confirm_auction_winner', {
+        p_auction_id: auctionId
+      });
+      if (error) throw error;
+      const result = data as any;
+      if (result.success) {
+        toast.success(result.message);
+        fetchData();
+      } else {
+        toast.error(result.message);
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Erro ao confirmar ganhador");
+    } finally {
+      toast.dismiss(loadingToast);
+    }
+  }
+
+  const toggleFinalize = async (auction: any) => {
     try {
       const { error } = await supabase
         .from("auctions")
@@ -645,6 +666,15 @@ function AdminAuctions() {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
+                        {auction.status === 'pending_audit' && (
+                          <Button 
+                            size="sm" 
+                            className="bg-green-600 hover:bg-green-500 text-white font-bold h-8"
+                            onClick={() => handleConfirmWinner(auction.id)}
+                          >
+                            <CheckCircle className="w-4 h-4 mr-2" /> Confirmar Ganhador
+                          </Button>
+                        )}
                         {auction.status === 'live' && (
                           <Button 
                             size="icon" 
@@ -705,6 +735,8 @@ function StatusBadge({ status, isFinalizing, targetWinner }: { status: string, i
   const styles = {
     scheduled: "bg-blue-500/10 text-blue-500 border-blue-500/20",
     live: "bg-green-500/10 text-green-500 border-green-500/20",
+    pending_audit: "bg-red-500/10 text-red-500 border-red-500/20",
+    confirmed: "bg-amber-500/10 text-amber-500 border-amber-500/20",
     finished: "bg-white/10 text-white/40 border-white/10",
     cancelled: "bg-red-500/10 text-red-500 border-red-500/20",
     finalizing: "bg-orange-500/10 text-orange-500 border-orange-500/20"
@@ -712,7 +744,9 @@ function StatusBadge({ status, isFinalizing, targetWinner }: { status: string, i
   
   const labels = {
     scheduled: "Agendado",
-    live: `Ativo (${targetWinner === 'robot' ? 'Robô Ganha' : targetWinner === 'user' ? 'Usuário Ganha' : 'Aleatório'})`,
+    live: `Ativo (${targetWinner === 'robot' ? 'Robô' : targetWinner === 'user' ? 'Usuário' : 'Aleatório'})`,
+    pending_audit: "Auditando",
+    confirmed: "Confirmado",
     finished: "Finalizado",
     cancelled: "Cancelado",
     finalizing: "Finalizando"

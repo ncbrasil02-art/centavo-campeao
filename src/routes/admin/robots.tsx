@@ -22,7 +22,6 @@ function AdminRobotsPage() {
   const [loading, setLoading] = useState(true);
   
   const [automationActive, setAutomationActive] = useState(false);
-  const automationRef = useRef<boolean>(false);
   const navigate = useNavigate();
   const { getAdjustedNow } = useTimeSync();
 
@@ -68,33 +67,8 @@ function AdminRobotsPage() {
     setLoading(false);
   }
 
-  async function runAutomation() {
-    if (!automationRef.current) return;
-    
-    for (const auction of auctions) {
-      // Handle both array and object formats
-      const settings = Array.isArray(auction.robot_settings) 
-        ? auction.robot_settings[0] 
-        : auction.robot_settings;
-        
-      if (!settings?.active) continue;
-
-      const end = new Date(auction.end_time).getTime();
-      const now = getAdjustedNow();
-      const diff = Math.max(0, Math.ceil((end - now) / 1000));
-
-      let bidChance = 0.1; 
-      if (diff < 10) bidChance = 0.4;
-      if (diff < 5) bidChance = 0.8;
-
-      if (Math.random() < bidChance) {
-        const randomRobot = robots[Math.floor(Math.random() * robots.length)];
-        if (randomRobot && auction.last_bidder_id !== randomRobot.id) {
-          triggerRobotBid(auction.id, randomRobot.id);
-        }
-      }
-    }
-  }
+  // Server-side automation is handled by the Heartbeat component
+  // which calls process_robot_bids() every second.
 
   const triggerRobotBid = async (auctionId: string, robotId: string) => {
     await supabase.rpc('place_robot_bid', {
@@ -157,6 +131,18 @@ function AdminRobotsPage() {
     }
   };
 
+  const updateTargetWinner = async (auctionId: string, target: 'robot' | 'user' | 'random') => {
+    const { error } = await supabase
+      .from("auctions")
+      .update({ target_winner: target })
+      .eq("id", auctionId);
+    
+    if (!error) {
+      toast.success("Ganhador alvo atualizado");
+      fetchAuctionsWithRobots();
+    }
+  };
+
 
   
 
@@ -176,13 +162,6 @@ function AdminRobotsPage() {
           </div>
           
           <div className="flex gap-4">
-            <Button 
-              onClick={() => setAutomationActive(!automationActive)}
-              variant={automationActive ? "destructive" : "default"}
-              className={`font-bold ${!automationActive ? 'bg-green-600 hover:bg-green-500 shadow-[0_0_20px_rgba(22,163,74,0.4)]' : ''}`}
-            >
-              {automationActive ? <><StopCircle className="w-4 h-4 mr-2" /> PARAR AUTOMAÇÃO</> : <><PlayCircle className="w-4 h-4 mr-2" /> INICIAR AUTOMAÇÃO</>}
-            </Button>
             <Button variant="outline" className="border-white/10 hover:bg-white/5" asChild>
               <Link to="/"><LayoutDashboard className="w-4 h-4 mr-2" /> Dashboard</Link>
             </Button>
@@ -209,6 +188,7 @@ function AdminRobotsPage() {
                   <TableHead className="text-white/60 font-bold">Status Robô</TableHead>
                   <TableHead className="text-white/60 font-bold">Delays (Min/Max)</TableHead>
                   <TableHead className="text-white/60 font-bold">Tempo de Disputa (min)</TableHead>
+                  <TableHead className="text-white/60 font-bold">Ganhador Alvo</TableHead>
                   <TableHead className="text-white/60 font-bold">Disputa Interna</TableHead>
                   <TableHead className="text-white/60 font-bold">Lances Atuais</TableHead>
                   <TableHead className="text-white/60 font-bold text-right">Ações</TableHead>
@@ -288,6 +268,17 @@ function AdminRobotsPage() {
                             onBlur={(e) => updateDisputeDuration(settings.id, parseInt(e.target.value))}
                           />
                         </div>
+                      </TableCell>
+                      <TableCell>
+                        <select 
+                          className="bg-black/40 border-white/10 rounded h-8 px-2 text-xs text-white"
+                          value={auction.target_winner || 'random'}
+                          onChange={(e) => updateTargetWinner(auction.id, e.target.value as any)}
+                        >
+                          <option value="robot">Robô</option>
+                          <option value="user">Usuário Real</option>
+                          <option value="random">Aleatório</option>
+                        </select>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
