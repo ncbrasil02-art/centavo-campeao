@@ -79,11 +79,13 @@ function AdminAuctions() {
 
 
   async function fetchData() {
+    setLoading(true);
     try {
       const [auctionsRes, productsRes] = await Promise.all([
-        supabase.from("auctions").select("*, product:products(*)").order("created_at", { ascending: false }),
-        supabase.from("products").select("*")
+        supabase.from("auctions").select("*, product:products(*)", { count: 'exact' }).order("created_at", { ascending: false }).range((page - 1) * auctionsPerPage, page * auctionsPerPage - 1),
+        supabase.from("products").select("*").limit(100)
       ]);
+
 
       if (auctionsRes.error) throw auctionsRes.error;
       if (productsRes.error) throw productsRes.error;
