@@ -293,6 +293,27 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
     }
   };
 
+  const handleConfirmWinner = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.rpc('confirm_auction_winner', {
+        p_auction_id: auction.id
+      });
+      if (error) throw error;
+      const result = data as any;
+      if (result.success) {
+        toast.success(result.message);
+      } else {
+        toast.error(result.message);
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Erro ao confirmar ganhador");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   const formatTimeParts = (seconds: number) => {
     const d = Math.floor(seconds / (3600 * 24));
     const h = Math.floor((seconds % (3600 * 24)) / 3600);
