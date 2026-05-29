@@ -14,6 +14,8 @@ import { useTimeSync } from "@/hooks/useTimeSync";
 import { toast } from "sonner";
 import { FALLBACK_PRODUCT_IMAGE, getFallbackAvatarUrl, FICTITIOUS_PARTICIPANTS } from "@/lib/constants";
 import { Progress } from "@/components/ui/progress";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 const BID_SOUND_URL = "https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3";
 
@@ -560,8 +562,12 @@ function AuctionPage() {
                       />
                     </div>
                     <div>
-                      <span className={`block text-[9px] font-black uppercase tracking-[0.2em] mb-1 leading-none transition-colors ${isNewBid ? 'text-primary' : 'text-white/30'}`}>Vantagem Atual</span>
-                      <span className={`text-xl font-black transition-all italic uppercase ${isNewBid ? 'text-primary scale-105 origin-left' : 'text-white group-hover/bidder:text-primary'}`}>{auction.last_bidder?.username || "Nenhum lance"}</span>
+                      <span className={`block text-[9px] font-black uppercase tracking-[0.2em] mb-1 leading-none transition-colors ${isNewBid ? 'text-primary' : isFinished ? 'text-green-500' : 'text-white/30'}`}>
+                        {isFinished ? "Grande Arrematador" : "Vantagem Atual"}
+                      </span>
+                      <span className={`text-xl font-black transition-all italic uppercase ${isNewBid ? 'text-primary scale-105 origin-left' : isFinished ? 'text-green-500' : 'text-white group-hover/bidder:text-primary'}`}>
+                        {auction.last_bidder?.username || (isFinished ? "Encerrado" : "Nenhum lance")}
+                      </span>
                     </div>
                   </div>
                   {showBonus && (
@@ -577,7 +583,7 @@ function AuctionPage() {
                     disabled={isFinished || bidLoading}
                     className={`w-full h-24 text-3xl font-black uppercase italic tracking-tighter transition-all rounded-[32px] group/btn relative overflow-hidden ${
                       isFinished 
-                        ? 'bg-white/5 text-white/20 cursor-not-allowed' 
+                        ? 'bg-green-500/10 text-green-500 border border-green-500/20 cursor-default' 
                         : timeLeft <= 5
                         ? 'bg-red-600 text-white shadow-[0_0_60px_rgba(220,38,38,0.8)]'
                         : 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_20px_50px_rgba(var(--color-primary),0.6)] hover:-translate-y-1 active:translate-y-1'
@@ -588,7 +594,14 @@ function AuctionPage() {
                            style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)' }} />
                     )}
                     
-                    {bidLoading ? <div className="w-8 h-8 border-4 border-current border-t-transparent rounded-full animate-spin" /> : isFinished ? "LEILÃO ENCERRADO" : (
+                    {bidLoading ? <div className="w-8 h-8 border-4 border-current border-t-transparent rounded-full animate-spin" /> : isFinished ? (
+                      <div className="flex flex-col items-center justify-center leading-tight">
+                        <span className="text-sm font-black uppercase tracking-[0.4em] text-green-500/50 mb-1">ARREMATADO EM</span>
+                        <span className="text-2xl font-black italic">
+                          {auction.end_time ? format(new Date(auction.end_time), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR }) : "CONCLUÍDO"}
+                        </span>
+                      </div>
+                    ) : (
                       <span className="flex items-center gap-4 relative z-10">
                         {timeLeft <= 5 ? "CORRE! LANCE AGORA" : "Arrematar Agora"} <Zap className={`w-8 h-8 fill-current ${timeLeft <= 5 ? 'animate-bounce' : 'animate-pulse'}`} />
                       </span>

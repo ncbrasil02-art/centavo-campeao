@@ -174,7 +174,7 @@ function Index() {
         .select("*")
         .eq("active", true)
         .order("created_at", { ascending: false })
-        .limit(6)
+        .limit(20)
     ]);
 
     if (!auctionsRes.error) setAuctions(auctionsRes.data || []);
@@ -367,23 +367,28 @@ function Index() {
                 <p className="text-white/40 max-w-2xl mx-auto">Milhares de usuários já vivenciaram a adrenalina do Lance Certo. Confira o que eles estão dizendo sobre a experiência.</p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {testimonials.length > 0 ? (
-                  testimonials.map((t) => (
-                    <TestimonialCard 
+                  testimonials.map((t, idx) => (
+                    <motion.div
                       key={t.id}
-                      name={t.name}
-                      content={t.content}
-                      avatarUrl={t.avatar_url || getFallbackAvatarUrl(t.name)}
-                      rating={t.rating}
-                    />
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.4, delay: (idx % 4) * 0.1 }}
+                    >
+                      <TestimonialCard 
+                        name={t.name}
+                        content={t.content}
+                        avatarUrl={t.avatar_url || getFallbackAvatarUrl(t.name)}
+                        rating={t.rating}
+                      />
+                    </motion.div>
                   ))
                 ) : (
-                  <>
-                    <TestimonialCard name="Felipe Souza" rating={5} avatarUrl="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop" content="Mano, o sistema é muito rápido! Dei o lance faltando 1s e levei meu PS5 Slim. A adrenalina é insana!" />
-                    <TestimonialCard name="Ana Oliveira" rating={5} avatarUrl="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&auto=format&fit=crop" content="Ainda não ganhei meu iPhone 15, mas a experiência de disputar nos últimos segundos é viciante. Transparência total." />
-                    <TestimonialCard name="Ricardo Tech" rating={5} avatarUrl="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200&auto=format&fit=crop" content="A sincronização de milissegundos é o diferencial. Sem lag, sem erro. O site é muito bem feito!" />
-                  </>
+                  <div className="col-span-full py-20 text-center">
+                    <p className="text-white/20 uppercase tracking-[0.3em] font-black italic">Carregando depoimentos da comunidade...</p>
+                  </div>
                 )}
               </div>
             </div>

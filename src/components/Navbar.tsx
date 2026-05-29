@@ -100,8 +100,8 @@ export function Navbar() {
 
           <Link to="/packages" className="text-sm font-medium text-white/70 transition-colors hover:text-primary">Comprar Lances</Link>
           {profile?.is_admin && (
-            <Link to="/admin" className="text-sm font-medium text-white/70 transition-colors hover:text-primary flex items-center gap-1">
-              <LayoutDashboard className="w-4 h-4" /> Painel Admin
+            <Link to="/admin" className="text-sm font-bold text-primary transition-all hover:scale-105 flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 rounded-full border border-primary/20 shadow-[0_0_15px_rgba(var(--color-primary),0.2)]">
+              <LayoutDashboard className="w-4 h-4" /> Painel Administrativo
             </Link>
           )}
         </div>

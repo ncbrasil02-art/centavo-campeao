@@ -11,6 +11,8 @@ import { AuctionChat } from "./AuctionChat";
 import { toast } from "sonner";
 import { FALLBACK_PRODUCT_IMAGE, getFallbackAvatarUrl, FICTITIOUS_PARTICIPANTS } from "@/lib/constants";
 import { Progress } from "@/components/ui/progress";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 const BID_SOUND_URL = "https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3";
 
@@ -512,10 +514,12 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           </div>
           <div className="flex flex-col overflow-hidden">
             <span className={`text-[9px] font-black uppercase tracking-widest transition-colors ${
-              isNewBid ? 'text-primary' : 'text-white/30'
-            }`}>Último Lance</span>
+              isNewBid ? 'text-primary' : isFinished ? 'text-green-500' : 'text-white/30'
+            }`}>
+              {isFinished ? "🏆 Vencedor" : "Último Lance"}
+            </span>
             <span className={`truncate text-sm font-bold transition-all ${
-              isNewBid ? 'text-primary scale-105 origin-left' : 'text-white'
+              isNewBid ? 'text-primary scale-105 origin-left' : isFinished ? 'text-green-500' : 'text-white'
             }`}>
               {auction.last_bidder?.username || "Aguardando..."}
             </span>
@@ -535,7 +539,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           disabled={isFinished || isScheduled || loading}
           className={`h-14 w-full rounded-2xl text-lg font-black uppercase italic tracking-tighter transition-all relative overflow-hidden group/bidbtn ${
             isFinished 
-              ? 'cursor-not-allowed border border-white/5 bg-white/5 text-white/20' 
+              ? 'cursor-default border border-green-500/20 bg-green-500/10 text-green-500' 
               : isScheduled
               ? 'cursor-not-allowed border border-white/10 bg-white/10 text-white/40'
               : timeLeft <= 5
@@ -544,7 +548,14 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           }`}
         >
           <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.2)_50%,transparent_75%)] bg-[length:250%_250%] animate-[shimmer_3s_infinite] group-hover/bidbtn:animate-[shimmer_1.5s_infinite]"></div>
-          {loading ? "..." : isFinished ? "ENCERRADO" : isScheduled ? "AGUARDANDO INÍCIO" : (
+          {loading ? "..." : isFinished ? (
+            <div className="flex flex-col items-center justify-center leading-tight">
+              <span className="text-xs font-black uppercase tracking-widest text-green-500/60">Arrematado em</span>
+              <span className="text-sm font-black italic">
+                {auction.end_time ? format(new Date(auction.end_time), "dd/MM 'às' HH:mm", { locale: ptBR }) : "Concluído"}
+              </span>
+            </div>
+          ) : isScheduled ? "AGUARDANDO INÍCIO" : (
             <span className="flex items-center gap-2">
               {timeLeft <= 5 ? "VAI PERDER! LANCE AGORA" : "Dar Lance"} <Zap className={`h-5 w-5 fill-current ${timeLeft <= 5 ? 'animate-bounce' : ''}`} />
             </span>
