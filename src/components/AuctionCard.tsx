@@ -429,6 +429,14 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             <Badge variant="outline" className="border-white/10 bg-black/60 px-3 py-1 text-white/40 backdrop-blur-md font-bold uppercase italic">
               ENCERRADO
             </Badge>
+          ) : isPendingAudit ? (
+            <Badge className="bg-red-600 border-none px-3 py-1 text-white font-bold uppercase italic shadow-[0_0_20px_rgba(220,38,38,0.5)] animate-pulse">
+              ARREMATADO
+            </Badge>
+          ) : isConfirmed ? (
+            <Badge className="bg-green-500 border-none px-3 py-1 text-white font-bold uppercase italic shadow-[0_0_20px_rgba(34,197,94,0.5)]">
+              CONFIRMADO
+            </Badge>
           ) : isScheduled ? (
             <Badge className="bg-blue-500 px-3 py-1 text-white backdrop-blur-md font-bold uppercase italic shadow-[0_0_15px_rgba(59,130,246,0.5)]">
               AGENDADO
@@ -442,6 +450,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
               AO VIVO
             </Badge>
           )}
+
           {!isFinished && discount > 0 && (
             <Badge variant="secondary" className="border-primary/30 bg-primary/20 px-3 py-1 font-bold text-primary backdrop-blur-md">
               {discount}% OFF
