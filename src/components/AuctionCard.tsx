@@ -563,12 +563,17 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             isNewBid ? 'border-primary scale-110' : 'border-primary/20'
           }`}>
             <img 
-              src={auction.last_bidder?.avatar_url || getFallbackAvatarUrl(auction.last_bidder?.username)} 
-              className="h-full w-full object-cover" 
+              src={
+                (isScheduled || !auction.last_bidder?.username) && currentWinner 
+                  ? currentWinner.avatar_url 
+                  : (auction.last_bidder?.avatar_url || getFallbackAvatarUrl(auction.last_bidder?.username))
+              } 
+              className={`h-full w-full object-cover transition-opacity duration-500 ${isNewBid ? 'opacity-100' : 'opacity-90'}`} 
               alt="Bidder" 
               onError={(e) => (e.target as HTMLImageElement).src = getFallbackAvatarUrl(auction.last_bidder?.username)}
             />
           </div>
+
           <div className="flex flex-col overflow-hidden">
             <span className={`text-[9px] font-black uppercase tracking-widest transition-colors ${
               isNewBid ? 'text-primary' : isFinished ? 'text-green-500' : 'text-white/30'
