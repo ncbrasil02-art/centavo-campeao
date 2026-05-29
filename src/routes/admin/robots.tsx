@@ -73,7 +73,11 @@ function AdminRobotsPage() {
     if (!automationRef.current) return;
     
     for (const auction of auctions) {
-      const settings = auction.robot_settings?.[0];
+      // Handle both array and object formats
+      const settings = Array.isArray(auction.robot_settings) 
+        ? auction.robot_settings[0] 
+        : auction.robot_settings;
+        
       if (!settings?.active) continue;
 
       const end = new Date(auction.end_time).getTime();
