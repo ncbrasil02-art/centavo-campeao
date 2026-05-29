@@ -627,14 +627,15 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
 
           <div className="flex flex-col overflow-hidden">
             <span className={`text-[9px] font-black uppercase tracking-widest transition-colors ${
-              isNewBid ? 'text-primary' : isFinished ? 'text-green-500' : 'text-white/30'
+              isNewBid ? 'text-primary' : (isFinished || isConfirmed) ? 'text-green-500' : isPendingAudit ? 'text-red-500' : 'text-white/30'
             }`}>
-              {isFinished ? "🏆 Vencedor" : (isScheduled || !auction.last_bidder?.username) && hasWinners ? "Últimos Ganhadores" : "Último Lance"}
+              {(isFinished || isConfirmed) ? "🏆 Vencedor" : isPendingAudit ? "🔍 Aguardando Auditoria" : (isScheduled || !auction.last_bidder?.username) && hasWinners ? "Últimos Ganhadores" : "Último Lance"}
             </span>
             <span className={`truncate text-sm font-bold transition-all ${
-              isNewBid ? 'text-primary scale-105 origin-left' : isFinished ? 'text-green-500' : 'text-white'
+              isNewBid ? 'text-primary scale-105 origin-left' : (isFinished || isConfirmed) ? 'text-green-500' : isPendingAudit ? 'text-red-400' : 'text-white'
             }`}>
               {auction.last_bidder?.username || ((isScheduled || !auction.last_bidder?.username) && currentWinner ? (
+
                 <span className="animate-in fade-in slide-in-from-right-4 duration-500">
                   {currentWinner.winner_name} levou {currentWinner.product_name}
                 </span>
