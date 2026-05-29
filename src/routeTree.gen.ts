@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RankingRouteImport } from './routes/ranking'
 import { Route as PackagesRouteImport } from './routes/packages'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -27,6 +28,11 @@ import { Route as AdminPackagesRouteImport } from './routes/admin/packages'
 import { Route as AdminBannersRouteImport } from './routes/admin/banners'
 import { Route as AdminAuctionsRouteImport } from './routes/admin/auctions'
 
+const RankingRoute = RankingRouteImport.update({
+  id: '/ranking',
+  path: '/ranking',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PackagesRoute = PackagesRouteImport.update({
   id: '/packages',
   path: '/packages',
@@ -119,6 +125,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/how-it-works': typeof HowItWorksRoute
   '/packages': typeof PackagesRoute
+  '/ranking': typeof RankingRoute
   '/admin/auctions': typeof AdminAuctionsRoute
   '/admin/banners': typeof AdminBannersRoute
   '/admin/packages': typeof AdminPackagesRoute
@@ -137,6 +144,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/how-it-works': typeof HowItWorksRoute
   '/packages': typeof PackagesRoute
+  '/ranking': typeof RankingRoute
   '/admin/auctions': typeof AdminAuctionsRoute
   '/admin/banners': typeof AdminBannersRoute
   '/admin/packages': typeof AdminPackagesRoute
@@ -157,6 +165,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/how-it-works': typeof HowItWorksRoute
   '/packages': typeof PackagesRoute
+  '/ranking': typeof RankingRoute
   '/admin/auctions': typeof AdminAuctionsRoute
   '/admin/banners': typeof AdminBannersRoute
   '/admin/packages': typeof AdminPackagesRoute
@@ -178,6 +187,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/how-it-works'
     | '/packages'
+    | '/ranking'
     | '/admin/auctions'
     | '/admin/banners'
     | '/admin/packages'
@@ -196,6 +206,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/how-it-works'
     | '/packages'
+    | '/ranking'
     | '/admin/auctions'
     | '/admin/banners'
     | '/admin/packages'
@@ -215,6 +226,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/how-it-works'
     | '/packages'
+    | '/ranking'
     | '/admin/auctions'
     | '/admin/banners'
     | '/admin/packages'
@@ -235,11 +247,19 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   HowItWorksRoute: typeof HowItWorksRoute
   PackagesRoute: typeof PackagesRoute
+  RankingRoute: typeof RankingRoute
   AuctionsIdRoute: typeof AuctionsIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/ranking': {
+      id: '/ranking'
+      path: '/ranking'
+      fullPath: '/ranking'
+      preLoaderRoute: typeof RankingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/packages': {
       id: '/packages'
       path: '/packages'
@@ -398,6 +418,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   HowItWorksRoute: HowItWorksRoute,
   PackagesRoute: PackagesRoute,
+  RankingRoute: RankingRoute,
   AuctionsIdRoute: AuctionsIdRoute,
 }
 export const routeTree = rootRouteImport
