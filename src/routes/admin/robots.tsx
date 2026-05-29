@@ -51,7 +51,7 @@ function AdminRobotsPage() {
     
     if (data) {
       for (const auction of data) {
-        if (!auction.robot_settings || auction.robot_settings.length === 0) {
+        if (!auction.robot_settings) {
           await supabase.from("robot_settings").insert({ auction_id: auction.id });
         }
       }
