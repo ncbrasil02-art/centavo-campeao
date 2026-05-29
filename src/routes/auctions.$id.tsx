@@ -27,6 +27,7 @@ function AuctionPage() {
   const { id } = Route.useParams();
   const [auction, setAuction] = useState<any>(null);
   const [bids, setBids] = useState<any[]>([]);
+  const [showAllBids, setShowAllBids] = useState(false);
   const [loading, setLoading] = useState(true);
   const [bidLoading, setBidLoading] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
@@ -226,7 +227,7 @@ function AuctionPage() {
       .select("*, profile:profiles(username, avatar_url)")
       .eq("auction_id", id)
       .order("created_at", { ascending: false })
-      .limit(10);
+      .limit(30);
     
     if (data && data.length > 0) {
       setBids(data);
@@ -623,41 +624,48 @@ function AuctionPage() {
                   </div>
                   <h3 className="font-black text-sm uppercase tracking-[0.2em] text-white">Histórico de <span className="text-primary">Lances</span></h3>
                 </div>
-                <Badge variant="outline" className="text-[10px] border-white/10 text-white/40 font-bold px-3">LIVE FEED</Badge>
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className="text-[10px] border-white/10 text-white/40 font-bold px-3">LIVE FEED</Badge>
+                </div>
               </div>
               <div className="p-4">
                 {bids.length > 0 ? (
                   <div className="space-y-2">
-                    {bids.map((bid, idx) => (
-                      <div key={bid.id} className={`flex items-center justify-between p-4 rounded-2xl transition-all duration-300 animate-in fade-in slide-in-from-right-2 ${idx === 0 ? 'bg-primary/20 border border-primary/30 shadow-[0_0_20px_rgba(var(--color-primary),0.1)]' : 'hover:bg-white/5 border border-transparent'}`}>
-                        <div className="flex items-center gap-4">
+                    {(showAllBids ? bids : bids.slice(0, 10)).map((bid, idx) => (
+                      <div key={bid.id} className={`flex items-center justify-between p-3 rounded-xl transition-all duration-300 animate-in fade-in slide-in-from-right-2 ${idx === 0 ? 'bg-primary/20 border border-primary/30 shadow-[0_0_20px_rgba(var(--color-primary),0.1)]' : 'hover:bg-white/5 border border-transparent'}`}>
+                        <div className="flex items-center gap-3">
                           <div className="relative">
-                            <Avatar className={`w-10 h-10 border-2 transition-all ${idx === 0 ? 'border-primary scale-110 shadow-lg' : 'border-white/10'}`}>
+                            <Avatar className={`w-8 h-8 border-2 transition-all ${idx === 0 ? 'border-primary scale-110 shadow-lg' : 'border-white/10'}`}>
                               <AvatarImage src={bid.profile?.avatar_url || getFallbackAvatarUrl(bid.profile?.username)} />
-                              <AvatarFallback className="bg-primary/10 text-primary font-bold text-xs">
+                              <AvatarFallback className="bg-primary/10 text-primary font-bold text-[10px]">
                                 {bid.profile?.username?.substring(0, 2).toUpperCase() || "U"}
                               </AvatarFallback>
                             </Avatar>
-                            {idx === 0 && (
-                              <div className="absolute -top-1 -right-1 bg-primary text-primary-foreground p-0.5 rounded-full ring-2 ring-background">
-                                <Trophy className="w-3 h-3" />
-                              </div>
-                            )}
                           </div>
                           <div className="flex flex-col">
                             <div className="flex items-center gap-2">
-                              <span className={`font-black text-sm uppercase italic tracking-tighter ${idx === 0 ? 'text-white' : 'text-white/60'}`}>{bid.profile?.username}</span>
-                              {idx === 0 && <Badge className="h-4 px-1.5 text-[8px] font-black bg-primary text-primary-foreground animate-pulse">LIDERANDO</Badge>}
+                              <span className={`font-black text-xs uppercase italic tracking-tighter ${idx === 0 ? 'text-white' : 'text-white/60'}`}>{bid.profile?.username}</span>
+                              {idx === 0 && <Badge className="h-3 px-1 text-[7px] font-black bg-primary text-primary-foreground animate-pulse">LIDERANDO</Badge>}
                             </div>
-                            <span className="text-[10px] text-white/30 font-bold uppercase">{new Date(bid.created_at).toLocaleTimeString()}</span>
+                            <span className="text-[8px] text-white/30 font-bold uppercase">{new Date(bid.created_at).toLocaleTimeString()}</span>
                           </div>
                         </div>
                         <div className="text-right">
-                          <span className={`font-mono text-lg font-black block ${idx === 0 ? 'text-primary' : 'text-white/40'}`}>R$ {bid.price_at_bid?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
-                          <span className="text-[9px] text-white/20 font-black uppercase tracking-widest">Lance #{bids.length - idx}</span>
+                          <span className={`font-mono text-sm font-black block ${idx === 0 ? 'text-primary' : 'text-white/40'}`}>R$ {bid.price_at_bid?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                         </div>
                       </div>
                     ))}
+                    
+                    {bids.length > 10 && (
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="w-full mt-4 text-[10px] font-black uppercase tracking-widest text-primary hover:bg-primary/10 h-10 border border-primary/20 rounded-xl"
+                        onClick={() => setShowAllBids(!showAllBids)}
+                      >
+                        {showAllBids ? "Ver menos lances" : `Ver últimos ${bids.length} lances`}
+                      </Button>
+                    )}
                   </div>
                 ) : (
                   <div className="py-20 text-center space-y-4">
