@@ -527,15 +527,25 @@ function AuctionPage() {
                         <Clock className={`w-3 h-3 ${timeLeft <= 8 && !isFinished ? 'text-red-500 animate-spin' : 'text-primary'}`} /> Tempo Restante
                       </span>
                       <div className="flex items-center gap-2">
-                        <div className={`relative flex items-center justify-center min-w-[80px] py-3 rounded-2xl border border-white/10 overflow-hidden transition-all duration-300 ${
+                        <div className={`relative flex items-center justify-center min-w-[80px] py-3 px-4 rounded-2xl border border-white/10 overflow-hidden transition-all duration-300 ${
                           timeLeft <= 8 && !isFinished 
                             ? 'bg-gradient-to-br from-red-600 to-red-900 border-red-500 shadow-[0_0_30px_rgba(239,68,68,0.6)]' 
                             : 'bg-gradient-to-br from-black/80 to-black/60 shadow-2xl'
                         }`}>
-                          <span className={`text-5xl font-black tabular-nums tracking-tighter ${
+                          <span className={`text-4xl font-black tabular-nums tracking-tighter ${
                             timeLeft <= 8 && !isFinished ? 'text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.6)]' : 'text-white'
                           }`}>
-                            {isFinished ? "00" : Math.floor(timeLeft).toString().padStart(2, '0')}
+                            {isFinished ? "00:00" : (
+                              <>
+                                {timeLeft >= 3600 && (
+                                  <span className="text-2xl mr-1">
+                                    {Math.floor(timeLeft / 3600).toString().padStart(2, '0')}:
+                                  </span>
+                                )}
+                                {Math.floor((timeLeft % 3600) / 60).toString().padStart(2, '0')}:
+                                {Math.floor(timeLeft % 60).toString().padStart(2, '0')}
+                              </>
+                            )}
                           </span>
                           {timeLeft <= 8 && !isFinished && (
                             <div className="absolute inset-0 bg-white/5 shadow-[inset_0_0_30px_rgba(255,255,255,0.2)]"></div>
