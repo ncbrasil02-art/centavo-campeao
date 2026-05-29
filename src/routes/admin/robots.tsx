@@ -50,11 +50,9 @@ function AdminRobotsPage() {
       .eq("status", "live");
     
     if (data) {
-      for (const auction of data) {
-        if (!auction.robot_settings) {
-          await supabase.from("robot_settings").insert({ auction_id: auction.id });
-        }
-      }
+      // Optimized: Use server-side function to ensure all live auctions have settings
+      await supabase.rpc('ensure_live_auctions_robot_settings');
+      
       const { data: updatedData } = await supabase
         .from("auctions")
         .select(`
@@ -66,6 +64,7 @@ function AdminRobotsPage() {
       
       if (updatedData) setAuctions(updatedData);
     }
+
     setLoading(false);
   }
 
