@@ -157,6 +157,18 @@ function AdminRobotsPage() {
     }
   };
 
+  const updateTargetWinner = async (auctionId: string, target: 'robot' | 'user' | 'random') => {
+    const { error } = await supabase
+      .from("auctions")
+      .update({ target_winner: target })
+      .eq("id", auctionId);
+    
+    if (!error) {
+      toast.success("Ganhador alvo atualizado");
+      fetchAuctionsWithRobots();
+    }
+  };
+
 
   
 
@@ -209,6 +221,7 @@ function AdminRobotsPage() {
                   <TableHead className="text-white/60 font-bold">Status Robô</TableHead>
                   <TableHead className="text-white/60 font-bold">Delays (Min/Max)</TableHead>
                   <TableHead className="text-white/60 font-bold">Tempo de Disputa (min)</TableHead>
+                  <TableHead className="text-white/60 font-bold">Ganhador Alvo</TableHead>
                   <TableHead className="text-white/60 font-bold">Disputa Interna</TableHead>
                   <TableHead className="text-white/60 font-bold">Lances Atuais</TableHead>
                   <TableHead className="text-white/60 font-bold text-right">Ações</TableHead>
@@ -288,6 +301,17 @@ function AdminRobotsPage() {
                             onBlur={(e) => updateDisputeDuration(settings.id, parseInt(e.target.value))}
                           />
                         </div>
+                      </TableCell>
+                      <TableCell>
+                        <select 
+                          className="bg-black/40 border-white/10 rounded h-8 px-2 text-xs text-white"
+                          value={auction.target_winner || 'random'}
+                          onChange={(e) => updateTargetWinner(auction.id, e.target.value as any)}
+                        >
+                          <option value="robot">Robô</option>
+                          <option value="user">Usuário Real</option>
+                          <option value="random">Aleatório</option>
+                        </select>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
