@@ -146,6 +146,19 @@ function AdminRobotsPage() {
     }
   };
 
+  const updateDisputeDuration = async (settingsId: string, duration: number) => {
+    const { error } = await supabase
+      .from("robot_settings")
+      .update({ dispute_duration_minutes: duration })
+      .eq("id", settingsId);
+    
+    if (!error) {
+      toast.success("Tempo de disputa atualizado");
+      fetchAuctionsWithRobots();
+    }
+  };
+
+
   
 
   return (
