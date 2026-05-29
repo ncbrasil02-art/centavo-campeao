@@ -285,7 +285,11 @@ function Index() {
                 <Badge variant="outline" className="mb-4 border-primary/30 bg-primary/10 text-primary uppercase">GALERIA DE HONRA</Badge>
                 <h2 className="text-4xl font-black tracking-tight text-white mb-4 italic uppercase">Ranking de <span className="text-primary">Ganhadores</span></h2>
                 <p className="text-white/40">Pessoas reais, economias reais. Veja quem já levou o prêmio para casa esta semana.</p>
+                <Button variant="link" className="text-primary font-black italic uppercase text-xs mt-4" asChild>
+                  <Link to="/ranking">Ver Ranking Completo <ArrowUpRight className="ml-1 w-3 h-3" /></Link>
+                </Button>
               </div>
+
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 {winners.length > 0 ? (
