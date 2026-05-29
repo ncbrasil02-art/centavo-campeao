@@ -653,12 +653,18 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         <Button 
           onClick={(e) => {
             e.stopPropagation();
-            handleBid();
+            if (isPendingAudit && isAdmin) {
+              handleConfirmWinner();
+            } else if (!isFinished && !isScheduled && !isPendingAudit && !isConfirmed) {
+              handleBid();
+            }
           }} 
-          disabled={isFinished || isScheduled || loading}
+          disabled={loading || (isFinished || isScheduled || isConfirmed || (isPendingAudit && !isAdmin))}
           className={`h-14 w-full rounded-2xl text-lg font-black uppercase italic tracking-tighter transition-all relative overflow-hidden group/bidbtn ${
-            isFinished 
+            isFinished || isConfirmed
               ? 'cursor-default border border-green-500/20 bg-green-500/10 text-green-500' 
+              : isPendingAudit
+              ? (isAdmin ? 'bg-primary text-primary-foreground shadow-[0_0_25px_rgba(var(--color-primary),0.5)] hover:scale-[1.02]' : 'cursor-default border border-red-500/20 bg-red-500/10 text-red-500 animate-pulse')
               : isScheduled
               ? 'cursor-not-allowed border border-white/10 bg-white/10 text-white/40'
               : timeLeft <= 5
@@ -667,21 +673,28 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           }`}
         >
           <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.2)_50%,transparent_75%)] bg-[length:250%_250%] animate-[shimmer_3s_infinite] group-hover/bidbtn:animate-[shimmer_1.5s_infinite]"></div>
-          {loading ? "..." : isFinished ? (
+          {loading ? "..." : isFinished || isConfirmed ? (
             <div className="flex flex-col items-center justify-center leading-tight gap-1">
               <span className="text-[10px] font-black uppercase tracking-widest text-green-500/80">
                 Arrematado por {auction.last_bidder?.username || "Ganhador"}
               </span>
               <span className="text-xs font-black italic text-white/60">
-                {auction.end_time ? format(new Date(auction.end_time), "dd/MM 'às' HH:mm", { locale: ptBR }) : "Finalizado"}
+                {isConfirmed ? "Ganhador Confirmado" : (auction.end_time ? format(new Date(auction.end_time), "dd/MM 'às' HH:mm", { locale: ptBR }) : "Finalizado")}
               </span>
             </div>
+          ) : isPendingAudit ? (
+            isAdmin ? (
+              <span className="flex items-center gap-2">
+                <ShieldCheck className="h-5 w-5" /> CONFIRMAR GANHADOR
+              </span>
+            ) : "AGUARDANDO AUDITORIA"
           ) : isScheduled ? "AGUARDANDO INÍCIO" : (
             <span className="flex items-center gap-2">
               {timeLeft <= 5 ? "VAI PERDER! LANCE AGORA" : "Dar Lance"} <Zap className={`h-5 w-5 fill-current ${timeLeft <= 5 ? 'animate-bounce' : ''}`} />
             </span>
           )}
         </Button>
+
         {!isFinished && (
           <p className="text-[9px] text-center text-white/20 uppercase tracking-[0.2em] font-bold mt-2 italic">
             {incentivePhrase.split(' ').slice(1).join(' ')}
