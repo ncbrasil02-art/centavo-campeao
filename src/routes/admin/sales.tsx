@@ -181,7 +181,31 @@ function AdminSales() {
               )}
             </TableBody>
           </Table>
+          <div className="p-4 border-t border-white/5 bg-white/5 flex items-center justify-between">
+            <span className="text-xs text-white/40">Página {page}</span>
+            <div className="flex gap-2">
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="h-8 w-8 border-white/10 bg-white/5" 
+                disabled={page === 1}
+                onClick={() => setPage(p => p - 1)}
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </Button>
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="h-8 w-8 border-white/10 bg-white/5" 
+                onClick={() => setPage(p => p + 1)}
+                disabled={sales.length < salesPerPage}
+              >
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
         </Card>
+
       </main>
     </div>
   );
