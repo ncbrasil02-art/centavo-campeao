@@ -197,12 +197,20 @@ export function Navbar() {
                 Leilões
               </Link>
               <Link 
+                to="/ranking" 
+                className="text-lg font-bold p-2 hover:text-primary transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Ranking
+              </Link>
+              <Link 
                 to="/packages" 
                 className="text-lg font-bold p-2 hover:text-primary transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Comprar Lances
               </Link>
+
               {profile?.is_admin && (
                 <Link 
                   to="/admin" 
