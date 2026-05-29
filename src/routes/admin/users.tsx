@@ -89,7 +89,7 @@ function AdminUsersPage() {
     }
   };
 
-  const handleAddCredits = async (userId: string, currentBalance: number) => {
+  const handleAddCredits = async (userId: string) => {
     const amount = prompt("Quantos lances deseja adicionar?", "10");
     if (!amount) return;
 
@@ -99,13 +99,13 @@ function AdminUsersPage() {
       return;
     }
 
-    const { error } = await supabase
-      .from("profiles")
-      .update({ bid_balance: (currentBalance || 0) + numAmount })
-      .eq("id", userId);
+    const { data, error } = await supabase.rpc('increment_bid_balance', {
+      p_user_id: userId,
+      p_amount: numAmount
+    });
 
-    if (error) {
-      toast.error("Erro ao adicionar créditos");
+    if (error || (data && !(data as any).success)) {
+      toast.error((data as any)?.message || "Erro ao adicionar créditos");
     } else {
       // Record transaction
       await supabase.from("transactions").insert({
@@ -150,6 +150,41 @@ function AdminUsersPage() {
               <Filter className="w-4 h-4 mr-2" /> Filtrar
             </Button>
           </div>
+        </div>
+
+        {/* User's own profile quick actions */}
+        <div className="mb-8">
+          {users.find(u => u.is_admin && !u.is_bot) && (
+            <Card className="bg-primary/5 border-primary/20 overflow-hidden backdrop-blur-md">
+              <CardHeader className="py-4 border-b border-primary/10">
+                <CardTitle className="text-sm font-bold flex items-center gap-2">
+                  <Shield className="w-4 h-4 text-primary" /> Seu Perfil Administrativo
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                {users.filter(u => u.is_admin && !u.is_bot).map(me => (
+                  <div key={me.id} className="flex items-center gap-4 w-full justify-between">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="w-12 h-12 border-2 border-primary/20">
+                        <AvatarImage src={me.avatar_url || getFallbackAvatarUrl(me.username)} />
+                        <AvatarFallback className="bg-primary/20 text-primary">{me.username?.substring(0, 2).toUpperCase()}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-black text-lg">{me.username} <span className="text-[10px] bg-primary text-black px-1.5 py-0.5 rounded-sm ml-2">VOCÊ</span></p>
+                        <p className="text-sm text-white/40">Saldo atual: <span className="text-primary font-bold">{me.bid_balance || 0} lances</span></p>
+                      </div>
+                    </div>
+                    <Button 
+                      onClick={() => handleAddCredits(me.id)}
+                      className="bg-primary hover:bg-primary/90 text-black font-black"
+                    >
+                      <Wallet className="w-4 h-4 mr-2" /> RECARREGAR MEU SALDO
+                    </Button>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          )}
         </div>
 
         <Card className="bg-white/5 border-white/10 overflow-hidden backdrop-blur-md">
@@ -220,7 +255,7 @@ function AdminUsersPage() {
                         <DropdownMenuContent align="end" className="bg-[#1a1a1a] border-white/10 text-white w-48">
                           <DropdownMenuLabel>Ações</DropdownMenuLabel>
                           <DropdownMenuSeparator className="bg-white/10" />
-                          <DropdownMenuItem onClick={() => handleAddCredits(u.id, u.bid_balance)} className="hover:bg-primary/20 hover:text-primary cursor-pointer">
+                          <DropdownMenuItem onClick={() => handleAddCredits(u.id)} className="hover:bg-primary/20 hover:text-primary cursor-pointer">
                             <Wallet className="w-4 h-4 mr-2" /> Adicionar Lances
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => handleUpdateRole(u.id, 'is_bot', !u.is_bot)} className="hover:bg-primary/20 hover:text-primary cursor-pointer">
