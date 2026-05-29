@@ -498,7 +498,19 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
                   <span className={`text-2xl font-black tabular-nums tracking-tighter ${
                     timeLeft <= 8 && !isFinished ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'text-white'
                   }`}>
-                    {isFinished ? "00" : timeParts.s}
+                    {isFinished ? "00:00" : (
+                      <>
+                        {timeLeft >= 3600 && (
+                          <span className="text-lg mr-0.5">
+                            {timeParts.h}:
+                          </span>
+                        )}
+                        {timeLeft >= 60 && (
+                          <span>{timeParts.m}:</span>
+                        )}
+                        {timeParts.s}
+                      </>
+                    )}
                   </span>
                   {timeLeft <= 8 && !isFinished && (
                     <div className="absolute inset-0 bg-red-500/10 shadow-[inset_0_0_20px_rgba(239,68,68,0.4)]"></div>

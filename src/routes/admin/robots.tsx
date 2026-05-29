@@ -51,7 +51,7 @@ function AdminRobotsPage() {
     
     if (data) {
       for (const auction of data) {
-        if (!auction.robot_settings || auction.robot_settings.length === 0) {
+        if (!auction.robot_settings) {
           await supabase.from("robot_settings").insert({ auction_id: auction.id });
         }
       }
@@ -73,7 +73,11 @@ function AdminRobotsPage() {
     if (!automationRef.current) return;
     
     for (const auction of auctions) {
-      const settings = auction.robot_settings?.[0];
+      // Handle both array and object formats
+      const settings = Array.isArray(auction.robot_settings) 
+        ? auction.robot_settings[0] 
+        : auction.robot_settings;
+        
       if (!settings?.active) continue;
 
       const end = new Date(auction.end_time).getTime();
@@ -201,7 +205,9 @@ function AdminRobotsPage() {
                 {loading ? (
                   <TableRow><TableCell colSpan={5} className="text-center py-10 animate-pulse">Carregando dados...</TableCell></TableRow>
                 ) : auctions.map((auction) => {
-                  const settings = auction.robot_settings?.[0] || {};
+                  const settings = Array.isArray(auction.robot_settings) 
+                    ? (auction.robot_settings[0] || {}) 
+                    : (auction.robot_settings || {});
                   return (
                     <TableRow key={auction.id} className="border-white/10 hover:bg-white/5 transition-colors">
                       <TableCell className="font-bold py-6">

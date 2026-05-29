@@ -61,7 +61,11 @@ function AdminAuctions() {
     robot_enabled: true,
     timer_duration: 15,
     is_finalizing: false,
-    target_winner: "random" as "robot" | "user" | "random"
+    target_winner: "random" as "robot" | "user" | "random",
+    robot_min_delay: 1,
+    robot_max_delay: 5,
+    robot_bid_chance: 0.3,
+    robot_active: true
   };
 
   const [formData, setFormData] = useState(initialFormData);
@@ -137,7 +141,6 @@ function AdminAuctions() {
           return;
         }
 
-        console.log("Creating new product:", formData.new_product_name);
         const { data: newProduct, error: productError } = await supabase
           .from("products")
           .insert([{
@@ -150,13 +153,11 @@ function AdminAuctions() {
           .single();
 
         if (productError) {
-          console.error("Error creating product:", productError);
           toast.dismiss(loadingToast);
           toast.error(`Erro ao criar produto: ${productError.message}`);
           return;
         }
         
-        console.log("Product created successfully:", newProduct.id);
         finalProductId = newProduct.id;
       }
 
@@ -192,6 +193,8 @@ function AdminAuctions() {
         is_finalizing: formData.is_finalizing
       };
 
+      let auctionId = editingAuction?.id;
+
       if (editingAuction) {
         const { error } = await supabase
           .from("auctions")
@@ -199,31 +202,47 @@ function AdminAuctions() {
           .eq("id", editingAuction.id);
         
         if (error) {
-          console.error("Error updating auction:", error);
           toast.error(`Erro ao atualizar: ${error.message}`);
           return;
         }
-        toast.dismiss(loadingToast);
-        toast.success("Leilão atualizado com sucesso!");
       } else {
-        const { error } = await supabase
+        const { data: newAuction, error } = await supabase
           .from("auctions")
           .insert([{ 
             ...payload,
             current_price: 0.01,
             bid_count: 0
-          }]);
+          }])
+          .select()
+          .single();
         
         if (error) {
-          console.error("Error creating auction:", error);
           toast.dismiss(loadingToast);
           toast.error(`Erro ao criar leilão: ${error.message}`);
           return;
         }
-        toast.dismiss(loadingToast);
-        toast.success("Leilão criado com sucesso!");
+        auctionId = newAuction.id;
       }
 
+      // Update robot settings
+      if (auctionId) {
+        const { error: robotError } = await supabase
+          .from("robot_settings")
+          .upsert({
+            auction_id: auctionId,
+            min_delay: formData.robot_min_delay,
+            max_delay: formData.robot_max_delay,
+            bid_chance: formData.robot_bid_chance,
+            active: formData.robot_active
+          }, { onConflict: 'auction_id' });
+        
+        if (robotError) {
+          console.error("Error updating robot settings:", robotError);
+        }
+      }
+
+      toast.dismiss(loadingToast);
+      toast.success(editingAuction ? "Leilão atualizado!" : "Leilão criado!");
       setIsDialogOpen(false);
       setEditingAuction(null);
       setFormData(initialFormData);
@@ -248,8 +267,16 @@ function AdminAuctions() {
     }
   }
 
-  function handleEdit(auction: any) {
+  async function handleEdit(auction: any) {
     setEditingAuction(auction);
+    
+    // Fetch robot settings for this auction
+    const { data: robotSettings } = await supabase
+      .from("robot_settings")
+      .select("*")
+      .eq("auction_id", auction.id)
+      .maybeSingle();
+
     setFormData({
       product_id: auction.product_id,
       new_product_name: "",
@@ -263,7 +290,11 @@ function AdminAuctions() {
       robot_enabled: auction.robot_enabled,
       timer_duration: auction.timer_duration || 15,
       is_finalizing: auction.is_finalizing || false,
-      target_winner: auction.target_winner || "random"
+      target_winner: auction.target_winner || "random",
+      robot_min_delay: robotSettings?.min_delay || 1,
+      robot_max_delay: robotSettings?.max_delay || 5,
+      robot_bid_chance: typeof robotSettings?.bid_chance === 'string' ? parseFloat(robotSettings.bid_chance) : (robotSettings?.bid_chance || 0.3),
+      robot_active: robotSettings?.active ?? true
     });
     setIsDialogOpen(true);
   }
@@ -497,12 +528,55 @@ function AdminAuctions() {
                   </p>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Switch 
-                    checked={formData.robot_enabled} 
-                    onCheckedChange={v => setFormData({...formData, robot_enabled: v})}
-                  />
-                  <Label>Participação de Robôs</Label>
+                <div className="p-4 rounded-lg border border-white/5 bg-white/5 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label>Participação de Robôs</Label>
+                      <p className="text-[10px] text-white/40">Habilitar lances automáticos</p>
+                    </div>
+                    <Switch 
+                      checked={formData.robot_enabled} 
+                      onCheckedChange={v => setFormData({...formData, robot_enabled: v})}
+                    />
+                  </div>
+
+                  {formData.robot_enabled && (
+                    <div className="space-y-4 pt-4 border-t border-white/10">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label className="text-xs">Delay Mínimo (seg)</Label>
+                          <Input 
+                            type="number"
+                            value={formData.robot_min_delay}
+                            onChange={e => setFormData({...formData, robot_min_delay: parseInt(e.target.value) || 1})}
+                            className="bg-zinc-950 border-white/10 h-8"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-xs">Delay Máximo (seg)</Label>
+                          <Input 
+                            type="number"
+                            value={formData.robot_max_delay}
+                            onChange={e => setFormData({...formData, robot_max_delay: parseInt(e.target.value) || 5})}
+                            className="bg-zinc-950 border-white/10 h-8"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-xs">Chance de Lance (0.1 a 1.0)</Label>
+                        <Input 
+                          type="number"
+                          step="0.1"
+                          min="0.1"
+                          max="1"
+                          value={formData.robot_bid_chance}
+                          onChange={e => setFormData({...formData, robot_bid_chance: parseFloat(e.target.value) || 0.3})}
+                          className="bg-zinc-950 border-white/10 h-8"
+                        />
+                        <p className="text-[9px] text-white/30 italic">Define a frequência da disputa. 0.3 = 30% chance por segundo.</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <DialogFooter className="pt-4">

@@ -1,0 +1,1 @@
+ALTER TABLE public.robot_settings ADD CONSTRAINT robot_settings_auction_id_key UNIQUE (auction_id);
