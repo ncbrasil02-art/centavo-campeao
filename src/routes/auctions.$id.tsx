@@ -583,7 +583,7 @@ function AuctionPage() {
                     disabled={isFinished || bidLoading}
                     className={`w-full h-24 text-3xl font-black uppercase italic tracking-tighter transition-all rounded-[32px] group/btn relative overflow-hidden ${
                       isFinished 
-                        ? 'bg-white/5 text-white/20 cursor-not-allowed' 
+                        ? 'bg-green-500/10 text-green-500 border border-green-500/20 cursor-default' 
                         : timeLeft <= 5
                         ? 'bg-red-600 text-white shadow-[0_0_60px_rgba(220,38,38,0.8)]'
                         : 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_20px_50px_rgba(var(--color-primary),0.6)] hover:-translate-y-1 active:translate-y-1'
@@ -594,7 +594,14 @@ function AuctionPage() {
                            style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)' }} />
                     )}
                     
-                    {bidLoading ? <div className="w-8 h-8 border-4 border-current border-t-transparent rounded-full animate-spin" /> : isFinished ? "LEILÃO ENCERRADO" : (
+                    {bidLoading ? <div className="w-8 h-8 border-4 border-current border-t-transparent rounded-full animate-spin" /> : isFinished ? (
+                      <div className="flex flex-col items-center justify-center leading-tight">
+                        <span className="text-sm font-black uppercase tracking-[0.4em] text-green-500/50 mb-1">ARREMATADO EM</span>
+                        <span className="text-2xl font-black italic">
+                          {auction.end_time ? format(new Date(auction.end_time), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR }) : "CONCLUÍDO"}
+                        </span>
+                      </div>
+                    ) : (
                       <span className="flex items-center gap-4 relative z-10">
                         {timeLeft <= 5 ? "CORRE! LANCE AGORA" : "Arrematar Agora"} <Zap className={`w-8 h-8 fill-current ${timeLeft <= 5 ? 'animate-bounce' : 'animate-pulse'}`} />
                       </span>
