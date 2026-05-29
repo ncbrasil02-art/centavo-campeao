@@ -68,7 +68,8 @@ function AdminAuctions() {
     robot_min_delay: 1,
     robot_max_delay: 5,
     robot_bid_chance: 0.3,
-    robot_active: true
+    robot_active: true,
+    robot_dispute_duration: 30
   };
 
   const [formData, setFormData] = useState(initialFormData);
@@ -239,7 +240,8 @@ function AdminAuctions() {
             min_delay: formData.robot_min_delay,
             max_delay: formData.robot_max_delay,
             bid_chance: formData.robot_bid_chance,
-            active: formData.robot_active
+            active: formData.robot_active,
+            dispute_duration_minutes: formData.robot_dispute_duration
           }, { onConflict: 'auction_id' });
         
         if (robotError) {
@@ -300,7 +302,8 @@ function AdminAuctions() {
       robot_min_delay: robotSettings?.min_delay || 1,
       robot_max_delay: robotSettings?.max_delay || 5,
       robot_bid_chance: typeof robotSettings?.bid_chance === 'string' ? parseFloat(robotSettings.bid_chance) : (robotSettings?.bid_chance || 0.3),
-      robot_active: robotSettings?.active ?? true
+      robot_active: robotSettings?.active ?? true,
+      robot_dispute_duration: robotSettings?.dispute_duration_minutes || 30
     });
     setIsDialogOpen(true);
   }
@@ -601,6 +604,16 @@ function AdminAuctions() {
                           className="bg-zinc-950 border-white/10 h-8"
                         />
                         <p className="text-[9px] text-white/30 italic">Define a frequência da disputa. 0.3 = 30% chance por segundo.</p>
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-xs">Tempo de Trabalho do Robô (minutos)</Label>
+                        <Input 
+                          type="number"
+                          value={formData.robot_dispute_duration}
+                          onChange={e => setFormData({...formData, robot_dispute_duration: parseInt(e.target.value) || 30})}
+                          className="bg-zinc-950 border-white/10 h-8"
+                        />
+                        <p className="text-[9px] text-white/30 italic">Tempo que o robô ficará "disputando" antes de deixar o leilão encerrar ou arrematar.</p>
                       </div>
                     </div>
                   )}
