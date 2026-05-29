@@ -528,12 +528,55 @@ function AdminAuctions() {
                   </p>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Switch 
-                    checked={formData.robot_enabled} 
-                    onCheckedChange={v => setFormData({...formData, robot_enabled: v})}
-                  />
-                  <Label>Participação de Robôs</Label>
+                <div className="p-4 rounded-lg border border-white/5 bg-white/5 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label>Participação de Robôs</Label>
+                      <p className="text-[10px] text-white/40">Habilitar lances automáticos</p>
+                    </div>
+                    <Switch 
+                      checked={formData.robot_enabled} 
+                      onCheckedChange={v => setFormData({...formData, robot_enabled: v})}
+                    />
+                  </div>
+
+                  {formData.robot_enabled && (
+                    <div className="space-y-4 pt-4 border-t border-white/10">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label className="text-xs">Delay Mínimo (seg)</Label>
+                          <Input 
+                            type="number"
+                            value={formData.robot_min_delay}
+                            onChange={e => setFormData({...formData, robot_min_delay: parseInt(e.target.value) || 1})}
+                            className="bg-zinc-950 border-white/10 h-8"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-xs">Delay Máximo (seg)</Label>
+                          <Input 
+                            type="number"
+                            value={formData.robot_max_delay}
+                            onChange={e => setFormData({...formData, robot_max_delay: parseInt(e.target.value) || 5})}
+                            className="bg-zinc-950 border-white/10 h-8"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-xs">Chance de Lance (0.1 a 1.0)</Label>
+                        <Input 
+                          type="number"
+                          step="0.1"
+                          min="0.1"
+                          max="1"
+                          value={formData.robot_bid_chance}
+                          onChange={e => setFormData({...formData, robot_bid_chance: parseFloat(e.target.value) || 0.3})}
+                          className="bg-zinc-950 border-white/10 h-8"
+                        />
+                        <p className="text-[9px] text-white/30 italic">Define a frequência da disputa. 0.3 = 30% chance por segundo.</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <DialogFooter className="pt-4">
