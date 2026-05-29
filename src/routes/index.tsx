@@ -3,7 +3,7 @@ import { Navbar } from "@/components/Navbar";
 import { Hero, SecondaryBanner } from "@/components/HomeSections";
 import { AuctionCard } from "@/components/AuctionCard";
 import { GlobalActivityChat } from "@/components/GlobalActivityChat";
-import { MessageSquare, X, ArrowRight, Zap, ShieldCheck, Heart, User } from "lucide-react";
+import { MessageSquare, X, ArrowRight, Zap, ShieldCheck, Heart, User, ArrowUpRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
