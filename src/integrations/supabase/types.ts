@@ -289,6 +289,7 @@ export type Database = {
           images: string[] | null
           market_value: number
           name: string
+          slug: string | null
         }
         Insert: {
           category?: string | null
@@ -298,6 +299,7 @@ export type Database = {
           images?: string[] | null
           market_value: number
           name: string
+          slug?: string | null
         }
         Update: {
           category?: string | null
@@ -307,6 +309,7 @@ export type Database = {
           images?: string[] | null
           market_value?: number
           name?: string
+          slug?: string | null
         }
         Relationships: []
       }
@@ -719,6 +722,7 @@ export type Database = {
         Returns: Json
       }
       process_robot_bids: { Args: never; Returns: Json }
+      slugify: { Args: { v_text: string }; Returns: string }
       tick_auctions: { Args: never; Returns: Json }
     }
     Enums: {
