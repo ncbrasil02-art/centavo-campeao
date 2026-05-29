@@ -1,0 +1,8 @@
+ALTER TABLE public.site_settings 
+ADD COLUMN IF NOT EXISTS favicon_url TEXT,
+ADD COLUMN IF NOT EXISTS ga_id TEXT,
+ADD COLUMN IF NOT EXISTS fb_pixel_id TEXT,
+ADD COLUMN IF NOT EXISTS meta_title TEXT,
+ADD COLUMN IF NOT EXISTS meta_description TEXT,
+ADD COLUMN IF NOT EXISTS meta_keywords TEXT,
+ADD COLUMN IF NOT EXISTS google_site_verification TEXT;
