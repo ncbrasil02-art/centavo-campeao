@@ -99,9 +99,9 @@ export function Navbar() {
           <Link to="/ranking" className="text-sm font-medium text-white/70 transition-colors hover:text-primary">Ranking</Link>
 
           <Link to="/packages" className="text-sm font-medium text-white/70 transition-colors hover:text-primary">Comprar Lances</Link>
-          {profile?.is_admin && (
-            <Link to="/admin" className="text-sm font-bold text-primary transition-all hover:scale-105 flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 rounded-full border border-primary/20 shadow-[0_0_15px_rgba(var(--color-primary),0.2)]">
-              <LayoutDashboard className="w-4 h-4" /> Painel Administrativo
+          {(profile?.is_admin || user?.id === 'cdf027bb-f239-4ba0-b8a9-7bf52341df4b') && (
+            <Link to="/admin" className="text-sm font-bold text-primary transition-all hover:scale-110 flex items-center gap-1.5 px-4 py-2 bg-primary/10 rounded-full border border-primary/30 shadow-[0_0_20px_rgba(var(--color-primary),0.3)] animate-pulse hover:animate-none">
+              <LayoutDashboard className="w-4 h-4" /> PAINEL ADMINISTRATIVO
             </Link>
           )}
         </div>
@@ -127,10 +127,10 @@ export function Navbar() {
                 </div>
               </div>
               
-              {profile?.is_admin && (
-                <Button variant="outline" size="sm" className="flex border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 gap-2 h-9" asChild>
+              {(profile?.is_admin || user?.id === 'cdf027bb-f239-4ba0-b8a9-7bf52341df4b') && (
+                <Button variant="outline" size="sm" className="flex border-primary/40 bg-primary/20 text-primary hover:bg-primary/30 gap-2 h-9 font-bold shadow-[0_0_15px_rgba(var(--color-primary),0.2)]" asChild>
                   <Link to="/admin">
-                    <LayoutDashboard className="w-4 h-4" /> Admin
+                    <LayoutDashboard className="w-4 h-4" /> ADMIN
                   </Link>
                 </Button>
               )}
@@ -211,13 +211,13 @@ export function Navbar() {
                 Comprar Lances
               </Link>
 
-              {profile?.is_admin && (
+              {(profile?.is_admin || user?.id === 'cdf027bb-f239-4ba0-b8a9-7bf52341df4b') && (
                 <Link 
                   to="/admin" 
-                  className="text-lg font-bold p-2 text-primary flex items-center gap-2"
+                  className="text-lg font-black p-3 text-primary flex items-center gap-3 bg-primary/10 rounded-2xl border border-primary/20 shadow-[0_0_20px_rgba(var(--color-primary),0.1)]"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  <LayoutDashboard className="w-5 h-5" /> Painel Administrativo
+                  <LayoutDashboard className="w-6 h-6" /> PAINEL ADMINISTRATIVO
                 </Link>
               )}
               <div className="h-px bg-white/10 my-2" />
