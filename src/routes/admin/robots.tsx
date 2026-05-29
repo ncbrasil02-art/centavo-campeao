@@ -209,9 +209,11 @@ function AdminRobotsPage() {
                   <TableHead className="text-white/60 font-bold">Produto</TableHead>
                   <TableHead className="text-white/60 font-bold">Status Robô</TableHead>
                   <TableHead className="text-white/60 font-bold">Delays (Min/Max)</TableHead>
+                  <TableHead className="text-white/60 font-bold">Tempo de Disputa (min)</TableHead>
                   <TableHead className="text-white/60 font-bold">Disputa Interna</TableHead>
                   <TableHead className="text-white/60 font-bold">Lances Atuais</TableHead>
                   <TableHead className="text-white/60 font-bold text-right">Ações</TableHead>
+
                 </TableRow>
               </TableHeader>
               <TableBody>
