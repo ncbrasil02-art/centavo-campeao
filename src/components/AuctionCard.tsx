@@ -66,6 +66,21 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
 
 
   useEffect(() => {
+    async function checkAdmin() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        const { data } = await supabase
+          .from("profiles")
+          .select("is_admin")
+          .eq("id", session.user.id)
+          .single();
+        setIsAdmin(!!data?.is_admin);
+      }
+    }
+    checkAdmin();
+  }, []);
+
+  useEffect(() => {
     async function loadIncentives() {
       if (CACHED_INCENTIVES.length > 0) {
         setIncentivePhrase(CACHED_INCENTIVES[Math.floor(Math.random() * CACHED_INCENTIVES.length)]);
@@ -97,6 +112,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
 
     return () => clearInterval(interval);
   }, []);
+
 
   useEffect(() => {
     audioRef.current = new Audio(BID_SOUND_URL);
