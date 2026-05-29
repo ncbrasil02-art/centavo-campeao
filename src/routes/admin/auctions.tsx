@@ -141,7 +141,6 @@ function AdminAuctions() {
           return;
         }
 
-        console.log("Creating new product:", formData.new_product_name);
         const { data: newProduct, error: productError } = await supabase
           .from("products")
           .insert([{
@@ -154,13 +153,11 @@ function AdminAuctions() {
           .single();
 
         if (productError) {
-          console.error("Error creating product:", productError);
           toast.dismiss(loadingToast);
           toast.error(`Erro ao criar produto: ${productError.message}`);
           return;
         }
         
-        console.log("Product created successfully:", newProduct.id);
         finalProductId = newProduct.id;
       }
 
@@ -196,6 +193,8 @@ function AdminAuctions() {
         is_finalizing: formData.is_finalizing
       };
 
+      let auctionId = editingAuction?.id;
+
       if (editingAuction) {
         const { error } = await supabase
           .from("auctions")
@@ -203,31 +202,47 @@ function AdminAuctions() {
           .eq("id", editingAuction.id);
         
         if (error) {
-          console.error("Error updating auction:", error);
           toast.error(`Erro ao atualizar: ${error.message}`);
           return;
         }
-        toast.dismiss(loadingToast);
-        toast.success("Leilão atualizado com sucesso!");
       } else {
-        const { error } = await supabase
+        const { data: newAuction, error } = await supabase
           .from("auctions")
           .insert([{ 
             ...payload,
             current_price: 0.01,
             bid_count: 0
-          }]);
+          }])
+          .select()
+          .single();
         
         if (error) {
-          console.error("Error creating auction:", error);
           toast.dismiss(loadingToast);
           toast.error(`Erro ao criar leilão: ${error.message}`);
           return;
         }
-        toast.dismiss(loadingToast);
-        toast.success("Leilão criado com sucesso!");
+        auctionId = newAuction.id;
       }
 
+      // Update robot settings
+      if (auctionId) {
+        const { error: robotError } = await supabase
+          .from("robot_settings")
+          .upsert({
+            auction_id: auctionId,
+            min_delay: formData.robot_min_delay,
+            max_delay: formData.robot_max_delay,
+            bid_chance: formData.robot_bid_chance,
+            active: formData.robot_active
+          }, { onConflict: 'auction_id' });
+        
+        if (robotError) {
+          console.error("Error updating robot settings:", robotError);
+        }
+      }
+
+      toast.dismiss(loadingToast);
+      toast.success(editingAuction ? "Leilão atualizado!" : "Leilão criado!");
       setIsDialogOpen(false);
       setEditingAuction(null);
       setFormData(initialFormData);
