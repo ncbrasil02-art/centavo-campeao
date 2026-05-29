@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Navbar } from "@/components/Navbar";
-import { Hero } from "@/components/HomeSections";
+import { Hero, SecondaryBanner } from "@/components/HomeSections";
 import { AuctionCard } from "@/components/AuctionCard";
 import { GlobalActivityChat } from "@/components/GlobalActivityChat";
 import { MessageSquare, X, ArrowRight, Zap, ShieldCheck, Heart, User } from "lucide-react";
@@ -250,6 +250,14 @@ function Index() {
               )}
             </div>
           </section>
+          
+          <SecondaryBanner 
+            title="Pacote de Lances com 50% de Desconto" 
+            subtitle="Comece com o pé direito! Adquira seu primeiro pacote de lances agora e ganhe o dobro para disputar seus produtos favoritos."
+            imageUrl="https://images.unsplash.com/photo-1553729459-efe14ef6055d?q=80&w=2000&auto=format&fit=crop"
+            linkUrl="/packages"
+          />
+
 
 
           {/* How it Works Section */}
@@ -335,6 +343,15 @@ function Index() {
               </div>
             </section>
           )}
+
+          <SecondaryBanner 
+            title="Sua chance de ter um iPhone 15 Pro" 
+            subtitle="Leilões diários de smartphones premium. Participe das disputas em tempo real e economize até 90%."
+            imageUrl="https://images.unsplash.com/photo-1696446701796-da61225697cc?auto=format&fit=crop&q=80&w=2000"
+            linkUrl="/auctions"
+            reverse
+          />
+
 
           {/* Testimonials Section */}
           <section className="py-24 bg-zinc-950/40 relative overflow-hidden">

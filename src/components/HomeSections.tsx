@@ -301,4 +301,36 @@ function StatsCard({ icon, label, value }: { icon: React.ReactNode, label: strin
   );
 }
 
-// AuctionCard has been extracted to its own file
+export function SecondaryBanner({ title, subtitle, imageUrl, linkUrl, reverse = false }: { title: string, subtitle: string, imageUrl: string, linkUrl: string, reverse?: boolean }) {
+  return (
+    <section className="py-12">
+      <div className="container mx-auto px-4">
+        <div className={`relative overflow-hidden rounded-[40px] bg-gradient-to-br from-zinc-900 to-black border border-white/5 flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-8 p-8 md:p-0`}>
+          <div className="flex-1 space-y-6 md:p-12 lg:p-20">
+            <Badge className="bg-primary/10 text-primary border-primary/20 uppercase font-black italic">OFERTA ESPECIAL</Badge>
+            <h2 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-white leading-tight">
+              {title}
+            </h2>
+            <p className="text-white/60 text-lg">
+              {subtitle}
+            </p>
+            <Button size="lg" className="bg-white text-black hover:bg-white/90 font-black uppercase italic tracking-widest" asChild>
+              <Link to={linkUrl as any}>
+                Ver Detalhes <ArrowRight className="ml-2 w-5 h-5" />
+              </Link>
+            </Button>
+          </div>
+          <div className="flex-1 w-full h-[300px] md:h-[500px] relative">
+            <img 
+              src={imageUrl} 
+              className="absolute inset-0 w-full h-full object-cover"
+              alt={title}
+            />
+            <div className={`absolute inset-0 bg-gradient-to-t md:bg-gradient-to-${reverse ? 'r' : 'l'} from-zinc-950 via-transparent to-transparent`}></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
