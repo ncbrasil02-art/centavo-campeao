@@ -75,7 +75,8 @@ function AdminAuctions() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [page]);
+
 
   async function fetchData() {
     try {
