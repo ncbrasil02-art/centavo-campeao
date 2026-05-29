@@ -22,7 +22,6 @@ import {
   Monitor, 
   Search, 
   Globe, 
-  Facebook, 
   BarChart 
 } from "lucide-react";
 import { 
@@ -455,7 +454,7 @@ function AdminSettings() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="fb_pixel_id" className="flex items-center gap-2">
-                    <Facebook className="w-4 h-4 text-blue-600" /> ID Facebook Pixel
+                    <Globe className="w-4 h-4 text-blue-600" /> ID Facebook Pixel
                   </Label>
                   <Input 
                     id="fb_pixel_id" 
