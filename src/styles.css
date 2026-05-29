@@ -1,3 +1,12 @@
+#lovable-badge,
+a[href*="lovable.dev"],
+aside:has(a[href*="lovable.dev"]) {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
