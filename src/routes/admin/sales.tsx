@@ -82,11 +82,8 @@ function AdminSales() {
     }
   }
 
-  const filteredSales = sales.filter(sale => 
-    sale.profile?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    sale.profile?.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    sale.id.includes(searchTerm)
-  );
+  const filteredSales = sales;
+
 
   return (
     <div className="min-h-screen bg-background text-white">
