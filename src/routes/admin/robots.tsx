@@ -205,7 +205,9 @@ function AdminRobotsPage() {
                 {loading ? (
                   <TableRow><TableCell colSpan={5} className="text-center py-10 animate-pulse">Carregando dados...</TableCell></TableRow>
                 ) : auctions.map((auction) => {
-                  const settings = auction.robot_settings?.[0] || {};
+                  const settings = Array.isArray(auction.robot_settings) 
+                    ? (auction.robot_settings[0] || {}) 
+                    : (auction.robot_settings || {});
                   return (
                     <TableRow key={auction.id} className="border-white/10 hover:bg-white/5 transition-colors">
                       <TableCell className="font-bold py-6">
