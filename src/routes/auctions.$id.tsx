@@ -616,7 +616,7 @@ function AuctionPage() {
                         {isFinished ? "Grande Arrematador" : "Vantagem Atual"}
                       </span>
                       <span className={`text-xl font-black transition-all italic uppercase ${isNewBid ? 'text-primary scale-105 origin-left' : isFinished ? 'text-green-500' : 'text-white group-hover/bidder:text-primary'}`}>
-                        {auction.last_bidder?.username || (isFinished ? "Encerrado" : auction.status === 'scheduled' && currentWinner ? (
+                        {auction.last_bidder?.username || (isFinished ? "Encerrado" : (auction.status === 'scheduled' || !auction.last_bidder?.username) && currentWinner ? (
                           <span className="animate-in fade-in slide-in-from-right-4 duration-500">
                             {currentWinner.winner_name} levou {currentWinner.product_name}
                           </span>
