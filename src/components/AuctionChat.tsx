@@ -8,7 +8,7 @@ import { Send, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
 import { getFallbackAvatarUrl, FICTITIOUS_PARTICIPANTS, FICTITIOUS_CHAT_PHRASES } from "@/lib/constants";
 
-export function AuctionChat({ auctionId }: { auctionId: string }) {
+export function AuctionChat({ auctionId, isFinished }: { auctionId: string, isFinished?: boolean }) {
   const [messages, setMessages] = useState<any[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [user, setUser] = useState<any>(null);
@@ -53,6 +53,7 @@ export function AuctionChat({ auctionId }: { auctionId: string }) {
   useEffect(() => {
     // Fictitious chat simulation
     const chatInterval = setInterval(() => {
+      if (isFinished) return;
       if (Math.random() < 0.2) { // 20% chance of a bot sending a message
         const randomUser = FICTITIOUS_PARTICIPANTS[Math.floor(Math.random() * FICTITIOUS_PARTICIPANTS.length)];
         const randomPhrase = FICTITIOUS_CHAT_PHRASES[Math.floor(Math.random() * FICTITIOUS_CHAT_PHRASES.length)];
