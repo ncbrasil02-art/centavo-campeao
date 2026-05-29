@@ -146,6 +146,19 @@ function AdminRobotsPage() {
     }
   };
 
+  const updateDisputeDuration = async (settingsId: string, duration: number) => {
+    const { error } = await supabase
+      .from("robot_settings")
+      .update({ dispute_duration_minutes: duration })
+      .eq("id", settingsId);
+    
+    if (!error) {
+      toast.success("Tempo de disputa atualizado");
+      fetchAuctionsWithRobots();
+    }
+  };
+
+
   
 
   return (
@@ -196,9 +209,11 @@ function AdminRobotsPage() {
                   <TableHead className="text-white/60 font-bold">Produto</TableHead>
                   <TableHead className="text-white/60 font-bold">Status Robô</TableHead>
                   <TableHead className="text-white/60 font-bold">Delays (Min/Max)</TableHead>
+                  <TableHead className="text-white/60 font-bold">Tempo de Disputa (min)</TableHead>
                   <TableHead className="text-white/60 font-bold">Disputa Interna</TableHead>
                   <TableHead className="text-white/60 font-bold">Lances Atuais</TableHead>
                   <TableHead className="text-white/60 font-bold text-right">Ações</TableHead>
+
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -267,10 +282,21 @@ function AdminRobotsPage() {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
+                          <Input 
+                            type="number" 
+                            className="w-20 bg-black/40 border-white/10 h-8 text-xs text-center" 
+                            defaultValue={settings.dispute_duration_minutes || 30} 
+                            onBlur={(e) => updateDisputeDuration(settings.id, parseInt(e.target.value))}
+                          />
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
                           <Gavel className="w-3 h-3 text-white/20" />
                           <span className="font-mono text-sm">{auction.bid_count}</span>
                         </div>
                       </TableCell>
+
                       <TableCell className="text-right">
                         <Button size="sm" variant="ghost" className="text-white/40 hover:text-primary hover:bg-primary/10">
                           <Settings2 className="w-4 h-4" />

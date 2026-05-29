@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Clock, User, MessageSquare, Zap, Eye, Volume2, VolumeX, Calendar } from "lucide-react";
+import { Clock, User, MessageSquare, Zap, Eye, Volume2, VolumeX, Calendar, ShieldCheck } from "lucide-react";
 import { AuctionChat } from "./AuctionChat";
 import { toast } from "sonner";
 import { FALLBACK_PRODUCT_IMAGE, getFallbackAvatarUrl, FICTITIOUS_PARTICIPANTS } from "@/lib/constants";
@@ -14,6 +14,7 @@ import { Progress } from "@/components/ui/progress";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useRecentWinners } from "@/hooks/useRecentWinners";
+
 
 const BID_SOUND_URL = "https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3";
 
@@ -51,14 +52,33 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   const confettiFired = useRef(false);
   const { getAdjustedNow } = useTimeSync();
   const { currentWinner, hasWinners } = useRecentWinners();
+  const [isAdmin, setIsAdmin] = useState(false);
 
-
-  const isFinished = timeLeft <= 0 || auction.status === 'finished';
+  const isFinished = auction.status === 'finished';
   const isScheduled = auction.status === 'scheduled';
+  const isPendingAudit = auction.status === 'pending_audit';
+  const isConfirmed = auction.status === 'confirmed';
   const isFinalizing = auction.is_finalizing;
+  
   const discount = auction.product?.market_value 
     ? Math.round((1 - (auction.current_price / auction.product.market_value)) * 100)
     : 0;
+
+
+  useEffect(() => {
+    async function checkAdmin() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        const { data } = await supabase
+          .from("profiles")
+          .select("is_admin")
+          .eq("id", session.user.id)
+          .single();
+        setIsAdmin(!!data?.is_admin);
+      }
+    }
+    checkAdmin();
+  }, []);
 
   useEffect(() => {
     async function loadIncentives() {
@@ -92,6 +112,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
 
     return () => clearInterval(interval);
   }, []);
+
 
   useEffect(() => {
     audioRef.current = new Audio(BID_SOUND_URL);
@@ -272,6 +293,27 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
     }
   };
 
+  const handleConfirmWinner = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.rpc('confirm_auction_winner', {
+        p_auction_id: auction.id
+      });
+      if (error) throw error;
+      const result = data as any;
+      if (result.success) {
+        toast.success(result.message);
+      } else {
+        toast.error(result.message);
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Erro ao confirmar ganhador");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   const formatTimeParts = (seconds: number) => {
     const d = Math.floor(seconds / (3600 * 24));
     const h = Math.floor((seconds % (3600 * 24)) / 3600);
@@ -387,6 +429,14 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             <Badge variant="outline" className="border-white/10 bg-black/60 px-3 py-1 text-white/40 backdrop-blur-md font-bold uppercase italic">
               ENCERRADO
             </Badge>
+          ) : isPendingAudit ? (
+            <Badge className="bg-red-600 border-none px-3 py-1 text-white font-bold uppercase italic shadow-[0_0_20px_rgba(220,38,38,0.5)] animate-pulse">
+              ARREMATADO
+            </Badge>
+          ) : isConfirmed ? (
+            <Badge className="bg-green-500 border-none px-3 py-1 text-white font-bold uppercase italic shadow-[0_0_20px_rgba(34,197,94,0.5)]">
+              CONFIRMADO
+            </Badge>
           ) : isScheduled ? (
             <Badge className="bg-blue-500 px-3 py-1 text-white backdrop-blur-md font-bold uppercase italic shadow-[0_0_15px_rgba(59,130,246,0.5)]">
               AGENDADO
@@ -400,6 +450,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
               AO VIVO
             </Badge>
           )}
+
           {!isFinished && discount > 0 && (
             <Badge variant="secondary" className="border-primary/30 bg-primary/20 px-3 py-1 font-bold text-primary backdrop-blur-md">
               {discount}% OFF
@@ -488,20 +539,23 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
                 R$ {auction.current_price?.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) || "0,01"}
               </span>
             </div>
-            <div className={`relative flex flex-col items-end transition-all duration-300 ${timeLeft <= 8 && !isFinished ? 'drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]' : ''}`}>
+            <div className={`relative flex flex-col items-end transition-all duration-300 ${(timeLeft <= 8 || isPendingAudit) && !isFinished && !isConfirmed ? 'drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]' : isConfirmed ? 'drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]' : ''}`}>
               <span className="mb-1 text-[9px] font-black uppercase tracking-widest text-white/40">
                 Tempo
               </span>
               <div className="flex items-center gap-1.5">
                 <div className={`relative flex items-center justify-center min-w-[50px] py-1.5 rounded-xl border border-white/10 overflow-hidden transition-all duration-300 ${
-                  timeLeft <= 8 && !isFinished 
+                  (timeLeft <= 8 || isPendingAudit) && !isFinished && !isConfirmed
                     ? 'bg-gradient-to-br from-red-600 to-red-900 border-red-500 shadow-[0_0_20px_rgba(239,68,68,0.5)]' 
+                    : isConfirmed
+                    ? 'bg-gradient-to-br from-green-600 to-green-900 border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.5)]'
                     : 'bg-gradient-to-br from-black/60 to-black/40 shadow-2xl'
                 }`}>
                   <span className={`text-2xl font-black tabular-nums tracking-tighter ${
-                    timeLeft <= 8 && !isFinished ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'text-white'
+                    (timeLeft <= 8 || isPendingAudit) && !isFinished && !isConfirmed ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'text-white'
                   }`}>
-                    {isFinished ? "00:00" : (
+                    {isFinished || isPendingAudit || isConfirmed ? "00:00" : (
+
                       <>
                         {timeLeft >= 3600 && (
                           <span className="text-lg mr-0.5">
@@ -576,14 +630,15 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
 
           <div className="flex flex-col overflow-hidden">
             <span className={`text-[9px] font-black uppercase tracking-widest transition-colors ${
-              isNewBid ? 'text-primary' : isFinished ? 'text-green-500' : 'text-white/30'
+              isNewBid ? 'text-primary' : (isFinished || isConfirmed) ? 'text-green-500' : isPendingAudit ? 'text-red-500' : 'text-white/30'
             }`}>
-              {isFinished ? "🏆 Vencedor" : (isScheduled || !auction.last_bidder?.username) && hasWinners ? "Últimos Ganhadores" : "Último Lance"}
+              {(isFinished || isConfirmed) ? "🏆 Vencedor" : isPendingAudit ? "🔍 Aguardando Auditoria" : (isScheduled || !auction.last_bidder?.username) && hasWinners ? "Últimos Ganhadores" : "Último Lance"}
             </span>
             <span className={`truncate text-sm font-bold transition-all ${
-              isNewBid ? 'text-primary scale-105 origin-left' : isFinished ? 'text-green-500' : 'text-white'
+              isNewBid ? 'text-primary scale-105 origin-left' : (isFinished || isConfirmed) ? 'text-green-500' : isPendingAudit ? 'text-red-400' : 'text-white'
             }`}>
               {auction.last_bidder?.username || ((isScheduled || !auction.last_bidder?.username) && currentWinner ? (
+
                 <span className="animate-in fade-in slide-in-from-right-4 duration-500">
                   {currentWinner.winner_name} levou {currentWinner.product_name}
                 </span>
@@ -601,12 +656,18 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         <Button 
           onClick={(e) => {
             e.stopPropagation();
-            handleBid();
+            if (isPendingAudit && isAdmin) {
+              handleConfirmWinner();
+            } else if (!isFinished && !isScheduled && !isPendingAudit && !isConfirmed) {
+              handleBid();
+            }
           }} 
-          disabled={isFinished || isScheduled || loading}
+          disabled={loading || (isFinished || isScheduled || isConfirmed || (isPendingAudit && !isAdmin))}
           className={`h-14 w-full rounded-2xl text-lg font-black uppercase italic tracking-tighter transition-all relative overflow-hidden group/bidbtn ${
-            isFinished 
+            isFinished || isConfirmed
               ? 'cursor-default border border-green-500/20 bg-green-500/10 text-green-500' 
+              : isPendingAudit
+              ? (isAdmin ? 'bg-primary text-primary-foreground shadow-[0_0_25px_rgba(var(--color-primary),0.5)] hover:scale-[1.02]' : 'cursor-default border border-red-500/20 bg-red-500/10 text-red-500 animate-pulse')
               : isScheduled
               ? 'cursor-not-allowed border border-white/10 bg-white/10 text-white/40'
               : timeLeft <= 5
@@ -615,21 +676,28 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           }`}
         >
           <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.2)_50%,transparent_75%)] bg-[length:250%_250%] animate-[shimmer_3s_infinite] group-hover/bidbtn:animate-[shimmer_1.5s_infinite]"></div>
-          {loading ? "..." : isFinished ? (
+          {loading ? "..." : isFinished || isConfirmed ? (
             <div className="flex flex-col items-center justify-center leading-tight gap-1">
               <span className="text-[10px] font-black uppercase tracking-widest text-green-500/80">
                 Arrematado por {auction.last_bidder?.username || "Ganhador"}
               </span>
               <span className="text-xs font-black italic text-white/60">
-                {auction.end_time ? format(new Date(auction.end_time), "dd/MM 'às' HH:mm", { locale: ptBR }) : "Finalizado"}
+                {isConfirmed ? "Ganhador Confirmado" : (auction.end_time ? format(new Date(auction.end_time), "dd/MM 'às' HH:mm", { locale: ptBR }) : "Finalizado")}
               </span>
             </div>
+          ) : isPendingAudit ? (
+            isAdmin ? (
+              <span className="flex items-center gap-2">
+                <ShieldCheck className="h-5 w-5" /> CONFIRMAR GANHADOR
+              </span>
+            ) : "AGUARDANDO AUDITORIA"
           ) : isScheduled ? "AGUARDANDO INÍCIO" : (
             <span className="flex items-center gap-2">
               {timeLeft <= 5 ? "VAI PERDER! LANCE AGORA" : "Dar Lance"} <Zap className={`h-5 w-5 fill-current ${timeLeft <= 5 ? 'animate-bounce' : ''}`} />
             </span>
           )}
         </Button>
+
         {!isFinished && (
           <p className="text-[9px] text-center text-white/20 uppercase tracking-[0.2em] font-bold mt-2 italic">
             {incentivePhrase.split(' ').slice(1).join(' ')}
