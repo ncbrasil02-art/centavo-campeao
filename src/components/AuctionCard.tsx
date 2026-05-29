@@ -270,11 +270,18 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   };
 
   const formatTimeParts = (seconds: number) => {
-    const s = Math.floor(seconds);
+    const d = Math.floor(seconds / (3600 * 24));
+    const h = Math.floor((seconds % (3600 * 24)) / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = Math.floor(seconds % 60);
     const ms = Math.floor((seconds % 1) * 100);
     return {
+      d: d.toString().padStart(2, '0'),
+      h: h.toString().padStart(2, '0'),
+      m: m.toString().padStart(2, '0'),
       s: s.toString().padStart(2, '0'),
-      ms: ms.toString().padStart(2, '0')
+      ms: ms.toString().padStart(2, '0'),
+      totalSeconds: seconds
     };
   };
 
@@ -312,16 +319,51 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.1)_0%,_transparent_70%)] animate-pulse"></div>
             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-black/90 mb-1 relative z-10">COMEÇA EM</span>
             <div className="flex flex-col items-center relative z-10">
-              <div className="flex gap-1 mb-2">
-                <div className="bg-black/80 rounded-lg px-3 py-2 min-w-[60px] flex items-center justify-center shadow-xl border border-white/10">
-                  <span className="text-3xl font-black text-primary tabular-nums tracking-tighter">
-                    {timeParts.s}
-                  </span>
+              <div className="flex gap-1 mb-1">
+                {timeLeft >= 3600 * 24 && (
+                  <div className="flex flex-col items-center">
+                    <div className="bg-black/80 rounded-lg px-2 py-1.5 min-w-[45px] flex items-center justify-center shadow-xl border border-white/10">
+                      <span className="text-xl font-black text-primary tabular-nums tracking-tighter">
+                        {timeParts.d}
+                      </span>
+                    </div>
+                    <span className="text-[7px] font-black text-black/60 mt-0.5">DIAS</span>
+                  </div>
+                )}
+                {timeLeft >= 3600 && (
+                  <div className="flex flex-col items-center">
+                    <div className="bg-black/80 rounded-lg px-2 py-1.5 min-w-[45px] flex items-center justify-center shadow-xl border border-white/10">
+                      <span className="text-xl font-black text-primary tabular-nums tracking-tighter">
+                        {timeParts.h}
+                      </span>
+                    </div>
+                    <span className="text-[7px] font-black text-black/60 mt-0.5">HORAS</span>
+                  </div>
+                )}
+                <div className="flex flex-col items-center">
+                  <div className="bg-black/80 rounded-lg px-2 py-1.5 min-w-[45px] flex items-center justify-center shadow-xl border border-white/10">
+                    <span className="text-xl font-black text-primary tabular-nums tracking-tighter">
+                      {timeParts.m}
+                    </span>
+                  </div>
+                  <span className="text-[7px] font-black text-black/60 mt-0.5">MIN</span>
                 </div>
-                <div className="bg-black/60 rounded-lg px-2 py-2 flex items-end shadow-xl border border-white/10">
-                  <span className="text-xl font-black text-primary/80 tabular-nums">
-                    ,{timeParts.ms}
-                  </span>
+                <div className="flex flex-col items-center">
+                  <div className="flex gap-0.5">
+                    <div className="bg-black/80 rounded-lg px-2 py-1.5 min-w-[45px] flex items-center justify-center shadow-xl border border-white/10">
+                      <span className="text-xl font-black text-primary tabular-nums tracking-tighter">
+                        {timeParts.s}
+                      </span>
+                    </div>
+                    {timeLeft < 60 && (
+                      <div className="bg-black/60 rounded-lg px-1.5 py-1.5 flex items-end shadow-xl border border-white/10">
+                        <span className="text-sm font-black text-primary/80 tabular-nums">
+                          ,{timeParts.ms}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <span className="text-[7px] font-black text-black/60 mt-0.5">SEG</span>
                 </div>
               </div>
               <div className="flex flex-col items-center gap-1">

@@ -347,15 +347,50 @@ function AuctionPage() {
                     <div className="bg-primary/70 backdrop-blur-md py-8 px-12 flex flex-col items-center justify-center shadow-[0_0_50px_rgba(var(--color-primary),0.3)] border-y border-white/20 rotate-[-2deg] scale-110">
                       <span className="text-sm font-black uppercase tracking-[0.4em] text-black/90 mb-3">COMEÇA EM</span>
                       <div className="flex gap-2">
-                        <div className="bg-black/90 rounded-xl px-5 py-3 min-w-[100px] flex items-center justify-center shadow-2xl border border-white/10">
-                          <span className="text-6xl font-black text-primary tabular-nums tracking-tighter">
-                            {Math.floor(timeLeft).toString().padStart(2, '0')}
-                          </span>
+                        {timeLeft >= 3600 * 24 && (
+                          <div className="flex flex-col items-center">
+                            <div className="bg-black/90 rounded-xl px-4 py-3 min-w-[70px] flex items-center justify-center shadow-2xl border border-white/10">
+                              <span className="text-4xl font-black text-primary tabular-nums tracking-tighter">
+                                {Math.floor(timeLeft / (3600 * 24)).toString().padStart(2, '0')}
+                              </span>
+                            </div>
+                            <span className="text-[10px] font-black text-black/60 mt-1">DIAS</span>
+                          </div>
+                        )}
+                        {timeLeft >= 3600 && (
+                          <div className="flex flex-col items-center">
+                            <div className="bg-black/90 rounded-xl px-4 py-3 min-w-[70px] flex items-center justify-center shadow-2xl border border-white/10">
+                              <span className="text-4xl font-black text-primary tabular-nums tracking-tighter">
+                                {Math.floor((timeLeft % (3600 * 24)) / 3600).toString().padStart(2, '0')}
+                              </span>
+                            </div>
+                            <span className="text-[10px] font-black text-black/60 mt-1">HORAS</span>
+                          </div>
+                        )}
+                        <div className="flex flex-col items-center">
+                          <div className="bg-black/90 rounded-xl px-4 py-3 min-w-[70px] flex items-center justify-center shadow-2xl border border-white/10">
+                            <span className="text-4xl font-black text-primary tabular-nums tracking-tighter">
+                              {Math.floor((timeLeft % 3600) / 60).toString().padStart(2, '0')}
+                            </span>
+                          </div>
+                          <span className="text-[10px] font-black text-black/60 mt-1">MIN</span>
                         </div>
-                        <div className="bg-black/70 rounded-xl px-3 py-3 flex items-end shadow-2xl border border-white/10">
-                          <span className="text-3xl font-black text-primary/80 tabular-nums">
-                            ,{Math.floor((timeLeft % 1) * 100).toString().padStart(2, '0')}
-                          </span>
+                        <div className="flex flex-col items-center">
+                          <div className="flex gap-1">
+                            <div className="bg-black/90 rounded-xl px-4 py-3 min-w-[70px] flex items-center justify-center shadow-2xl border border-white/10">
+                              <span className="text-4xl font-black text-primary tabular-nums tracking-tighter">
+                                {Math.floor(timeLeft % 60).toString().padStart(2, '0')}
+                              </span>
+                            </div>
+                            {timeLeft < 60 && (
+                              <div className="bg-black/70 rounded-xl px-2 py-3 flex items-end shadow-2xl border border-white/10">
+                                <span className="text-xl font-black text-primary/80 tabular-nums">
+                                  ,{Math.floor((timeLeft % 1) * 100).toString().padStart(2, '0')}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                          <span className="text-[10px] font-black text-black/60 mt-1">SEG</span>
                         </div>
                       </div>
                       <div className="mt-4 flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/20 border border-black/10">
