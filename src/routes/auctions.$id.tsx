@@ -43,6 +43,8 @@ function AuctionPage() {
   const confettiFired = useRef(false);
   const navigate = useNavigate();
   const { getAdjustedNow } = useTimeSync();
+  const { currentWinner, hasWinners } = useRecentWinners();
+
 
   const isFinished = auction?.status === 'finished';
   const isTimeUp = timeLeft <= 0 && !isFinished;
