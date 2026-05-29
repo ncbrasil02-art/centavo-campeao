@@ -267,8 +267,16 @@ function AdminAuctions() {
     }
   }
 
-  function handleEdit(auction: any) {
+  async function handleEdit(auction: any) {
     setEditingAuction(auction);
+    
+    // Fetch robot settings for this auction
+    const { data: robotSettings } = await supabase
+      .from("robot_settings")
+      .select("*")
+      .eq("auction_id", auction.id)
+      .maybeSingle();
+
     setFormData({
       product_id: auction.product_id,
       new_product_name: "",
@@ -282,7 +290,11 @@ function AdminAuctions() {
       robot_enabled: auction.robot_enabled,
       timer_duration: auction.timer_duration || 15,
       is_finalizing: auction.is_finalizing || false,
-      target_winner: auction.target_winner || "random"
+      target_winner: auction.target_winner || "random",
+      robot_min_delay: robotSettings?.min_delay || 1,
+      robot_max_delay: robotSettings?.max_delay || 5,
+      robot_bid_chance: robotSettings?.bid_chance ? parseFloat(robotSettings.bid_chance) : 0.3,
+      robot_active: robotSettings?.active ?? true
     });
     setIsDialogOpen(true);
   }
