@@ -41,6 +41,7 @@ export type Database = {
       auctions: {
         Row: {
           bid_count: number | null
+          confirmed_at: string | null
           created_at: string
           current_price: number | null
           end_time: string | null
@@ -56,6 +57,7 @@ export type Database = {
         }
         Insert: {
           bid_count?: number | null
+          confirmed_at?: string | null
           created_at?: string
           current_price?: number | null
           end_time?: string | null
@@ -71,6 +73,7 @@ export type Database = {
         }
         Update: {
           bid_count?: number | null
+          confirmed_at?: string | null
           created_at?: string
           current_price?: number | null
           end_time?: string | null
@@ -364,6 +367,7 @@ export type Database = {
           auction_id: string | null
           bid_chance: number | null
           created_at: string
+          dispute_duration_minutes: number | null
           id: string
           inner_dispute_enabled: boolean | null
           inner_dispute_end_at: string | null
@@ -376,6 +380,7 @@ export type Database = {
           auction_id?: string | null
           bid_chance?: number | null
           created_at?: string
+          dispute_duration_minutes?: number | null
           id?: string
           inner_dispute_enabled?: boolean | null
           inner_dispute_end_at?: string | null
@@ -388,6 +393,7 @@ export type Database = {
           auction_id?: string | null
           bid_chance?: number | null
           created_at?: string
+          dispute_duration_minutes?: number | null
           id?: string
           inner_dispute_enabled?: boolean | null
           inner_dispute_end_at?: string | null
@@ -651,6 +657,7 @@ export type Database = {
       v_home_live_auctions: {
         Row: {
           bid_count: number | null
+          confirmed_at: string | null
           current_price: number | null
           end_time: string | null
           id: string | null
@@ -709,6 +716,7 @@ export type Database = {
         Args: { p_external_id?: string; p_transaction_id: string }
         Returns: Json
       }
+      confirm_auction_winner: { Args: { p_auction_id: string }; Returns: Json }
       create_pending_payment: {
         Args: { p_method: string; p_package_id: string }
         Returns: Json
