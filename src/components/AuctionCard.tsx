@@ -50,6 +50,8 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const confettiFired = useRef(false);
   const { getAdjustedNow } = useTimeSync();
+  const { currentWinner, hasWinners } = useRecentWinners();
+
 
   const isFinished = timeLeft <= 0 || auction.status === 'finished';
   const isScheduled = auction.status === 'scheduled';
