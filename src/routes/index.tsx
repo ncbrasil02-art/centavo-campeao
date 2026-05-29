@@ -174,7 +174,7 @@ function Index() {
         .select("*")
         .eq("active", true)
         .order("created_at", { ascending: false })
-        .limit(6)
+        .limit(20)
     ]);
 
     if (!auctionsRes.error) setAuctions(auctionsRes.data || []);
