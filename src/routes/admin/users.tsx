@@ -89,7 +89,7 @@ function AdminUsersPage() {
     }
   };
 
-  const handleAddCredits = async (userId: string, currentBalance: number) => {
+  const handleAddCredits = async (userId: string) => {
     const amount = prompt("Quantos lances deseja adicionar?", "10");
     if (!amount) return;
 
@@ -99,13 +99,13 @@ function AdminUsersPage() {
       return;
     }
 
-    const { error } = await supabase
-      .from("profiles")
-      .update({ bid_balance: (currentBalance || 0) + numAmount })
-      .eq("id", userId);
+    const { data, error } = await supabase.rpc('increment_bid_balance', {
+      p_user_id: userId,
+      p_amount: numAmount
+    });
 
-    if (error) {
-      toast.error("Erro ao adicionar créditos");
+    if (error || (data && !(data as any).success)) {
+      toast.error((data as any)?.message || "Erro ao adicionar créditos");
     } else {
       // Record transaction
       await supabase.from("transactions").insert({
@@ -220,7 +220,7 @@ function AdminUsersPage() {
                         <DropdownMenuContent align="end" className="bg-[#1a1a1a] border-white/10 text-white w-48">
                           <DropdownMenuLabel>Ações</DropdownMenuLabel>
                           <DropdownMenuSeparator className="bg-white/10" />
-                          <DropdownMenuItem onClick={() => handleAddCredits(u.id, u.bid_balance)} className="hover:bg-primary/20 hover:text-primary cursor-pointer">
+                          <DropdownMenuItem onClick={() => handleAddCredits(u.id)} className="hover:bg-primary/20 hover:text-primary cursor-pointer">
                             <Wallet className="w-4 h-4 mr-2" /> Adicionar Lances
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => handleUpdateRole(u.id, 'is_bot', !u.is_bot)} className="hover:bg-primary/20 hover:text-primary cursor-pointer">
