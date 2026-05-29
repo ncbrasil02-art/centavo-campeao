@@ -399,14 +399,14 @@ export type Database = {
           {
             foreignKeyName: "robot_settings_auction_id_fkey"
             columns: ["auction_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "auctions"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "robot_settings_auction_id_fkey"
             columns: ["auction_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "v_home_live_auctions"
             referencedColumns: ["id"]
           },
