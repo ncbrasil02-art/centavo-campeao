@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { Navbar } from "@/components/Navbar";
-import { AdminSubNavbar } from "@/components/AdminSubNavbar";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -148,8 +146,6 @@ function AdminRobotsPage() {
 
   return (
     <div className="min-h-screen bg-background text-white">
-      <Navbar />
-      <AdminSubNavbar />
       
       <main className="container mx-auto px-4 py-12">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">

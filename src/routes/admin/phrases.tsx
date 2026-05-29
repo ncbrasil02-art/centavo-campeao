@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { Navbar } from "@/components/Navbar";
-import { AdminSubNavbar } from "@/components/AdminSubNavbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -148,8 +146,6 @@ function AdminPhrases() {
 
   return (
     <div className="min-h-screen bg-background text-white">
-      <Navbar />
-      <AdminSubNavbar />
       
       <main className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
