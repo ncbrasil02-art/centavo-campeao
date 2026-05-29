@@ -32,6 +32,7 @@ export function Navbar() {
       setUser(session?.user ?? null);
       if (session?.user) {
         fetchProfile(session.user.id);
+        subscribeToProfile(session.user.id);
       }
     });
 
@@ -39,6 +40,7 @@ export function Navbar() {
       setUser(session?.user ?? null);
       if (session?.user) {
         fetchProfile(session.user.id);
+        subscribeToProfile(session.user.id);
       } else {
         setProfile(null);
       }
@@ -46,6 +48,29 @@ export function Navbar() {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  function subscribeToProfile(userId: string) {
+    const channel = supabase
+      .channel(`profile_changes_${userId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'profiles',
+          filter: `id=eq.${userId}`
+        },
+        (payload) => {
+          console.log('Profile update received:', payload.new);
+          setProfile(payload.new);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }
 
   async function fetchProfile(userId: string) {
     const { data } = await supabase
