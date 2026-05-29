@@ -344,6 +344,15 @@ function Index() {
             </section>
           )}
 
+          <SecondaryBanner 
+            title="Sua chance de ter um iPhone 15 Pro" 
+            subtitle="Leilões diários de smartphones premium. Participe das disputas em tempo real e economize até 90%."
+            imageUrl="https://images.unsplash.com/photo-1696446701796-da61225697cc?auto=format&fit=crop&q=80&w=2000"
+            linkUrl="/auctions"
+            reverse
+          />
+
+
           {/* Testimonials Section */}
           <section className="py-24 bg-zinc-950/40 relative overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
