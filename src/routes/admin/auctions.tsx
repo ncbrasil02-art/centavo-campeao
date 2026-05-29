@@ -293,7 +293,7 @@ function AdminAuctions() {
       target_winner: auction.target_winner || "random",
       robot_min_delay: robotSettings?.min_delay || 1,
       robot_max_delay: robotSettings?.max_delay || 5,
-      robot_bid_chance: robotSettings?.bid_chance ? parseFloat(robotSettings.bid_chance) : 0.3,
+      robot_bid_chance: typeof robotSettings?.bid_chance === 'string' ? parseFloat(robotSettings.bid_chance) : (robotSettings?.bid_chance || 0.3),
       robot_active: robotSettings?.active ?? true
     });
     setIsDialogOpen(true);
