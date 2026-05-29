@@ -512,10 +512,12 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           </div>
           <div className="flex flex-col overflow-hidden">
             <span className={`text-[9px] font-black uppercase tracking-widest transition-colors ${
-              isNewBid ? 'text-primary' : 'text-white/30'
-            }`}>Último Lance</span>
+              isNewBid ? 'text-primary' : isFinished ? 'text-green-500' : 'text-white/30'
+            }`}>
+              {isFinished ? "🏆 Vencedor" : "Último Lance"}
+            </span>
             <span className={`truncate text-sm font-bold transition-all ${
-              isNewBid ? 'text-primary scale-105 origin-left' : 'text-white'
+              isNewBid ? 'text-primary scale-105 origin-left' : isFinished ? 'text-green-500' : 'text-white'
             }`}>
               {auction.last_bidder?.username || "Aguardando..."}
             </span>
