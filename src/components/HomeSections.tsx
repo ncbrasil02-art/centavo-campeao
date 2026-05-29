@@ -1,19 +1,21 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link } from "@tanstack/react-router";
 import { useTimeSync } from "@/hooks/useTimeSync";
+import { useSettings } from "@/hooks/useSettings";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { Users, Star, Trophy, ArrowRight, Play, Clock, Sparkles, ChevronLeft, ChevronRight, Gavel } from "lucide-react";
+import { Users, Star, Trophy, ArrowRight, Play, Clock, Sparkles, ChevronLeft, ChevronRight, Gavel, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 
 export function Hero() {
   const { getAdjustedNow } = useTimeSync();
+  const { hero_display_mode } = useSettings();
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
 
   useEffect(() => {
@@ -125,7 +127,7 @@ export function Hero() {
     }
   }
 
-  if (!loading && banners.length > 0) {
+  if (!loading && hero_display_mode === 'banners' && banners.length > 0) {
     return (
       <section className="relative w-full overflow-hidden bg-background">
         <div className="embla" ref={emblaRef}>

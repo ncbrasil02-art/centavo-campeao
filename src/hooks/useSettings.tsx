@@ -9,6 +9,7 @@ interface SiteSettings {
   mercado_pago_public_key: string;
   pix_key: string;
   pix_name: string;
+  hero_display_mode: 'phrases' | 'banners';
 }
 
 const SettingsContext = createContext<SiteSettings | null>(null);
@@ -22,6 +23,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     mercado_pago_public_key: "",
     pix_key: "",
     pix_name: "",
+    hero_display_mode: 'phrases',
   });
 
   useEffect(() => {
@@ -40,6 +42,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
           mercado_pago_public_key: data.mercado_pago_public_key || "",
           pix_key: data.pix_key || "",
           pix_name: data.pix_name || "",
+          hero_display_mode: (data.hero_display_mode as any) || 'phrases',
         });
 
         // Apply colors to document
@@ -66,6 +69,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
             logo_url: newData.logo_url || prev.logo_url,
             primary_color: newData.primary_color || prev.primary_color,
             secondary_color: newData.secondary_color || prev.secondary_color,
+            hero_display_mode: newData.hero_display_mode || prev.hero_display_mode,
           }));
           
           if (newData.primary_color) {
@@ -104,6 +108,7 @@ export const useSettings = () => {
       mercado_pago_public_key: "",
       pix_key: "",
       pix_name: "",
+      hero_display_mode: 'phrases',
     };
   }
   return context;
