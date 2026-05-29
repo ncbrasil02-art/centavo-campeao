@@ -250,6 +250,14 @@ function Index() {
               )}
             </div>
           </section>
+          
+          <SecondaryBanner 
+            title="Pacote de Lances com 50% de Desconto" 
+            subtitle="Comece com o pé direito! Adquira seu primeiro pacote de lances agora e ganhe o dobro para disputar seus produtos favoritos."
+            imageUrl="https://images.unsplash.com/photo-1553729459-efe14ef6055d?q=80&w=2000&auto=format&fit=crop"
+            linkUrl="/packages"
+          />
+
 
 
           {/* How it Works Section */}
