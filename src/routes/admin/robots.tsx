@@ -22,7 +22,6 @@ function AdminRobotsPage() {
   const [loading, setLoading] = useState(true);
   
   const [automationActive, setAutomationActive] = useState(false);
-  const automationRef = useRef<boolean>(false);
   const navigate = useNavigate();
   const { getAdjustedNow } = useTimeSync();
 
@@ -68,33 +67,8 @@ function AdminRobotsPage() {
     setLoading(false);
   }
 
-  async function runAutomation() {
-    if (!automationRef.current) return;
-    
-    for (const auction of auctions) {
-      // Handle both array and object formats
-      const settings = Array.isArray(auction.robot_settings) 
-        ? auction.robot_settings[0] 
-        : auction.robot_settings;
-        
-      if (!settings?.active) continue;
-
-      const end = new Date(auction.end_time).getTime();
-      const now = getAdjustedNow();
-      const diff = Math.max(0, Math.ceil((end - now) / 1000));
-
-      let bidChance = 0.1; 
-      if (diff < 10) bidChance = 0.4;
-      if (diff < 5) bidChance = 0.8;
-
-      if (Math.random() < bidChance) {
-        const randomRobot = robots[Math.floor(Math.random() * robots.length)];
-        if (randomRobot && auction.last_bidder_id !== randomRobot.id) {
-          triggerRobotBid(auction.id, randomRobot.id);
-        }
-      }
-    }
-  }
+  // Server-side automation is handled by the Heartbeat component
+  // which calls process_robot_bids() every second.
 
   const triggerRobotBid = async (auctionId: string, robotId: string) => {
     await supabase.rpc('place_robot_bid', {
@@ -188,13 +162,6 @@ function AdminRobotsPage() {
           </div>
           
           <div className="flex gap-4">
-            <Button 
-              onClick={() => setAutomationActive(!automationActive)}
-              variant={automationActive ? "destructive" : "default"}
-              className={`font-bold ${!automationActive ? 'bg-green-600 hover:bg-green-500 shadow-[0_0_20px_rgba(22,163,74,0.4)]' : ''}`}
-            >
-              {automationActive ? <><StopCircle className="w-4 h-4 mr-2" /> PARAR AUTOMAÇÃO</> : <><PlayCircle className="w-4 h-4 mr-2" /> INICIAR AUTOMAÇÃO</>}
-            </Button>
             <Button variant="outline" className="border-white/10 hover:bg-white/5" asChild>
               <Link to="/"><LayoutDashboard className="w-4 h-4 mr-2" /> Dashboard</Link>
             </Button>
