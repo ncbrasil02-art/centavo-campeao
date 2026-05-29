@@ -25,17 +25,27 @@ function AdminSales() {
   const [sales, setSales] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(1);
+  const salesPerPage = 20;
 
   useEffect(() => {
     fetchSales();
-  }, []);
+  }, [page, searchTerm]);
 
   async function fetchSales() {
+    setLoading(true);
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from("transactions")
-        .select("*, profile:profiles(full_name, username), package:bid_packages(name)")
-        .order("created_at", { ascending: false });
+        .select("*, profile:profiles(full_name, username), package:bid_packages(name)", { count: 'exact' });
+
+      if (searchTerm) {
+        query = query.or(`description.ilike.%${searchTerm}%,id.ilike.%${searchTerm}%`);
+      }
+
+      const { data, error } = await query
+        .order("created_at", { ascending: false })
+        .range((page - 1) * salesPerPage, page * salesPerPage - 1);
 
       if (error) throw error;
       setSales(data || []);
@@ -46,6 +56,7 @@ function AdminSales() {
       setLoading(false);
     }
   }
+
 
   async function updateStatus(id: string, status: string) {
     try {
