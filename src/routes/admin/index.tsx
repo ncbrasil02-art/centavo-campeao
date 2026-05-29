@@ -72,9 +72,11 @@ function AdminDashboard() {
       ] = await Promise.all([
         supabase.from("profiles").select("*", { count: 'exact', head: true }),
         supabase.from("auctions").select("*", { count: 'exact', head: true }).eq("status", "live"),
-        supabase.from("transactions").select("amount").eq("status", "completed"),
+        // Optimized: just get the sum if possible, or limit the number of records
+        supabase.from("transactions").select("amount").eq("status", "completed").limit(1000),
         supabase.from("bids").select("*", { count: 'exact', head: true })
       ]);
+
 
       const revenue = (revenueData || []).reduce((acc, curr) => acc + Number(curr.amount), 0);
 
