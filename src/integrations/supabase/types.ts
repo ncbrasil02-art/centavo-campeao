@@ -93,6 +93,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "auctions_last_bidder_id_fkey"
+            columns: ["last_bidder_id"]
+            isOneToOne: false
+            referencedRelation: "v_user_ranking"
+            referencedColumns: ["user_id"]
+          },
+          {
             foreignKeyName: "auctions_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
@@ -211,6 +218,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "bids_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_user_ranking"
+            referencedColumns: ["user_id"]
+          },
         ]
       }
       chat_messages: {
@@ -256,6 +270,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_messages_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_user_ranking"
+            referencedColumns: ["user_id"]
           },
         ]
       }
@@ -533,6 +554,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "transactions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_user_ranking"
+            referencedColumns: ["user_id"]
+          },
         ]
       }
       winners: {
@@ -582,6 +610,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "winners_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_user_ranking"
+            referencedColumns: ["user_id"]
+          },
         ]
       }
     }
@@ -620,6 +655,18 @@ export type Database = {
           id: string | null
           profile: Json | null
           savings_percentage: number | null
+        }
+        Relationships: []
+      }
+      v_user_ranking: {
+        Row: {
+          avatar_url: string | null
+          avg_savings: number | null
+          full_name: string | null
+          total_savings_sum: number | null
+          total_wins: number | null
+          user_id: string | null
+          username: string | null
         }
         Relationships: []
       }
