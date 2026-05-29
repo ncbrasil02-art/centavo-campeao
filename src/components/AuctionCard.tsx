@@ -52,14 +52,18 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   const confettiFired = useRef(false);
   const { getAdjustedNow } = useTimeSync();
   const { currentWinner, hasWinners } = useRecentWinners();
+  const [isAdmin, setIsAdmin] = useState(false);
 
-
-  const isFinished = timeLeft <= 0 || auction.status === 'finished';
+  const isFinished = auction.status === 'finished';
   const isScheduled = auction.status === 'scheduled';
+  const isPendingAudit = auction.status === 'pending_audit';
+  const isConfirmed = auction.status === 'confirmed';
   const isFinalizing = auction.is_finalizing;
+  
   const discount = auction.product?.market_value 
     ? Math.round((1 - (auction.current_price / auction.product.market_value)) * 100)
     : 0;
+
 
   useEffect(() => {
     async function loadIncentives() {
