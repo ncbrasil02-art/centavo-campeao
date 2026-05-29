@@ -23,7 +23,7 @@ export function Navbar() {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date(getAdjustedNow()));
-    }, 100); // 100ms is enough for the clock display
+    }, 1000); // 1000ms is enough for the clock display
     return () => clearInterval(timer);
   }, [getAdjustedNow]);
 

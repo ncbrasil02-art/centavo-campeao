@@ -11,7 +11,7 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Wallet, Search, Filter, Download, CheckCircle, XCircle, Clock } from "lucide-react";
+import { Wallet, Search, Filter, Download, CheckCircle, XCircle, Clock, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { format } from "date-fns";
@@ -25,17 +25,27 @@ function AdminSales() {
   const [sales, setSales] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(1);
+  const salesPerPage = 20;
 
   useEffect(() => {
     fetchSales();
-  }, []);
+  }, [page, searchTerm]);
 
   async function fetchSales() {
+    setLoading(true);
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from("transactions")
-        .select("*, profile:profiles(full_name, username), package:bid_packages(name)")
-        .order("created_at", { ascending: false });
+        .select("*, profile:profiles(full_name, username), package:bid_packages(name)", { count: 'exact' });
+
+      if (searchTerm) {
+        query = query.or(`description.ilike.%${searchTerm}%,id.ilike.%${searchTerm}%`);
+      }
+
+      const { data, error } = await query
+        .order("created_at", { ascending: false })
+        .range((page - 1) * salesPerPage, page * salesPerPage - 1);
 
       if (error) throw error;
       setSales(data || []);
@@ -46,6 +56,7 @@ function AdminSales() {
       setLoading(false);
     }
   }
+
 
   async function updateStatus(id: string, status: string) {
     try {
@@ -71,11 +82,8 @@ function AdminSales() {
     }
   }
 
-  const filteredSales = sales.filter(sale => 
-    sale.profile?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    sale.profile?.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    sale.id.includes(searchTerm)
-  );
+  const filteredSales = sales;
+
 
   return (
     <div className="min-h-screen bg-background text-white">
@@ -173,7 +181,31 @@ function AdminSales() {
               )}
             </TableBody>
           </Table>
+          <div className="p-4 border-t border-white/5 bg-white/5 flex items-center justify-between">
+            <span className="text-xs text-white/40">Página {page}</span>
+            <div className="flex gap-2">
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="h-8 w-8 border-white/10 bg-white/5" 
+                disabled={page === 1}
+                onClick={() => setPage(p => p - 1)}
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </Button>
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="h-8 w-8 border-white/10 bg-white/5" 
+                onClick={() => setPage(p => p + 1)}
+                disabled={sales.length < salesPerPage}
+              >
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
         </Card>
+
       </main>
     </div>
   );

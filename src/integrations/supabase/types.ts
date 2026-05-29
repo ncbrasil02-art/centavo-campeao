@@ -721,6 +721,7 @@ export type Database = {
         Args: { p_method: string; p_package_id: string }
         Returns: Json
       }
+      ensure_live_auctions_robot_settings: { Args: never; Returns: undefined }
       get_server_time: { Args: never; Returns: string }
       is_admin: { Args: never; Returns: boolean }
       place_bid:

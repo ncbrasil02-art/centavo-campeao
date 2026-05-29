@@ -11,7 +11,7 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Plus, Gavel, Calendar, Clock, Edit, Trash2, CheckCircle, XCircle, Power, Upload, Loader2, Image as ImageIcon } from "lucide-react";
+import { Plus, Gavel, Calendar, Clock, Edit, Trash2, CheckCircle, XCircle, Power, Upload, Loader2, Image as ImageIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { 
   Dialog, 
@@ -45,6 +45,9 @@ function AdminAuctions() {
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingAuction, setEditingAuction] = useState<any>(null);
+  const [page, setPage] = useState(1);
+  const auctionsPerPage = 10;
+
   
   const [uploading, setUploading] = useState(false);
   
@@ -72,14 +75,17 @@ function AdminAuctions() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [page]);
+
 
   async function fetchData() {
+    setLoading(true);
     try {
       const [auctionsRes, productsRes] = await Promise.all([
-        supabase.from("auctions").select("*, product:products(*)").order("created_at", { ascending: false }),
-        supabase.from("products").select("*")
+        supabase.from("auctions").select("*, product:products(*)", { count: 'exact' }).order("created_at", { ascending: false }).range((page - 1) * auctionsPerPage, page * auctionsPerPage - 1),
+        supabase.from("products").select("*").limit(100)
       ]);
+
 
       if (auctionsRes.error) throw auctionsRes.error;
       if (productsRes.error) throw productsRes.error;
@@ -663,7 +669,31 @@ function AdminAuctions() {
               )}
             </TableBody>
           </Table>
+          <div className="p-4 border-t border-white/5 bg-white/5 flex items-center justify-between">
+            <span className="text-xs text-white/40">Página {page}</span>
+            <div className="flex gap-2">
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="h-8 w-8 border-white/10 bg-white/5" 
+                disabled={page === 1}
+                onClick={() => setPage(p => p - 1)}
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </Button>
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="h-8 w-8 border-white/10 bg-white/5" 
+                onClick={() => setPage(p => p + 1)}
+                disabled={auctions.length < auctionsPerPage}
+              >
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
         </Card>
+
       </main>
     </div>
   );
