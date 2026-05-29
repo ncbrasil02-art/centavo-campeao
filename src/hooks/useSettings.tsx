@@ -92,7 +92,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
 
   const injectScripts = (ga_id?: string, fb_pixel_id?: string) => {
     // Google Analytics
-    if (ga_id && !document.getElementById('ga-script')) {
+    if (ga_id && !document.getElementById('ga-script-1')) {
       const script1 = document.createElement('script');
       script1.id = 'ga-script-1';
       script1.async = true;
@@ -193,6 +193,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
               google_site_verification: newData.google_site_verification || prev.google_site_verification,
             };
             updateMetaTags(updated);
+            injectScripts(updated.ga_id, updated.fb_pixel_id);
             return updated;
           });
           
