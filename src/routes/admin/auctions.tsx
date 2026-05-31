@@ -217,8 +217,9 @@ function AdminAuctions() {
           .from("auctions")
           .insert([{ 
             ...payload,
-            current_price: 0.01,
+            current_price: 0.00,
             bid_count: 0
+
           }])
           .select()
           .single();
