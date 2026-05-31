@@ -172,15 +172,16 @@ export function FloatingControls() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsOpen(!isOpen)}
-          className={`flex h-12 w-12 items-center justify-center rounded-full shadow-2xl transition-all ${isOpen ? 'bg-primary text-primary-foreground' : 'bg-zinc-900 border border-white/10 text-primary'}`}
+          className={`flex h-12 w-12 items-center justify-center rounded-full shadow-2xl transition-all ${isOpen ? 'bg-primary text-primary-foreground' : 'bg-zinc-900/80 border border-white/10 text-primary backdrop-blur-md opacity-70 hover:opacity-100'}`}
         >
           {isOpen ? <X className="h-6 w-6" /> : <Settings2 className="h-6 w-6" />}
           {!isOpen && (
-            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[8px] font-black text-white">
+            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[8px] font-black text-white animate-pulse">
               !
             </span>
           )}
         </motion.button>
+
       </motion.div>
     </div>
   );
