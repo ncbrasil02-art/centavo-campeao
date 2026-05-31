@@ -53,6 +53,8 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   const { getAdjustedNow } = useTimeSync();
   const { currentWinner, hasWinners } = useRecentWinners();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
 
   const isFinished = auction.status === 'finished';
   const isScheduled = auction.status === 'scheduled';
@@ -66,9 +68,10 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
 
 
   useEffect(() => {
-    async function checkAdmin() {
+    async function checkUser() {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
+        setCurrentUserId(session.user.id);
         const { data } = await supabase
           .from("profiles")
           .select("is_admin")
@@ -77,8 +80,9 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         setIsAdmin(!!data?.is_admin);
       }
     }
-    checkAdmin();
+    checkUser();
   }, []);
+
 
   useEffect(() => {
     async function loadIncentives() {
@@ -128,12 +132,38 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
 
   // Play sound when auction updates (e.g. real-time bid from others)
   const lastPriceRef = useRef<number>(auction.current_price);
+  const lastBidderIdRef = useRef<string | null>(auction.last_bidder?.id || null);
+
+  const playSurpassedSound = useCallback(() => {
+    const isEnabled = localStorage.getItem("auction_sound_enabled") !== "false";
+    if (!isEnabled) return;
+
+    const soundId = localStorage.getItem("auction_surpassed_sound") || "default";
+    const soundUrls: Record<string, string> = {
+      "default": "https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3",
+      "alert-1": "https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3",
+      "alert-2": "https://assets.mixkit.co/active_storage/sfx/2566/2566-preview.mp3",
+      "alert-3": "https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3"
+    };
+
+    const audio = new Audio(soundUrls[soundId]);
+    audio.play().catch(err => console.error("Error playing surpassed sound:", err));
+  }, []);
+
   useEffect(() => {
     if (mounted && auction.current_price > lastPriceRef.current) {
-      playBidSound();
+      // Someone bid. Check if I was the previous last bidder and now I'm not.
+      if (currentUserId && lastBidderIdRef.current === currentUserId && auction.last_bidder?.id !== currentUserId) {
+        playSurpassedSound();
+      } else {
+        playBidSound();
+      }
     }
     lastPriceRef.current = auction.current_price;
-  }, [auction.current_price, playBidSound, mounted]);
+    lastBidderIdRef.current = auction.last_bidder?.id;
+  }, [auction.current_price, auction.last_bidder?.id, playBidSound, playSurpassedSound, mounted, currentUserId]);
+
+
 
   useEffect(() => {
     setAuction(initialAuction);
