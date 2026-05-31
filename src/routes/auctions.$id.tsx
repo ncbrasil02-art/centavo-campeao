@@ -44,6 +44,14 @@ function AuctionPage() {
   const navigate = useNavigate();
   const { getAdjustedNow } = useTimeSync();
   const { currentWinner, hasWinners } = useRecentWinners();
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) setCurrentUserId(session.user.id);
+    });
+  }, []);
+
 
 
   const isFinished = auction?.status === 'finished';
