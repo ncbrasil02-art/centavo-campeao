@@ -53,6 +53,8 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   const { getAdjustedNow } = useTimeSync();
   const { currentWinner, hasWinners } = useRecentWinners();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
 
   const isFinished = auction.status === 'finished';
   const isScheduled = auction.status === 'scheduled';
