@@ -636,7 +636,7 @@ function AuctionPage() {
                   <Button 
                     onClick={handleBid}
                     disabled={isFinished || bidLoading}
-                    className={`w-full h-24 text-3xl font-black uppercase italic tracking-tighter transition-all rounded-[32px] group/btn relative overflow-hidden ${
+                    className={`w-full h-24 text-xl font-black uppercase italic tracking-tighter transition-all rounded-[32px] group/btn relative overflow-hidden ${
                       isFinished 
                         ? 'bg-green-500/10 text-green-500 border border-green-500/20 cursor-default' 
                         : timeLeft <= 5

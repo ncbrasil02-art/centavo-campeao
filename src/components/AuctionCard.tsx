@@ -632,7 +632,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             <span className={`text-[9px] font-black uppercase tracking-widest transition-colors ${
               isNewBid ? 'text-primary' : (isFinished || isConfirmed) ? 'text-green-500' : isPendingAudit ? 'text-red-500' : 'text-white/30'
             }`}>
-              {(isFinished || isConfirmed) ? "🏆 Vencedor" : isPendingAudit ? "🔍 Aguardando Auditoria" : (isScheduled || !auction.last_bidder?.username) && hasWinners ? "Últimos Ganhadores" : "Último Lance"}
+              {(isFinished || isConfirmed) ? "🏆 Vencedor" : isPendingAudit ? "🔍 Em Auditoria" : (isScheduled || !auction.last_bidder?.username) && hasWinners ? "Últimos Ganhadores" : "Último Lance"}
             </span>
             <span className={`truncate text-sm font-bold transition-all ${
               isNewBid ? 'text-primary scale-105 origin-left' : (isFinished || isConfirmed) ? 'text-green-500' : isPendingAudit ? 'text-red-400' : 'text-white'
@@ -663,7 +663,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             }
           }} 
           disabled={loading || (isFinished || isScheduled || isConfirmed || (isPendingAudit && !isAdmin))}
-          className={`h-14 w-full rounded-2xl text-lg font-black uppercase italic tracking-tighter transition-all relative overflow-hidden group/bidbtn ${
+          className={`h-14 w-full rounded-2xl text-base font-black uppercase italic tracking-tighter transition-all relative overflow-hidden group/bidbtn ${
             isFinished || isConfirmed
               ? 'cursor-default border border-green-500/20 bg-green-500/10 text-green-500' 
               : isPendingAudit
@@ -688,9 +688,9 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           ) : isPendingAudit ? (
             isAdmin ? (
               <span className="flex items-center gap-2">
-                <ShieldCheck className="h-5 w-5" /> CONFIRMAR GANHADOR
+                <ShieldCheck className="h-5 w-5" /> EM AUDITORIA
               </span>
-            ) : "AGUARDANDO AUDITORIA"
+            ) : "EM AUDITORIA"
           ) : isScheduled ? "AGUARDANDO INÍCIO" : (
             <span className="flex items-center gap-2">
               {timeLeft <= 5 ? "VAI PERDER! LANCE AGORA" : "Dar Lance"} <Zap className={`h-5 w-5 fill-current ${timeLeft <= 5 ? 'animate-bounce' : ''}`} />
