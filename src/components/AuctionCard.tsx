@@ -663,7 +663,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             }
           }} 
           disabled={loading || (isFinished || isScheduled || isConfirmed || (isPendingAudit && !isAdmin))}
-          className={`h-14 w-full rounded-2xl text-lg font-black uppercase italic tracking-tighter transition-all relative overflow-hidden group/bidbtn ${
+          className={`h-14 w-full rounded-2xl text-base font-black uppercase italic tracking-tighter transition-all relative overflow-hidden group/bidbtn ${
             isFinished || isConfirmed
               ? 'cursor-default border border-green-500/20 bg-green-500/10 text-green-500' 
               : isPendingAudit
@@ -688,7 +688,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           ) : isPendingAudit ? (
             isAdmin ? (
               <span className="flex items-center gap-2">
-                <ShieldCheck className="h-5 w-5" /> CONFIRMAR GANHADOR
+                <ShieldCheck className="h-5 w-5" /> EM AUDITORIA
               </span>
             ) : "AGUARDANDO AUDITORIA"
           ) : isScheduled ? "AGUARDANDO INÍCIO" : (

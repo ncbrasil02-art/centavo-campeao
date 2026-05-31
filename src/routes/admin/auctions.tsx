@@ -685,7 +685,7 @@ function AdminAuctions() {
                             className="bg-green-600 hover:bg-green-500 text-white font-bold h-8"
                             onClick={() => handleConfirmWinner(auction.id)}
                           >
-                            <CheckCircle className="w-4 h-4 mr-2" /> Confirmar Ganhador
+                            <CheckCircle className="w-4 h-4 mr-2" /> Em Auditoria
                           </Button>
                         )}
                         {auction.status === 'live' && (
