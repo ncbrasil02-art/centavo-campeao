@@ -153,7 +153,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   useEffect(() => {
     if (mounted && auction.current_price > lastPriceRef.current) {
       // Someone bid. Check if I was the previous last bidder and now I'm not.
-      if (currentUserId && lastBidderIdRef.current === currentUserId && auction.last_bidder_id !== currentUserId) {
+      if (currentUserId && lastBidderIdRef.current === currentUserId && auction.last_bidder?.id !== currentUserId) {
         playSurpassedSound();
       } else {
         playBidSound();
