@@ -758,7 +758,7 @@ function StatusBadge({ status, isFinalizing, targetWinner }: { status: string, i
   const labels = {
     scheduled: "Agendado",
     live: `Ativo (${targetWinner === 'robot' ? 'Robô' : targetWinner === 'user' ? 'Usuário' : 'Aleatório'})`,
-    pending_audit: "Auditando",
+    pending_audit: "Em Auditoria",
     confirmed: "Confirmado",
     finished: "Finalizado",
     cancelled: "Cancelado",
