@@ -632,7 +632,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             <span className={`text-[9px] font-black uppercase tracking-widest transition-colors ${
               isNewBid ? 'text-primary' : (isFinished || isConfirmed) ? 'text-green-500' : isPendingAudit ? 'text-red-500' : 'text-white/30'
             }`}>
-              {(isFinished || isConfirmed) ? "🏆 Vencedor" : isPendingAudit ? "🔍 Aguardando Auditoria" : (isScheduled || !auction.last_bidder?.username) && hasWinners ? "Últimos Ganhadores" : "Último Lance"}
+              {(isFinished || isConfirmed) ? "🏆 Vencedor" : isPendingAudit ? "🔍 Em Auditoria" : (isScheduled || !auction.last_bidder?.username) && hasWinners ? "Últimos Ganhadores" : "Último Lance"}
             </span>
             <span className={`truncate text-sm font-bold transition-all ${
               isNewBid ? 'text-primary scale-105 origin-left' : (isFinished || isConfirmed) ? 'text-green-500' : isPendingAudit ? 'text-red-400' : 'text-white'
