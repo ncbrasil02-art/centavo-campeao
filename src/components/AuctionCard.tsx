@@ -160,8 +160,9 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       }
     }
     lastPriceRef.current = auction.current_price;
-    lastBidderIdRef.current = auction.last_bidder_id;
-  }, [auction.current_price, auction.last_bidder_id, playBidSound, playSurpassedSound, mounted, currentUserId]);
+    lastBidderIdRef.current = auction.last_bidder?.id;
+  }, [auction.current_price, auction.last_bidder?.id, playBidSound, playSurpassedSound, mounted, currentUserId]);
+
 
 
   useEffect(() => {
