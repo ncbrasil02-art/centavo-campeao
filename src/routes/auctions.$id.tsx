@@ -124,6 +124,7 @@ function AuctionPage() {
         { event: 'UPDATE', schema: 'public', table: 'auctions', filter: `id=eq.${id}` },
         (payload) => {
           setAuction((prev: any) => ({ ...prev, ...payload.new }));
+
           setIsNewBid(true);
           setTimeout(() => setIsNewBid(false), 500);
           fetchBids(); // Refresh history on new bid
