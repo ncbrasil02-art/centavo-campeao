@@ -132,7 +132,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
 
   // Play sound when auction updates (e.g. real-time bid from others)
   const lastPriceRef = useRef<number>(auction.current_price);
-  const lastBidderIdRef = useRef<string | null>(auction.last_bidder_id || null);
+  const lastBidderIdRef = useRef<string | null>(auction.last_bidder?.id || null);
 
   const playSurpassedSound = useCallback(() => {
     const isEnabled = localStorage.getItem("auction_sound_enabled") !== "false";
