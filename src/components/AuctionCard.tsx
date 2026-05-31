@@ -68,9 +68,10 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
 
 
   useEffect(() => {
-    async function checkAdmin() {
+    async function checkUser() {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
+        setCurrentUserId(session.user.id);
         const { data } = await supabase
           .from("profiles")
           .select("is_admin")
@@ -79,8 +80,9 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         setIsAdmin(!!data?.is_admin);
       }
     }
-    checkAdmin();
+    checkUser();
   }, []);
+
 
   useEffect(() => {
     async function loadIncentives() {
