@@ -464,9 +464,11 @@ export type Database = {
           font_color_primary: string | null
           font_color_secondary: string | null
           ga_id: string | null
+          google_reviews_widget: string | null
           google_site_verification: string | null
           hero_display_mode: string | null
           id: string
+          logo_height: number | null
           logo_url: string | null
           mercado_pago_access_token: string | null
           mercado_pago_public_key: string | null
@@ -491,9 +493,11 @@ export type Database = {
           font_color_primary?: string | null
           font_color_secondary?: string | null
           ga_id?: string | null
+          google_reviews_widget?: string | null
           google_site_verification?: string | null
           hero_display_mode?: string | null
           id?: string
+          logo_height?: number | null
           logo_url?: string | null
           mercado_pago_access_token?: string | null
           mercado_pago_public_key?: string | null
@@ -518,9 +522,11 @@ export type Database = {
           font_color_primary?: string | null
           font_color_secondary?: string | null
           ga_id?: string | null
+          google_reviews_widget?: string | null
           google_site_verification?: string | null
           hero_display_mode?: string | null
           id?: string
+          logo_height?: number | null
           logo_url?: string | null
           mercado_pago_access_token?: string | null
           mercado_pago_public_key?: string | null
