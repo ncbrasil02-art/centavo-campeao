@@ -53,5 +53,30 @@ export function useTimeSync() {
 
   const getAdjustedNow = useCallback(() => Date.now() + offset, [offset]);
 
-  return { offset, synced, getAdjustedNow };
+  const formatBrasiliaTime = useCallback((date: Date | number | string, formatStr: string = "HH:mm:ss") => {
+    const d = typeof date === 'string' ? new Date(date) : (typeof date === 'number' ? new Date(date) : date);
+    
+    // For simple time, use Intl
+    if (formatStr === "HH:mm:ss") {
+      return new Intl.DateTimeFormat('pt-BR', {
+        timeZone: 'America/Sao_Paulo',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      }).format(d);
+    }
+
+    // For custom formats like dd/MM HH:mm
+    return new Intl.DateTimeFormat('pt-BR', {
+      timeZone: 'America/Sao_Paulo',
+      day: '2-digit',
+      month: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    }).format(d).replace(',', '');
+  }, []);
+
+  return { offset, synced, getAdjustedNow, formatBrasiliaTime };
 }

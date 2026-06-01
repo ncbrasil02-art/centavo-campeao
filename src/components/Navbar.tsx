@@ -18,16 +18,16 @@ export function Navbar() {
   const [loading, setLoading] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { site_name, logo_url, logo_height, logo_height_mobile, logo_padding_x, logo_padding_y } = useSettings();
-  const { getAdjustedNow, synced } = useTimeSync();
-  const [currentTime, setCurrentTime] = useState<Date | null>(null);
+  const { getAdjustedNow, synced, formatBrasiliaTime } = useTimeSync();
+  const [currentTimeStr, setCurrentTimeStr] = useState<string>("--:--:--");
   const navigate = useNavigate();
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentTime(new Date(getAdjustedNow()));
+      setCurrentTimeStr(formatBrasiliaTime(getAdjustedNow()));
     }, 1000);
     return () => clearInterval(timer);
-  }, [getAdjustedNow]);
+  }, [getAdjustedNow, formatBrasiliaTime]);
 
   useEffect(() => {
     let mounted = true;
@@ -144,7 +144,7 @@ export function Navbar() {
               {synced && <div className="w-1 h-1 rounded-full bg-green-500 animate-pulse shadow-[0_0_5px_rgba(34,197,94,0.8)]" title="Sincronizado em tempo real"></div>}
             </span>
             <span className="text-sm font-black tabular-nums text-foreground/90">
-              {currentTime ? format(currentTime, "HH:mm:ss", { locale: ptBR }) : "--:--:--"}
+              {currentTimeStr}
             </span>
           </div>
           <Link to="/" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Leilões</Link>
@@ -169,7 +169,7 @@ export function Navbar() {
               <Clock className="w-2 h-2" /> HORA
             </span>
             <span className="text-xs font-black tabular-nums text-foreground/90">
-              {currentTime ? format(currentTime, "HH:mm:ss", { locale: ptBR }) : "--:--:--"}
+              {currentTimeStr}
             </span>
           </div>
 
@@ -241,6 +241,13 @@ export function Navbar() {
             className="lg:hidden border-t border-border bg-background/95 backdrop-blur-xl overflow-hidden"
           >
             <div className="container mx-auto px-4 py-6 flex flex-col gap-4">
+              <div className="flex items-center justify-between p-2 mb-2 bg-primary/5 rounded-xl border border-primary/10">
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-black text-primary/60 uppercase tracking-widest">Horário de Brasília</span>
+                  <span className="text-xl font-black tabular-nums">{currentTimeStr}</span>
+                </div>
+                <Clock className="w-6 h-6 text-primary/40" />
+              </div>
               <Link to={"/profile" as any} className="text-lg font-bold p-2 hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Leilões</Link>
               <Link to="/ranking" className="text-lg font-bold p-2 hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Ranking</Link>
               <Link to="/packages" className="text-lg font-bold p-2 hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Comprar Lances</Link>

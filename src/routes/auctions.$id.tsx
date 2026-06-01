@@ -230,21 +230,8 @@ function AuctionPage() {
       .single();
 
     if (error || !data) {
-      // Fallback to mock data for fictitious mode
-      setAuction({
-        id,
-        current_price: 15.20,
-        bid_count: 142,
-        status: "live",
-        product: {
-          name: "iPhone 15 Pro Max",
-          description: "O smartphone mais avançado com o novo processador A17 Pro.",
-          market_value: 8999.00,
-          category: "Eletrônicos",
-          images: ["https://images.unsplash.com/photo-1696446701796-da61225697cc?auto=format&fit=crop&q=80&w=800"]
-        },
-        last_bidder: { username: "Arrematador99", avatar_url: null }
-      });
+      toast.error("Leilão não encontrado.");
+      navigate({ to: "/" as any });
     } else {
       setAuction(data);
       // Initialize timeLeft immediately
@@ -270,12 +257,7 @@ function AuctionPage() {
     if (data && data.length > 0) {
       setBids(data);
     } else {
-      // Mock bids for fictitious mode
-      setBids([
-        { id: "1", profile: { username: "Arrematador99" }, price_at_bid: 15.20, created_at: new Date().toISOString() },
-        { id: "2", profile: { username: "GamerPro" }, price_at_bid: 15.19, created_at: new Date().toISOString() },
-        { id: "3", profile: { username: "TechLover" }, price_at_bid: 15.18, created_at: new Date().toISOString() }
-      ]);
+      setBids([]);
     }
   }
 
@@ -413,7 +395,7 @@ function AuctionPage() {
                 {auction.status === 'scheduled' && auction.start_time && (
                   <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-background/40 backdrop-blur-[2px]">
                     <div className="bg-primary/70 backdrop-blur-md py-8 px-12 flex flex-col items-center justify-center shadow-[0_0_50px_rgba(var(--color-primary),0.3)] border-y border-border rotate-[-2deg] scale-110">
-                      <span className="text-sm font-black uppercase tracking-[0.4em] text-foreground mb-3">COMEÇA EM</span>
+                      <span className="text-sm font-black uppercase tracking-[0.4em] text-foreground mb-3">COMEÇA EM (HORÁRIO DE BRASÍLIA)</span>
                       <div className="flex gap-2">
                         {timeLeft >= 3600 * 24 && (
                           <div className="flex flex-col items-center">
