@@ -169,6 +169,12 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
           meta_description: data.meta_description || "",
           meta_keywords: data.meta_keywords || "",
           google_site_verification: data.google_site_verification || "",
+          font_color_primary: data.font_color_primary || (data.theme_mode === 'dark' ? "#ffffff" : "#000000"),
+          font_color_secondary: data.font_color_secondary || (data.theme_mode === 'dark' ? "#a1a1aa" : "#666666"),
+          card_background_color: data.card_background_color || (data.theme_mode === 'dark' ? "#18181b" : "#ffffff"),
+          block_background_color: data.block_background_color || (data.theme_mode === 'dark' ? "#27272a" : "#f3f4f6"),
+          page_background_color: data.page_background_color || (data.theme_mode === 'dark' ? "#09090b" : "#ffffff"),
+          border_color: data.border_color || (data.theme_mode === 'dark' ? "#3f3f46" : "#e5e7eb"),
         };
         
         setSettings(fetchedSettings);
