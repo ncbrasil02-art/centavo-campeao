@@ -175,7 +175,7 @@ export function Navbar() {
                 </Link>
               </Button>
               
-              <Button onClick={handleLogout} variant="ghost" size="icon" className="hidden sm:flex h-9 w-9 text-white/50 hover:text-red-400">
+              <Button onClick={handleLogout} variant="ghost" size="icon" className="hidden sm:flex h-9 w-9 text-muted-foreground hover:text-red-400">
                 <LogOut className="h-4 w-4" />
               </Button>
               
