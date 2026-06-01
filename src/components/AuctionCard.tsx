@@ -570,19 +570,19 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
               </span>
             </div>
             <div className={`relative flex flex-col items-end transition-all duration-300 ${(timeLeft <= 8 || isPendingAudit) && !isFinished && !isConfirmed ? 'drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]' : isConfirmed ? 'drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]' : ''}`}>
-              <span className="mb-1 text-[9px] font-black uppercase tracking-widest text-white/40">
+              <span className="mb-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/50">
                 Tempo
               </span>
               <div className="flex items-center gap-1.5">
-                <div className={`relative flex items-center justify-center min-w-[50px] py-1.5 rounded-xl border border-white/10 overflow-hidden transition-all duration-300 ${
+                <div className={`relative flex items-center justify-center min-w-[50px] py-1.5 rounded-xl border border-border overflow-hidden transition-all duration-300 ${
                   (timeLeft <= 8 || isPendingAudit) && !isFinished && !isConfirmed
                     ? 'bg-gradient-to-br from-red-600 to-red-900 border-red-500 shadow-[0_0_20px_rgba(239,68,68,0.5)]' 
                     : isConfirmed
                     ? 'bg-gradient-to-br from-green-600 to-green-900 border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.5)]'
-                    : 'bg-gradient-to-br from-black/60 to-black/40 shadow-2xl'
+                    : 'bg-gradient-to-br from-background to-muted shadow-2xl'
                 }`}>
                   <span className={`text-2xl font-black tabular-nums tracking-tighter ${
-                    (timeLeft <= 8 || isPendingAudit) && !isFinished && !isConfirmed ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'text-white'
+                    (timeLeft <= 8 || isPendingAudit) && !isFinished && !isConfirmed ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'text-foreground'
                   }`}>
                     {isFinished || isPendingAudit || isConfirmed ? "00:00" : (
 
