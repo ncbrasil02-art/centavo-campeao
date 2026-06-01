@@ -568,7 +568,7 @@ function AdminAuctions() {
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label>Início</Label>
+                    <Label>Início (Brasília)</Label>
                     <Input 
                       type="datetime-local" 
                       value={formData.start_time} 
@@ -578,7 +578,7 @@ function AdminAuctions() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Fim (Opcional)</Label>
+                    <Label>Fim (Opcional - Brasília)</Label>
                     <Input 
                       type="datetime-local" 
                       value={formData.end_time} 

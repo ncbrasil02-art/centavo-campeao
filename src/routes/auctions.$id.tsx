@@ -408,7 +408,7 @@ function AuctionPage() {
                 {auction.status === 'scheduled' && auction.start_time && (
                   <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-background/40 backdrop-blur-[2px]">
                     <div className="bg-primary/70 backdrop-blur-md py-8 px-12 flex flex-col items-center justify-center shadow-[0_0_50px_rgba(var(--color-primary),0.3)] border-y border-border rotate-[-2deg] scale-110">
-                      <span className="text-sm font-black uppercase tracking-[0.4em] text-foreground mb-3">COMEÇA EM</span>
+                      <span className="text-sm font-black uppercase tracking-[0.4em] text-foreground mb-3">COMEÇA EM (HORÁRIO DE BRASÍLIA)</span>
                       <div className="flex gap-2">
                         {timeLeft >= 3600 * 24 && (
                           <div className="flex flex-col items-center">
