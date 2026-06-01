@@ -34,35 +34,81 @@ interface SiteSettings {
 const SettingsContext = createContext<SiteSettings | null>(null);
 
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
-  const [settings, setSettings] = useState<SiteSettings>({
-    site_name: "Leilão de Centavos",
-    logo_url: "",
-    favicon_url: "",
-    primary_color: "#8B5CF6",
-    secondary_color: "#7C3AED",
-    mercado_pago_public_key: "",
-    pix_key: "",
-    pix_name: "",
-    hero_display_mode: 'phrases',
-    theme_mode: 'dark',
-    ga_id: "",
-    fb_pixel_id: "",
-    meta_title: "",
-    meta_description: "",
-    meta_keywords: "",
-    google_site_verification: "",
-    font_color_primary: "#ffffff",
-    font_color_secondary: "#a1a1aa",
-    card_background_color: "#18181b",
-    block_background_color: "#27272a",
-    page_background_color: "#09090b",
-    border_color: "#3f3f46",
-    logo_height: 40,
-    logo_height_mobile: 32,
-    logo_padding_x: 0,
-    logo_padding_y: 0,
-    google_reviews_widget: "",
+  const [settings, setSettings] = useState<SiteSettings>(() => {
+    // Try to load from localStorage first to prevent FOUC
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('site_settings');
+      if (saved) {
+        try {
+          return JSON.parse(saved);
+        } catch (e) {
+          console.error("Error parsing saved settings", e);
+        }
+      }
+    }
+    return {
+      site_name: "Leilão de Centavos",
+      logo_url: "",
+      favicon_url: "",
+      primary_color: "#8B5CF6",
+      secondary_color: "#7C3AED",
+      mercado_pago_public_key: "",
+      pix_key: "",
+      pix_name: "",
+      hero_display_mode: 'phrases',
+      theme_mode: 'dark',
+      ga_id: "",
+      fb_pixel_id: "",
+      meta_title: "",
+      meta_description: "",
+      meta_keywords: "",
+      google_site_verification: "",
+      font_color_primary: "#ffffff",
+      font_color_secondary: "#a1a1aa",
+      card_background_color: "#18181b",
+      block_background_color: "#27272a",
+      page_background_color: "#09090b",
+      border_color: "#3f3f46",
+      logo_height: 40,
+      logo_height_mobile: 32,
+      logo_padding_x: 0,
+      logo_padding_y: 0,
+      google_reviews_widget: "",
+    };
   });
+
+  // Apply colors helper
+  const applySettingsToDOM = (fetchedSettings: SiteSettings) => {
+    if (typeof document === 'undefined') return;
+
+    // Apply theme to document
+    if (fetchedSettings.theme_mode === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+
+    // Apply colors to document
+    document.documentElement.style.setProperty("--primary", fetchedSettings.primary_color);
+    document.documentElement.style.setProperty("--secondary", fetchedSettings.secondary_color);
+    document.documentElement.style.setProperty("--foreground", fetchedSettings.font_color_primary);
+    document.documentElement.style.setProperty("--muted-foreground", fetchedSettings.font_color_secondary);
+    document.documentElement.style.setProperty("--card", fetchedSettings.card_background_color);
+    document.documentElement.style.setProperty("--muted", fetchedSettings.block_background_color);
+    document.documentElement.style.setProperty("--background", fetchedSettings.page_background_color);
+    document.documentElement.style.setProperty("--border", fetchedSettings.border_color);
+    
+    // Glass effect variables derived from background/card
+    const glassColor = fetchedSettings.card_background_color;
+    document.documentElement.style.setProperty("--glass", glassColor + "66"); // 40% opacity (hex 66)
+    document.documentElement.style.setProperty("--glass-border", fetchedSettings.border_color + "33"); // 20% opacity (hex 33)
+    document.documentElement.style.setProperty("--glass-foreground", fetchedSettings.font_color_primary);
+  };
+
+  // Initial apply of default/cached settings
+  useEffect(() => {
+    applySettingsToDOM(settings);
+  }, []);
 
   const updateMetaTags = (data: Partial<SiteSettings>) => {
     // Title
@@ -193,31 +239,10 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
         };
         
         setSettings(fetchedSettings);
+        localStorage.setItem('site_settings', JSON.stringify(fetchedSettings));
         updateMetaTags(fetchedSettings);
         injectScripts(fetchedSettings.ga_id, fetchedSettings.fb_pixel_id);
-
-        // Apply theme to document
-        if (fetchedSettings.theme_mode === 'dark') {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-        }
-
-        // Apply colors to document
-        document.documentElement.style.setProperty("--primary", fetchedSettings.primary_color);
-        document.documentElement.style.setProperty("--secondary", fetchedSettings.secondary_color);
-        document.documentElement.style.setProperty("--foreground", fetchedSettings.font_color_primary);
-        document.documentElement.style.setProperty("--muted-foreground", fetchedSettings.font_color_secondary);
-        document.documentElement.style.setProperty("--card", fetchedSettings.card_background_color);
-        document.documentElement.style.setProperty("--muted", fetchedSettings.block_background_color);
-        document.documentElement.style.setProperty("--background", fetchedSettings.page_background_color);
-        document.documentElement.style.setProperty("--border", fetchedSettings.border_color);
-        
-        // Glass effect variables derived from background/card
-        const glassColor = fetchedSettings.card_background_color;
-        document.documentElement.style.setProperty("--glass", glassColor + "66"); // 40% opacity (hex 66)
-        document.documentElement.style.setProperty("--glass-border", fetchedSettings.border_color + "33"); // 20% opacity (hex 33)
-        document.documentElement.style.setProperty("--glass-foreground", fetchedSettings.font_color_primary);
+        applySettingsToDOM(fetchedSettings);
       }
     }
 
@@ -261,14 +286,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
             };
             updateMetaTags(updated);
             injectScripts(updated.ga_id, updated.fb_pixel_id);
-
-            // Update theme class
-            if (updated.theme_mode === 'dark') {
-              document.documentElement.classList.add('dark');
-            } else {
-              document.documentElement.classList.remove('dark');
-            }
-            
+            applySettingsToDOM(updated);
+            localStorage.setItem('site_settings', JSON.stringify(updated));
             return updated;
           });
           
