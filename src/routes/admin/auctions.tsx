@@ -750,7 +750,8 @@ function AdminAuctions() {
                 </DialogFooter>
               </form>
             </DialogContent>
-          </Dialog>
+            </Dialog>
+          </div>
         </div>
 
         <Card className="bg-white/5 border-white/10 backdrop-blur-md overflow-hidden">
