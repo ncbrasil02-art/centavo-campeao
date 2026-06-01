@@ -617,7 +617,7 @@ function AuctionPage() {
                     <div className="px-1">
                       <Progress 
                         value={(timeLeft / timerDuration) * 100} 
-                        className={`h-2 bg-white/5 transition-all duration-1000 ${
+                        className={`h-2 bg-muted transition-all duration-1000 ${
                           timeLeft <= 5 ? 'bg-red-500/20' : ''
                         }`}
                         indicatorClassName={`${
