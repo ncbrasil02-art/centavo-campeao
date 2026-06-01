@@ -329,11 +329,11 @@ function AuctionPage() {
 
 
   return (
-    <div className="min-h-screen bg-background text-white selection:bg-primary selection:text-primary-foreground">
+    <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
       <Navbar />
       
       <main className="container mx-auto px-4 py-8 md:py-12">
-        <div className="flex items-center gap-2 mb-8 text-white/40 hover:text-white transition-colors">
+        <div className="flex items-center gap-2 mb-8 text-muted-foreground hover:text-foreground transition-colors">
           <Link to="/" className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest">
             <ArrowLeft className="w-4 h-4" />
             Voltar para leilões
@@ -344,7 +344,7 @@ function AuctionPage() {
           {/* Left Column: Product Gallery & Description */}
           <div className="lg:col-span-7 space-y-8">
             <div className="space-y-6">
-              <div className="relative aspect-square rounded-[32px] overflow-hidden bg-white/5 border border-white/10 group shadow-2xl">
+              <div className="relative aspect-square rounded-[32px] overflow-hidden bg-muted/20 border border-border group shadow-2xl">
                 <div className="absolute inset-0 z-0">
                   <img 
                     src={auction.product?.images?.[activeImage] || FALLBACK_PRODUCT_IMAGE} 
@@ -366,7 +366,7 @@ function AuctionPage() {
                 />
                 <div className="absolute top-6 left-6 z-20 flex flex-col gap-3">
                   {auction.status === 'finished' ? (
-                    <Badge variant="outline" className="bg-black/60 backdrop-blur-md border-white/20 px-4 py-2 text-lg font-black italic">ENCERRADO</Badge>
+                    <Badge variant="outline" className="bg-background/60 backdrop-blur-md border-border px-4 py-2 text-lg font-black italic">ENCERRADO</Badge>
                   ) : auction.status === 'scheduled' ? (
                     <Badge className="bg-blue-500 border-none px-4 py-2 text-lg font-black italic shadow-[0_0_20px_rgba(59,130,246,0.5)]">AGENDADO</Badge>
                   ) : auction.is_finalizing ? (
@@ -380,37 +380,37 @@ function AuctionPage() {
                 </div>
 
                 {auction.status === 'scheduled' && auction.start_time && (
-                  <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px]">
-                    <div className="bg-primary/70 backdrop-blur-md py-8 px-12 flex flex-col items-center justify-center shadow-[0_0_50px_rgba(var(--color-primary),0.3)] border-y border-white/20 rotate-[-2deg] scale-110">
-                      <span className="text-sm font-black uppercase tracking-[0.4em] text-black/90 mb-3">COMEÇA EM</span>
+                  <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-background/40 backdrop-blur-[2px]">
+                    <div className="bg-primary/70 backdrop-blur-md py-8 px-12 flex flex-col items-center justify-center shadow-[0_0_50px_rgba(var(--color-primary),0.3)] border-y border-border rotate-[-2deg] scale-110">
+                      <span className="text-sm font-black uppercase tracking-[0.4em] text-foreground mb-3">COMEÇA EM</span>
                       <div className="flex gap-2">
                         {timeLeft >= 3600 * 24 && (
                           <div className="flex flex-col items-center">
-                            <div className="bg-black/90 rounded-xl px-4 py-3 min-w-[70px] flex items-center justify-center shadow-2xl border border-white/10">
+                            <div className="bg-card/90 rounded-xl px-4 py-3 min-w-[70px] flex items-center justify-center shadow-2xl border border-border">
                               <span className="text-4xl font-black text-primary tabular-nums tracking-tighter">
                                 {Math.floor(timeLeft / (3600 * 24)).toString().padStart(2, '0')}
                               </span>
                             </div>
-                            <span className="text-[10px] font-black text-black/60 mt-1">DIAS</span>
+                            <span className="text-xs font-black text-muted-foreground mt-1">DIAS</span>
                           </div>
                         )}
                         {timeLeft >= 3600 && (
                           <div className="flex flex-col items-center">
-                            <div className="bg-black/90 rounded-xl px-4 py-3 min-w-[70px] flex items-center justify-center shadow-2xl border border-white/10">
+                            <div className="bg-card/90 rounded-xl px-4 py-3 min-w-[70px] flex items-center justify-center shadow-2xl border border-border">
                               <span className="text-4xl font-black text-primary tabular-nums tracking-tighter">
                                 {Math.floor((timeLeft % (3600 * 24)) / 3600).toString().padStart(2, '0')}
                               </span>
                             </div>
-                            <span className="text-[10px] font-black text-black/60 mt-1">HORAS</span>
+                            <span className="text-xs font-black text-muted-foreground mt-1">HORAS</span>
                           </div>
                         )}
                         <div className="flex flex-col items-center">
-                          <div className="bg-black/90 rounded-xl px-4 py-3 min-w-[70px] flex items-center justify-center shadow-2xl border border-white/10">
+                          <div className="bg-card/90 rounded-xl px-4 py-3 min-w-[70px] flex items-center justify-center shadow-2xl border border-border">
                             <span className="text-4xl font-black text-primary tabular-nums tracking-tighter">
                               {Math.floor((timeLeft % 3600) / 60).toString().padStart(2, '0')}
                             </span>
                           </div>
-                          <span className="text-[10px] font-black text-black/60 mt-1">MIN</span>
+                          <span className="text-xs font-black text-muted-foreground mt-1">MIN</span>
                         </div>
                         <div className="flex flex-col items-center">
                           <div className="flex gap-1">
@@ -420,19 +420,19 @@ function AuctionPage() {
                               </span>
                             </div>
                             {timeLeft < 60 && (
-                              <div className="bg-black/70 rounded-xl px-2 py-3 flex items-end shadow-2xl border border-white/10">
+                              <div className="bg-card/70 rounded-xl px-2 py-3 flex items-end shadow-2xl border border-border">
                                 <span className="text-xl font-black text-primary/80 tabular-nums">
                                   ,{Math.floor((timeLeft % 1) * 100).toString().padStart(2, '0')}
                                 </span>
                               </div>
                             )}
                           </div>
-                          <span className="text-[10px] font-black text-black/60 mt-1">SEG</span>
+                          <span className="text-xs font-black text-muted-foreground mt-1">SEG</span>
                         </div>
                       </div>
-                      <div className="mt-4 flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/20 border border-black/10">
-                        <Calendar className="w-4 h-4 text-black/70" />
-                        <span className="text-xs font-bold text-black/80 uppercase tracking-widest">
+                      <div className="mt-4 flex items-center gap-2 px-4 py-1.5 rounded-full bg-muted/20 border border-border">
+                        <Calendar className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
                           {new Date(auction.start_time).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })} às {new Date(auction.start_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                         </span>
                       </div>
@@ -444,12 +444,12 @@ function AuctionPage() {
                     variant="ghost" 
                     size="icon"
                     onClick={() => setIsMuted(!isMuted)}
-                    className="p-4 rounded-full bg-black/40 hover:bg-primary/20 border border-white/10 backdrop-blur-md transition-all group/sound"
+                    className="p-4 rounded-full bg-background/40 hover:bg-primary/20 border border-border backdrop-blur-md transition-all group/sound"
                   >
-                    {isMuted ? <VolumeX className="w-5 h-5 text-white/60" /> : <Volume2 className="w-5 h-5 text-primary" />}
+                    {isMuted ? <VolumeX className="w-5 h-5 text-muted-foreground" /> : <Volume2 className="w-5 h-5 text-primary" />}
                   </Button>
-                  <button className="p-4 rounded-full bg-black/40 hover:bg-primary/20 border border-white/10 backdrop-blur-md transition-all group/share">
-                    <Share2 className="w-5 h-5 transition-transform group-hover/share:scale-110" />
+                  <button className="p-4 rounded-full bg-background/40 hover:bg-primary/20 border border-border backdrop-blur-md transition-all group/share">
+                    <Share2 className="w-5 h-5 text-foreground transition-transform group-hover/share:scale-110" />
                   </button>
                 </div>
               </div>
@@ -460,7 +460,7 @@ function AuctionPage() {
                     <button 
                       key={idx}
                       onClick={() => setActiveImage(idx)}
-                      className={`relative w-24 h-24 rounded-2xl overflow-hidden border-2 transition-all shrink-0 snap-start ${activeImage === idx ? 'border-primary shadow-[0_0_15px_rgba(var(--color-primary),0.3)]' : 'border-white/10 opacity-50 hover:opacity-100 hover:border-white/20'}`}
+                      className={`relative w-24 h-24 rounded-2xl overflow-hidden border-2 transition-all shrink-0 snap-start ${activeImage === idx ? 'border-primary shadow-[0_0_15px_rgba(var(--color-primary),0.3)]' : 'border-border opacity-50 hover:opacity-100 hover:border-border/60'}`}
                     >
                       <img src={img} className="w-full h-full object-cover" onError={(e) => (e.target as HTMLImageElement).src = FALLBACK_PRODUCT_IMAGE} />
                       {activeImage === idx && (
@@ -474,43 +474,43 @@ function AuctionPage() {
               )}
             </div>
 
-            <Card className="bg-white/5 border-white/10 overflow-hidden rounded-3xl">
+            <Card className="bg-card border-border overflow-hidden rounded-3xl">
               <Tabs defaultValue="description" className="w-full">
-                <TabsList className="w-full grid grid-cols-2 bg-white/5 p-1">
+                <TabsList className="w-full grid grid-cols-2 bg-muted p-1">
                   <TabsTrigger value="description" className="rounded-2xl py-3 font-bold">DESCRIÇÃO</TabsTrigger>
                   <TabsTrigger value="rules" className="rounded-2xl py-3 font-bold">REGRAS DO LEILÃO</TabsTrigger>
                 </TabsList>
                 <div className="p-8">
                   <TabsContent value="description" className="mt-0 space-y-6">
                     <h2 className="text-2xl font-black italic uppercase tracking-tighter">Sobre o <span className="text-primary">Produto</span></h2>
-                    <p className="text-white/60 leading-relaxed text-lg">
+                    <p className="text-muted-foreground leading-relaxed text-lg">
                       {auction.product?.description || "Este produto incrível pode ser seu por uma fração do preço original. Participe da disputa e arremate agora!"}
                     </p>
                     <div className="grid grid-cols-2 gap-6 pt-6">
-                      <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
-                        <span className="block text-xs text-white/40 font-bold uppercase mb-1">Valor de Mercado</span>
+                      <div className="p-4 rounded-2xl bg-muted/50 border border-border">
+                        <span className="block text-xs text-muted-foreground font-bold uppercase mb-1">Valor de Mercado</span>
                         <span className="text-xl font-bold">R$ {auction.product?.market_value?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                       </div>
-                      <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
-                        <span className="block text-xs text-white/40 font-bold uppercase mb-1">Categoria</span>
+                      <div className="p-4 rounded-2xl bg-muted/50 border border-border">
+                        <span className="block text-xs text-muted-foreground font-bold uppercase mb-1">Categoria</span>
                         <span className="text-xl font-bold">{auction.product?.category || "Eletrônicos"}</span>
                       </div>
                     </div>
                   </TabsContent>
                   <TabsContent value="rules" className="mt-0 space-y-4">
                     <h2 className="text-2xl font-black italic uppercase tracking-tighter">Como <span className="text-primary">Ganhar</span></h2>
-                    <ul className="space-y-4 text-white/60">
+                    <ul className="space-y-4 text-muted-foreground">
                       <li className="flex gap-3">
                         <div className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</div>
-                        <p>Cada lance aumenta o preço do produto em <span className="text-white font-bold">R$ 0,01</span>.</p>
+                        <p>Cada lance aumenta o preço do produto em <span className="text-foreground font-bold">R$ 0,01</span>.</p>
                       </li>
                       <li className="flex gap-3">
                         <div className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</div>
-                        <p>Cada lance reinicia o cronômetro para <span className="text-white font-bold">{timerDuration} segundos</span>.</p>
+                        <p>Cada lance reinicia o cronômetro para <span className="text-foreground font-bold">{timerDuration} segundos</span>.</p>
                       </li>
                       <li className="flex gap-3">
                         <div className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</div>
-                        <p>O último usuário a dar o lance quando o tempo chegar a <span className="text-white font-bold">00:00</span> vence!</p>
+                        <p>O último usuário a dar o lance quando o tempo chegar a <span className="text-foreground font-bold">00:00</span> vence!</p>
                       </li>
                     </ul>
                   </TabsContent>
@@ -521,7 +521,7 @@ function AuctionPage() {
 
           {/* Right Column: Bidding Controls & History */}
           <div className="lg:col-span-5 space-y-8">
-            <Card className="bg-zinc-950/80 border-primary/40 p-8 md:p-10 rounded-[48px] relative overflow-hidden shadow-[0_0_50px_rgba(var(--color-primary),0.15)] backdrop-blur-3xl group/card border-2">
+            <Card className="bg-card border-primary/40 p-8 md:p-10 rounded-[48px] relative overflow-hidden shadow-[0_0_50px_rgba(var(--color-primary),0.15)] backdrop-blur-3xl group/card border-2">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_rgba(var(--color-primary),0.15),_transparent_70%)]"></div>
               <div className="absolute -inset-[100%] bg-[conic-gradient(from_0deg,transparent_0deg,transparent_150deg,rgba(var(--color-primary),0.1)_180deg,transparent_210deg)] animate-[spin_8s_linear_infinite]"></div>
 
@@ -535,16 +535,16 @@ function AuctionPage() {
               <div className="relative z-10 space-y-10">
                 <div className="space-y-2">
                   <Badge variant="outline" className="border-primary/30 text-primary font-bold tracking-widest text-[10px] uppercase bg-primary/5">ITEM EM DISPUTA</Badge>
-                  <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-tight text-white drop-shadow-sm">
+                  <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-tight text-foreground drop-shadow-sm">
                     {auction.product?.name}
                   </h1>
-                  <p className="text-white/30 font-bold text-xs tracking-widest uppercase">REF: {id.substring(0, 8).toUpperCase()}</p>
+                  <p className="text-muted-foreground font-bold text-xs tracking-widest uppercase">REF: {id.substring(0, 8).toUpperCase()}</p>
                 </div>
 
-                <div className="flex flex-col gap-3 p-8 rounded-[32px] bg-gradient-to-br from-white/10 to-transparent border border-white/10 backdrop-blur-xl shadow-inner group/price">
+                <div className="flex flex-col gap-3 p-8 rounded-[32px] bg-gradient-to-br from-muted/50 to-transparent border border-border backdrop-blur-xl shadow-inner group/price">
                   <div className="flex justify-between items-center">
                     <div className="flex flex-col">
-                      <span className="text-[10px] text-white/40 font-black uppercase tracking-[0.2em]">Valor de Arremate</span>
+                      <span className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em]">Valor de Arremate</span>
                       <span className="text-[10px] text-primary/60 font-bold uppercase tracking-widest">(O quanto você pagará no final)</span>
                     </div>
                     <Badge variant="outline" className="border-green-500/30 text-green-500 bg-green-500/5 animate-pulse">LEILÃO DE CENTAVOS</Badge>
@@ -557,20 +557,20 @@ function AuctionPage() {
 
                 <div className="relative space-y-4">
                   <div className="grid grid-cols-2 gap-6 relative z-10">
-                    <div className={`flex flex-col gap-3 p-6 rounded-[28px] bg-white/5 border border-white/10 transition-all duration-300 ${
+                    <div className={`flex flex-col gap-3 p-6 rounded-[28px] bg-muted/30 border border-border transition-all duration-300 ${
                       timeLeft <= 8 && !isFinished ? 'bg-red-500/5 border-red-500/40 shadow-[0_0_30px_rgba(239,68,68,0.2)]' : ''
                     }`}>
-                      <span className="text-[10px] text-white/40 font-black uppercase tracking-widest flex items-center gap-2">
+                      <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest flex items-center gap-2">
                         <Clock className={`w-3 h-3 ${timeLeft <= 8 && !isFinished ? 'text-red-500 animate-spin' : 'text-primary'}`} /> Tempo Restante
                       </span>
                       <div className="flex items-center gap-2">
-                        <div className={`relative flex items-center justify-center min-w-[80px] py-3 px-4 rounded-2xl border border-white/10 overflow-hidden transition-all duration-300 ${
+                        <div className={`relative flex items-center justify-center min-w-[80px] py-3 px-4 rounded-2xl border border-border overflow-hidden transition-all duration-300 ${
                           timeLeft <= 8 && !isFinished 
                             ? 'bg-gradient-to-br from-red-600 to-red-900 border-red-500 shadow-[0_0_30px_rgba(239,68,68,0.6)]' 
-                            : 'bg-gradient-to-br from-black/80 to-black/60 shadow-2xl'
+                            : 'bg-gradient-to-br from-card to-muted shadow-2xl'
                         }`}>
                           <span className={`text-4xl font-black tabular-nums tracking-tighter ${
-                            timeLeft <= 8 && !isFinished ? 'text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.6)]' : 'text-white'
+                            timeLeft <= 8 && !isFinished ? 'text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.6)]' : 'text-foreground'
                           }`}>
                             {isFinished ? "00:00" : (
                               <>
@@ -588,25 +588,25 @@ function AuctionPage() {
                             <div className="absolute inset-0 bg-white/5 shadow-[inset_0_0_30px_rgba(255,255,255,0.2)]"></div>
                           )}
                         </div>
-                        <div className={`flex items-end py-2 px-2 rounded-xl border border-white/5 bg-black/40 ${
+                        <div className={`flex items-end py-2 px-2 rounded-xl border border-border bg-muted ${
                           timeLeft <= 8 && !isFinished ? 'border-red-500/30' : ''
                         }`}>
                           <span className={`text-xl font-black tabular-nums ${
-                            timeLeft <= 8 && !isFinished ? 'text-red-400' : 'text-white/40'
+                            timeLeft <= 8 && !isFinished ? 'text-red-400' : 'text-muted-foreground'
                           }`}>
                             ,{isFinished ? "00" : Math.floor((timeLeft % 1) * 100).toString().padStart(2, '0')}
                           </span>
                         </div>
                       </div>
                     </div>
-                    <div className="flex flex-col gap-4 p-6 rounded-[28px] bg-white/5 border border-white/10 transition-colors hover:bg-white/10">
-                      <span className="text-[10px] text-white/40 font-black uppercase tracking-widest flex items-center gap-2">
+                    <div className="flex flex-col gap-4 p-6 rounded-[28px] bg-muted/30 border border-border transition-colors hover:bg-muted/50">
+                      <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest flex items-center gap-2">
                         <History className="w-3 h-3 text-primary" /> Total de Lances
                       </span>
-                      <div className="text-5xl font-black text-white">
+                      <div className="text-5xl font-black text-foreground">
                         {auction.bid_count || 0}
                       </div>
-                      <div className="text-[10px] font-bold text-white/20 uppercase tracking-widest">
+                      <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                         Duração: {timerDuration}s
                       </div>
                     </div>
@@ -617,7 +617,7 @@ function AuctionPage() {
                     <div className="px-1">
                       <Progress 
                         value={(timeLeft / timerDuration) * 100} 
-                        className={`h-2 bg-white/5 transition-all duration-1000 ${
+                        className={`h-2 bg-muted transition-all duration-1000 ${
                           timeLeft <= 5 ? 'bg-red-500/20' : ''
                         }`}
                         indicatorClassName={`${
@@ -631,10 +631,10 @@ function AuctionPage() {
                 <div className={`p-6 rounded-[28px] flex items-center justify-between group/bidder transition-all duration-500 border ${
                   isNewBid 
                     ? 'bg-primary/30 border-primary shadow-[0_0_30px_rgba(var(--color-primary),0.6)] animate-pulse' 
-                    : 'bg-white/5 border-white/10 hover:bg-white/10'
+                    : 'bg-muted/30 border-border hover:bg-muted/50'
                 }`}>
                   <div className="flex items-center gap-4">
-                    <div className={`w-14 h-14 rounded-full bg-white/5 flex items-center justify-center overflow-hidden shrink-0 shadow-lg border-2 transition-all duration-500 ${
+                    <div className={`w-14 h-14 rounded-full bg-muted flex items-center justify-center overflow-hidden shrink-0 shadow-lg border-2 transition-all duration-500 ${
                       isNewBid ? 'border-primary scale-110' : 'border-primary/20'
                     }`}>
                       <img 
@@ -645,10 +645,10 @@ function AuctionPage() {
                       />
                     </div>
                     <div>
-                      <span className={`block text-[9px] font-black uppercase tracking-[0.2em] mb-1 leading-none transition-colors ${isNewBid ? 'text-primary' : isFinished ? 'text-green-500' : 'text-white/30'}`}>
+                      <span className={`block text-[10px] font-black uppercase tracking-[0.2em] mb-1 leading-none transition-colors ${isNewBid ? 'text-primary' : isFinished ? 'text-green-500' : 'text-muted-foreground'}`}>
                         {isFinished ? "Grande Arrematador" : "Vantagem Atual"}
                       </span>
-                      <span className={`text-xl font-black transition-all italic uppercase ${isNewBid ? 'text-primary scale-105 origin-left' : isFinished ? 'text-green-500' : 'text-white group-hover/bidder:text-primary'}`}>
+                      <span className={`text-xl font-black transition-all italic uppercase ${isNewBid ? 'text-primary scale-105 origin-left' : isFinished ? 'text-green-500' : 'text-foreground group-hover/bidder:text-primary'}`}>
                         {auction.last_bidder?.username || (isFinished ? "Encerrado" : (auction.status === 'scheduled' || !auction.last_bidder?.username) && currentWinner ? (
                           <span className="animate-in fade-in slide-in-from-right-4 duration-500">
                             {currentWinner.winner_name} levou {currentWinner.product_name}
@@ -696,33 +696,33 @@ function AuctionPage() {
                     )}
                   </Button>
                   
-                  <p className="text-center text-[10px] text-white/20 uppercase tracking-[0.3em] font-black">
+                  <p className="text-center text-[10px] text-muted-foreground/30 uppercase tracking-[0.3em] font-black">
                     CUSTO POR LANCE: 1 CRÉDITO
                   </p>
                 </div>
               </div>
             </Card>
 
-            <Card className="bg-white/5 border-white/10 rounded-[32px] overflow-hidden shadow-xl backdrop-blur-xl group/history">
-              <div className="p-8 border-b border-white/10 flex items-center justify-between bg-white/5">
+            <Card className="bg-card border-border rounded-[32px] overflow-hidden shadow-xl backdrop-blur-xl group/history">
+              <div className="p-8 border-b border-border flex items-center justify-between bg-muted/30">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-primary/10 rounded-lg">
                     <History className="w-5 h-5 text-primary" />
                   </div>
-                  <h3 className="font-black text-sm uppercase tracking-[0.2em] text-white">Histórico de <span className="text-primary">Lances</span></h3>
+                  <h3 className="font-black text-sm uppercase tracking-[0.2em] text-foreground">Histórico de <span className="text-primary">Lances</span></h3>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="text-[10px] border-white/10 text-white/40 font-bold px-3">LIVE FEED</Badge>
+                  <Badge variant="outline" className="text-[10px] border-border text-muted-foreground font-bold px-3">LIVE FEED</Badge>
                 </div>
               </div>
               <div className="p-4">
                 {bids.length > 0 ? (
                   <div className="space-y-2">
                     {(showAllBids ? bids : bids.slice(0, 10)).map((bid, idx) => (
-                      <div key={bid.id} className={`flex items-center justify-between p-3 rounded-xl transition-all duration-300 animate-in fade-in slide-in-from-right-2 ${idx === 0 ? 'bg-primary/20 border border-primary/30 shadow-[0_0_20px_rgba(var(--color-primary),0.1)]' : 'hover:bg-white/5 border border-transparent'}`}>
+                      <div key={bid.id} className={`flex items-center justify-between p-3 rounded-xl transition-all duration-300 animate-in fade-in slide-in-from-right-2 ${idx === 0 ? 'bg-primary/20 border border-primary/30 shadow-[0_0_20px_rgba(var(--color-primary),0.1)]' : 'hover:bg-muted/50 border border-transparent'}`}>
                         <div className="flex items-center gap-3">
                           <div className="relative">
-                            <Avatar className={`w-8 h-8 border-2 transition-all ${idx === 0 ? 'border-primary scale-110 shadow-lg' : 'border-white/10'}`}>
+                            <Avatar className={`w-8 h-8 border-2 transition-all ${idx === 0 ? 'border-primary scale-110 shadow-lg' : 'border-border'}`}>
                               <AvatarImage src={bid.profile?.avatar_url || getFallbackAvatarUrl(bid.profile?.username)} />
                               <AvatarFallback className="bg-primary/10 text-primary font-bold text-[10px]">
                                 {bid.profile?.username?.substring(0, 2).toUpperCase() || "U"}
@@ -731,14 +731,14 @@ function AuctionPage() {
                           </div>
                           <div className="flex flex-col">
                             <div className="flex items-center gap-2">
-                              <span className={`font-black text-xs uppercase italic tracking-tighter ${idx === 0 ? 'text-white' : 'text-white/60'}`}>{bid.profile?.username}</span>
+                              <span className={`font-black text-xs uppercase italic tracking-tighter ${idx === 0 ? 'text-foreground' : 'text-foreground/60'}`}>{bid.profile?.username}</span>
                               {idx === 0 && <Badge className="h-3 px-1 text-[7px] font-black bg-primary text-primary-foreground animate-pulse">LIDERANDO</Badge>}
                             </div>
-                            <span className="text-[8px] text-white/30 font-bold uppercase">{new Date(bid.created_at).toLocaleTimeString()}</span>
+                            <span className="text-[8px] text-muted-foreground font-bold uppercase">{new Date(bid.created_at).toLocaleTimeString()}</span>
                           </div>
                         </div>
                         <div className="text-right">
-                          <span className={`font-mono text-sm font-black block ${idx === 0 ? 'text-primary' : 'text-white/40'}`}>R$ {bid.price_at_bid?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                          <span className={`font-mono text-sm font-black block ${idx === 0 ? 'text-primary' : 'text-muted-foreground'}`}>R$ {bid.price_at_bid?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                         </div>
                       </div>
                     ))}
@@ -756,10 +756,10 @@ function AuctionPage() {
                   </div>
                 ) : (
                   <div className="py-20 text-center space-y-4">
-                    <div className="inline-flex p-4 rounded-full bg-white/5 text-white/10">
+                    <div className="inline-flex p-4 rounded-full bg-muted text-muted-foreground/20">
                       <Zap className="w-12 h-12" />
                     </div>
-                    <p className="text-white/20 font-black uppercase tracking-[0.2em] italic text-sm">
+                    <p className="text-muted-foreground/30 font-black uppercase tracking-[0.2em] italic text-sm">
                       {auction.status === 'scheduled' && currentWinner ? (
                         <span className="animate-in fade-in slide-in-from-right-4 duration-500 text-primary/60">
                           {currentWinner.winner_name} arrematou {currentWinner.product_name}
@@ -772,7 +772,7 @@ function AuctionPage() {
               </div>
             </Card>
 
-            <div className="h-[500px] rounded-[40px] overflow-hidden border border-white/10">
+            <div className="h-[500px] rounded-[40px] overflow-hidden border border-border">
               {mounted && <AuctionChat auctionId={id} />}
             </div>
           </div>
@@ -780,7 +780,7 @@ function AuctionPage() {
       </main>
       
       {/* Trust Badges */}
-      <section className="py-24 border-t border-white/5 bg-black/40 relative overflow-hidden">
+      <section className="py-24 border-t border-border bg-muted/40 relative overflow-hidden">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[120px]" />
         <div className="container mx-auto px-4 relative z-10">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 md:gap-8">
@@ -798,14 +798,14 @@ function AuctionPage() {
 function TrustItem({ icon, title, desc }: { icon: React.ReactNode, title: string, desc: string }) {
   return (
     <div className="flex flex-col items-center text-center gap-4 group/trust cursor-default">
-      <div className="p-6 rounded-[24px] bg-white/5 border border-white/5 transition-all duration-500 group-hover/trust:bg-primary/10 group-hover/trust:border-primary/20 group-hover/trust:-translate-y-2 shadow-lg">
+      <div className="p-6 rounded-[24px] bg-card border border-border transition-all duration-500 group-hover/trust:bg-primary/10 group-hover/trust:border-primary/20 group-hover/trust:-translate-y-2 shadow-lg">
         <div className="transition-transform duration-500 group-hover/trust:scale-110">
           {icon}
         </div>
       </div>
       <div className="space-y-1">
-        <h4 className="font-black text-white uppercase tracking-[0.2em] text-[10px] italic">{title}</h4>
-        <p className="text-white/30 text-[10px] font-bold uppercase tracking-widest leading-tight max-w-[120px]">{desc}</p>
+        <h4 className="font-black text-foreground uppercase tracking-[0.2em] text-[10px] italic">{title}</h4>
+        <p className="text-muted-foreground text-[10px] font-bold uppercase tracking-widest leading-tight max-w-[120px]">{desc}</p>
       </div>
     </div>
   );

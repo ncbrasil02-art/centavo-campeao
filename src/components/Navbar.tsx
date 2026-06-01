@@ -107,15 +107,15 @@ export function Navbar() {
         </Link>
 
         <div className="hidden items-center gap-8 lg:flex">
-          <div className="flex flex-col items-center px-4 border-x border-white/5 bg-white/5 py-1 rounded-lg relative group/time">
-            <span className="text-[9px] font-black text-primary/60 uppercase tracking-[0.2em] mb-0.5 flex items-center gap-1">
+          <div className="flex flex-col items-center px-4 border-x border-border bg-muted/30 py-1 rounded-lg relative group/time">
+            <span className="text-[10px] font-black text-primary/60 uppercase tracking-[0.2em] mb-0.5 flex items-center gap-1">
               <Clock className="w-2.5 h-2.5" /> Horário Oficial
               {synced && <div className="w-1 h-1 rounded-full bg-green-500 animate-pulse shadow-[0_0_5px_rgba(34,197,94,0.8)]" title="Sincronizado em tempo real"></div>}
             </span>
             <span className="text-sm font-black tabular-nums text-foreground/90">
               {currentTime ? format(currentTime, "HH:mm:ss", { locale: ptBR }) : "--:--:--"}
             </span>
-            <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-black/90 px-3 py-1 rounded text-[8px] font-bold text-white/60 opacity-0 group-hover/time:opacity-100 transition-opacity whitespace-nowrap border border-white/10 pointer-events-none">
+            <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-card px-3 py-1 rounded text-[9px] font-bold text-muted-foreground opacity-0 group-hover/time:opacity-100 transition-opacity whitespace-nowrap border border-border pointer-events-none shadow-xl">
               MILISSEGUNDOS SINCRONIZADOS COM O SERVIDOR
             </div>
           </div>
@@ -137,11 +137,11 @@ export function Navbar() {
 
         <div className="flex items-center gap-2 sm:gap-6">
           {/* Mobile/Small Screen Clock */}
-          <div className="flex lg:hidden flex-col items-center px-3 border-x border-white/5 bg-white/5 py-0.5 rounded-lg">
-            <span className="text-[7px] font-black text-primary/60 uppercase tracking-widest mb-0 flex items-center gap-0.5">
+          <div className="flex lg:hidden flex-col items-center px-3 border-x border-border bg-muted/30 py-0.5 rounded-lg">
+            <span className="text-[8px] font-black text-primary/60 uppercase tracking-widest mb-0 flex items-center gap-0.5">
               <Clock className="w-2 h-2" /> HORA
             </span>
-            <span className="text-[10px] font-black tabular-nums text-white/90">
+            <span className="text-xs font-black tabular-nums text-foreground/90">
               {currentTime ? format(currentTime, "HH:mm:ss", { locale: ptBR }) : "--:--:--"}
             </span>
           </div>
@@ -149,7 +149,7 @@ export function Navbar() {
           {user ? (
             <div className="flex items-center gap-2 sm:gap-4">
               <div className="hidden flex-col items-end sm:flex">
-                <span className="text-[10px] font-medium text-white/50 uppercase tracking-widest">Saldo</span>
+                <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">Saldo</span>
                 <div className="flex items-center gap-1 text-primary font-bold">
                   <Wallet className="h-4 w-4" />
                   <span>{profile?.bid_balance || 0}</span>
@@ -175,7 +175,7 @@ export function Navbar() {
                 </Link>
               </Button>
               
-              <Button onClick={handleLogout} variant="ghost" size="icon" className="hidden sm:flex h-9 w-9 text-white/50 hover:text-red-400">
+              <Button onClick={handleLogout} variant="ghost" size="icon" className="hidden sm:flex h-9 w-9 text-muted-foreground hover:text-red-400">
                 <LogOut className="h-4 w-4" />
               </Button>
               
@@ -208,7 +208,7 @@ export function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden border-t border-white/10 bg-background/95 backdrop-blur-xl overflow-hidden"
+            className="lg:hidden border-t border-border bg-background/95 backdrop-blur-xl overflow-hidden"
           >
             <div className="container mx-auto px-4 py-6 flex flex-col gap-4">
               <div className="flex items-center justify-between p-2 mb-2 bg-primary/5 rounded-xl border border-primary/10">
@@ -249,7 +249,7 @@ export function Navbar() {
                   <LayoutDashboard className="w-6 h-6" /> PAINEL ADMIN
                 </Link>
               )}
-              <div className="h-px bg-white/10 my-2" />
+              <div className="h-px bg-border my-2" />
               <div className="flex items-center justify-between p-2">
                 <div className="flex items-center gap-2">
                   <Wallet className="w-5 h-5 text-primary" />

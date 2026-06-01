@@ -392,7 +392,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         {isScheduled && auction.start_time && (
           <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 bg-primary/40 backdrop-blur-[2px] py-3 flex flex-col items-center justify-center z-20 shadow-[0_0_40px_rgba(var(--color-primary),0.2)] border-y border-glass-border rotate-[-2deg] scale-105 origin-center transition-all duration-500 group-hover:bg-primary/60 group-hover:backdrop-blur-sm">
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.1)_0%,_transparent_70%)] animate-pulse"></div>
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground mb-1 relative z-10">COMEÇA EM</span>
+            <span className="text-xs font-black uppercase tracking-[0.3em] text-foreground mb-1 relative z-10">COMEÇA EM</span>
             <div className="flex flex-col items-center relative z-10">
               <div className="flex gap-1 mb-1">
                 {timeLeft >= 3600 * 24 && (
@@ -402,7 +402,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
                         {timeParts.d}
                       </span>
                     </div>
-                    <span className="text-[7px] font-black text-black/60 mt-0.5">DIAS</span>
+                    <span className="text-[10px] font-black text-muted-foreground mt-0.5">DIAS</span>
                   </div>
                 )}
                 {timeLeft >= 3600 && (
@@ -412,7 +412,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
                         {timeParts.h}
                       </span>
                     </div>
-                    <span className="text-[7px] font-black text-muted-foreground mt-0.5">HORAS</span>
+                    <span className="text-[10px] font-black text-muted-foreground mt-0.5">HORAS</span>
                   </div>
                 )}
                 <div className="flex flex-col items-center">
@@ -421,30 +421,30 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
                       {timeParts.m}
                     </span>
                   </div>
-                  <span className="text-[7px] font-black text-muted-foreground mt-0.5">MIN</span>
+                  <span className="text-[10px] font-black text-muted-foreground mt-0.5">MIN</span>
                 </div>
                 <div className="flex flex-col items-center">
                   <div className="flex gap-0.5">
-                    <div className="bg-black/80 rounded-lg px-2 py-1.5 min-w-[45px] flex items-center justify-center shadow-xl border border-white/10">
+                    <div className="bg-card/80 rounded-lg px-2 py-1.5 min-w-[45px] flex items-center justify-center shadow-xl border border-glass-border">
                       <span className="text-xl font-black text-primary tabular-nums tracking-tighter">
                         {timeParts.s}
                       </span>
                     </div>
                     {timeLeft < 60 && (
-                      <div className="bg-black/60 rounded-lg px-1.5 py-1.5 flex items-end shadow-xl border border-white/10">
+                      <div className="bg-card/60 rounded-lg px-1.5 py-1.5 flex items-end shadow-xl border border-glass-border">
                         <span className="text-sm font-black text-primary/80 tabular-nums">
                           ,{timeParts.ms}
                         </span>
                       </div>
                     )}
                   </div>
-                  <span className="text-[7px] font-black text-muted-foreground mt-0.5">SEG</span>
+                  <span className="text-[10px] font-black text-muted-foreground mt-0.5">SEG</span>
                 </div>
               </div>
               <div className="flex flex-col items-center gap-1">
                 <div className="flex items-center gap-2 px-3 py-0.5 rounded-full bg-glass/20 border border-glass-border">
                   <Calendar className="w-2.5 h-2.5 text-muted-foreground" />
-                  <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
+                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                     {new Date(auction.start_time).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })} às {new Date(auction.start_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
@@ -500,9 +500,9 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
                 <MessageSquare className="h-4 w-4" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-full border-white/10 bg-background p-0 sm:max-w-md">
-              <SheetHeader className="border-b border-white/10 p-4">
-                <SheetTitle className="font-black italic uppercase tracking-tighter text-white">
+            <SheetContent side="right" className="w-full border-border bg-background p-0 sm:max-w-md">
+              <SheetHeader className="border-b border-border p-4">
+                <SheetTitle className="font-black italic uppercase tracking-tighter text-foreground">
                   Chat do <span className="text-primary">Leilão</span>
                 </SheetTitle>
               </SheetHeader>
@@ -519,7 +519,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
               e.stopPropagation();
               setIsMuted(!isMuted);
             }}
-            className="h-10 w-10 rounded-full border border-white/10 bg-black/40 text-white/60 backdrop-blur-md transition-all hover:bg-primary/20 hover:text-primary"
+            className="h-10 w-10 rounded-full border border-border bg-background/40 text-muted-foreground backdrop-blur-md transition-all hover:bg-primary/20 hover:text-primary"
           >
             {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
           </Button>
@@ -527,7 +527,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       </div>
       
       {/* Content Section */}
-      <div className="relative flex flex-1 flex-col gap-4 bg-gradient-to-b from-white/[0.02] to-transparent p-6 pt-2">
+      <div className="relative flex flex-1 flex-col gap-4 bg-gradient-to-b from-foreground/[0.02] to-transparent p-6 pt-2">
         {!isFinished && !isScheduled && (
           <div className="flex justify-center mb-1">
             <span className="text-[10px] font-black text-primary/60 uppercase tracking-widest animate-pulse italic bg-primary/5 px-3 py-1 rounded-full border border-primary/10">
@@ -537,22 +537,22 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         )}
         <div>
           <Link to="/auctions/$id" params={{ id: auction.id }} className="cursor-pointer">
-            <h3 className="mb-1 line-clamp-1 text-xl font-black uppercase italic tracking-tighter text-white transition-colors group-hover:text-primary">
+            <h3 className="mb-1 line-clamp-1 text-xl font-black uppercase italic tracking-tighter text-foreground transition-colors group-hover:text-primary">
               {auction.product?.name || "Produto"}
             </h3>
           </Link>
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-white/30">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40">
               Valor Original:
             </span>
-            <span className="text-xs font-bold text-white/40 line-through">
+            <span className="text-xs font-bold text-muted-foreground/50 line-through">
               R$ {auction.product?.market_value?.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) || "0,00"}
             </span>
           </div>
           {!isFinished && !isScheduled && (
             <div className="flex items-center gap-1.5 mt-1.5">
               <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.8)]"></div>
-              <span className="text-[9px] font-black text-white/40 uppercase tracking-widest">
+              <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
                 {activeWatchers} pessoas disputando agora
               </span>
             </div>
@@ -560,9 +560,9 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         </div>
 
         <div className="relative space-y-2">
-          <div className="grid grid-cols-2 gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm relative z-10">
+          <div className="grid grid-cols-2 gap-4 rounded-2xl border border-border bg-muted/30 p-4 backdrop-blur-sm relative z-10">
             <div className="flex flex-col">
-              <span className="mb-1 text-[9px] font-black uppercase tracking-widest text-white/40">
+              <span className="mb-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/50">
                 Você paga:
               </span>
               <span className={`text-2xl font-black text-primary transition-all duration-300 ${isNewBid ? 'scale-110 drop-shadow-[0_0_10px_rgba(var(--color-primary),0.5)]' : 'scale-100'}`}>
@@ -570,19 +570,19 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
               </span>
             </div>
             <div className={`relative flex flex-col items-end transition-all duration-300 ${(timeLeft <= 8 || isPendingAudit) && !isFinished && !isConfirmed ? 'drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]' : isConfirmed ? 'drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]' : ''}`}>
-              <span className="mb-1 text-[9px] font-black uppercase tracking-widest text-white/40">
+              <span className="mb-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/50">
                 Tempo
               </span>
               <div className="flex items-center gap-1.5">
-                <div className={`relative flex items-center justify-center min-w-[50px] py-1.5 rounded-xl border border-white/10 overflow-hidden transition-all duration-300 ${
+                <div className={`relative flex items-center justify-center min-w-[50px] py-1.5 rounded-xl border border-border overflow-hidden transition-all duration-300 ${
                   (timeLeft <= 8 || isPendingAudit) && !isFinished && !isConfirmed
                     ? 'bg-gradient-to-br from-red-600 to-red-900 border-red-500 shadow-[0_0_20px_rgba(239,68,68,0.5)]' 
                     : isConfirmed
                     ? 'bg-gradient-to-br from-green-600 to-green-900 border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.5)]'
-                    : 'bg-gradient-to-br from-black/60 to-black/40 shadow-2xl'
+                    : 'bg-gradient-to-br from-background to-muted shadow-2xl'
                 }`}>
                   <span className={`text-2xl font-black tabular-nums tracking-tighter ${
-                    (timeLeft <= 8 || isPendingAudit) && !isFinished && !isConfirmed ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'text-white'
+                    (timeLeft <= 8 || isPendingAudit) && !isFinished && !isConfirmed ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'text-foreground'
                   }`}>
                     {isFinished || isPendingAudit || isConfirmed ? "00:00" : (
 
@@ -603,11 +603,11 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
                     <div className="absolute inset-0 bg-red-500/10 shadow-[inset_0_0_20px_rgba(239,68,68,0.4)]"></div>
                   )}
                 </div>
-                <div className={`flex items-end py-1.5 px-1.5 rounded-lg border border-white/5 bg-black/40 ${
+                <div className={`flex items-end py-1.5 px-1.5 rounded-lg border border-border bg-muted ${
                    timeLeft <= 8 && !isFinished ? 'border-red-500/20' : ''
                 }`}>
                   <span className={`text-sm font-black tabular-nums ${
-                    timeLeft <= 8 && !isFinished ? 'text-red-400' : 'text-white/40'
+                    timeLeft <= 8 && !isFinished ? 'text-red-400' : 'text-muted-foreground/50'
                   }`}>
                     ,{isFinished ? "00" : timeParts.ms}
                   </span>
@@ -626,7 +626,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             <div className="px-1">
               <Progress 
                 value={timePercentage} 
-                className={`h-1.5 bg-white/5 transition-all duration-1000 ${
+                className={`h-1.5 bg-muted transition-all duration-1000 ${
                   timeLeft <= 5 ? 'bg-red-500/20' : ''
                 }`}
                 indicatorClassName={`${
@@ -641,7 +641,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         <div className={`flex items-center gap-3 p-3 rounded-2xl transition-all duration-500 border ${
           isNewBid 
             ? 'bg-primary/30 border-primary shadow-[0_0_20px_rgba(var(--color-primary),0.5)] animate-pulse' 
-            : 'bg-white/5 border-white/10'
+            : 'bg-muted/30 border-border'
         }`}>
           <div className={`flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border transition-all duration-500 ${
             isNewBid ? 'border-primary scale-110' : 'border-primary/20'
@@ -659,13 +659,13 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           </div>
 
           <div className="flex flex-col overflow-hidden">
-            <span className={`text-[9px] font-black uppercase tracking-widest transition-colors ${
-              isNewBid ? 'text-primary' : (isFinished || isConfirmed) ? 'text-green-500' : isPendingAudit ? 'text-red-500' : 'text-white/30'
+            <span className={`text-[10px] font-black uppercase tracking-widest transition-colors ${
+              isNewBid ? 'text-primary' : (isFinished || isConfirmed) ? 'text-green-500' : isPendingAudit ? 'text-red-500' : 'text-muted-foreground/50'
             }`}>
               {(isFinished || isConfirmed) ? "🏆 Vencedor" : isPendingAudit ? "🔍 Em Auditoria" : (isScheduled || !auction.last_bidder?.username) && hasWinners ? "Últimos Ganhadores" : "Último Lance"}
             </span>
             <span className={`truncate text-sm font-bold transition-all ${
-              isNewBid ? 'text-primary scale-105 origin-left' : (isFinished || isConfirmed) ? 'text-green-500' : isPendingAudit ? 'text-red-400' : 'text-white'
+              isNewBid ? 'text-primary scale-105 origin-left' : (isFinished || isConfirmed) ? 'text-green-500' : isPendingAudit ? 'text-red-400' : 'text-foreground'
             }`}>
               {auction.last_bidder?.username || ((isScheduled || !auction.last_bidder?.username) && currentWinner ? (
 
@@ -699,7 +699,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
               : isPendingAudit
               ? (isAdmin ? 'bg-primary text-primary-foreground shadow-[0_0_25px_rgba(var(--color-primary),0.5)] hover:scale-[1.02]' : 'cursor-default border border-red-500/20 bg-red-500/10 text-red-500 animate-pulse')
               : isScheduled
-              ? 'cursor-not-allowed border border-white/10 bg-white/10 text-white/40'
+              ? 'cursor-not-allowed border border-border bg-muted text-muted-foreground'
               : timeLeft <= 5
               ? 'bg-red-600 text-white shadow-[0_0_30px_rgba(220,38,38,0.8)] hover:bg-red-700'
               : 'bg-primary text-primary-foreground shadow-[0_8px_25px_rgba(var(--color-primary),0.3)] hover:scale-[1.02] hover:bg-primary/90 active:scale-95'
@@ -711,7 +711,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
               <span className="text-[10px] font-black uppercase tracking-widest text-green-500/80">
                 Arrematado por {auction.last_bidder?.username || "Ganhador"}
               </span>
-              <span className="text-xs font-black italic text-white/60">
+              <span className="text-xs font-black italic text-muted-foreground/60">
                 {isConfirmed ? "Ganhador Confirmado" : (auction.end_time ? format(new Date(auction.end_time), "dd/MM 'às' HH:mm", { locale: ptBR }) : "Finalizado")}
               </span>
             </div>
@@ -729,7 +729,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         </Button>
 
         {!isFinished && (
-          <p className="text-[9px] text-center text-white/20 uppercase tracking-[0.2em] font-bold mt-2 italic">
+          <p className="text-[10px] text-center text-muted-foreground/30 uppercase tracking-[0.2em] font-bold mt-2 italic">
             {incentivePhrase.split(' ').slice(1).join(' ')}
           </p>
         )}

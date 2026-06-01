@@ -170,13 +170,13 @@ export function Hero() {
         {banners.length > 1 && (
           <>
             <button 
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md flex items-center justify-center text-white transition-all z-10 border border-white/10"
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-background/20 hover:bg-background/40 backdrop-blur-md flex items-center justify-center text-foreground transition-all z-10 border border-border"
               onClick={scrollPrev}
             >
               <ChevronLeft className="w-6 h-6" />
             </button>
             <button 
-              className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md flex items-center justify-center text-white transition-all z-10 border border-white/10"
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-background/20 hover:bg-background/40 backdrop-blur-md flex items-center justify-center text-foreground transition-all z-10 border border-border"
               onClick={scrollNext}
             >
               <ChevronRight className="w-6 h-6" />
@@ -307,7 +307,7 @@ export function SecondaryBanner({ title, subtitle, imageUrl, linkUrl, reverse = 
   return (
     <section className="py-12">
       <div className="container mx-auto px-4">
-        <div className={`relative overflow-hidden rounded-[40px] bg-gradient-to-br from-zinc-900 to-black border border-white/5 flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-8 p-8 md:p-0`}>
+        <div className={`relative overflow-hidden rounded-[40px] bg-card border border-border flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-8 p-8 md:p-0`}>
           <div className="flex-1 space-y-6 md:p-12 lg:p-20">
             <Badge className="bg-primary/10 text-primary border-primary/20 uppercase font-black italic">OFERTA ESPECIAL</Badge>
             <h2 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-foreground leading-tight">
@@ -316,7 +316,7 @@ export function SecondaryBanner({ title, subtitle, imageUrl, linkUrl, reverse = 
             <p className="text-muted-foreground text-lg">
               {subtitle}
             </p>
-            <Button size="lg" className="bg-white text-black hover:bg-white/90 font-black uppercase italic tracking-widest" asChild>
+            <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-black uppercase italic tracking-widest" asChild>
               <Link to={linkUrl as any}>
                 Ver Detalhes <ArrowRight className="ml-2 w-5 h-5" />
               </Link>
@@ -328,7 +328,7 @@ export function SecondaryBanner({ title, subtitle, imageUrl, linkUrl, reverse = 
               className="absolute inset-0 w-full h-full object-cover"
               alt={title}
             />
-            <div className={`absolute inset-0 bg-gradient-to-t md:bg-gradient-to-${reverse ? 'r' : 'l'} from-zinc-950 via-transparent to-transparent`}></div>
+            <div className={`absolute inset-0 bg-gradient-to-t md:bg-gradient-to-${reverse ? 'r' : 'l'} from-card via-transparent to-transparent`}></div>
           </div>
         </div>
       </div>

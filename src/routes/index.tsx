@@ -20,27 +20,27 @@ import { Star, Quote } from "lucide-react";
 
 function TestimonialCard({ name, content, avatarUrl, rating }: { name: string, content: string, avatarUrl: string, rating: number }) {
   return (
-    <div className="group relative p-6 rounded-[32px] bg-white/[0.03] border border-white/5 hover:border-primary/30 transition-all duration-500 hover:-translate-y-2">
+    <div className="group relative p-6 rounded-[32px] bg-muted/30 border border-border hover:border-primary/30 transition-all duration-500 hover:-translate-y-2">
       <div className="absolute top-6 right-8 text-primary/10 group-hover:text-primary/20 transition-colors">
         <Quote className="w-12 h-12 rotate-180" />
       </div>
       
       <div className="flex flex-col h-full gap-6 relative z-10">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-white/10 group-hover:border-primary/40 transition-all shadow-2xl">
+          <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-border group-hover:border-primary/40 transition-all shadow-2xl">
             <img src={avatarUrl} alt={name} className="w-full h-full object-cover" />
           </div>
           <div>
-            <h4 className="font-black text-white italic uppercase tracking-tighter text-sm">{name}</h4>
+            <h4 className="font-black text-foreground italic uppercase tracking-tighter text-sm">{name}</h4>
             <div className="flex gap-0.5 mt-1">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} className={`w-3 h-3 ${i < rating ? 'text-yellow-500 fill-yellow-500' : 'text-white/10'}`} />
+                <Star key={i} className={`w-3 h-3 ${i < rating ? 'text-yellow-500 fill-yellow-500' : 'text-muted-foreground/20'}`} />
               ))}
             </div>
           </div>
         </div>
         
-        <p className="text-white/60 text-sm leading-relaxed italic">
+        <p className="text-muted-foreground text-sm leading-relaxed italic">
           "{content}"
         </p>
       </div>
@@ -52,40 +52,40 @@ function TestimonialCard({ name, content, avatarUrl, rating }: { name: string, c
 
 function WinnerCard({ name, product, price, saving, avatarUrl, productImage }: { name: string, product: string, price: string, saving: string, avatarUrl?: string, productImage?: string }) {
   return (
-    <div className="group relative p-1 rounded-[32px] bg-gradient-to-br from-primary/20 via-white/5 to-transparent border border-white/10 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-primary/20 overflow-hidden">
+    <div className="group relative p-1 rounded-[32px] bg-gradient-to-br from-primary/20 via-muted/30 to-transparent border border-border transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-primary/20 overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_rgba(var(--color-primary),0.1),_transparent_70%)]"></div>
       
-      <div className="relative bg-zinc-950/80 rounded-[30px] p-6 flex flex-col gap-6 backdrop-blur-xl">
+      <div className="relative bg-card rounded-[30px] p-6 flex flex-col gap-6 backdrop-blur-xl">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="relative w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center overflow-hidden border-2 border-primary/30 group-hover:border-primary transition-all shadow-xl shadow-black/50">
+            <div className="relative w-16 h-16 rounded-2xl bg-muted flex items-center justify-center overflow-hidden border-2 border-primary/30 group-hover:border-primary transition-all shadow-xl">
               <img 
                 src={avatarUrl || getFallbackAvatarUrl(name)} 
                 className="w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all" 
                 onError={(e) => (e.target as HTMLImageElement).src = getFallbackAvatarUrl(name)} 
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent"></div>
             </div>
             <div>
-              <h4 className="font-black text-white italic uppercase tracking-tighter group-hover:text-primary transition-colors">{name}</h4>
+              <h4 className="font-black text-foreground italic uppercase tracking-tighter group-hover:text-primary transition-colors">{name}</h4>
               <div className="flex items-center gap-1.5">
                 <div className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_5px_rgba(34,197,94,0.8)]"></div>
-                <span className="text-[10px] font-black text-white/40 uppercase tracking-widest">Arrematou com Sucesso</span>
+                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Arrematou com Sucesso</span>
               </div>
             </div>
           </div>
           <Badge className="bg-primary/10 text-primary border-primary/20 font-black italic uppercase text-[10px]">#{Math.floor(Math.random() * 900) + 100}</Badge>
         </div>
 
-        <div className="flex items-center gap-4 bg-white/5 rounded-2xl p-4 border border-white/5 group-hover:bg-white/10 transition-all">
-          <div className="w-20 h-20 rounded-xl bg-black/40 p-2 shrink-0 border border-white/5 overflow-hidden">
-            <img src={productImage || "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=200&auto=format&fit=crop"} className="w-full h-full object-contain mix-blend-lighten" />
+        <div className="flex items-center gap-4 bg-muted/50 rounded-2xl p-4 border border-border group-hover:bg-muted transition-all">
+          <div className="w-20 h-20 rounded-xl bg-background/40 p-2 shrink-0 border border-border overflow-hidden">
+            <img src={productImage || "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=200&auto=format&fit=crop"} className="w-full h-full object-contain mix-blend-lighten dark:mix-blend-lighten" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-black text-white/80 uppercase truncate italic leading-tight mb-2">{product}</p>
+            <p className="text-sm font-black text-foreground uppercase truncate italic leading-tight mb-2">{product}</p>
             <div className="flex items-center gap-3">
               <div className="flex flex-col">
-                <span className="text-[9px] font-black text-white/30 uppercase tracking-widest">Pagou apenas</span>
+                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Pagou apenas</span>
                 <span className="font-black text-xl text-primary drop-shadow-[0_0_10px_rgba(var(--color-primary),0.3)]">{price}</span>
               </div>
               <Badge className="bg-green-500/20 text-green-500 border-green-500/20 font-black text-[10px] uppercase">{saving} OFF</Badge>
@@ -210,14 +210,14 @@ function Index() {
           {/* Featured Auctions Header */}
           <div className="container mx-auto px-4 mt-8">
              <div className="flex items-center gap-4 mb-8">
-                <div className="h-[1px] flex-1 bg-white/10"></div>
-                <h2 className="text-sm font-black uppercase tracking-[0.5em] text-white/40 italic">Destaques da Semana</h2>
-                <div className="h-[1px] flex-1 bg-white/10"></div>
+                <div className="h-[1px] flex-1 bg-border"></div>
+                <h2 className="text-xs font-black uppercase tracking-[0.5em] text-muted-foreground italic">Destaques da Semana</h2>
+                <div className="h-[1px] flex-1 bg-border"></div>
              </div>
           </div>
 
           {/* Live Auctions Section */}
-          <section className="py-20 bg-black/20">
+          <section className="py-20 bg-muted/20">
             <div className="container mx-auto px-4">
               <div className="flex flex-col md:flex-row items-end justify-between mb-12 gap-6">
                 <div className="max-w-xl">
@@ -234,7 +234,7 @@ function Index() {
               {loading ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="aspect-[3/4] rounded-xl bg-white/5 animate-pulse"></div>
+                    <div key={i} className="aspect-[3/4] rounded-xl bg-muted animate-pulse"></div>
                   ))}
                 </div>
               ) : auctions.length > 0 ? (
@@ -330,12 +330,12 @@ function Index() {
 
           {/* Finished Auctions Section */}
           {finishedAuctions.length > 0 && (
-            <section className="py-20 bg-black/40 border-y border-white/5">
+            <section className="py-20 bg-muted/40 border-y border-border">
               <div className="container mx-auto px-4">
                 <div className="mb-12">
-                  <Badge variant="outline" className="mb-4 border-white/20 bg-white/5 text-white/60 uppercase tracking-widest">GALERIA DE ARREMATADOS</Badge>
-                  <h2 className="text-4xl font-black tracking-tight text-white italic uppercase">Leilões <span className="text-white/40">Encerrados</span></h2>
-                  <p className="text-white/20 mt-2">Veja os últimos produtos que foram arrematados com sucesso na plataforma.</p>
+                  <Badge variant="outline" className="mb-4 border-border bg-card text-muted-foreground uppercase tracking-widest">GALERIA DE ARREMATADOS</Badge>
+                  <h2 className="text-4xl font-black tracking-tight text-foreground italic uppercase">Leilões <span className="text-muted-foreground">Encerrados</span></h2>
+                  <p className="text-muted-foreground/60 mt-2">Veja os últimos produtos que foram arrematados com sucesso na plataforma.</p>
                 </div>
 
                 <motion.div 

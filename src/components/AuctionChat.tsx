@@ -135,17 +135,17 @@ export function AuctionChat({ auctionId, isFinished }: { auctionId: string, isFi
   };
 
   return (
-    <div className="flex flex-col h-full bg-black/20 border border-white/5 rounded-[32px] overflow-hidden backdrop-blur-3xl">
-      <div className="p-6 border-b border-white/10 flex items-center justify-between bg-white/5">
+    <div className="flex flex-col h-full bg-muted/20 border border-border rounded-[32px] overflow-hidden backdrop-blur-3xl">
+      <div className="p-6 border-b border-border flex items-center justify-between bg-muted/30">
         <div className="flex items-center gap-2">
           <div className="p-2 bg-primary/10 rounded-lg">
             <MessageSquare className="w-4 h-4 text-primary" />
           </div>
-          <h3 className="font-black text-xs uppercase tracking-[0.2em] text-white">Chat do <span className="text-primary">Arremate</span></h3>
+          <h3 className="font-black text-xs uppercase tracking-[0.2em] text-foreground">Chat do <span className="text-primary">Arremate</span></h3>
         </div>
         <div className="flex items-center gap-1.5">
           <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-          <span className="text-[10px] font-black text-white/40 uppercase">LIVE</span>
+          <span className="text-[10px] font-black text-muted-foreground uppercase">LIVE</span>
         </div>
       </div>
       
@@ -153,15 +153,15 @@ export function AuctionChat({ auctionId, isFinished }: { auctionId: string, isFi
         <div className="flex flex-col gap-6">
           {messages.length === 0 && (
             <div className="py-20 text-center space-y-3">
-              <div className="inline-flex p-3 rounded-full bg-white/5 text-white/10">
+              <div className="inline-flex p-3 rounded-full bg-muted text-muted-foreground/20">
                 <MessageSquare className="w-8 h-8" />
               </div>
-              <p className="text-white/20 font-black uppercase tracking-widest text-[10px] italic">Inicie a conversa agora!</p>
+              <p className="text-muted-foreground/30 font-black uppercase tracking-widest text-[10px] italic">Inicie a conversa agora!</p>
             </div>
           )}
           {messages.map((msg) => (
             <div key={msg.id} className="flex gap-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
-              <Avatar className="w-9 h-9 border border-white/10 shadow-sm shrink-0">
+              <Avatar className="w-9 h-9 border border-border shadow-sm shrink-0">
                 <AvatarImage src={msg.profile?.avatar_url || getFallbackAvatarUrl(msg.profile?.username)} />
                 <AvatarFallback className="bg-primary/20 text-primary font-black text-xs">
                   {msg.profile?.username?.substring(0, 2).toUpperCase() || "U"}
@@ -169,8 +169,8 @@ export function AuctionChat({ auctionId, isFinished }: { auctionId: string, isFi
               </Avatar>
               <div className="flex flex-col gap-1 min-w-0">
                 <span className="text-[10px] font-black text-primary uppercase tracking-widest leading-none">{msg.profile?.username || "Usuário"}</span>
-                <div className="bg-white/5 border border-white/5 rounded-2xl rounded-tl-none p-3 shadow-sm">
-                  <p className="text-sm text-white/80 leading-relaxed break-words">{msg.message}</p>
+                <div className="bg-muted border border-border rounded-2xl rounded-tl-none p-3 shadow-sm">
+                  <p className="text-sm text-foreground/80 leading-relaxed break-words">{msg.message}</p>
                 </div>
               </div>
             </div>
@@ -178,10 +178,10 @@ export function AuctionChat({ auctionId, isFinished }: { auctionId: string, isFi
         </div>
       </ScrollArea>
 
-      <form onSubmit={handleSendMessage} className="p-6 border-t border-white/10 bg-white/5 flex gap-3">
+      <form onSubmit={handleSendMessage} className="p-6 border-t border-border bg-muted/30 flex gap-3">
         <Input 
           placeholder="Escreva algo épico..." 
-          className="bg-black/40 border-white/10 h-12 text-sm rounded-2xl focus:ring-primary/50 transition-all placeholder:text-primary/50 placeholder:italic font-medium"
+          className="bg-background border-border h-12 text-sm rounded-2xl focus:ring-primary/50 transition-all placeholder:text-primary/50 placeholder:italic font-medium"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
         />
