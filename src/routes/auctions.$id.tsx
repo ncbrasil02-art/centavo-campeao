@@ -344,7 +344,7 @@ function AuctionPage() {
           {/* Left Column: Product Gallery & Description */}
           <div className="lg:col-span-7 space-y-8">
             <div className="space-y-6">
-              <div className="relative aspect-square rounded-[32px] overflow-hidden bg-white/5 border border-white/10 group shadow-2xl">
+              <div className="relative aspect-square rounded-[32px] overflow-hidden bg-muted/20 border border-border group shadow-2xl">
                 <div className="absolute inset-0 z-0">
                   <img 
                     src={auction.product?.images?.[activeImage] || FALLBACK_PRODUCT_IMAGE} 
@@ -366,7 +366,7 @@ function AuctionPage() {
                 />
                 <div className="absolute top-6 left-6 z-20 flex flex-col gap-3">
                   {auction.status === 'finished' ? (
-                    <Badge variant="outline" className="bg-black/60 backdrop-blur-md border-white/20 px-4 py-2 text-lg font-black italic">ENCERRADO</Badge>
+                    <Badge variant="outline" className="bg-background/60 backdrop-blur-md border-border px-4 py-2 text-lg font-black italic">ENCERRADO</Badge>
                   ) : auction.status === 'scheduled' ? (
                     <Badge className="bg-blue-500 border-none px-4 py-2 text-lg font-black italic shadow-[0_0_20px_rgba(59,130,246,0.5)]">AGENDADO</Badge>
                   ) : auction.is_finalizing ? (
@@ -380,37 +380,37 @@ function AuctionPage() {
                 </div>
 
                 {auction.status === 'scheduled' && auction.start_time && (
-                  <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px]">
-                    <div className="bg-primary/70 backdrop-blur-md py-8 px-12 flex flex-col items-center justify-center shadow-[0_0_50px_rgba(var(--color-primary),0.3)] border-y border-white/20 rotate-[-2deg] scale-110">
-                      <span className="text-sm font-black uppercase tracking-[0.4em] text-black/90 mb-3">COMEÇA EM</span>
+                  <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-background/40 backdrop-blur-[2px]">
+                    <div className="bg-primary/70 backdrop-blur-md py-8 px-12 flex flex-col items-center justify-center shadow-[0_0_50px_rgba(var(--color-primary),0.3)] border-y border-border rotate-[-2deg] scale-110">
+                      <span className="text-sm font-black uppercase tracking-[0.4em] text-foreground mb-3">COMEÇA EM</span>
                       <div className="flex gap-2">
                         {timeLeft >= 3600 * 24 && (
                           <div className="flex flex-col items-center">
-                            <div className="bg-black/90 rounded-xl px-4 py-3 min-w-[70px] flex items-center justify-center shadow-2xl border border-white/10">
+                            <div className="bg-card/90 rounded-xl px-4 py-3 min-w-[70px] flex items-center justify-center shadow-2xl border border-border">
                               <span className="text-4xl font-black text-primary tabular-nums tracking-tighter">
                                 {Math.floor(timeLeft / (3600 * 24)).toString().padStart(2, '0')}
                               </span>
                             </div>
-                            <span className="text-[10px] font-black text-black/60 mt-1">DIAS</span>
+                            <span className="text-xs font-black text-muted-foreground mt-1">DIAS</span>
                           </div>
                         )}
                         {timeLeft >= 3600 && (
                           <div className="flex flex-col items-center">
-                            <div className="bg-black/90 rounded-xl px-4 py-3 min-w-[70px] flex items-center justify-center shadow-2xl border border-white/10">
+                            <div className="bg-card/90 rounded-xl px-4 py-3 min-w-[70px] flex items-center justify-center shadow-2xl border border-border">
                               <span className="text-4xl font-black text-primary tabular-nums tracking-tighter">
                                 {Math.floor((timeLeft % (3600 * 24)) / 3600).toString().padStart(2, '0')}
                               </span>
                             </div>
-                            <span className="text-[10px] font-black text-black/60 mt-1">HORAS</span>
+                            <span className="text-xs font-black text-muted-foreground mt-1">HORAS</span>
                           </div>
                         )}
                         <div className="flex flex-col items-center">
-                          <div className="bg-black/90 rounded-xl px-4 py-3 min-w-[70px] flex items-center justify-center shadow-2xl border border-white/10">
+                          <div className="bg-card/90 rounded-xl px-4 py-3 min-w-[70px] flex items-center justify-center shadow-2xl border border-border">
                             <span className="text-4xl font-black text-primary tabular-nums tracking-tighter">
                               {Math.floor((timeLeft % 3600) / 60).toString().padStart(2, '0')}
                             </span>
                           </div>
-                          <span className="text-[10px] font-black text-black/60 mt-1">MIN</span>
+                          <span className="text-xs font-black text-muted-foreground mt-1">MIN</span>
                         </div>
                         <div className="flex flex-col items-center">
                           <div className="flex gap-1">
