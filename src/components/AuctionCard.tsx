@@ -438,13 +438,13 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
                       </div>
                     )}
                   </div>
-                  <span className="text-[7px] font-black text-black/60 mt-0.5">SEG</span>
+                  <span className="text-[7px] font-black text-muted-foreground mt-0.5">SEG</span>
                 </div>
               </div>
               <div className="flex flex-col items-center gap-1">
-                <div className="flex items-center gap-2 px-3 py-0.5 rounded-full bg-black/20 border border-black/5">
-                  <Calendar className="w-2.5 h-2.5 text-black/70" />
-                  <span className="text-[9px] font-bold text-black/70 uppercase tracking-widest">
+                <div className="flex items-center gap-2 px-3 py-0.5 rounded-full bg-glass/20 border border-glass-border">
+                  <Calendar className="w-2.5 h-2.5 text-muted-foreground" />
+                  <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
                     {new Date(auction.start_time).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })} às {new Date(auction.start_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
@@ -456,7 +456,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         {/* Badges */}
         <div className="absolute left-4 top-4 flex flex-col gap-2">
           {isFinished ? (
-            <Badge variant="outline" className="border-white/10 bg-black/60 px-3 py-1 text-white/40 backdrop-blur-md font-bold uppercase italic">
+            <Badge variant="outline" className="border-glass-border bg-glass/60 px-3 py-1 text-muted-foreground backdrop-blur-md font-bold uppercase italic">
               ENCERRADO
             </Badge>
           ) : isPendingAudit ? (
@@ -495,7 +495,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
               <Button 
                 size="icon" 
                 variant="ghost" 
-                className="h-10 w-10 rounded-full border border-white/10 bg-black/40 text-white/60 backdrop-blur-md transition-all hover:bg-primary/20 hover:text-primary"
+                className="h-10 w-10 rounded-full border border-glass-border bg-glass backdrop-blur-md transition-all hover:bg-primary/20 hover:text-primary text-muted-foreground"
               >
                 <MessageSquare className="h-4 w-4" />
               </Button>
