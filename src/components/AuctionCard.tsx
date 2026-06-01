@@ -659,8 +659,8 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           </div>
 
           <div className="flex flex-col overflow-hidden">
-            <span className={`text-[10px] font-black uppercase tracking-widest transition-colors ${
-              isNewBid ? 'text-primary' : (isFinished || isConfirmed) ? 'text-green-500' : isPendingAudit ? 'text-red-500' : 'text-muted-foreground/50'
+            <span className={`text-[11px] font-black uppercase tracking-widest transition-colors ${
+              isNewBid ? 'text-primary' : (isFinished || isConfirmed) ? 'text-green-500' : isPendingAudit ? 'text-red-500' : 'text-muted-foreground'
             }`}>
               {(isFinished || isConfirmed) ? "🏆 Vencedor" : isPendingAudit ? "🔍 Em Auditoria" : (isScheduled || !auction.last_bidder?.username) && hasWinners ? "Últimos Ganhadores" : "Último Lance"}
             </span>
