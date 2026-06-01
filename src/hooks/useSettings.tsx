@@ -254,6 +254,9 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
               page_background_color: newData.page_background_color || prev.page_background_color,
               border_color: newData.border_color || prev.border_color,
               logo_height: newData.logo_height || prev.logo_height,
+              logo_height_mobile: newData.logo_height_mobile || prev.logo_height_mobile,
+              logo_padding_x: newData.logo_padding_x || prev.logo_padding_x,
+              logo_padding_y: newData.logo_padding_y || prev.logo_padding_y,
               google_reviews_widget: newData.google_reviews_widget || prev.google_reviews_widget,
             };
             updateMetaTags(updated);
