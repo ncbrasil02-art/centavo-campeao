@@ -11,6 +11,7 @@ interface SiteSettings {
   pix_key: string;
   pix_name: string;
   hero_display_mode: 'phrases' | 'banners';
+  theme_mode: 'light' | 'dark';
   ga_id: string;
   fb_pixel_id: string;
   meta_title: string;
@@ -32,6 +33,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     pix_key: "",
     pix_name: "",
     hero_display_mode: 'phrases',
+    theme_mode: 'dark',
     ga_id: "",
     fb_pixel_id: "",
     meta_title: "",
@@ -148,6 +150,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
           pix_key: data.pix_key || "",
           pix_name: data.pix_name || "",
           hero_display_mode: (data.hero_display_mode as any) || 'phrases',
+          theme_mode: (data.theme_mode as any) || 'dark',
           ga_id: data.ga_id || "",
           fb_pixel_id: data.fb_pixel_id || "",
           meta_title: data.meta_title || "",
@@ -159,6 +162,13 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
         setSettings(fetchedSettings);
         updateMetaTags(fetchedSettings);
         injectScripts(fetchedSettings.ga_id, fetchedSettings.fb_pixel_id);
+
+        // Apply theme to document
+        if (fetchedSettings.theme_mode === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
 
         // Apply colors to document
         document.documentElement.style.setProperty("--primary", data.primary_color || "#8B5CF6");
@@ -185,6 +195,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
               primary_color: newData.primary_color || prev.primary_color,
               secondary_color: newData.secondary_color || prev.secondary_color,
               hero_display_mode: newData.hero_display_mode || prev.hero_display_mode,
+              theme_mode: newData.theme_mode || prev.theme_mode,
               ga_id: newData.ga_id || prev.ga_id,
               fb_pixel_id: newData.fb_pixel_id || prev.fb_pixel_id,
               meta_title: newData.meta_title || prev.meta_title,
@@ -194,6 +205,14 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
             };
             updateMetaTags(updated);
             injectScripts(updated.ga_id, updated.fb_pixel_id);
+
+            // Update theme class
+            if (updated.theme_mode === 'dark') {
+              document.documentElement.classList.add('dark');
+            } else {
+              document.documentElement.classList.remove('dark');
+            }
+            
             return updated;
           });
           
@@ -232,6 +251,7 @@ export const useSettings = () => {
       pix_key: "",
       pix_name: "",
       hero_display_mode: 'phrases' as const,
+      theme_mode: 'dark' as const,
       ga_id: "",
       fb_pixel_id: "",
       meta_title: "",
