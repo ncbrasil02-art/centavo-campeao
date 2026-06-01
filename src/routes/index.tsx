@@ -234,7 +234,7 @@ function Index() {
               {loading ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="aspect-[3/4] rounded-xl bg-white/5 animate-pulse"></div>
+                    <div key={i} className="aspect-[3/4] rounded-xl bg-muted animate-pulse"></div>
                   ))}
                 </div>
               ) : auctions.length > 0 ? (
