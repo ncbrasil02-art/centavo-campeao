@@ -588,25 +588,25 @@ function AuctionPage() {
                             <div className="absolute inset-0 bg-white/5 shadow-[inset_0_0_30px_rgba(255,255,255,0.2)]"></div>
                           )}
                         </div>
-                        <div className={`flex items-end py-2 px-2 rounded-xl border border-white/5 bg-black/40 ${
+                        <div className={`flex items-end py-2 px-2 rounded-xl border border-border bg-muted ${
                           timeLeft <= 8 && !isFinished ? 'border-red-500/30' : ''
                         }`}>
                           <span className={`text-xl font-black tabular-nums ${
-                            timeLeft <= 8 && !isFinished ? 'text-red-400' : 'text-white/40'
+                            timeLeft <= 8 && !isFinished ? 'text-red-400' : 'text-muted-foreground'
                           }`}>
                             ,{isFinished ? "00" : Math.floor((timeLeft % 1) * 100).toString().padStart(2, '0')}
                           </span>
                         </div>
                       </div>
                     </div>
-                    <div className="flex flex-col gap-4 p-6 rounded-[28px] bg-white/5 border border-white/10 transition-colors hover:bg-white/10">
-                      <span className="text-[10px] text-white/40 font-black uppercase tracking-widest flex items-center gap-2">
+                    <div className="flex flex-col gap-4 p-6 rounded-[28px] bg-muted/30 border border-border transition-colors hover:bg-muted/50">
+                      <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest flex items-center gap-2">
                         <History className="w-3 h-3 text-primary" /> Total de Lances
                       </span>
-                      <div className="text-5xl font-black text-white">
+                      <div className="text-5xl font-black text-foreground">
                         {auction.bid_count || 0}
                       </div>
-                      <div className="text-[10px] font-bold text-white/20 uppercase tracking-widest">
+                      <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                         Duração: {timerDuration}s
                       </div>
                     </div>
