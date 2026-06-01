@@ -772,7 +772,7 @@ function AuctionPage() {
               </div>
             </Card>
 
-            <div className="h-[500px] rounded-[40px] overflow-hidden border border-white/10">
+            <div className="h-[500px] rounded-[40px] overflow-hidden border border-border">
               {mounted && <AuctionChat auctionId={id} />}
             </div>
           </div>
@@ -780,7 +780,7 @@ function AuctionPage() {
       </main>
       
       {/* Trust Badges */}
-      <section className="py-24 border-t border-white/5 bg-black/40 relative overflow-hidden">
+      <section className="py-24 border-t border-border bg-muted/40 relative overflow-hidden">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[120px]" />
         <div className="container mx-auto px-4 relative z-10">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 md:gap-8">
