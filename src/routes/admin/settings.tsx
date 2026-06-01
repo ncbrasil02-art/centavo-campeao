@@ -151,6 +151,22 @@ function AdminSettings() {
     }
   };
 
+  const applyPalette = (palette: ColorPalette) => {
+    setSettings({
+      ...settings,
+      theme_mode: palette.theme,
+      primary_color: palette.primary,
+      secondary_color: palette.secondary,
+      font_color_primary: palette.foreground,
+      font_color_secondary: palette.mutedForeground,
+      card_background_color: palette.card,
+      block_background_color: palette.block,
+      page_background_color: palette.background,
+      border_color: palette.border,
+    });
+    toast.success(`Paleta "${palette.name}" aplicada!`);
+  };
+
   async function handleSave() {
     setSaving(true);
     try {
