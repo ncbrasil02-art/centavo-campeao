@@ -31,6 +31,8 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
+import { DARK_PALETTES, LIGHT_PALETTES, ColorPalette } from "@/constants/palettes";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/admin/settings")({
   component: AdminSettings,
