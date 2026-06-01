@@ -46,8 +46,11 @@ serve(async (req) => {
       .single()
 
     if (pkgError || !pkg) {
+      console.error('Package error:', pkgError, 'Package found:', !!pkg)
       return new Response(JSON.stringify({ error: 'Pacote não encontrado.' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
     }
+
+    console.log('Creating pending transaction for user:', user.id, 'package:', package_id)
 
     // 3. Create pending transaction via RPC
     const { data: transaction, error: transError } = await supabaseClient.rpc('create_pending_payment', {
