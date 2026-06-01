@@ -696,23 +696,23 @@ function AuctionPage() {
                     )}
                   </Button>
                   
-                  <p className="text-center text-[10px] text-white/20 uppercase tracking-[0.3em] font-black">
+                  <p className="text-center text-[10px] text-muted-foreground/30 uppercase tracking-[0.3em] font-black">
                     CUSTO POR LANCE: 1 CRÉDITO
                   </p>
                 </div>
               </div>
             </Card>
 
-            <Card className="bg-white/5 border-white/10 rounded-[32px] overflow-hidden shadow-xl backdrop-blur-xl group/history">
-              <div className="p-8 border-b border-white/10 flex items-center justify-between bg-white/5">
+            <Card className="bg-card border-border rounded-[32px] overflow-hidden shadow-xl backdrop-blur-xl group/history">
+              <div className="p-8 border-b border-border flex items-center justify-between bg-muted/30">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-primary/10 rounded-lg">
                     <History className="w-5 h-5 text-primary" />
                   </div>
-                  <h3 className="font-black text-sm uppercase tracking-[0.2em] text-white">Histórico de <span className="text-primary">Lances</span></h3>
+                  <h3 className="font-black text-sm uppercase tracking-[0.2em] text-foreground">Histórico de <span className="text-primary">Lances</span></h3>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="text-[10px] border-white/10 text-white/40 font-bold px-3">LIVE FEED</Badge>
+                  <Badge variant="outline" className="text-[10px] border-border text-muted-foreground font-bold px-3">LIVE FEED</Badge>
                 </div>
               </div>
               <div className="p-4">
