@@ -704,11 +704,8 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             <span className={`truncate text-sm font-bold transition-all ${
               isNewBid ? 'text-primary scale-105 origin-left' : (isFinished || isConfirmed) ? 'text-green-500' : isPendingAudit ? 'text-red-400' : 'text-foreground'
             }`}>
-              {auction.last_bidder?.username || ((isScheduled || !auction.last_bidder?.username) && currentWinner ? (
-
-                <span className="animate-in fade-in slide-in-from-right-4 duration-500">
-                  {currentWinner.winner_name} levou {currentWinner.product_name}
-                </span>
+              {auction.last_bidder?.username || ((isScheduled || !auction.last_bidder?.username) ? (
+                <span className="italic text-muted-foreground/50">Nenhum lance ainda</span>
               ) : "Aguardando...")}
             </span>
 
