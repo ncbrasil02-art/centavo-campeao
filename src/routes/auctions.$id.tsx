@@ -230,21 +230,8 @@ function AuctionPage() {
       .single();
 
     if (error || !data) {
-      // Fallback to mock data for fictitious mode
-      setAuction({
-        id,
-        current_price: 15.20,
-        bid_count: 142,
-        status: "live",
-        product: {
-          name: "iPhone 15 Pro Max",
-          description: "O smartphone mais avançado com o novo processador A17 Pro.",
-          market_value: 8999.00,
-          category: "Eletrônicos",
-          images: ["https://images.unsplash.com/photo-1696446701796-da61225697cc?auto=format&fit=crop&q=80&w=800"]
-        },
-        last_bidder: { username: "Arrematador99", avatar_url: null }
-      });
+      toast.error("Leilão não encontrado.");
+      navigate({ to: "/" as any });
     } else {
       setAuction(data);
       // Initialize timeLeft immediately
