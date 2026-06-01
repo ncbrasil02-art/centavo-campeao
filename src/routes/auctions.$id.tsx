@@ -557,20 +557,20 @@ function AuctionPage() {
 
                 <div className="relative space-y-4">
                   <div className="grid grid-cols-2 gap-6 relative z-10">
-                    <div className={`flex flex-col gap-3 p-6 rounded-[28px] bg-white/5 border border-white/10 transition-all duration-300 ${
+                    <div className={`flex flex-col gap-3 p-6 rounded-[28px] bg-muted/30 border border-border transition-all duration-300 ${
                       timeLeft <= 8 && !isFinished ? 'bg-red-500/5 border-red-500/40 shadow-[0_0_30px_rgba(239,68,68,0.2)]' : ''
                     }`}>
-                      <span className="text-[10px] text-white/40 font-black uppercase tracking-widest flex items-center gap-2">
+                      <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest flex items-center gap-2">
                         <Clock className={`w-3 h-3 ${timeLeft <= 8 && !isFinished ? 'text-red-500 animate-spin' : 'text-primary'}`} /> Tempo Restante
                       </span>
                       <div className="flex items-center gap-2">
-                        <div className={`relative flex items-center justify-center min-w-[80px] py-3 px-4 rounded-2xl border border-white/10 overflow-hidden transition-all duration-300 ${
+                        <div className={`relative flex items-center justify-center min-w-[80px] py-3 px-4 rounded-2xl border border-border overflow-hidden transition-all duration-300 ${
                           timeLeft <= 8 && !isFinished 
                             ? 'bg-gradient-to-br from-red-600 to-red-900 border-red-500 shadow-[0_0_30px_rgba(239,68,68,0.6)]' 
-                            : 'bg-gradient-to-br from-black/80 to-black/60 shadow-2xl'
+                            : 'bg-gradient-to-br from-card to-muted shadow-2xl'
                         }`}>
                           <span className={`text-4xl font-black tabular-nums tracking-tighter ${
-                            timeLeft <= 8 && !isFinished ? 'text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.6)]' : 'text-white'
+                            timeLeft <= 8 && !isFinished ? 'text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.6)]' : 'text-foreground'
                           }`}>
                             {isFinished ? "00:00" : (
                               <>
