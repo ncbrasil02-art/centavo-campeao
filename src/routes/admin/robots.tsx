@@ -143,6 +143,18 @@ function AdminRobotsPage() {
     }
   };
 
+  const finishDisputeEarly = async (settingsId: string) => {
+    const { error } = await supabase
+      .from("robot_settings")
+      .update({ stop_after_minutes: 0 })
+      .eq("id", settingsId);
+    
+    if (!error) {
+      toast.success("Disputa encerrada. O robô irá parar de cobrir lances.");
+      fetchAuctionsWithRobots();
+    }
+  };
+
 
   
 
@@ -288,9 +300,20 @@ function AdminRobotsPage() {
                       </TableCell>
 
                       <TableCell className="text-right">
-                        <Button size="sm" variant="ghost" className="text-white/40 hover:text-primary hover:bg-primary/10">
-                          <Settings2 className="w-4 h-4" />
-                        </Button>
+                        <div className="flex justify-end gap-2">
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="text-amber-500 border-amber-500/20 hover:bg-amber-500/10 hover:text-amber-400"
+                            onClick={() => finishDisputeEarly(settings.id)}
+                            title="Encerrar disputa (arrematar)"
+                          >
+                            <StopCircle className="w-4 h-4 mr-1" /> Arrematar
+                          </Button>
+                          <Button size="sm" variant="ghost" className="text-white/40 hover:text-primary hover:bg-primary/10">
+                            <Settings2 className="w-4 h-4" />
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   );
