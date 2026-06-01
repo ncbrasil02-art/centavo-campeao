@@ -170,7 +170,7 @@ function AdminPackages() {
             }
           }}>
             <DialogTrigger asChild>
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold">
+              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs">
                 <Plus className="w-4 h-4 mr-2" /> Novo Pacote
               </Button>
             </DialogTrigger>
@@ -260,7 +260,7 @@ function AdminPackages() {
                 </div>
 
                 <DialogFooter className="pt-4">
-                  <Button type="submit" className="w-full bg-primary font-bold">
+                  <Button type="submit" className="w-full bg-primary font-bold text-xs">
                     {editingPackage ? "Salvar Alterações" : "Criar Pacote"}
                   </Button>
                 </DialogFooter>

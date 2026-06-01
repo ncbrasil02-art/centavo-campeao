@@ -11,7 +11,7 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Plus, Gavel, Calendar, Clock, Edit, Trash2, CheckCircle, XCircle, Power, Upload, Loader2, Image as ImageIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, Gavel, Calendar, Clock, Edit, Trash2, CheckCircle, XCircle, Power, Upload, Loader2, Image as ImageIcon, ChevronLeft, ChevronRight, Bell } from "lucide-react";
 import { toast } from "sonner";
 import { 
   Dialog, 
@@ -34,6 +34,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { NotificationDialog } from "@/components/admin/NotificationDialog";
 
 export const Route = createFileRoute("/admin/auctions")({
   component: AdminAuctions,
@@ -366,7 +367,7 @@ function AdminAuctions() {
             }
           }}>
             <DialogTrigger asChild>
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold" onClick={() => {
+              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs" onClick={() => {
                 setEditingAuction(null);
                 setFormData(initialFormData);
               }}>
@@ -621,7 +622,7 @@ function AdminAuctions() {
                 </div>
 
                 <DialogFooter className="pt-4">
-                  <Button type="submit" className="w-full bg-primary font-bold">
+                  <Button type="submit" className="w-full bg-primary font-bold text-xs">
                     {editingAuction ? "Salvar Alterações" : "Criar Leilão"}
                   </Button>
                 </DialogFooter>
@@ -680,10 +681,13 @@ function AdminAuctions() {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
+                        {auction.status === 'scheduled' && (
+                          <NotificationDialog auction={auction} />
+                        )}
                         {auction.status === 'pending_audit' && (
                           <Button 
                             size="sm" 
-                            className="bg-green-600 hover:bg-green-500 text-white font-bold h-8"
+                            className="bg-green-600 hover:bg-green-500 text-white font-bold h-8 text-xs"
                             onClick={() => handleConfirmWinner(auction.id)}
                           >
                             <CheckCircle className="w-4 h-4 mr-2" /> Em Auditoria

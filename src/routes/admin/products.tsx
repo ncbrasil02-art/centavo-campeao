@@ -172,7 +172,7 @@ function AdminProducts() {
             }
           }}>
             <DialogTrigger asChild>
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold">
+              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs">
                 <Plus className="w-4 h-4 mr-2" /> Novo Lote
               </Button>
             </DialogTrigger>
@@ -269,7 +269,7 @@ function AdminProducts() {
                 </div>
 
                 <DialogFooter className="pt-4">
-                  <Button type="submit" className="w-full bg-primary font-bold">
+                  <Button type="submit" className="w-full bg-primary font-bold text-xs">
                     {editingProduct ? "Salvar Alterações" : "Cadastrar Lote"}
                   </Button>
                 </DialogFooter>
