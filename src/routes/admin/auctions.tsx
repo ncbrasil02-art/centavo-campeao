@@ -307,6 +307,8 @@ function AdminAuctions() {
       timer_duration: auction.timer_duration || 15,
       is_finalizing: auction.is_finalizing || false,
       target_winner: auction.target_winner || "random",
+      modality: auction.modality || "default",
+      min_balance_required: auction.min_balance_required || 0,
       robot_min_delay: robotSettings?.min_delay || 1,
       robot_max_delay: robotSettings?.max_delay || 5,
       robot_bid_chance: typeof robotSettings?.bid_chance === 'string' ? parseFloat(robotSettings.bid_chance) : (robotSettings?.bid_chance || 0.3),
