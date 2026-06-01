@@ -154,9 +154,10 @@ function PackagesPage() {
   };
 
   const copyPixKey = () => {
-    if (settings.pix_key) {
-      navigator.clipboard.writeText(settings.pix_key);
-      toast.success("Chave PIX copiada!");
+    const key = buying?.pix_copy_paste || settings.pix_key;
+    if (key) {
+      navigator.clipboard.writeText(key);
+      toast.success("Código PIX copiado!");
     }
   };
 
