@@ -227,6 +227,12 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
               meta_description: newData.meta_description || prev.meta_description,
               meta_keywords: newData.meta_keywords || prev.meta_keywords,
               google_site_verification: newData.google_site_verification || prev.google_site_verification,
+              font_color_primary: newData.font_color_primary || prev.font_color_primary,
+              font_color_secondary: newData.font_color_secondary || prev.font_color_secondary,
+              card_background_color: newData.card_background_color || prev.card_background_color,
+              block_background_color: newData.block_background_color || prev.block_background_color,
+              page_background_color: newData.page_background_color || prev.page_background_color,
+              border_color: newData.border_color || prev.border_color,
             };
             updateMetaTags(updated);
             injectScripts(updated.ga_id, updated.fb_pixel_id);
