@@ -726,6 +726,8 @@ export type Database = {
           id: string | null
           is_finalizing: boolean | null
           last_bidder: Json | null
+          min_balance_required: number | null
+          modality: string | null
           product: Json | null
           product_id: string | null
           robot_enabled: boolean | null
