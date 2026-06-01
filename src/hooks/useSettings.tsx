@@ -189,8 +189,15 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
         }
 
         // Apply colors to document
-        document.documentElement.style.setProperty("--primary", data.primary_color || "#8B5CF6");
-        document.documentElement.style.setProperty("--secondary", data.secondary_color || "#7C3AED");
+        document.documentElement.style.setProperty("--primary", fetchedSettings.primary_color);
+        document.documentElement.style.setProperty("--secondary", fetchedSettings.secondary_color);
+        document.documentElement.style.setProperty("--foreground", fetchedSettings.font_color_primary);
+        document.documentElement.style.setProperty("--muted-foreground", fetchedSettings.font_color_secondary);
+        document.documentElement.style.setProperty("--card", fetchedSettings.card_background_color);
+        document.documentElement.style.setProperty("--muted", fetchedSettings.block_background_color);
+        document.documentElement.style.setProperty("--background", fetchedSettings.page_background_color);
+        document.documentElement.style.setProperty("--border", fetchedSettings.border_color);
+        document.documentElement.style.setProperty("--glass-border", fetchedSettings.border_color + "1A"); // 10% opacity for glass border
       }
     }
 
