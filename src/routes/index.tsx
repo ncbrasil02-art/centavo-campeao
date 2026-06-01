@@ -366,7 +366,7 @@ function Index() {
                 
                 <div className="mt-12 flex justify-center">
                   <Button variant="outline" className="border-border hover:bg-muted/50 font-bold uppercase tracking-widest text-xs h-12 px-8 rounded-xl group" asChild>
-                    <Link to="/finished-auctions" className="flex items-center gap-2">
+                    <Link to={"/finished-auctions" as any} className="flex items-center gap-2">
                       Ver todos os leilões arrematados
                       <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                     </Link>
