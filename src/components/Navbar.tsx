@@ -88,7 +88,7 @@ export function Navbar() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-white/10 bg-background/80 backdrop-blur-md">
+    <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md text-foreground">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link to="/" className="flex items-center gap-2 group">
           {logo_url ? (
@@ -99,7 +99,7 @@ export function Navbar() {
                 <Gavel className="h-8 w-8 text-primary transition-transform group-hover:rotate-12" />
                 <div className="absolute -inset-1 rounded-full bg-primary/20 blur-sm"></div>
               </div>
-              <span className="text-2xl font-bold tracking-tighter text-white">
+              <span className="text-2xl font-bold tracking-tighter text-foreground">
                 {site_name.split(' ')[0]}<span className="text-primary">{site_name.split(' ').slice(1).join('')}</span>
               </span>
             </>
@@ -112,18 +112,18 @@ export function Navbar() {
               <Clock className="w-2.5 h-2.5" /> Horário Oficial
               {synced && <div className="w-1 h-1 rounded-full bg-green-500 animate-pulse shadow-[0_0_5px_rgba(34,197,94,0.8)]" title="Sincronizado em tempo real"></div>}
             </span>
-            <span className="text-sm font-black tabular-nums text-white/90">
+            <span className="text-sm font-black tabular-nums text-foreground/90">
               {currentTime ? format(currentTime, "HH:mm:ss", { locale: ptBR }) : "--:--:--"}
             </span>
             <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-black/90 px-3 py-1 rounded text-[8px] font-bold text-white/60 opacity-0 group-hover/time:opacity-100 transition-opacity whitespace-nowrap border border-white/10 pointer-events-none">
               MILISSEGUNDOS SINCRONIZADOS COM O SERVIDOR
             </div>
           </div>
-          <Link to="/" className="text-sm font-medium text-white/70 transition-colors hover:text-primary">Leilões</Link>
-          <Link to="/how-it-works" className="text-sm font-medium text-white/70 transition-colors hover:text-primary">Como Funciona</Link>
-          <Link to="/ranking" className="text-sm font-medium text-white/70 transition-colors hover:text-primary">Ranking</Link>
+          <Link to="/" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Leilões</Link>
+          <Link to="/how-it-works" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Como Funciona</Link>
+          <Link to="/ranking" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Ranking</Link>
 
-          <Link to="/packages" className="text-sm font-medium text-white/70 transition-colors hover:text-primary">Comprar Lances</Link>
+          <Link to="/packages" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Comprar Lances</Link>
           {(profile?.is_admin || user?.id === 'cdf027bb-f239-4ba0-b8a9-7bf52341df4b') && (
             <Link 
               to="/admin" 
@@ -164,7 +164,7 @@ export function Navbar() {
                 </Button>
               )}
 
-              <Button variant="outline" size="icon" className="h-10 w-10 rounded-full border-white/10 bg-white/5 hover:bg-white/10 overflow-hidden" asChild>
+              <Button variant="outline" size="icon" className="h-10 w-10 rounded-full border-border bg-muted/50 hover:bg-muted overflow-hidden" asChild>
                 <Link to={profile?.is_admin ? "/admin" : "/"}>
                   <Avatar className="h-full w-full">
                     <AvatarImage src={profile?.avatar_url || getFallbackAvatarUrl(profile?.username)} />
@@ -182,7 +182,7 @@ export function Navbar() {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="lg:hidden h-10 w-10 text-white"
+                className="lg:hidden h-10 w-10 text-foreground"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
                 {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -190,7 +190,7 @@ export function Navbar() {
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <Button variant="ghost" className="text-white hover:text-primary hover:bg-white/5" asChild>
+              <Button variant="ghost" className="text-foreground hover:text-primary hover:bg-muted" asChild>
                 <Link to="/auth">Entrar</Link>
               </Button>
               <Button className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_15px_rgba(var(--color-primary),0.5)]" asChild>
