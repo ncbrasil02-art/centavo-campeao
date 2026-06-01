@@ -328,7 +328,7 @@ export function SecondaryBanner({ title, subtitle, imageUrl, linkUrl, reverse = 
               className="absolute inset-0 w-full h-full object-cover"
               alt={title}
             />
-            <div className={`absolute inset-0 bg-gradient-to-t md:bg-gradient-to-${reverse ? 'r' : 'l'} from-zinc-950 via-transparent to-transparent`}></div>
+            <div className={`absolute inset-0 bg-gradient-to-t md:bg-gradient-to-${reverse ? 'r' : 'l'} from-card via-transparent to-transparent`}></div>
           </div>
         </div>
       </div>
