@@ -46,6 +46,12 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     meta_description: "",
     meta_keywords: "",
     google_site_verification: "",
+    font_color_primary: "#ffffff",
+    font_color_secondary: "#a1a1aa",
+    card_background_color: "#18181b",
+    block_background_color: "#27272a",
+    page_background_color: "#09090b",
+    border_color: "#3f3f46",
   });
 
   const updateMetaTags = (data: Partial<SiteSettings>) => {
