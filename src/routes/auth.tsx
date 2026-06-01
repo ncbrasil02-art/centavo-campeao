@@ -29,6 +29,7 @@ function AuthPage() {
   const [username, setUsername] = useState("");
   const [cpf, setCpf] = useState("");
   const [phone, setPhone] = useState("");
+  const [gender, setGender] = useState("");
   const navigate = useNavigate();
   const search = Route.useSearch() as any;
   const [activeTab, setActiveTab] = useState(search.register === "true" ? "register" : "login");
