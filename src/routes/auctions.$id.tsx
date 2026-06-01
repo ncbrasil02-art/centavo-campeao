@@ -420,19 +420,19 @@ function AuctionPage() {
                               </span>
                             </div>
                             {timeLeft < 60 && (
-                              <div className="bg-black/70 rounded-xl px-2 py-3 flex items-end shadow-2xl border border-white/10">
+                              <div className="bg-card/70 rounded-xl px-2 py-3 flex items-end shadow-2xl border border-border">
                                 <span className="text-xl font-black text-primary/80 tabular-nums">
                                   ,{Math.floor((timeLeft % 1) * 100).toString().padStart(2, '0')}
                                 </span>
                               </div>
                             )}
                           </div>
-                          <span className="text-[10px] font-black text-black/60 mt-1">SEG</span>
+                          <span className="text-xs font-black text-muted-foreground mt-1">SEG</span>
                         </div>
                       </div>
-                      <div className="mt-4 flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/20 border border-black/10">
-                        <Calendar className="w-4 h-4 text-black/70" />
-                        <span className="text-xs font-bold text-black/80 uppercase tracking-widest">
+                      <div className="mt-4 flex items-center gap-2 px-4 py-1.5 rounded-full bg-muted/20 border border-border">
+                        <Calendar className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
                           {new Date(auction.start_time).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })} às {new Date(auction.start_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                         </span>
                       </div>
