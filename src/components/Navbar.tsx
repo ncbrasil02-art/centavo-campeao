@@ -115,7 +115,7 @@ export function Navbar() {
             <span className="text-sm font-black tabular-nums text-foreground/90">
               {currentTime ? format(currentTime, "HH:mm:ss", { locale: ptBR }) : "--:--:--"}
             </span>
-            <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-black/90 px-3 py-1 rounded text-[8px] font-bold text-white/60 opacity-0 group-hover/time:opacity-100 transition-opacity whitespace-nowrap border border-white/10 pointer-events-none">
+            <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-card px-3 py-1 rounded text-[9px] font-bold text-muted-foreground opacity-0 group-hover/time:opacity-100 transition-opacity whitespace-nowrap border border-border pointer-events-none shadow-xl">
               MILISSEGUNDOS SINCRONIZADOS COM O SERVIDOR
             </div>
           </div>
