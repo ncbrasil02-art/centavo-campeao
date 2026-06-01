@@ -25,6 +25,9 @@ interface SiteSettings {
   page_background_color: string;
   border_color: string;
   logo_height: number;
+  logo_height_mobile: number;
+  logo_padding_x: number;
+  logo_padding_y: number;
   google_reviews_widget: string;
 }
 
@@ -55,6 +58,9 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     page_background_color: "#09090b",
     border_color: "#3f3f46",
     logo_height: 40,
+    logo_height_mobile: 32,
+    logo_padding_x: 0,
+    logo_padding_y: 0,
     google_reviews_widget: "",
   });
 
@@ -180,6 +186,9 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
           page_background_color: data.page_background_color || (data.theme_mode === 'dark' ? "#09090b" : "#ffffff"),
           border_color: data.border_color || (data.theme_mode === 'dark' ? "#3f3f46" : "#e5e7eb"),
           logo_height: data.logo_height || 40,
+          logo_height_mobile: data.logo_height_mobile || 32,
+          logo_padding_x: data.logo_padding_x || 0,
+          logo_padding_y: data.logo_padding_y || 0,
           google_reviews_widget: data.google_reviews_widget || "",
         };
         
@@ -320,6 +329,9 @@ export const useSettings = () => {
       page_background_color: "#09090b",
       border_color: "#3f3f46",
       logo_height: 40,
+      logo_height_mobile: 32,
+      logo_padding_x: 0,
+      logo_padding_y: 0,
       google_reviews_widget: "",
     };
   }

@@ -15,7 +15,7 @@ export function Navbar() {
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { site_name, logo_url, logo_height } = useSettings();
+  const { site_name, logo_url, logo_height, logo_height_mobile, logo_padding_x, logo_padding_y } = useSettings();
   const { getAdjustedNow, synced } = useTimeSync();
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
   const navigate = useNavigate();
@@ -92,7 +92,26 @@ export function Navbar() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link to="/" className="flex items-center gap-2 group">
           {logo_url ? (
-            <img src={logo_url} alt={site_name} className="object-contain" style={{ height: `${logo_height || 40}px` }} />
+            <div 
+              style={{ 
+                padding: `${logo_padding_y || 0}px ${logo_padding_x || 0}px`,
+                display: 'flex',
+                alignItems: 'center'
+              }}
+            >
+              <img 
+                src={logo_url} 
+                alt={site_name} 
+                className="object-contain hidden md:block" 
+                style={{ height: `${logo_height || 40}px` }} 
+              />
+              <img 
+                src={logo_url} 
+                alt={site_name} 
+                className="object-contain block md:hidden" 
+                style={{ height: `${logo_height_mobile || 32}px` }} 
+              />
+            </div>
           ) : (
             <>
               <div className="relative">
