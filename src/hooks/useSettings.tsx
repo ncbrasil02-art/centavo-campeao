@@ -18,6 +18,12 @@ interface SiteSettings {
   meta_description: string;
   meta_keywords: string;
   google_site_verification: string;
+  font_color_primary: string;
+  font_color_secondary: string;
+  card_background_color: string;
+  block_background_color: string;
+  page_background_color: string;
+  border_color: string;
 }
 
 const SettingsContext = createContext<SiteSettings | null>(null);
@@ -40,6 +46,12 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     meta_description: "",
     meta_keywords: "",
     google_site_verification: "",
+    font_color_primary: "#ffffff",
+    font_color_secondary: "#a1a1aa",
+    card_background_color: "#18181b",
+    block_background_color: "#27272a",
+    page_background_color: "#09090b",
+    border_color: "#3f3f46",
   });
 
   const updateMetaTags = (data: Partial<SiteSettings>) => {
@@ -157,6 +169,12 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
           meta_description: data.meta_description || "",
           meta_keywords: data.meta_keywords || "",
           google_site_verification: data.google_site_verification || "",
+          font_color_primary: data.font_color_primary || (data.theme_mode === 'dark' ? "#ffffff" : "#000000"),
+          font_color_secondary: data.font_color_secondary || (data.theme_mode === 'dark' ? "#a1a1aa" : "#666666"),
+          card_background_color: data.card_background_color || (data.theme_mode === 'dark' ? "#18181b" : "#ffffff"),
+          block_background_color: data.block_background_color || (data.theme_mode === 'dark' ? "#27272a" : "#f3f4f6"),
+          page_background_color: data.page_background_color || (data.theme_mode === 'dark' ? "#09090b" : "#ffffff"),
+          border_color: data.border_color || (data.theme_mode === 'dark' ? "#3f3f46" : "#e5e7eb"),
         };
         
         setSettings(fetchedSettings);
@@ -171,8 +189,15 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
         }
 
         // Apply colors to document
-        document.documentElement.style.setProperty("--primary", data.primary_color || "#8B5CF6");
-        document.documentElement.style.setProperty("--secondary", data.secondary_color || "#7C3AED");
+        document.documentElement.style.setProperty("--primary", fetchedSettings.primary_color);
+        document.documentElement.style.setProperty("--secondary", fetchedSettings.secondary_color);
+        document.documentElement.style.setProperty("--foreground", fetchedSettings.font_color_primary);
+        document.documentElement.style.setProperty("--muted-foreground", fetchedSettings.font_color_secondary);
+        document.documentElement.style.setProperty("--card", fetchedSettings.card_background_color);
+        document.documentElement.style.setProperty("--muted", fetchedSettings.block_background_color);
+        document.documentElement.style.setProperty("--background", fetchedSettings.page_background_color);
+        document.documentElement.style.setProperty("--border", fetchedSettings.border_color);
+        document.documentElement.style.setProperty("--glass-border", fetchedSettings.border_color + "1A"); // 10% opacity for glass border
       }
     }
 
@@ -202,6 +227,12 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
               meta_description: newData.meta_description || prev.meta_description,
               meta_keywords: newData.meta_keywords || prev.meta_keywords,
               google_site_verification: newData.google_site_verification || prev.google_site_verification,
+              font_color_primary: newData.font_color_primary || prev.font_color_primary,
+              font_color_secondary: newData.font_color_secondary || prev.font_color_secondary,
+              card_background_color: newData.card_background_color || prev.card_background_color,
+              block_background_color: newData.block_background_color || prev.block_background_color,
+              page_background_color: newData.page_background_color || prev.page_background_color,
+              border_color: newData.border_color || prev.border_color,
             };
             updateMetaTags(updated);
             injectScripts(updated.ga_id, updated.fb_pixel_id);
@@ -216,11 +247,16 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
             return updated;
           });
           
-          if (newData.primary_color) {
-            document.documentElement.style.setProperty("--primary", newData.primary_color);
-          }
-          if (newData.secondary_color) {
-            document.documentElement.style.setProperty("--secondary", newData.secondary_color);
+          if (newData.primary_color) document.documentElement.style.setProperty("--primary", newData.primary_color);
+          if (newData.secondary_color) document.documentElement.style.setProperty("--secondary", newData.secondary_color);
+          if (newData.font_color_primary) document.documentElement.style.setProperty("--foreground", newData.font_color_primary);
+          if (newData.font_color_secondary) document.documentElement.style.setProperty("--muted-foreground", newData.font_color_secondary);
+          if (newData.card_background_color) document.documentElement.style.setProperty("--card", newData.card_background_color);
+          if (newData.block_background_color) document.documentElement.style.setProperty("--muted", newData.block_background_color);
+          if (newData.page_background_color) document.documentElement.style.setProperty("--background", newData.page_background_color);
+          if (newData.border_color) {
+            document.documentElement.style.setProperty("--border", newData.border_color);
+            document.documentElement.style.setProperty("--glass-border", newData.border_color + "1A");
           }
         }
       )
@@ -258,6 +294,12 @@ export const useSettings = () => {
       meta_description: "",
       meta_keywords: "",
       google_site_verification: "",
+      font_color_primary: "#ffffff",
+      font_color_secondary: "#a1a1aa",
+      card_background_color: "#18181b",
+      block_background_color: "#27272a",
+      page_background_color: "#09090b",
+      border_color: "#3f3f46",
     };
   }
   return context;

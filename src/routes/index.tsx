@@ -217,7 +217,7 @@ function Index() {
           </div>
 
           {/* Live Auctions Section */}
-          <section className="py-20 bg-muted/20">
+          <section className="py-20 bg-muted">
             <div className="container mx-auto px-4">
               <div className="flex flex-col md:flex-row items-end justify-between mb-12 gap-6">
                 <div className="max-w-xl">
@@ -292,7 +292,7 @@ function Index() {
           </section>
 
           {/* Winners Section */}
-          <section className="py-20 bg-primary/5">
+          <section className="py-20 bg-muted">
             <div className="container mx-auto px-4">
               <div className="text-center mb-16">
                 <Badge variant="outline" className="mb-4 border-primary/30 bg-primary/10 text-primary uppercase">GALERIA DE HONRA</Badge>
@@ -330,7 +330,7 @@ function Index() {
 
           {/* Finished Auctions Section */}
           {finishedAuctions.length > 0 && (
-            <section className="py-20 bg-muted/40 border-y border-border">
+            <section className="py-20 bg-muted/50 border-y border-border">
               <div className="container mx-auto px-4">
                 <div className="mb-12">
                   <Badge variant="outline" className="mb-4 border-border bg-card text-muted-foreground uppercase tracking-widest">GALERIA DE ARREMATADOS</Badge>

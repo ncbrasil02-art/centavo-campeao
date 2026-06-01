@@ -542,10 +542,10 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             </h3>
           </Link>
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40">
+            <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
               Valor Original:
             </span>
-            <span className="text-xs font-bold text-muted-foreground/50 line-through">
+            <span className="text-xs font-bold text-muted-foreground/80 line-through">
               R$ {auction.product?.market_value?.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) || "0,00"}
             </span>
           </div>
@@ -659,8 +659,8 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           </div>
 
           <div className="flex flex-col overflow-hidden">
-            <span className={`text-[10px] font-black uppercase tracking-widest transition-colors ${
-              isNewBid ? 'text-primary' : (isFinished || isConfirmed) ? 'text-green-500' : isPendingAudit ? 'text-red-500' : 'text-muted-foreground/50'
+            <span className={`text-[11px] font-black uppercase tracking-widest transition-colors ${
+              isNewBid ? 'text-primary' : (isFinished || isConfirmed) ? 'text-green-500' : isPendingAudit ? 'text-red-500' : 'text-muted-foreground'
             }`}>
               {(isFinished || isConfirmed) ? "🏆 Vencedor" : isPendingAudit ? "🔍 Em Auditoria" : (isScheduled || !auction.last_bidder?.username) && hasWinners ? "Últimos Ganhadores" : "Último Lance"}
             </span>
