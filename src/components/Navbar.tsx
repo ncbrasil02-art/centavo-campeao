@@ -149,7 +149,7 @@ export function Navbar() {
           {user ? (
             <div className="flex items-center gap-2 sm:gap-4">
               <div className="hidden flex-col items-end sm:flex">
-                <span className="text-[10px] font-medium text-white/50 uppercase tracking-widest">Saldo</span>
+                <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">Saldo</span>
                 <div className="flex items-center gap-1 text-primary font-bold">
                   <Wallet className="h-4 w-4" />
                   <span>{profile?.bid_balance || 0}</span>
