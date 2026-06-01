@@ -73,7 +73,6 @@ function ProfilePage() {
           full_name: fullName,
           phone,
           gender,
-          updated_at: new Date().toISOString(),
         })
         .eq("id", session.user.id);
 
