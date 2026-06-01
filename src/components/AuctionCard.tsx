@@ -560,9 +560,9 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         </div>
 
         <div className="relative space-y-2">
-          <div className="grid grid-cols-2 gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm relative z-10">
+          <div className="grid grid-cols-2 gap-4 rounded-2xl border border-border bg-muted/30 p-4 backdrop-blur-sm relative z-10">
             <div className="flex flex-col">
-              <span className="mb-1 text-[9px] font-black uppercase tracking-widest text-white/40">
+              <span className="mb-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/50">
                 Você paga:
               </span>
               <span className={`text-2xl font-black text-primary transition-all duration-300 ${isNewBid ? 'scale-110 drop-shadow-[0_0_10px_rgba(var(--color-primary),0.5)]' : 'scale-100'}`}>
