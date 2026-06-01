@@ -19,6 +19,7 @@ import { ptBR } from "date-fns/locale";
 export function Navbar() {
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { site_name, logo_url, logo_height, logo_height_mobile, logo_padding_x, logo_padding_y } = useSettings();
   const { getAdjustedNow, synced } = useTimeSync();
@@ -33,25 +34,35 @@ export function Navbar() {
   }, [getAdjustedNow]);
 
   useEffect(() => {
+    let mounted = true;
+
     supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!mounted) return;
       setUser(session?.user ?? null);
       if (session?.user) {
         fetchProfile(session.user.id);
         subscribeToProfile(session.user.id);
+      } else {
+        setLoading(false);
       }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!mounted) return;
       setUser(session?.user ?? null);
       if (session?.user) {
         fetchProfile(session.user.id);
         subscribeToProfile(session.user.id);
       } else {
         setProfile(null);
+        setLoading(false);
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   function subscribeToProfile(userId: string) {
@@ -84,6 +95,7 @@ export function Navbar() {
       .eq("id", userId)
       .single();
     if (data) setProfile(data);
+    setLoading(false);
   }
 
   const handleLogout = async () => {
