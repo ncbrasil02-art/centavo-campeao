@@ -20,21 +20,45 @@ serve(async (req) => {
     const payload = await req.json()
     console.log('Webhook received:', payload)
 
-    // Mercado Pago Webhook Logic (Example)
-    // Most MP webhooks are for 'payment' topic
-    if (payload.action === 'payment.created' || payload.type === 'payment') {
-      const paymentId = payload.data?.id || payload.id
+    // Mercado Pago Webhook Logic
+    // For Payments API, the payload usually has 'type' or 'action'
+    const type = payload.type || (payload.topic === 'payment' ? 'payment' : null)
+    const paymentId = payload.data?.id || (type === 'payment' ? payload.id : null)
+    
+    if (type === 'payment' && paymentId) {
+      // 1. Fetch MP Access Token from site_settings
+      const { data: settings } = await supabaseClient
+        .from('site_settings')
+        .select('mercado_pago_access_token')
+        .single()
+
+      if (!settings?.mercado_pago_access_token) {
+        throw new Error('MP Access Token not found')
+      }
+
+      // 2. Fetch payment details from Mercado Pago
+      const mpResponse = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
+        headers: {
+          'Authorization': `Bearer ${settings.mercado_pago_access_token}`,
+        }
+      })
+
+      if (!mpResponse.ok) {
+        throw new Error(`Failed to fetch payment ${paymentId} from MP`)
+      }
+
+      const payment = await mpResponse.json()
+      const externalReference = payment.external_reference
+      const status = payment.status
+
+      console.log(`Payment ${paymentId} status: ${status}, external_reference: ${externalReference}`)
       
-      // Fetch payment details from Mercado Pago if needed
-      // For this simulation, we'll assume the external_reference is our transaction_id
-      const externalReference = payload.external_reference || payload.data?.external_reference
-      
-      if (externalReference) {
+      if (externalReference && status === 'approved') {
         console.log(`Finalizing transaction: ${externalReference}`)
         
         const { data, error } = await supabaseClient.rpc('complete_payment', {
           p_transaction_id: externalReference,
-          p_external_id: `MP-${paymentId}`
+          p_external_id: paymentId.toString()
         })
 
         if (error) {
@@ -43,6 +67,11 @@ serve(async (req) => {
         }
 
         console.log('Payment completed successfully:', data)
+      } else if (externalReference && (status === 'cancelled' || status === 'rejected')) {
+        await supabaseClient
+          .from('transactions')
+          .update({ status: 'failed' })
+          .eq('id', externalReference)
       }
     }
 

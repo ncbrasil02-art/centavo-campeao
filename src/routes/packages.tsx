@@ -68,51 +68,60 @@ function PackagesPage() {
     if (!buying) return;
     setPaymentStep("processing");
     try {
-      const { data, error } = await supabase.rpc("create_pending_payment", {
-        p_package_id: buying.id,
-        p_method: "pix"
+      const { data, error } = await supabase.functions.invoke('mercadopago-pix', {
+        body: { 
+          package_id: buying.id
+        }
       });
+
       if (error) throw error;
-      setBuying({ ...buying, transaction_id: (data as any).transaction_id });
+      
+      setBuying({ 
+        ...buying, 
+        transaction_id: data.transaction_id,
+        pix_copy_paste: data.pix_copy_paste,
+        pix_qr_code: data.pix_qr_code
+      });
       setPaymentStep("pix");
-    } catch (err) {
-      toast.error("Erro ao iniciar PIX");
+
+      // Subscribe to transaction changes to auto-finalize
+      const channel = supabase
+        .channel(`payment_${data.transaction_id}`)
+        .on(
+          'postgres_changes',
+          { 
+            event: 'UPDATE', 
+            schema: 'public', 
+            table: 'transactions', 
+            filter: `id=eq.${data.transaction_id}` 
+          },
+          (payload) => {
+            if (payload.new.status === 'completed') {
+              toast.success(`Pagamento confirmado! Você recebeu ${buying.bid_amount} lances.`);
+              setIsDialogOpen(false);
+              navigate({ to: "/" });
+              supabase.removeChannel(channel);
+            } else if (payload.new.status === 'failed') {
+              toast.error("O pagamento foi recusado ou cancelado.");
+              setPaymentStep("method");
+              supabase.removeChannel(channel);
+            }
+          }
+        )
+        .subscribe();
+
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.message || "Erro ao gerar PIX");
       setPaymentStep("method");
     }
   };
 
   const handleMercadoPagoPayment = async () => {
-    if (!buying) return;
-    setPaymentStep("processing");
-    try {
-      // 1. Create pending transaction
-      const { data: pendingData, error: pendingError } = await supabase.rpc("create_pending_payment", {
-        p_package_id: buying.id,
-        p_method: "mercado_pago"
-      });
-      if (pendingError) throw pendingError;
-      
-      const transaction_id = (pendingData as any).transaction_id;
-
-      // 2. Call Edge Function to create MP Preference
-      const { data, error } = await supabase.functions.invoke('create-mp-preference', {
-        body: { 
-          package_id: buying.id,
-          transaction_id: transaction_id
-        }
-      });
-
-      if (error) throw error;
-      if (data.checkout_url) {
-        window.location.href = data.checkout_url;
-      } else {
-        throw new Error("Checkout URL not found");
-      }
-    } catch (err: any) {
-      console.error(err);
-      toast.error(err.message || "Erro ao iniciar Mercado Pago");
-      setPaymentStep("method");
-    }
+    // We'll use the same transparent PIX flow for now as requested, 
+    // or we could implement a full MP Preference redirect here.
+    // The user specifically asked for "transparente", and PIX is the priority.
+    handlePixPayment();
   };
 
   const finalizePurchase = async () => {
@@ -145,9 +154,10 @@ function PackagesPage() {
   };
 
   const copyPixKey = () => {
-    if (settings.pix_key) {
-      navigator.clipboard.writeText(settings.pix_key);
-      toast.success("Chave PIX copiada!");
+    const key = buying?.pix_copy_paste || settings.pix_key;
+    if (key) {
+      navigator.clipboard.writeText(key);
+      toast.success("Código PIX copiado!");
     }
   };
 
@@ -243,18 +253,25 @@ function PackagesPage() {
 
               {paymentStep === "pix" && (
                 <div className="text-center space-y-6">
-                  <div className="w-48 h-48 bg-white p-2 mx-auto rounded-lg">
-                    {/* Placeholder for QR Code */}
-                    <div className="w-full h-full bg-zinc-100 flex items-center justify-center border-2 border-dashed border-zinc-300">
-                      <QrCode className="w-20 h-20 text-zinc-400" />
-                    </div>
+                  <div className="w-48 h-48 bg-white p-2 mx-auto rounded-lg flex items-center justify-center overflow-hidden">
+                    {buying?.pix_qr_code ? (
+                      <img 
+                        src={`data:image/png;base64,${buying.pix_qr_code}`} 
+                        alt="QR Code PIX" 
+                        className="w-full h-full object-contain"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-zinc-100 flex items-center justify-center border-2 border-dashed border-zinc-300">
+                        <QrCode className="w-20 h-20 text-zinc-400" />
+                      </div>
+                    )}
                   </div>
                   
                   <div className="space-y-4">
                     <div className="p-3 bg-white/5 rounded-lg border border-white/10 text-left">
-                      <p className="text-[10px] text-white/40 uppercase font-black mb-1">Chave PIX</p>
+                      <p className="text-[10px] text-white/40 uppercase font-black mb-1">Código PIX (Copia e Cola)</p>
                       <div className="flex items-center justify-between gap-2">
-                        <code className="text-xs break-all">{settings.pix_key || "carregando..."}</code>
+                        <code className="text-[10px] break-all line-clamp-2 text-white/60">{buying?.pix_copy_paste || "Gerando código..."}</code>
                         <Button size="icon" variant="ghost" className="h-8 w-8 shrink-0" onClick={copyPixKey}>
                           <Copy className="w-4 h-4" />
                         </Button>
