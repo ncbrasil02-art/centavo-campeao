@@ -201,7 +201,9 @@ function AdminAuctions() {
         robot_enabled: formData.robot_enabled,
         timer_duration: formData.timer_duration,
         target_winner: formData.target_winner,
-        is_finalizing: formData.is_finalizing
+        is_finalizing: formData.is_finalizing,
+        modality: formData.modality,
+        min_balance_required: formData.min_balance_required
       };
 
       let auctionId = editingAuction?.id;
