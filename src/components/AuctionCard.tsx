@@ -626,7 +626,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             <div className="px-1">
               <Progress 
                 value={timePercentage} 
-                className={`h-1.5 bg-white/5 transition-all duration-1000 ${
+                className={`h-1.5 bg-muted transition-all duration-1000 ${
                   timeLeft <= 5 ? 'bg-red-500/20' : ''
                 }`}
                 indicatorClassName={`${
