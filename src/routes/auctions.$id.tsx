@@ -535,16 +535,16 @@ function AuctionPage() {
               <div className="relative z-10 space-y-10">
                 <div className="space-y-2">
                   <Badge variant="outline" className="border-primary/30 text-primary font-bold tracking-widest text-[10px] uppercase bg-primary/5">ITEM EM DISPUTA</Badge>
-                  <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-tight text-white drop-shadow-sm">
+                  <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-tight text-foreground drop-shadow-sm">
                     {auction.product?.name}
                   </h1>
-                  <p className="text-white/30 font-bold text-xs tracking-widest uppercase">REF: {id.substring(0, 8).toUpperCase()}</p>
+                  <p className="text-muted-foreground font-bold text-xs tracking-widest uppercase">REF: {id.substring(0, 8).toUpperCase()}</p>
                 </div>
 
-                <div className="flex flex-col gap-3 p-8 rounded-[32px] bg-gradient-to-br from-white/10 to-transparent border border-white/10 backdrop-blur-xl shadow-inner group/price">
+                <div className="flex flex-col gap-3 p-8 rounded-[32px] bg-gradient-to-br from-muted/50 to-transparent border border-border backdrop-blur-xl shadow-inner group/price">
                   <div className="flex justify-between items-center">
                     <div className="flex flex-col">
-                      <span className="text-[10px] text-white/40 font-black uppercase tracking-[0.2em]">Valor de Arremate</span>
+                      <span className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em]">Valor de Arremate</span>
                       <span className="text-[10px] text-primary/60 font-bold uppercase tracking-widest">(O quanto você pagará no final)</span>
                     </div>
                     <Badge variant="outline" className="border-green-500/30 text-green-500 bg-green-500/5 animate-pulse">LEILÃO DE CENTAVOS</Badge>
