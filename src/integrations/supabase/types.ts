@@ -469,6 +469,9 @@ export type Database = {
           hero_display_mode: string | null
           id: string
           logo_height: number | null
+          logo_height_mobile: number | null
+          logo_padding_x: number | null
+          logo_padding_y: number | null
           logo_url: string | null
           mercado_pago_access_token: string | null
           mercado_pago_public_key: string | null
@@ -498,6 +501,9 @@ export type Database = {
           hero_display_mode?: string | null
           id?: string
           logo_height?: number | null
+          logo_height_mobile?: number | null
+          logo_padding_x?: number | null
+          logo_padding_y?: number | null
           logo_url?: string | null
           mercado_pago_access_token?: string | null
           mercado_pago_public_key?: string | null
@@ -527,6 +533,9 @@ export type Database = {
           hero_display_mode?: string | null
           id?: string
           logo_height?: number | null
+          logo_height_mobile?: number | null
+          logo_padding_x?: number | null
+          logo_padding_y?: number | null
           logo_url?: string | null
           mercado_pago_access_token?: string | null
           mercado_pago_public_key?: string | null

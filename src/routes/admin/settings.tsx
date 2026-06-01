@@ -69,6 +69,9 @@ function AdminSettings() {
     page_background_color: "",
     border_color: "",
     logo_height: 40,
+    logo_height_mobile: 32,
+    logo_padding_x: 0,
+    logo_padding_y: 0,
     google_reviews_widget: "",
   });
 
@@ -111,6 +114,9 @@ function AdminSettings() {
           page_background_color: data.page_background_color || "",
           border_color: data.border_color || "",
           logo_height: data.logo_height || 40,
+          logo_height_mobile: data.logo_height_mobile || 32,
+          logo_padding_x: data.logo_padding_x || 0,
+          logo_padding_y: data.logo_padding_y || 0,
           google_reviews_widget: data.google_reviews_widget || "",
         });
       }
@@ -342,17 +348,49 @@ function AdminSettings() {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="logo_height">Altura do Logotipo (px)</Label>
-                  <div className="flex items-center gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="logo_height">Altura do Logotipo - Desktop (px)</Label>
                     <Input 
                       id="logo_height" 
                       type="number"
                       value={settings.logo_height} 
                       onChange={(e) => setSettings({...settings, logo_height: parseInt(e.target.value)})}
-                      className="bg-white/5 border-white/10 h-12 w-32"
+                      className="bg-white/5 border-white/10 h-12"
                     />
-                    <span className="text-sm text-white/40">Recomendado: 32px a 64px</span>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="logo_height_mobile">Altura do Logotipo - Mobile (px)</Label>
+                    <Input 
+                      id="logo_height_mobile" 
+                      type="number"
+                      value={settings.logo_height_mobile} 
+                      onChange={(e) => setSettings({...settings, logo_height_mobile: parseInt(e.target.value)})}
+                      className="bg-white/5 border-white/10 h-12"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="logo_padding_x">Espaçamento Lateral (Horizontal px)</Label>
+                    <Input 
+                      id="logo_padding_x" 
+                      type="number"
+                      value={settings.logo_padding_x} 
+                      onChange={(e) => setSettings({...settings, logo_padding_x: parseInt(e.target.value)})}
+                      className="bg-white/5 border-white/10 h-12"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="logo_padding_y">Espaçamento Superior/Inferior (Vertical px)</Label>
+                    <Input 
+                      id="logo_padding_y" 
+                      type="number"
+                      value={settings.logo_padding_y} 
+                      onChange={(e) => setSettings({...settings, logo_padding_y: parseInt(e.target.value)})}
+                      className="bg-white/5 border-white/10 h-12"
+                    />
                   </div>
                 </div>
               </CardContent>
