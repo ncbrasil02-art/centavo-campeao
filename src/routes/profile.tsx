@@ -11,6 +11,7 @@ import { User, Mail, Phone, MapPin, Hash, ShieldCheck, Wallet, LogOut, Camera } 
 import { Navbar } from "@/components/Navbar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getFallbackAvatarUrl } from "@/lib/constants";
+import { Badge } from "@/components/ui/badge";
 
 export const Route = createFileRoute("/profile")({
   beforeLoad: async () => {
