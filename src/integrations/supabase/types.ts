@@ -473,6 +473,7 @@ export type Database = {
           primary_color: string | null
           secondary_color: string | null
           site_name: string | null
+          theme_mode: string | null
           updated_at: string | null
         }
         Insert: {
@@ -493,6 +494,7 @@ export type Database = {
           primary_color?: string | null
           secondary_color?: string | null
           site_name?: string | null
+          theme_mode?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -513,6 +515,7 @@ export type Database = {
           primary_color?: string | null
           secondary_color?: string | null
           site_name?: string | null
+          theme_mode?: string | null
           updated_at?: string | null
         }
         Relationships: []

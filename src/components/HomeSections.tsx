@@ -188,7 +188,7 @@ export function Hero() {
   }
 
   return (
-    <section className="relative overflow-hidden pt-20 pb-12 lg:pt-32 lg:pb-24 bg-[#0a0a0c]">
+    <section className="relative overflow-hidden pt-20 pb-12 lg:pt-32 lg:pb-24 bg-background">
       {/* Imagem de Fundo 3D Gaming */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-20 mix-blend-overlay"></div>
@@ -249,7 +249,7 @@ export function Hero() {
                 duration: 0.8, 
                 ease: [0.16, 1, 0.3, 1] // Custom quintic ease out for premium feel
               }}
-              className="text-4xl md:text-8xl font-black tracking-tight text-white leading-tight drop-shadow-2xl"
+              className="text-4xl md:text-8xl font-black tracking-tight text-foreground leading-tight drop-shadow-2xl"
             >
               {phrases[textIndex].includes("centavos!") ? (
                 <>
@@ -262,7 +262,7 @@ export function Hero() {
             </motion.h1>
           </div>
           
-          <p className="text-xl text-white/60 mb-10 max-w-2xl leading-relaxed">
+          <p className="text-xl text-muted-foreground mb-10 max-w-2xl leading-relaxed">
             A plataforma de leilões de centavos mais confiável, rápida e divertida do Brasil. iPhones, Consoles, TVs e muito mais a partir de R$ 0,01.
           </p>
           
@@ -273,7 +273,7 @@ export function Hero() {
                 <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
-            <Button size="lg" variant="outline" className="h-14 px-8 text-lg font-bold border-white/10 hover:bg-white/5 bg-white/5" asChild>
+            <Button size="lg" variant="outline" className="h-14 px-8 text-lg font-bold border-border hover:bg-muted/50 bg-muted/20" asChild>
               <Link to="/how-it-works">
                 <Play className="mr-2 w-5 h-5 fill-current" />
                 Ver como funciona
@@ -295,10 +295,10 @@ export function Hero() {
 
 function StatsCard({ icon, label, value }: { icon: React.ReactNode, label: string, value: string }) {
   return (
-    <Card className="p-4 bg-white/5 border-white/10 flex flex-col items-center justify-center transition-all hover:bg-white/10 hover:border-primary/30 group">
+    <Card className="p-4 bg-muted/50 border-border flex flex-col items-center justify-center transition-all hover:bg-muted hover:border-primary/30 group">
       <div className="text-primary mb-2 group-hover:scale-110 transition-transform">{icon}</div>
-      <div className="text-2xl font-bold text-white mb-0.5">{value}</div>
-      <div className="text-xs font-medium text-white/40 uppercase tracking-wider">{label}</div>
+      <div className="text-2xl font-bold text-foreground mb-0.5">{value}</div>
+      <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{label}</div>
     </Card>
   );
 }
@@ -310,10 +310,10 @@ export function SecondaryBanner({ title, subtitle, imageUrl, linkUrl, reverse = 
         <div className={`relative overflow-hidden rounded-[40px] bg-gradient-to-br from-zinc-900 to-black border border-white/5 flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-8 p-8 md:p-0`}>
           <div className="flex-1 space-y-6 md:p-12 lg:p-20">
             <Badge className="bg-primary/10 text-primary border-primary/20 uppercase font-black italic">OFERTA ESPECIAL</Badge>
-            <h2 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-white leading-tight">
+            <h2 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-foreground leading-tight">
               {title}
             </h2>
-            <p className="text-white/60 text-lg">
+            <p className="text-muted-foreground text-lg">
               {subtitle}
             </p>
             <Button size="lg" className="bg-white text-black hover:bg-white/90 font-black uppercase italic tracking-widest" asChild>
