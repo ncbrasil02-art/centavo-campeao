@@ -13,7 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getFallbackAvatarUrl } from "@/lib/constants";
 import { Badge } from "@/components/ui/badge";
 
-export const Route = createFileRoute("/profile")({
+export const Route = createFileRoute("/profile" as any)({
   beforeLoad: async () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
