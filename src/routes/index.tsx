@@ -52,25 +52,25 @@ function TestimonialCard({ name, content, avatarUrl, rating }: { name: string, c
 
 function WinnerCard({ name, product, price, saving, avatarUrl, productImage }: { name: string, product: string, price: string, saving: string, avatarUrl?: string, productImage?: string }) {
   return (
-    <div className="group relative p-1 rounded-[32px] bg-gradient-to-br from-primary/20 via-white/5 to-transparent border border-white/10 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-primary/20 overflow-hidden">
+    <div className="group relative p-1 rounded-[32px] bg-gradient-to-br from-primary/20 via-muted/30 to-transparent border border-border transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-primary/20 overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_rgba(var(--color-primary),0.1),_transparent_70%)]"></div>
       
-      <div className="relative bg-zinc-950/80 rounded-[30px] p-6 flex flex-col gap-6 backdrop-blur-xl">
+      <div className="relative bg-card rounded-[30px] p-6 flex flex-col gap-6 backdrop-blur-xl">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="relative w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center overflow-hidden border-2 border-primary/30 group-hover:border-primary transition-all shadow-xl shadow-black/50">
+            <div className="relative w-16 h-16 rounded-2xl bg-muted flex items-center justify-center overflow-hidden border-2 border-primary/30 group-hover:border-primary transition-all shadow-xl">
               <img 
                 src={avatarUrl || getFallbackAvatarUrl(name)} 
                 className="w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all" 
                 onError={(e) => (e.target as HTMLImageElement).src = getFallbackAvatarUrl(name)} 
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent"></div>
             </div>
             <div>
-              <h4 className="font-black text-white italic uppercase tracking-tighter group-hover:text-primary transition-colors">{name}</h4>
+              <h4 className="font-black text-foreground italic uppercase tracking-tighter group-hover:text-primary transition-colors">{name}</h4>
               <div className="flex items-center gap-1.5">
                 <div className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_5px_rgba(34,197,94,0.8)]"></div>
-                <span className="text-[10px] font-black text-white/40 uppercase tracking-widest">Arrematou com Sucesso</span>
+                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Arrematou com Sucesso</span>
               </div>
             </div>
           </div>
