@@ -569,6 +569,46 @@ function AdminAuctions() {
                   </p>
                 </div>
 
+                <div className="space-y-2">
+                  <Label>Modalidade do Leilão</Label>
+                  <Select 
+                    value={formData.modality} 
+                    onValueChange={(v: any) => setFormData({...formData, modality: v})}
+                  >
+                    <SelectTrigger className="bg-white/5 border-white/10">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-zinc-800 border-white/10 text-white">
+                      <SelectItem value="default">Padrão</SelectItem>
+                      <SelectItem value="novice">Iniciante (Nunca ganhou)</SelectItem>
+                      <SelectItem value="male">Masculino (Somente Homens)</SelectItem>
+                      <SelectItem value="female">Feminino (Somente Mulheres)</SelectItem>
+                      <SelectItem value="free">Livre (Não desconta lances)</SelectItem>
+                      <SelectItem value="min_balance">Saldo Mínimo</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-[10px] text-white/40 italic">
+                    {formData.modality === 'novice' ? 'Somente usuários que nunca arrematarem podem participar.' : 
+                     formData.modality === 'male' ? 'Somente usuários com perfil masculino.' : 
+                     formData.modality === 'female' ? 'Somente usuários com perfil feminino.' : 
+                     formData.modality === 'free' ? 'Os lances não serão descontados do saldo do usuário.' : 
+                     formData.modality === 'min_balance' ? 'Usuário precisa ter um saldo mínimo para participar.' : 
+                     'Leilão padrão sem restrições.'}
+                  </p>
+                </div>
+
+                {formData.modality === 'min_balance' && (
+                  <div className="space-y-2">
+                    <Label>Saldo Mínimo Exigido</Label>
+                    <Input 
+                      type="number"
+                      value={formData.min_balance_required}
+                      onChange={e => setFormData({...formData, min_balance_required: parseFloat(e.target.value) || 0})}
+                      className="bg-zinc-950 border-white/10"
+                    />
+                  </div>
+                )}
+
                 <div className="p-4 rounded-lg border border-white/5 bg-white/5 space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
