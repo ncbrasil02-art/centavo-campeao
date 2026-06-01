@@ -59,10 +59,15 @@ serve(async (req) => {
     })
 
     if (transError || !transaction?.success) {
+      console.error('Transaction error:', transError, 'Transaction data:', transaction)
       return new Response(JSON.stringify({ error: 'Erro ao criar transação pendente.' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
     }
 
     const transaction_id = transaction.transaction_id
+    console.log('Generated transaction ID:', transaction_id)
+
+    // 4. Create Mercado Pago Payment (PIX)
+    console.log('Calling Mercado Pago API...')
 
     // 4. Create Mercado Pago Payment (PIX)
     const mpResponse = await fetch('https://api.mercadopago.com/v1/payments', {
