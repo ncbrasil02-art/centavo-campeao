@@ -345,6 +345,63 @@ function AdminSettings() {
                 <div className="flex items-center gap-2">
                   <Palette className="w-5 h-5 text-primary" />
                   <div>
+                    <CardTitle className="text-lg">Paletas de Cores Prontas</CardTitle>
+                    <CardDescription className="text-white/40">Escolha uma combinação profissional pré-definida</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="p-6 space-y-8">
+                <div className="space-y-4">
+                  <h3 className="text-sm font-medium flex items-center gap-2">
+                    <Moon className="w-4 h-4 text-purple-400" /> Paletas Escuras (Modo Dark)
+                  </h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                    {DARK_PALETTES.map((p) => (
+                      <button
+                        key={p.name}
+                        onClick={() => applyPalette(p)}
+                        className="group flex flex-col gap-2 p-2 rounded-xl border border-white/10 hover:border-primary/50 transition-all bg-black/20"
+                      >
+                        <div className="flex w-full h-8 rounded-md overflow-hidden border border-white/5">
+                          <div className="w-1/2 h-full" style={{ backgroundColor: p.primary }} />
+                          <div className="w-1/4 h-full" style={{ backgroundColor: p.background }} />
+                          <div className="w-1/4 h-full" style={{ backgroundColor: p.card }} />
+                        </div>
+                        <span className="text-[10px] font-medium truncate w-full text-center">{p.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <h3 className="text-sm font-medium flex items-center gap-2">
+                    <Sun className="w-4 h-4 text-yellow-400" /> Paletas Claras (Modo Light)
+                  </h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                    {LIGHT_PALETTES.map((p) => (
+                      <button
+                        key={p.name}
+                        onClick={() => applyPalette(p)}
+                        className="group flex flex-col gap-2 p-2 rounded-xl border border-white/10 hover:border-primary/50 transition-all bg-black/20"
+                      >
+                        <div className="flex w-full h-8 rounded-md overflow-hidden border border-white/5">
+                          <div className="w-1/2 h-full" style={{ backgroundColor: p.primary }} />
+                          <div className="w-1/4 h-full" style={{ backgroundColor: p.background }} />
+                          <div className="w-1/4 h-full" style={{ backgroundColor: p.card }} />
+                        </div>
+                        <span className="text-[10px] font-medium truncate w-full text-center">{p.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/5 border-white/10 overflow-hidden backdrop-blur-md">
+              <CardHeader className="border-b border-white/5 bg-white/[0.02]">
+                <div className="flex items-center gap-2">
+                  <Palette className="w-5 h-5 text-primary" />
+                  <div>
                     <CardTitle className="text-lg">Cores do Sistema</CardTitle>
                     <CardDescription className="text-white/40">Identidade visual de cores</CardDescription>
                   </div>
