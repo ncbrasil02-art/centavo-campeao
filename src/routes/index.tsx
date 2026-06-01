@@ -99,7 +99,7 @@ function WinnerCard({ name, product, price, saving, avatarUrl, productImage }: {
 }
 
 function Index() {
-  const { google_reviews_widget, logo_url } = useSettings();
+  const { google_reviews_widget, logo_url, logo_height, logo_height_mobile, logo_padding_x, logo_padding_y } = useSettings();
   const [auctions, setAuctions] = useState<any[]>([]);
   const [finishedAuctions, setFinishedAuctions] = useState<any[]>([]);
   const [winners, setWinners] = useState<any[]>([]);
@@ -396,7 +396,7 @@ function Index() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {google_reviews_widget ? (
+                {google_reviews_widget && google_reviews_widget.trim().length > 10 ? (
                   <div className="col-span-full" dangerouslySetInnerHTML={{ __html: google_reviews_widget }} />
                 ) : testimonials.length > 0 ? (
                   testimonials.map((t, idx) => (
@@ -416,11 +416,9 @@ function Index() {
                     </motion.div>
                   ))
                 ) : (
-                  !google_reviews_widget && (
-                    <div className="col-span-full py-20 text-center">
-                      <p className="text-white/20 uppercase tracking-[0.3em] font-black italic">Carregando depoimentos da comunidade...</p>
-                    </div>
-                  )
+                  <div className="col-span-full py-20 text-center">
+                    <p className="text-white/20 uppercase tracking-[0.3em] font-black italic">Carregando depoimentos da comunidade...</p>
+                  </div>
                 )}
               </div>
             </div>
@@ -444,16 +442,28 @@ function Index() {
                   </div>
                 </div>
 
-                <div className="flex flex-col items-center md:items-end gap-3">
-                  <div className="text-white/40 text-sm text-center md:text-right">
-                    sistema de leilão <a href="https://www.ncbrasil.com.br" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">centavos</a>
+                <div className="flex flex-col items-center md:items-end gap-6">
+                  <div className="text-white/80 text-sm text-center md:text-right font-medium">
+                    sistema de leilão <a href="https://www.ncbrasil.com.br" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 transition-all font-black uppercase italic tracking-widest border-b-2 border-primary/30 pb-0.5 hover:border-primary">centavos</a>
                   </div>
                   {logo_url ? (
-                    <img src={logo_url} alt="Logo" className="h-8 md:h-10 w-auto opacity-50 hover:opacity-100 transition-opacity" />
+                    <div 
+                      className="mt-2 flex flex-col items-center md:items-end gap-2"
+                      style={{ 
+                        padding: `${logo_padding_y || 0}px ${logo_padding_x || 0}px`
+                      }}
+                    >
+                      <img 
+                        src={logo_url} 
+                        alt="Logo" 
+                        className="object-contain opacity-90 hover:opacity-100 transition-all filter drop-shadow-[0_0_15px_rgba(var(--color-primary),0.4)]" 
+                        style={{ height: `${logo_height || 40}px` }}
+                      />
+                    </div>
                   ) : (
-                    <div className="text-xs font-black text-white/20 tracking-tighter uppercase italic">LANCECERTO</div>
+                    <div className="text-xs font-black text-white/20 tracking-tighter uppercase italic mt-2">LANCECERTO</div>
                   )}
-                  <div className="flex items-center gap-1 text-[10px] text-white/20 uppercase tracking-[0.2em] mt-2">
+                  <div className="flex items-center gap-1 text-[10px] text-white/20 uppercase tracking-[0.2em]">
                     Feito com <Heart className="w-2.5 h-2.5 text-red-500/40 fill-red-500/40" /> para arrematadores.
                   </div>
                 </div>

@@ -47,7 +47,9 @@ function AdminAuctions() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingAuction, setEditingAuction] = useState<any>(null);
   const [page, setPage] = useState(1);
-  const auctionsPerPage = 10;
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const auctionsPerPage = 50; // Increased to make client-side search more useful
 
   
   const [uploading, setUploading] = useState(false);
@@ -79,15 +81,37 @@ function AdminAuctions() {
   const [formData, setFormData] = useState(initialFormData);
 
   useEffect(() => {
-    fetchData();
-  }, [page]);
+    const timer = setTimeout(() => {
+      fetchData();
+    }, 500); // Debounce search
+    return () => clearTimeout(timer);
+  }, [page, statusFilter, searchTerm]);
 
 
   async function fetchData() {
     setLoading(true);
     try {
+      let query = supabase
+        .from("auctions")
+        .select("*, product:products(*)")
+        .order("status", { ascending: true })
+        .order("start_time", { ascending: true })
+        .range((page - 1) * auctionsPerPage, page * auctionsPerPage - 1);
+      
+      if (statusFilter !== "all") {
+        query = query.eq("status", statusFilter);
+      }
+
+      if (searchTerm) {
+        // Search in products table via join might be tricky in PostgREST without specific setup
+        // But since we have product:products(*) it might work if we use dot notation or just fetch and filter
+        // Actually, let's just do client-side search for now as it's easier and the admin won't have millions of auctions
+        // OR better: search by product name using ilike on the joined table if supported.
+        // For now, let's stick to client-side filter but maybe increase the limit.
+      }
+
       const [auctionsRes, productsRes] = await Promise.all([
-        supabase.from("auctions").select("*, product:products(*)").order("status", { ascending: true }).order("start_time", { ascending: true }).range((page - 1) * auctionsPerPage, page * auctionsPerPage - 1),
+        query,
         supabase.from("products").select("*").limit(100)
       ]);
 
@@ -356,11 +380,34 @@ function AdminAuctions() {
     }
   }
 
+  const forceAudit = async (auctionId: string) => {
+    if (!confirm("Tem certeza que deseja encerrar este leilão e enviá-lo para auditoria agora?")) return;
+    const loadingToast = toast.loading("Encerrando leilão...");
+    try {
+      const { error } = await supabase
+        .from("auctions")
+        .update({ 
+          status: 'pending_audit',
+          end_time: new Date().toISOString()
+        })
+        .eq("id", auctionId);
+      
+      if (error) throw error;
+      toast.success("Leilão enviado para auditoria!");
+      fetchData();
+    } catch (error: any) {
+      console.error("Error forcing audit:", error);
+      toast.error(`Erro ao encerrar: ${error.message}`);
+    } finally {
+      toast.dismiss(loadingToast);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-background text-white">
       
       <main className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
             <h1 className="text-3xl font-black italic uppercase tracking-tighter">
               Gerenciar <span className="text-primary">Leilões</span>
@@ -368,7 +415,30 @@ function AdminAuctions() {
             <p className="text-white/40">Controle todos os leilões ativos e agendados</p>
           </div>
           
-          <Dialog open={isDialogOpen} onOpenChange={(open) => {
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            <div className="relative flex-1 md:w-64">
+              <Input 
+                placeholder="Buscar produto..." 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="bg-white/5 border-white/10 h-10 pr-10"
+              />
+            </div>
+            
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-[150px] bg-white/5 border-white/10 h-10">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent className="bg-zinc-800 border-white/10 text-white">
+                <SelectItem value="all">Todos</SelectItem>
+                <SelectItem value="live">Ativos</SelectItem>
+                <SelectItem value="scheduled">Agendados</SelectItem>
+                <SelectItem value="pending_audit">Em Auditoria</SelectItem>
+                <SelectItem value="finished">Finalizados</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Dialog open={isDialogOpen} onOpenChange={(open) => {
             setIsDialogOpen(open);
             if (!open) {
               setEditingAuction(null);
@@ -691,7 +761,8 @@ function AdminAuctions() {
                 </DialogFooter>
               </form>
             </DialogContent>
-          </Dialog>
+            </Dialog>
+          </div>
         </div>
 
         <Card className="bg-white/5 border-white/10 backdrop-blur-md overflow-hidden">
@@ -709,11 +780,13 @@ function AdminAuctions() {
             </TableHeader>
             <TableBody>
               {loading ? (
-                <TableRow><TableCell colSpan={6} className="text-center py-8 text-white/40">Carregando...</TableCell></TableRow>
+                <TableRow><TableCell colSpan={7} className="text-center py-8 text-white/40">Carregando...</TableCell></TableRow>
               ) : auctions.length === 0 ? (
-                <TableRow><TableCell colSpan={6} className="text-center py-8 text-white/40">Nenhum leilão encontrado</TableCell></TableRow>
+                <TableRow><TableCell colSpan={7} className="text-center py-8 text-white/40">Nenhum leilão encontrado</TableCell></TableRow>
               ) : (
-                auctions.map((auction) => (
+                auctions
+                  .filter(a => a.product?.name?.toLowerCase().includes(searchTerm.toLowerCase()))
+                  .map((auction) => (
                   <TableRow key={auction.id} className="border-white/5 hover:bg-white/[0.02] transition-colors">
                     <TableCell>
                       <div className="flex items-center gap-3">
@@ -756,22 +829,33 @@ function AdminAuctions() {
                         {auction.status === 'pending_audit' && (
                           <Button 
                             size="sm" 
-                            className="bg-green-600 hover:bg-green-500 text-white font-bold h-8 text-xs"
+                            className="bg-green-600 hover:bg-green-500 text-white font-bold h-8 text-xs shadow-[0_0_15px_rgba(22,163,74,0.4)]"
                             onClick={() => handleConfirmWinner(auction.id)}
                           >
-                            <CheckCircle className="w-4 h-4 mr-2" /> Em Auditoria
+                            <CheckCircle className="w-4 h-4 mr-2" /> FINALIZAR AUDITORIA
                           </Button>
                         )}
                         {auction.status === 'live' && (
-                          <Button 
-                            size="icon" 
-                            variant="ghost" 
-                            className={`h-8 w-8 ${auction.is_finalizing ? 'text-orange-500 bg-orange-500/10' : 'text-green-500 hover:bg-green-500/10'}`} 
-                            title={auction.is_finalizing ? "Disputa Encerrada (Clique para reativar robô)" : "Encerrar Disputa (Arrematar)"}
-                            onClick={() => toggleFinalize(auction)}
-                          >
-                            <Power className="w-4 h-4" />
-                          </Button>
+                          <>
+                            <Button 
+                              size="icon" 
+                              variant="ghost" 
+                              className={`h-8 w-8 ${auction.is_finalizing ? 'text-orange-500 bg-orange-500/10' : 'text-green-500 hover:bg-green-500/10'}`} 
+                              title={auction.is_finalizing ? "Disputa Encerrada (Clique para reativar robô)" : "Encerrar Disputa (Arrematar)"}
+                              onClick={() => toggleFinalize(auction)}
+                            >
+                              <Power className="w-4 h-4" />
+                            </Button>
+                            <Button 
+                              size="icon" 
+                              variant="ghost" 
+                              className="h-8 w-8 text-red-500 hover:bg-red-500/10" 
+                              title="Encerrar AGORA e enviar para Auditoria"
+                              onClick={() => forceAudit(auction.id)}
+                            >
+                              <XCircle className="w-4 h-4" />
+                            </Button>
+                          </>
                         )}
                         <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-primary/20 text-primary" onClick={() => handleEdit(auction)}>
                           <Edit className="w-4 h-4" />
