@@ -137,11 +137,11 @@ export function Navbar() {
 
         <div className="flex items-center gap-2 sm:gap-6">
           {/* Mobile/Small Screen Clock */}
-          <div className="flex lg:hidden flex-col items-center px-3 border-x border-white/5 bg-white/5 py-0.5 rounded-lg">
-            <span className="text-[7px] font-black text-primary/60 uppercase tracking-widest mb-0 flex items-center gap-0.5">
+          <div className="flex lg:hidden flex-col items-center px-3 border-x border-border bg-muted/30 py-0.5 rounded-lg">
+            <span className="text-[8px] font-black text-primary/60 uppercase tracking-widest mb-0 flex items-center gap-0.5">
               <Clock className="w-2 h-2" /> HORA
             </span>
-            <span className="text-[10px] font-black tabular-nums text-white/90">
+            <span className="text-xs font-black tabular-nums text-foreground/90">
               {currentTime ? format(currentTime, "HH:mm:ss", { locale: ptBR }) : "--:--:--"}
             </span>
           </div>
