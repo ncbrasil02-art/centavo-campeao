@@ -699,7 +699,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
               : isPendingAudit
               ? (isAdmin ? 'bg-primary text-primary-foreground shadow-[0_0_25px_rgba(var(--color-primary),0.5)] hover:scale-[1.02]' : 'cursor-default border border-red-500/20 bg-red-500/10 text-red-500 animate-pulse')
               : isScheduled
-              ? 'cursor-not-allowed border border-white/10 bg-white/10 text-white/40'
+              ? 'cursor-not-allowed border border-border bg-muted text-muted-foreground'
               : timeLeft <= 5
               ? 'bg-red-600 text-white shadow-[0_0_30px_rgba(220,38,38,0.8)] hover:bg-red-700'
               : 'bg-primary text-primary-foreground shadow-[0_8px_25px_rgba(var(--color-primary),0.3)] hover:scale-[1.02] hover:bg-primary/90 active:scale-95'
