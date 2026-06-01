@@ -24,6 +24,8 @@ interface SiteSettings {
   block_background_color: string;
   page_background_color: string;
   border_color: string;
+  logo_height: number;
+  google_reviews_widget: string;
 }
 
 const SettingsContext = createContext<SiteSettings | null>(null);
@@ -52,6 +54,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     block_background_color: "#27272a",
     page_background_color: "#09090b",
     border_color: "#3f3f46",
+    logo_height: 40,
+    google_reviews_widget: "",
   });
 
   const updateMetaTags = (data: Partial<SiteSettings>) => {
@@ -175,6 +179,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
           block_background_color: data.block_background_color || (data.theme_mode === 'dark' ? "#27272a" : "#f3f4f6"),
           page_background_color: data.page_background_color || (data.theme_mode === 'dark' ? "#09090b" : "#ffffff"),
           border_color: data.border_color || (data.theme_mode === 'dark' ? "#3f3f46" : "#e5e7eb"),
+          logo_height: data.logo_height || 40,
+          google_reviews_widget: data.google_reviews_widget || "",
         };
         
         setSettings(fetchedSettings);
@@ -238,6 +244,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
               block_background_color: newData.block_background_color || prev.block_background_color,
               page_background_color: newData.page_background_color || prev.page_background_color,
               border_color: newData.border_color || prev.border_color,
+              logo_height: newData.logo_height || prev.logo_height,
+              google_reviews_widget: newData.google_reviews_widget || prev.google_reviews_widget,
             };
             updateMetaTags(updated);
             injectScripts(updated.ga_id, updated.fb_pixel_id);
@@ -311,6 +319,8 @@ export const useSettings = () => {
       block_background_color: "#27272a",
       page_background_color: "#09090b",
       border_color: "#3f3f46",
+      logo_height: 40,
+      google_reviews_widget: "",
     };
   }
   return context;

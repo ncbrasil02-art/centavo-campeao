@@ -68,6 +68,8 @@ function AdminSettings() {
     block_background_color: "",
     page_background_color: "",
     border_color: "",
+    logo_height: 40,
+    google_reviews_widget: "",
   });
 
   useEffect(() => {
@@ -108,6 +110,8 @@ function AdminSettings() {
           block_background_color: data.block_background_color || "",
           page_background_color: data.page_background_color || "",
           border_color: data.border_color || "",
+          logo_height: data.logo_height || 40,
+          google_reviews_widget: data.google_reviews_widget || "",
         });
       }
     } catch (error) {
@@ -335,6 +339,20 @@ function AdminSettings() {
                         </Button>
                       </div>
                     </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="logo_height">Altura do Logotipo (px)</Label>
+                  <div className="flex items-center gap-4">
+                    <Input 
+                      id="logo_height" 
+                      type="number"
+                      value={settings.logo_height} 
+                      onChange={(e) => setSettings({...settings, logo_height: parseInt(e.target.value)})}
+                      className="bg-white/5 border-white/10 h-12 w-32"
+                    />
+                    <span className="text-sm text-white/40">Recomendado: 32px a 64px</span>
                   </div>
                 </div>
               </CardContent>
@@ -653,6 +671,17 @@ function AdminSettings() {
                     placeholder="123456789012345"
                     className="bg-white/5 border-white/10 h-12"
                   />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="google_reviews">Widget de Depoimentos do Google (Script/HTML)</Label>
+                  <Textarea 
+                    id="google_reviews" 
+                    value={settings.google_reviews_widget || ""} 
+                    onChange={(e) => setSettings({...settings, google_reviews_widget: e.target.value})}
+                    placeholder="Cole aqui o script ou HTML do widget de depoimentos (ex: Elfsight, SociableKit, etc.)"
+                    className="bg-white/5 border-white/10 min-h-[120px] font-mono text-xs"
+                  />
+                  <p className="text-[10px] text-white/40">Este código será renderizado na seção de depoimentos da página inicial.</p>
                 </div>
               </CardContent>
             </Card>

@@ -15,7 +15,7 @@ export function Navbar() {
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { site_name, logo_url } = useSettings();
+  const { site_name, logo_url, logo_height } = useSettings();
   const { getAdjustedNow, synced } = useTimeSync();
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
   const navigate = useNavigate();
@@ -92,7 +92,7 @@ export function Navbar() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link to="/" className="flex items-center gap-2 group">
           {logo_url ? (
-            <img src={logo_url} alt={site_name} className="h-10 object-contain" />
+            <img src={logo_url} alt={site_name} className="object-contain" style={{ height: `${logo_height || 40}px` }} />
           ) : (
             <>
               <div className="relative">
