@@ -68,51 +68,60 @@ function PackagesPage() {
     if (!buying) return;
     setPaymentStep("processing");
     try {
-      const { data, error } = await supabase.rpc("create_pending_payment", {
-        p_package_id: buying.id,
-        p_method: "pix"
+      const { data, error } = await supabase.functions.invoke('mercadopago-pix', {
+        body: { 
+          package_id: buying.id
+        }
       });
+
       if (error) throw error;
-      setBuying({ ...buying, transaction_id: (data as any).transaction_id });
+      
+      setBuying({ 
+        ...buying, 
+        transaction_id: data.transaction_id,
+        pix_copy_paste: data.pix_copy_paste,
+        pix_qr_code: data.pix_qr_code
+      });
       setPaymentStep("pix");
-    } catch (err) {
-      toast.error("Erro ao iniciar PIX");
+
+      // Subscribe to transaction changes to auto-finalize
+      const channel = supabase
+        .channel(`payment_${data.transaction_id}`)
+        .on(
+          'postgres_changes',
+          { 
+            event: 'UPDATE', 
+            schema: 'public', 
+            table: 'transactions', 
+            filter: `id=eq.${data.transaction_id}` 
+          },
+          (payload) => {
+            if (payload.new.status === 'completed') {
+              toast.success(`Pagamento confirmado! Você recebeu ${buying.bid_amount} lances.`);
+              setIsDialogOpen(false);
+              navigate({ to: "/" });
+              supabase.removeChannel(channel);
+            } else if (payload.new.status === 'failed') {
+              toast.error("O pagamento foi recusado ou cancelado.");
+              setPaymentStep("method");
+              supabase.removeChannel(channel);
+            }
+          }
+        )
+        .subscribe();
+
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.message || "Erro ao gerar PIX");
       setPaymentStep("method");
     }
   };
 
   const handleMercadoPagoPayment = async () => {
-    if (!buying) return;
-    setPaymentStep("processing");
-    try {
-      // 1. Create pending transaction
-      const { data: pendingData, error: pendingError } = await supabase.rpc("create_pending_payment", {
-        p_package_id: buying.id,
-        p_method: "mercado_pago"
-      });
-      if (pendingError) throw pendingError;
-      
-      const transaction_id = (pendingData as any).transaction_id;
-
-      // 2. Call Edge Function to create MP Preference
-      const { data, error } = await supabase.functions.invoke('create-mp-preference', {
-        body: { 
-          package_id: buying.id,
-          transaction_id: transaction_id
-        }
-      });
-
-      if (error) throw error;
-      if (data.checkout_url) {
-        window.location.href = data.checkout_url;
-      } else {
-        throw new Error("Checkout URL not found");
-      }
-    } catch (err: any) {
-      console.error(err);
-      toast.error(err.message || "Erro ao iniciar Mercado Pago");
-      setPaymentStep("method");
-    }
+    // We'll use the same transparent PIX flow for now as requested, 
+    // or we could implement a full MP Preference redirect here.
+    // The user specifically asked for "transparente", and PIX is the priority.
+    handlePixPayment();
   };
 
   const finalizePurchase = async () => {
