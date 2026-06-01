@@ -307,7 +307,7 @@ export function SecondaryBanner({ title, subtitle, imageUrl, linkUrl, reverse = 
   return (
     <section className="py-12">
       <div className="container mx-auto px-4">
-        <div className={`relative overflow-hidden rounded-[40px] bg-gradient-to-br from-zinc-900 to-black border border-white/5 flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-8 p-8 md:p-0`}>
+        <div className={`relative overflow-hidden rounded-[40px] bg-card border border-border flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-8 p-8 md:p-0`}>
           <div className="flex-1 space-y-6 md:p-12 lg:p-20">
             <Badge className="bg-primary/10 text-primary border-primary/20 uppercase font-black italic">OFERTA ESPECIAL</Badge>
             <h2 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter text-foreground leading-tight">
@@ -316,7 +316,7 @@ export function SecondaryBanner({ title, subtitle, imageUrl, linkUrl, reverse = 
             <p className="text-muted-foreground text-lg">
               {subtitle}
             </p>
-            <Button size="lg" className="bg-white text-black hover:bg-white/90 font-black uppercase italic tracking-widest" asChild>
+            <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-black uppercase italic tracking-widest" asChild>
               <Link to={linkUrl as any}>
                 Ver Detalhes <ArrowRight className="ml-2 w-5 h-5" />
               </Link>
