@@ -631,7 +631,7 @@ function AuctionPage() {
                 <div className={`p-6 rounded-[28px] flex items-center justify-between group/bidder transition-all duration-500 border ${
                   isNewBid 
                     ? 'bg-primary/30 border-primary shadow-[0_0_30px_rgba(var(--color-primary),0.6)] animate-pulse' 
-                    : 'bg-white/5 border-white/10 hover:bg-white/10'
+                    : 'bg-muted/30 border-border hover:bg-muted/50'
                 }`}>
                   <div className="flex items-center gap-4">
                     <div className={`w-14 h-14 rounded-full bg-white/5 flex items-center justify-center overflow-hidden shrink-0 shadow-lg border-2 transition-all duration-500 ${
