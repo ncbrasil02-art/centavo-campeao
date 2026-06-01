@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Navbar } from "@/components/Navbar";
 import { Hero, SecondaryBanner } from "@/components/HomeSections";
+import { useSettings } from "@/hooks/useSettings";
 import { AuctionCard } from "@/components/AuctionCard";
 import { GlobalActivityChat } from "@/components/GlobalActivityChat";
 import { MessageSquare, X, ArrowRight, Zap, ShieldCheck, Heart, User, ArrowUpRight } from "lucide-react";
@@ -98,6 +99,7 @@ function WinnerCard({ name, product, price, saving, avatarUrl, productImage }: {
 }
 
 function Index() {
+  const { google_reviews_widget } = useSettings();
   const [auctions, setAuctions] = useState<any[]>([]);
   const [finishedAuctions, setFinishedAuctions] = useState<any[]>([]);
   const [winners, setWinners] = useState<any[]>([]);
@@ -381,7 +383,9 @@ function Index() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {testimonials.length > 0 ? (
+                {google_reviews_widget ? (
+                  <div className="col-span-full" dangerouslySetInnerHTML={{ __html: google_reviews_widget }} />
+                ) : testimonials.length > 0 ? (
                   testimonials.map((t, idx) => (
                     <motion.div
                       key={t.id}
@@ -399,9 +403,11 @@ function Index() {
                     </motion.div>
                   ))
                 ) : (
-                  <div className="col-span-full py-20 text-center">
-                    <p className="text-white/20 uppercase tracking-[0.3em] font-black italic">Carregando depoimentos da comunidade...</p>
-                  </div>
+                  !google_reviews_widget && (
+                    <div className="col-span-full py-20 text-center">
+                      <p className="text-white/20 uppercase tracking-[0.3em] font-black italic">Carregando depoimentos da comunidade...</p>
+                    </div>
+                  )
                 )}
               </div>
             </div>

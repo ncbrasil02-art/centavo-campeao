@@ -672,6 +672,17 @@ function AdminSettings() {
                     className="bg-white/5 border-white/10 h-12"
                   />
                 </div>
+                <div className="space-y-2">
+                  <Label htmlFor="google_reviews">Widget de Depoimentos do Google (Script/HTML)</Label>
+                  <Textarea 
+                    id="google_reviews" 
+                    value={settings.google_reviews_widget || ""} 
+                    onChange={(e) => setSettings({...settings, google_reviews_widget: e.target.value})}
+                    placeholder="Cole aqui o script ou HTML do widget de depoimentos (ex: Elfsight, SociableKit, etc.)"
+                    className="bg-white/5 border-white/10 min-h-[120px] font-mono text-xs"
+                  />
+                  <p className="text-[10px] text-white/40">Este código será renderizado na seção de depoimentos da página inicial.</p>
+                </div>
               </CardContent>
             </Card>
 
