@@ -270,12 +270,7 @@ function AuctionPage() {
     if (data && data.length > 0) {
       setBids(data);
     } else {
-      // Mock bids for fictitious mode
-      setBids([
-        { id: "1", profile: { username: "Arrematador99" }, price_at_bid: 15.20, created_at: new Date().toISOString() },
-        { id: "2", profile: { username: "GamerPro" }, price_at_bid: 15.19, created_at: new Date().toISOString() },
-        { id: "3", profile: { username: "TechLover" }, price_at_bid: 15.18, created_at: new Date().toISOString() }
-      ]);
+      setBids([]);
     }
   }
 

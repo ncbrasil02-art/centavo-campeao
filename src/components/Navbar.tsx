@@ -18,16 +18,16 @@ export function Navbar() {
   const [loading, setLoading] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { site_name, logo_url, logo_height, logo_height_mobile, logo_padding_x, logo_padding_y } = useSettings();
-  const { getAdjustedNow, synced } = useTimeSync();
-  const [currentTime, setCurrentTime] = useState<Date | null>(null);
+  const { getAdjustedNow, synced, formatBrasiliaTime } = useTimeSync();
+  const [currentTimeStr, setCurrentTimeStr] = useState<string>("--:--:--");
   const navigate = useNavigate();
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentTime(new Date(getAdjustedNow()));
+      setCurrentTimeStr(formatBrasiliaTime(getAdjustedNow()));
     }, 1000);
     return () => clearInterval(timer);
-  }, [getAdjustedNow]);
+  }, [getAdjustedNow, formatBrasiliaTime]);
 
   useEffect(() => {
     let mounted = true;
@@ -144,7 +144,7 @@ export function Navbar() {
               {synced && <div className="w-1 h-1 rounded-full bg-green-500 animate-pulse shadow-[0_0_5px_rgba(34,197,94,0.8)]" title="Sincronizado em tempo real"></div>}
             </span>
             <span className="text-sm font-black tabular-nums text-foreground/90">
-              {currentTime ? format(currentTime, "HH:mm:ss", { locale: ptBR }) : "--:--:--"}
+              {currentTimeStr}
             </span>
           </div>
           <Link to="/" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Leilões</Link>
@@ -169,7 +169,7 @@ export function Navbar() {
               <Clock className="w-2 h-2" /> HORA
             </span>
             <span className="text-xs font-black tabular-nums text-foreground/90">
-              {currentTime ? format(currentTime, "HH:mm:ss", { locale: ptBR }) : "--:--:--"}
+              {currentTimeStr}
             </span>
           </div>
 

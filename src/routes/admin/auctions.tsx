@@ -35,6 +35,7 @@ import { Switch } from "@/components/ui/switch";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { NotificationDialog } from "@/components/admin/NotificationDialog";
+import { useTimeSync } from "@/hooks/useTimeSync";
 
 export const Route = createFileRoute("/admin/auctions")({
   component: AdminAuctions,
@@ -49,7 +50,8 @@ function AdminAuctions() {
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const auctionsPerPage = 50; // Increased to make client-side search more useful
+  const auctionsPerPage = 50; 
+  const { formatBrasiliaTime } = useTimeSync();
 
   
   const [uploading, setUploading] = useState(false);
@@ -804,10 +806,10 @@ function AdminAuctions() {
                       </span>
                     </TableCell>
                     <TableCell className="text-white/60">
-                      {format(new Date(auction.start_time), "dd/MM HH:mm", { locale: ptBR })}
+                      {formatBrasiliaTime(new Date(auction.start_time), "dd/MM HH:mm")}
                     </TableCell>
                     <TableCell className="text-white/60">
-                      {format(new Date(auction.end_time), "dd/MM HH:mm", { locale: ptBR })}
+                      {formatBrasiliaTime(new Date(auction.end_time), "dd/MM HH:mm")}
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1 font-bold text-primary">
