@@ -74,14 +74,15 @@ function PackagesPage() {
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Edge function error details:', error);
+        const errorMessage = error.context?.message || error.message || "Erro desconhecido na Edge Function";
+        throw new Error(errorMessage);
+      }
       
-      setBuying({ 
-        ...buying, 
-        transaction_id: data.transaction_id,
-        pix_copy_paste: data.pix_copy_paste,
-        pix_qr_code: data.pix_qr_code
-      });
+      if (data?.error) {
+        throw new Error(data.error + (data.details ? `: ${data.details}` : ""));
+      }
       setPaymentStep("pix");
 
       // Subscribe to transaction changes to auto-finalize
