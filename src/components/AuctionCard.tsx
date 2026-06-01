@@ -685,8 +685,8 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           }`}>
             <img 
               src={
-                (isScheduled || !auction.last_bidder?.username) && currentWinner 
-                  ? currentWinner.avatar_url 
+                (isScheduled || !auction.last_bidder?.username)
+                  ? getFallbackAvatarUrl(undefined)
                   : (auction.last_bidder?.avatar_url || getFallbackAvatarUrl(auction.last_bidder?.username))
               } 
               className={`h-full w-full object-cover transition-opacity duration-500 ${isNewBid ? 'opacity-100' : 'opacity-90'}`} 
@@ -699,7 +699,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             <span className={`text-[11px] font-black uppercase tracking-widest transition-colors ${
               isNewBid ? 'text-primary' : (isFinished || isConfirmed) ? 'text-green-500' : isPendingAudit ? 'text-red-500' : 'text-muted-foreground'
             }`}>
-              {(isFinished || isConfirmed) ? "🏆 Vencedor" : isPendingAudit ? "🔍 Em Auditoria" : (isScheduled || !auction.last_bidder?.username) && hasWinners ? "Últimos Ganhadores" : "Último Lance"}
+              {(isFinished || isConfirmed) ? "🏆 Vencedor" : isPendingAudit ? "🔍 Em Auditoria" : (isScheduled || !auction.last_bidder?.username) ? "Aguardando Início" : "Último Lance"}
             </span>
             <span className={`truncate text-sm font-bold transition-all ${
               isNewBid ? 'text-primary scale-105 origin-left' : (isFinished || isConfirmed) ? 'text-green-500' : isPendingAudit ? 'text-red-400' : 'text-foreground'
