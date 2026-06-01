@@ -20,7 +20,9 @@ import {
   Monitor, 
   Search, 
   Globe, 
-  BarChart 
+  BarChart,
+  Sun,
+  Moon
 } from "lucide-react";
 import { 
   Select, 
@@ -51,6 +53,7 @@ function AdminSettings() {
     pix_key: "",
     pix_name: "",
     hero_display_mode: "phrases",
+    theme_mode: "dark",
     ga_id: "",
     fb_pixel_id: "",
     meta_title: "",
@@ -84,6 +87,7 @@ function AdminSettings() {
           pix_key: data.pix_key || "",
           pix_name: data.pix_name || "",
           hero_display_mode: data.hero_display_mode || "phrases",
+          theme_mode: data.theme_mode || "dark",
           ga_id: data.ga_id || "",
           fb_pixel_id: data.fb_pixel_id || "",
           meta_title: data.meta_title || "",
@@ -364,6 +368,33 @@ function AdminSettings() {
                       />
                     </div>
                   </div>
+                </div>
+
+                <div className="space-y-3">
+                  <Label htmlFor="theme_mode">Modo de Fundo (Tema)</Label>
+                  <Select 
+                    value={settings.theme_mode} 
+                    onValueChange={(value: any) => setSettings({...settings, theme_mode: value})}
+                  >
+                    <SelectTrigger className="bg-white/5 border-white/10 h-12">
+                      <SelectValue placeholder="Selecione o tema" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-zinc-900 border-white/10 text-white">
+                      <SelectItem value="light">
+                        <div className="flex items-center gap-2">
+                          <Sun className="w-4 h-4" />
+                          <span>Fundo Claro (Automático)</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="dark">
+                        <div className="flex items-center gap-2">
+                          <Moon className="w-4 h-4" />
+                          <span>Fundo Escuro</span>
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-white/40">O tema claro ajusta automaticamente as cores das fontes para garantir visibilidade total.</p>
                 </div>
               </CardContent>
             </Card>
