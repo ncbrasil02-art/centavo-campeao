@@ -634,7 +634,7 @@ function AuctionPage() {
                     : 'bg-muted/30 border-border hover:bg-muted/50'
                 }`}>
                   <div className="flex items-center gap-4">
-                    <div className={`w-14 h-14 rounded-full bg-white/5 flex items-center justify-center overflow-hidden shrink-0 shadow-lg border-2 transition-all duration-500 ${
+                    <div className={`w-14 h-14 rounded-full bg-muted flex items-center justify-center overflow-hidden shrink-0 shadow-lg border-2 transition-all duration-500 ${
                       isNewBid ? 'border-primary scale-110' : 'border-primary/20'
                     }`}>
                       <img 
