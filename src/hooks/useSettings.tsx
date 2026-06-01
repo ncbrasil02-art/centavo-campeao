@@ -247,11 +247,16 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
             return updated;
           });
           
-          if (newData.primary_color) {
-            document.documentElement.style.setProperty("--primary", newData.primary_color);
-          }
-          if (newData.secondary_color) {
-            document.documentElement.style.setProperty("--secondary", newData.secondary_color);
+          if (newData.primary_color) document.documentElement.style.setProperty("--primary", newData.primary_color);
+          if (newData.secondary_color) document.documentElement.style.setProperty("--secondary", newData.secondary_color);
+          if (newData.font_color_primary) document.documentElement.style.setProperty("--foreground", newData.font_color_primary);
+          if (newData.font_color_secondary) document.documentElement.style.setProperty("--muted-foreground", newData.font_color_secondary);
+          if (newData.card_background_color) document.documentElement.style.setProperty("--card", newData.card_background_color);
+          if (newData.block_background_color) document.documentElement.style.setProperty("--muted", newData.block_background_color);
+          if (newData.page_background_color) document.documentElement.style.setProperty("--background", newData.page_background_color);
+          if (newData.border_color) {
+            document.documentElement.style.setProperty("--border", newData.border_color);
+            document.documentElement.style.setProperty("--glass-border", newData.border_color + "1A");
           }
         }
       )
