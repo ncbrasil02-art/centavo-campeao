@@ -375,6 +375,8 @@ export type Database = {
           max_bids_per_robot: number | null
           max_delay: number | null
           min_delay: number | null
+          start_after_minutes: number | null
+          stop_after_minutes: number | null
         }
         Insert: {
           active?: boolean | null
@@ -389,6 +391,8 @@ export type Database = {
           max_bids_per_robot?: number | null
           max_delay?: number | null
           min_delay?: number | null
+          start_after_minutes?: number | null
+          stop_after_minutes?: number | null
         }
         Update: {
           active?: boolean | null
@@ -403,6 +407,8 @@ export type Database = {
           max_bids_per_robot?: number | null
           max_delay?: number | null
           min_delay?: number | null
+          start_after_minutes?: number | null
+          stop_after_minutes?: number | null
         }
         Relationships: [
           {
