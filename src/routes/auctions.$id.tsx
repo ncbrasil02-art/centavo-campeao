@@ -719,10 +719,10 @@ function AuctionPage() {
                 {bids.length > 0 ? (
                   <div className="space-y-2">
                     {(showAllBids ? bids : bids.slice(0, 10)).map((bid, idx) => (
-                      <div key={bid.id} className={`flex items-center justify-between p-3 rounded-xl transition-all duration-300 animate-in fade-in slide-in-from-right-2 ${idx === 0 ? 'bg-primary/20 border border-primary/30 shadow-[0_0_20px_rgba(var(--color-primary),0.1)]' : 'hover:bg-white/5 border border-transparent'}`}>
+                      <div key={bid.id} className={`flex items-center justify-between p-3 rounded-xl transition-all duration-300 animate-in fade-in slide-in-from-right-2 ${idx === 0 ? 'bg-primary/20 border border-primary/30 shadow-[0_0_20px_rgba(var(--color-primary),0.1)]' : 'hover:bg-muted/50 border border-transparent'}`}>
                         <div className="flex items-center gap-3">
                           <div className="relative">
-                            <Avatar className={`w-8 h-8 border-2 transition-all ${idx === 0 ? 'border-primary scale-110 shadow-lg' : 'border-white/10'}`}>
+                            <Avatar className={`w-8 h-8 border-2 transition-all ${idx === 0 ? 'border-primary scale-110 shadow-lg' : 'border-border'}`}>
                               <AvatarImage src={bid.profile?.avatar_url || getFallbackAvatarUrl(bid.profile?.username)} />
                               <AvatarFallback className="bg-primary/10 text-primary font-bold text-[10px]">
                                 {bid.profile?.username?.substring(0, 2).toUpperCase() || "U"}
@@ -731,14 +731,14 @@ function AuctionPage() {
                           </div>
                           <div className="flex flex-col">
                             <div className="flex items-center gap-2">
-                              <span className={`font-black text-xs uppercase italic tracking-tighter ${idx === 0 ? 'text-white' : 'text-white/60'}`}>{bid.profile?.username}</span>
+                              <span className={`font-black text-xs uppercase italic tracking-tighter ${idx === 0 ? 'text-foreground' : 'text-foreground/60'}`}>{bid.profile?.username}</span>
                               {idx === 0 && <Badge className="h-3 px-1 text-[7px] font-black bg-primary text-primary-foreground animate-pulse">LIDERANDO</Badge>}
                             </div>
-                            <span className="text-[8px] text-white/30 font-bold uppercase">{new Date(bid.created_at).toLocaleTimeString()}</span>
+                            <span className="text-[8px] text-muted-foreground font-bold uppercase">{new Date(bid.created_at).toLocaleTimeString()}</span>
                           </div>
                         </div>
                         <div className="text-right">
-                          <span className={`font-mono text-sm font-black block ${idx === 0 ? 'text-primary' : 'text-white/40'}`}>R$ {bid.price_at_bid?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                          <span className={`font-mono text-sm font-black block ${idx === 0 ? 'text-primary' : 'text-muted-foreground'}`}>R$ {bid.price_at_bid?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                         </div>
                       </div>
                     ))}
