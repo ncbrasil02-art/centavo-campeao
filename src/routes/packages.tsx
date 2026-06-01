@@ -269,9 +269,9 @@ function PackagesPage() {
                   
                   <div className="space-y-4">
                     <div className="p-3 bg-white/5 rounded-lg border border-white/10 text-left">
-                      <p className="text-[10px] text-white/40 uppercase font-black mb-1">Chave PIX</p>
+                      <p className="text-[10px] text-white/40 uppercase font-black mb-1">Código PIX (Copia e Cola)</p>
                       <div className="flex items-center justify-between gap-2">
-                        <code className="text-xs break-all">{settings.pix_key || "carregando..."}</code>
+                        <code className="text-[10px] break-all line-clamp-2 text-white/60">{buying?.pix_copy_paste || "Gerando código..."}</code>
                         <Button size="icon" variant="ghost" className="h-8 w-8 shrink-0" onClick={copyPixKey}>
                           <Copy className="w-4 h-4" />
                         </Button>
