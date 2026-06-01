@@ -11,7 +11,7 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Plus, Gavel, Calendar, Clock, Edit, Trash2, CheckCircle, XCircle, Power, Upload, Loader2, Image as ImageIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, Gavel, Calendar, Clock, Edit, Trash2, CheckCircle, XCircle, Power, Upload, Loader2, Image as ImageIcon, ChevronLeft, ChevronRight, Bell } from "lucide-react";
 import { toast } from "sonner";
 import { 
   Dialog, 
@@ -680,6 +680,9 @@ function AdminAuctions() {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
+                        {auction.status === 'scheduled' && (
+                          <NotificationDialog auction={auction} />
+                        )}
                         {auction.status === 'pending_audit' && (
                           <Button 
                             size="sm" 
