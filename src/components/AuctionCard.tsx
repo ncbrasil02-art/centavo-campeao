@@ -711,7 +711,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
               <span className="text-[10px] font-black uppercase tracking-widest text-green-500/80">
                 Arrematado por {auction.last_bidder?.username || "Ganhador"}
               </span>
-              <span className="text-xs font-black italic text-white/60">
+              <span className="text-xs font-black italic text-muted-foreground/60">
                 {isConfirmed ? "Ganhador Confirmado" : (auction.end_time ? format(new Date(auction.end_time), "dd/MM 'às' HH:mm", { locale: ptBR }) : "Finalizado")}
               </span>
             </div>
