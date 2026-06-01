@@ -699,6 +699,7 @@ function AdminAuctions() {
             <TableHeader className="bg-white/5">
               <TableRow className="border-white/5">
                 <TableHead className="text-white/40 font-bold uppercase text-[10px]">Produto</TableHead>
+                <TableHead className="text-white/40 font-bold uppercase text-[10px]">Modalidade</TableHead>
                 <TableHead className="text-white/40 font-bold uppercase text-[10px]">Início</TableHead>
                 <TableHead className="text-white/40 font-bold uppercase text-[10px]">Expira em</TableHead>
                 <TableHead className="text-white/40 font-bold uppercase text-[10px]">Lances</TableHead>
