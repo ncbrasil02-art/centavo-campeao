@@ -329,11 +329,11 @@ function AuctionPage() {
 
 
   return (
-    <div className="min-h-screen bg-background text-white selection:bg-primary selection:text-primary-foreground">
+    <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
       <Navbar />
       
       <main className="container mx-auto px-4 py-8 md:py-12">
-        <div className="flex items-center gap-2 mb-8 text-white/40 hover:text-white transition-colors">
+        <div className="flex items-center gap-2 mb-8 text-muted-foreground hover:text-foreground transition-colors">
           <Link to="/" className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest">
             <ArrowLeft className="w-4 h-4" />
             Voltar para leilões
