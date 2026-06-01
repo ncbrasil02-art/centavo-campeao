@@ -729,10 +729,12 @@ export type Database = {
         Returns: Json
       }
       confirm_auction_winner: { Args: { p_auction_id: string }; Returns: Json }
-      create_pending_payment: {
-        Args: { p_method: string; p_package_id: string }
-        Returns: Json
-      }
+      create_pending_payment:
+        | { Args: { p_method: string; p_package_id: string }; Returns: Json }
+        | {
+            Args: { p_method: string; p_package_id: string; p_user_id?: string }
+            Returns: Json
+          }
       ensure_live_auctions_robot_settings: { Args: never; Returns: undefined }
       get_server_time: { Args: never; Returns: string }
       increment_bid_balance: {
