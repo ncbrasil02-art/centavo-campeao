@@ -292,7 +292,7 @@ function Index() {
           </section>
 
           {/* Winners Section */}
-          <section className="py-20 bg-primary/5">
+          <section className="py-20 bg-muted">
             <div className="container mx-auto px-4">
               <div className="text-center mb-16">
                 <Badge variant="outline" className="mb-4 border-primary/30 bg-primary/10 text-primary uppercase">GALERIA DE HONRA</Badge>
