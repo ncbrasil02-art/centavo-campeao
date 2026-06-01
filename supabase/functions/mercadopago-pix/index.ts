@@ -34,6 +34,7 @@ serve(async (req) => {
       .single()
 
     if (settingsError || !settings?.mercado_pago_access_token) {
+      console.error('Settings error:', settingsError, 'Token exists:', !!settings?.mercado_pago_access_token)
       return new Response(JSON.stringify({ error: 'Configuração do Mercado Pago não encontrada.' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
     }
 
