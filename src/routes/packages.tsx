@@ -83,6 +83,13 @@ function PackagesPage() {
       if (data?.error) {
         throw new Error(data.error + (data.details ? `: ${data.details}` : ""));
       }
+      
+      setBuying({ 
+        ...buying, 
+        transaction_id: data.transaction_id,
+        pix_copy_paste: data.pix_copy_paste,
+        pix_qr_code: data.pix_qr_code
+      });
       setPaymentStep("pix");
 
       // Subscribe to transaction changes to auto-finalize
