@@ -210,9 +210,9 @@ function Index() {
           {/* Featured Auctions Header */}
           <div className="container mx-auto px-4 mt-8">
              <div className="flex items-center gap-4 mb-8">
-                <div className="h-[1px] flex-1 bg-white/10"></div>
-                <h2 className="text-sm font-black uppercase tracking-[0.5em] text-white/40 italic">Destaques da Semana</h2>
-                <div className="h-[1px] flex-1 bg-white/10"></div>
+                <div className="h-[1px] flex-1 bg-border"></div>
+                <h2 className="text-xs font-black uppercase tracking-[0.5em] text-muted-foreground italic">Destaques da Semana</h2>
+                <div className="h-[1px] flex-1 bg-border"></div>
              </div>
           </div>
 
