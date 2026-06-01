@@ -208,7 +208,7 @@ export function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden border-t border-white/10 bg-background/95 backdrop-blur-xl overflow-hidden"
+            className="lg:hidden border-t border-border bg-background/95 backdrop-blur-xl overflow-hidden"
           >
             <div className="container mx-auto px-4 py-6 flex flex-col gap-4">
               <div className="flex items-center justify-between p-2 mb-2 bg-primary/5 rounded-xl border border-primary/10">
