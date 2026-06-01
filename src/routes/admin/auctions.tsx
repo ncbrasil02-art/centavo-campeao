@@ -34,6 +34,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { NotificationDialog } from "@/components/admin/NotificationDialog";
 
 export const Route = createFileRoute("/admin/auctions")({
   component: AdminAuctions,
