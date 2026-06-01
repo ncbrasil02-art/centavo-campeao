@@ -59,7 +59,8 @@ serve(async (req) => {
     // 3. Create pending transaction via RPC
     const { data: transaction, error: transError } = await supabaseClient.rpc('create_pending_payment', {
       p_package_id: package_id,
-      p_method: 'pix'
+      p_method: 'pix',
+      p_user_id: user.id
     })
 
     if (transError || !transaction?.success) {
