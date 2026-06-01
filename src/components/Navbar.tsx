@@ -107,8 +107,8 @@ export function Navbar() {
         </Link>
 
         <div className="hidden items-center gap-8 lg:flex">
-          <div className="flex flex-col items-center px-4 border-x border-white/5 bg-white/5 py-1 rounded-lg relative group/time">
-            <span className="text-[9px] font-black text-primary/60 uppercase tracking-[0.2em] mb-0.5 flex items-center gap-1">
+          <div className="flex flex-col items-center px-4 border-x border-border bg-muted/30 py-1 rounded-lg relative group/time">
+            <span className="text-[10px] font-black text-primary/60 uppercase tracking-[0.2em] mb-0.5 flex items-center gap-1">
               <Clock className="w-2.5 h-2.5" /> Horário Oficial
               {synced && <div className="w-1 h-1 rounded-full bg-green-500 animate-pulse shadow-[0_0_5px_rgba(34,197,94,0.8)]" title="Sincronizado em tempo real"></div>}
             </span>
