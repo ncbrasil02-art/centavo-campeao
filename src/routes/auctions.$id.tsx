@@ -12,7 +12,8 @@ import { AuctionChat } from "@/components/AuctionChat";
 import { useTimeSync } from "@/hooks/useTimeSync";
 // confetti will be imported dynamically on the client
 import { toast } from "sonner";
-import { FALLBACK_PRODUCT_IMAGE, getFallbackAvatarUrl, FICTITIOUS_PARTICIPANTS } from "@/lib/constants";
+import { FALLBACK_PRODUCT_IMAGE, getFallbackAvatarUrl, FICTITIOUS_PARTICIPANTS, MODALITY_CONFIG } from "@/lib/constants";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Progress } from "@/components/ui/progress";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -365,6 +366,36 @@ function AuctionPage() {
                   }}
                 />
                 <div className="absolute top-6 left-6 z-20 flex flex-col gap-3">
+                  {auction.modality && MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG] && (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Badge className={`backdrop-blur-md border border-white/10 px-4 py-2 text-lg font-black italic flex items-center gap-2 ${MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG]!.bgColor} ${MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG]!.color}`}>
+                            {(() => {
+                              const Icon = MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG]!.icon;
+                              return <Icon className="w-5 h-5" />;
+                            })()}
+                            {MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG]!.label}
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-zinc-900 border-white/10 text-white p-3 max-w-[250px]">
+                          <div className="flex flex-col gap-1">
+                            <span className="font-bold text-xs uppercase text-primary">
+                              {MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG]!.label}
+                            </span>
+                            <p className="text-xs text-white/70 leading-relaxed">
+                              {MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG]!.description}
+                              {auction.modality === 'min_balance' && auction.min_balance_required > 0 && (
+                                <span className="block mt-1 font-bold text-white">
+                                  Saldo Mínimo: {auction.min_balance_required} lances
+                                </span>
+                              )}
+                            </p>
+                          </div>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
                   {auction.status === 'finished' ? (
                     <Badge variant="outline" className="bg-background/60 backdrop-blur-md border-border px-4 py-2 text-lg font-black italic">ENCERRADO</Badge>
                   ) : auction.status === 'scheduled' ? (

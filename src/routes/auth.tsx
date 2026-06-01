@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Gavel, Mail, Lock, User, Phone, MapPin, Hash } from "lucide-react";
 
@@ -29,6 +30,7 @@ function AuthPage() {
   const [username, setUsername] = useState("");
   const [cpf, setCpf] = useState("");
   const [phone, setPhone] = useState("");
+  const [gender, setGender] = useState("");
   const navigate = useNavigate();
   const search = Route.useSearch() as any;
   const [activeTab, setActiveTab] = useState(search.register === "true" ? "register" : "login");
@@ -57,6 +59,7 @@ function AuthPage() {
             username,
             cpf,
             phone,
+            gender,
           }
         }
       });
@@ -183,6 +186,21 @@ function AuthPage() {
                     <Label htmlFor="reg-phone">Telefone</Label>
                     <Input id="reg-phone" placeholder="(00) 00000-0000" className="bg-white/5 border-white/10 placeholder:text-primary/50" value={phone} onChange={e => setPhone(e.target.value)} required />
                   </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="reg-gender">Gênero</Label>
+                  <Select value={gender} onValueChange={setGender} required>
+                    <SelectTrigger id="reg-gender" className="bg-white/5 border-white/10">
+                      <SelectValue placeholder="Selecione seu gênero" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-zinc-800 border-white/10 text-white">
+                      <SelectItem value="male">Masculino</SelectItem>
+                      <SelectItem value="female">Feminino</SelectItem>
+                      <SelectItem value="other">Outro</SelectItem>
+                      <SelectItem value="not_specified">Prefiro não informar</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="space-y-2">

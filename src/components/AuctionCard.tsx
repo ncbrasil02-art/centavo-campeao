@@ -6,10 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Clock, User, MessageSquare, Zap, Eye, Volume2, VolumeX, Calendar, ShieldCheck } from "lucide-react";
+import { Clock, User, MessageSquare, Zap, Eye, Volume2, VolumeX, Calendar, ShieldCheck, Trophy, Wallet, Info } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { AuctionChat } from "./AuctionChat";
 import { toast } from "sonner";
-import { FALLBACK_PRODUCT_IMAGE, getFallbackAvatarUrl, FICTITIOUS_PARTICIPANTS } from "@/lib/constants";
+import { FALLBACK_PRODUCT_IMAGE, getFallbackAvatarUrl, FICTITIOUS_PARTICIPANTS, MODALITY_CONFIG } from "@/lib/constants";
 import { Progress } from "@/components/ui/progress";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -365,8 +366,44 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   const timePercentage = (timeLeft / timerDuration) * 100;
 
   return (
-    <Card className={`group relative flex flex-col h-full overflow-hidden rounded-[32px] border-glass-border bg-glass backdrop-blur-md transition-all duration-500 hover:border-primary/50 hover:shadow-[0_0_40px_rgba(var(--color-primary),0.3)] border-2 ${!isFinished && !isScheduled ? 'animate-float-slow' : ''}`}>
+    <Card className={`group relative flex flex-col h-full overflow-hidden rounded-[32px] border-glass-border bg-glass backdrop-blur-md transition-all duration-500 hover:border-primary/50 hover:shadow-[0_0_40px_rgba(var(--color-primary),0.3)] border-2 ${!isFinished && !isScheduled ? 'animate-float-slow' : ''} ${auction.modality && MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG]?.effect || ''}`}>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_rgba(var(--color-primary),0.05),_transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity"></div>
+      
+      {/* Modality Icon */}
+      {auction.modality && MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG] && (
+        <div className="absolute top-4 left-4 z-30">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-md border border-white/10 ${MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG]!.bgColor} ${MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG]!.color} cursor-help transition-transform hover:scale-110`}>
+                  {(() => {
+                    const Icon = MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG]!.icon;
+                    return <Icon className="w-4 h-4" />;
+                  })()}
+                  <span className="text-[10px] font-black uppercase tracking-wider">
+                    {MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG]!.label}
+                  </span>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent className="bg-zinc-900 border-white/10 text-white p-3 max-w-[200px]">
+                <div className="flex flex-col gap-1">
+                  <span className="font-bold text-xs uppercase text-primary">
+                    {MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG]!.label}
+                  </span>
+                  <p className="text-[11px] text-white/70 leading-relaxed">
+                    {MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG]!.description}
+                    {auction.modality === 'min_balance' && auction.min_balance_required > 0 && (
+                      <span className="block mt-1 font-bold text-white">
+                        Mínimo: {auction.min_balance_required} lances
+                      </span>
+                    )}
+                  </p>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+      )}
       {/* Product Image Section */}
       <div className="relative aspect-square overflow-hidden rounded-t-[32px]">
         <Link to="/auctions/$id" params={{ id: auction.id }} className="block h-full w-full cursor-pointer">

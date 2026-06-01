@@ -48,6 +48,8 @@ export type Database = {
           id: string
           is_finalizing: boolean | null
           last_bidder_id: string | null
+          min_balance_required: number | null
+          modality: string | null
           product_id: string | null
           robot_enabled: boolean | null
           start_time: string | null
@@ -64,6 +66,8 @@ export type Database = {
           id?: string
           is_finalizing?: boolean | null
           last_bidder_id?: string | null
+          min_balance_required?: number | null
+          modality?: string | null
           product_id?: string | null
           robot_enabled?: boolean | null
           start_time?: string | null
@@ -80,6 +84,8 @@ export type Database = {
           id?: string
           is_finalizing?: boolean | null
           last_bidder_id?: string | null
+          min_balance_required?: number | null
+          modality?: string | null
           product_id?: string | null
           robot_enabled?: boolean | null
           start_time?: string | null
@@ -324,6 +330,7 @@ export type Database = {
           cpf: string | null
           created_at: string
           full_name: string | null
+          gender: string | null
           id: string
           is_admin: boolean | null
           is_bot: boolean | null
@@ -338,6 +345,7 @@ export type Database = {
           cpf?: string | null
           created_at?: string
           full_name?: string | null
+          gender?: string | null
           id: string
           is_admin?: boolean | null
           is_bot?: boolean | null
@@ -352,6 +360,7 @@ export type Database = {
           cpf?: string | null
           created_at?: string
           full_name?: string | null
+          gender?: string | null
           id?: string
           is_admin?: boolean | null
           is_bot?: boolean | null
@@ -717,6 +726,8 @@ export type Database = {
           id: string | null
           is_finalizing: boolean | null
           last_bidder: Json | null
+          min_balance_required: number | null
+          modality: string | null
           product: Json | null
           product_id: string | null
           robot_enabled: boolean | null

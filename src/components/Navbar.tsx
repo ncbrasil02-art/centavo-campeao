@@ -2,7 +2,12 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { User, LogOut, Wallet, Gavel, LayoutDashboard, Menu, X, Clock } from "lucide-react";
+import { User, LogOut, Wallet, Gavel, LayoutDashboard, Menu, X, Clock, Settings } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getFallbackAvatarUrl } from "@/lib/constants";
 import { useSettings } from "@/hooks/useSettings";
@@ -85,6 +90,21 @@ export function Navbar() {
     await supabase.auth.signOut();
     setIsMenuOpen(false);
     navigate({ to: "/" });
+  };
+
+  const updateProfile = async (newData: any) => {
+    if (!user) return;
+    const { error } = await supabase
+      .from("profiles")
+      .update(newData)
+      .eq("id", user.id);
+    
+    if (error) {
+      toast.error("Erro ao atualizar perfil");
+    } else {
+      toast.success("Perfil atualizado com sucesso");
+      fetchProfile(user.id);
+    }
   };
 
   return (
@@ -183,16 +203,54 @@ export function Navbar() {
                 </Button>
               )}
 
-              <Button variant="outline" size="icon" className="h-10 w-10 rounded-full border-border bg-muted/50 hover:bg-muted overflow-hidden" asChild>
-                <Link to={profile?.is_admin ? "/admin" : "/"}>
-                  <Avatar className="h-full w-full">
-                    <AvatarImage src={profile?.avatar_url || getFallbackAvatarUrl(profile?.username)} />
-                    <AvatarFallback className="bg-primary/20 text-primary text-[10px]">
-                      {profile?.username?.substring(0, 2).toUpperCase() || "U"}
-                    </AvatarFallback>
-                  </Avatar>
-                </Link>
-              </Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="icon" className="h-10 w-10 rounded-full border-border bg-muted/50 hover:bg-muted overflow-hidden">
+                    <Avatar className="h-full w-full">
+                      <AvatarImage src={profile?.avatar_url || getFallbackAvatarUrl(profile?.username)} />
+                      <AvatarFallback className="bg-primary/20 text-primary text-[10px]">
+                        {profile?.username?.substring(0, 2).toUpperCase() || "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="bg-zinc-900 border-white/10 text-white">
+                  <DialogHeader>
+                    <DialogTitle className="text-xl font-bold uppercase italic">Meu <span className="text-primary">Perfil</span></DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4 py-4">
+                    <div className="space-y-2">
+                      <Label>Nickname</Label>
+                      <Input 
+                        value={profile?.username || ""} 
+                        onChange={(e) => setProfile({...profile, username: e.target.value})}
+                        onBlur={() => updateProfile({ username: profile.username })}
+                        className="bg-white/5 border-white/10"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Gênero</Label>
+                      <Select 
+                        value={profile?.gender || "not_specified"} 
+                        onValueChange={(v) => updateProfile({ gender: v })}
+                      >
+                        <SelectTrigger className="bg-white/5 border-white/10">
+                          <SelectValue placeholder="Selecione seu gênero" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-zinc-800 border-white/10 text-white">
+                          <SelectItem value="male">Masculino</SelectItem>
+                          <SelectItem value="female">Feminino</SelectItem>
+                          <SelectItem value="other">Outro</SelectItem>
+                          <SelectItem value="not_specified">Prefiro não informar</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <p className="text-[10px] text-white/40 italic w-full text-center">As alterações são salvas automaticamente.</p>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
               
               <Button onClick={handleLogout} variant="ghost" size="icon" className="hidden sm:flex h-9 w-9 text-muted-foreground hover:text-red-400">
                 <LogOut className="h-4 w-4" />
