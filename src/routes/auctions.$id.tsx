@@ -444,12 +444,12 @@ function AuctionPage() {
                     variant="ghost" 
                     size="icon"
                     onClick={() => setIsMuted(!isMuted)}
-                    className="p-4 rounded-full bg-black/40 hover:bg-primary/20 border border-white/10 backdrop-blur-md transition-all group/sound"
+                    className="p-4 rounded-full bg-background/40 hover:bg-primary/20 border border-border backdrop-blur-md transition-all group/sound"
                   >
-                    {isMuted ? <VolumeX className="w-5 h-5 text-white/60" /> : <Volume2 className="w-5 h-5 text-primary" />}
+                    {isMuted ? <VolumeX className="w-5 h-5 text-muted-foreground" /> : <Volume2 className="w-5 h-5 text-primary" />}
                   </Button>
-                  <button className="p-4 rounded-full bg-black/40 hover:bg-primary/20 border border-white/10 backdrop-blur-md transition-all group/share">
-                    <Share2 className="w-5 h-5 transition-transform group-hover/share:scale-110" />
+                  <button className="p-4 rounded-full bg-background/40 hover:bg-primary/20 border border-border backdrop-blur-md transition-all group/share">
+                    <Share2 className="w-5 h-5 text-foreground transition-transform group-hover/share:scale-110" />
                   </button>
                 </div>
               </div>
