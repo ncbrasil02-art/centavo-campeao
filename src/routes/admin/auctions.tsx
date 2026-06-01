@@ -829,7 +829,7 @@ function AdminAuctions() {
                         {auction.status === 'pending_audit' && (
                           <Button 
                             size="sm" 
-                            className="bg-green-600 hover:bg-green-500 text-white font-bold h-8 text-xs shadow-[0_0_15px_rgba(22,163,74,0.4)]"
+                            className="bg-green-600 hover:bg-green-500 text-white font-black h-9 text-[10px] shadow-[0_0_20px_rgba(22,163,74,0.5)] animate-pulse border-2 border-green-400"
                             onClick={() => handleConfirmWinner(auction.id)}
                           >
                             <CheckCircle className="w-4 h-4 mr-2" /> FINALIZAR AUDITORIA
