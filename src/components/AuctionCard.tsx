@@ -51,7 +51,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   const [activeWatchers, setActiveWatchers] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const confettiFired = useRef(false);
-  const { getAdjustedNow } = useTimeSync();
+  const { getAdjustedNow, formatBrasiliaTime } = useTimeSync();
   const { currentWinner, hasWinners } = useRecentWinners();
   const [isAdmin, setIsAdmin] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
@@ -749,7 +749,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
                 Arrematado por {auction.last_bidder?.username || "Ganhador"}
               </span>
               <span className="text-xs font-black italic text-muted-foreground/60">
-                {isConfirmed ? "Ganhador Confirmado" : (auction.end_time ? format(new Date(auction.end_time), "dd/MM 'às' HH:mm", { locale: ptBR }) : "Finalizado")}
+                {isConfirmed ? "Ganhador Confirmado" : (auction.end_time ? formatBrasiliaTime(new Date(auction.end_time), "dd/MM 'às' HH:mm") : "Finalizado")}
               </span>
             </div>
           ) : isPendingAudit ? (
