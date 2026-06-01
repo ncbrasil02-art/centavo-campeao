@@ -460,7 +460,7 @@ function AuctionPage() {
                     <button 
                       key={idx}
                       onClick={() => setActiveImage(idx)}
-                      className={`relative w-24 h-24 rounded-2xl overflow-hidden border-2 transition-all shrink-0 snap-start ${activeImage === idx ? 'border-primary shadow-[0_0_15px_rgba(var(--color-primary),0.3)]' : 'border-white/10 opacity-50 hover:opacity-100 hover:border-white/20'}`}
+                      className={`relative w-24 h-24 rounded-2xl overflow-hidden border-2 transition-all shrink-0 snap-start ${activeImage === idx ? 'border-primary shadow-[0_0_15px_rgba(var(--color-primary),0.3)]' : 'border-border opacity-50 hover:opacity-100 hover:border-border/60'}`}
                     >
                       <img src={img} className="w-full h-full object-cover" onError={(e) => (e.target as HTMLImageElement).src = FALLBACK_PRODUCT_IMAGE} />
                       {activeImage === idx && (
