@@ -603,11 +603,11 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
                     <div className="absolute inset-0 bg-red-500/10 shadow-[inset_0_0_20px_rgba(239,68,68,0.4)]"></div>
                   )}
                 </div>
-                <div className={`flex items-end py-1.5 px-1.5 rounded-lg border border-white/5 bg-black/40 ${
+                <div className={`flex items-end py-1.5 px-1.5 rounded-lg border border-border bg-muted ${
                    timeLeft <= 8 && !isFinished ? 'border-red-500/20' : ''
                 }`}>
                   <span className={`text-sm font-black tabular-nums ${
-                    timeLeft <= 8 && !isFinished ? 'text-red-400' : 'text-white/40'
+                    timeLeft <= 8 && !isFinished ? 'text-red-400' : 'text-muted-foreground/50'
                   }`}>
                     ,{isFinished ? "00" : timeParts.ms}
                   </span>
