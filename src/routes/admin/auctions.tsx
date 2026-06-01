@@ -66,6 +66,8 @@ function AdminAuctions() {
     timer_duration: 15,
     is_finalizing: false,
     target_winner: "random" as "robot" | "user" | "random",
+    modality: "default",
+    min_balance_required: 0,
     robot_min_delay: 1,
     robot_max_delay: 5,
     robot_bid_chance: 0.3,
