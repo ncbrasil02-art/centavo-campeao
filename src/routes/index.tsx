@@ -77,15 +77,15 @@ function WinnerCard({ name, product, price, saving, avatarUrl, productImage }: {
           <Badge className="bg-primary/10 text-primary border-primary/20 font-black italic uppercase text-[10px]">#{Math.floor(Math.random() * 900) + 100}</Badge>
         </div>
 
-        <div className="flex items-center gap-4 bg-white/5 rounded-2xl p-4 border border-white/5 group-hover:bg-white/10 transition-all">
-          <div className="w-20 h-20 rounded-xl bg-black/40 p-2 shrink-0 border border-white/5 overflow-hidden">
-            <img src={productImage || "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=200&auto=format&fit=crop"} className="w-full h-full object-contain mix-blend-lighten" />
+        <div className="flex items-center gap-4 bg-muted/50 rounded-2xl p-4 border border-border group-hover:bg-muted transition-all">
+          <div className="w-20 h-20 rounded-xl bg-background/40 p-2 shrink-0 border border-border overflow-hidden">
+            <img src={productImage || "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=200&auto=format&fit=crop"} className="w-full h-full object-contain mix-blend-lighten dark:mix-blend-lighten" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-black text-white/80 uppercase truncate italic leading-tight mb-2">{product}</p>
+            <p className="text-sm font-black text-foreground uppercase truncate italic leading-tight mb-2">{product}</p>
             <div className="flex items-center gap-3">
               <div className="flex flex-col">
-                <span className="text-[9px] font-black text-white/30 uppercase tracking-widest">Pagou apenas</span>
+                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Pagou apenas</span>
                 <span className="font-black text-xl text-primary drop-shadow-[0_0_10px_rgba(var(--color-primary),0.3)]">{price}</span>
               </div>
               <Badge className="bg-green-500/20 text-green-500 border-green-500/20 font-black text-[10px] uppercase">{saving} OFF</Badge>
