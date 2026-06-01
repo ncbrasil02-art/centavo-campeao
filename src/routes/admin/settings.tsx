@@ -68,6 +68,8 @@ function AdminSettings() {
     block_background_color: "",
     page_background_color: "",
     border_color: "",
+    logo_height: 40,
+    google_reviews_widget: "",
   });
 
   useEffect(() => {
@@ -108,6 +110,8 @@ function AdminSettings() {
           block_background_color: data.block_background_color || "",
           page_background_color: data.page_background_color || "",
           border_color: data.border_color || "",
+          logo_height: data.logo_height || 40,
+          google_reviews_widget: data.google_reviews_widget || "",
         });
       }
     } catch (error) {
@@ -335,6 +339,20 @@ function AdminSettings() {
                         </Button>
                       </div>
                     </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="logo_height">Altura do Logotipo (px)</Label>
+                  <div className="flex items-center gap-4">
+                    <Input 
+                      id="logo_height" 
+                      type="number"
+                      value={settings.logo_height} 
+                      onChange={(e) => setSettings({...settings, logo_height: parseInt(e.target.value)})}
+                      className="bg-white/5 border-white/10 h-12 w-32"
+                    />
+                    <span className="text-sm text-white/40">Recomendado: 32px a 64px</span>
                   </div>
                 </div>
               </CardContent>
