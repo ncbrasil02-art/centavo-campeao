@@ -20,27 +20,27 @@ import { Star, Quote } from "lucide-react";
 
 function TestimonialCard({ name, content, avatarUrl, rating }: { name: string, content: string, avatarUrl: string, rating: number }) {
   return (
-    <div className="group relative p-6 rounded-[32px] bg-white/[0.03] border border-white/5 hover:border-primary/30 transition-all duration-500 hover:-translate-y-2">
+    <div className="group relative p-6 rounded-[32px] bg-muted/30 border border-border hover:border-primary/30 transition-all duration-500 hover:-translate-y-2">
       <div className="absolute top-6 right-8 text-primary/10 group-hover:text-primary/20 transition-colors">
         <Quote className="w-12 h-12 rotate-180" />
       </div>
       
       <div className="flex flex-col h-full gap-6 relative z-10">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-white/10 group-hover:border-primary/40 transition-all shadow-2xl">
+          <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-border group-hover:border-primary/40 transition-all shadow-2xl">
             <img src={avatarUrl} alt={name} className="w-full h-full object-cover" />
           </div>
           <div>
-            <h4 className="font-black text-white italic uppercase tracking-tighter text-sm">{name}</h4>
+            <h4 className="font-black text-foreground italic uppercase tracking-tighter text-sm">{name}</h4>
             <div className="flex gap-0.5 mt-1">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} className={`w-3 h-3 ${i < rating ? 'text-yellow-500 fill-yellow-500' : 'text-white/10'}`} />
+                <Star key={i} className={`w-3 h-3 ${i < rating ? 'text-yellow-500 fill-yellow-500' : 'text-muted-foreground/20'}`} />
               ))}
             </div>
           </div>
         </div>
         
-        <p className="text-white/60 text-sm leading-relaxed italic">
+        <p className="text-muted-foreground text-sm leading-relaxed italic">
           "{content}"
         </p>
       </div>
