@@ -249,7 +249,7 @@ export function Navbar() {
                   <LayoutDashboard className="w-6 h-6" /> PAINEL ADMIN
                 </Link>
               )}
-              <div className="h-px bg-white/10 my-2" />
+              <div className="h-px bg-border my-2" />
               <div className="flex items-center justify-between p-2">
                 <div className="flex items-center gap-2">
                   <Wallet className="w-5 h-5 text-primary" />
