@@ -74,7 +74,15 @@ function PackagesPage() {
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Edge function error details:', error);
+        const errorMessage = error.context?.message || error.message || "Erro desconhecido na Edge Function";
+        throw new Error(errorMessage);
+      }
+      
+      if (data?.error) {
+        throw new Error(data.error + (data.details ? `: ${data.details}` : ""));
+      }
       
       setBuying({ 
         ...buying, 
