@@ -18,6 +18,12 @@ interface SiteSettings {
   meta_description: string;
   meta_keywords: string;
   google_site_verification: string;
+  font_color_primary: string;
+  font_color_secondary: string;
+  card_background_color: string;
+  block_background_color: string;
+  page_background_color: string;
+  border_color: string;
 }
 
 const SettingsContext = createContext<SiteSettings | null>(null);
