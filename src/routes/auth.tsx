@@ -189,6 +189,21 @@ function AuthPage() {
                 </div>
 
                 <div className="space-y-2">
+                  <Label htmlFor="reg-gender">Gênero</Label>
+                  <Select value={gender} onValueChange={setGender} required>
+                    <SelectTrigger id="reg-gender" className="bg-white/5 border-white/10">
+                      <SelectValue placeholder="Selecione seu gênero" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-zinc-800 border-white/10 text-white">
+                      <SelectItem value="male">Masculino</SelectItem>
+                      <SelectItem value="female">Feminino</SelectItem>
+                      <SelectItem value="other">Outro</SelectItem>
+                      <SelectItem value="not_specified">Prefiro não informar</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
                   <Label htmlFor="reg-pass">Senha</Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-3 h-4 w-4 text-white/40" />
