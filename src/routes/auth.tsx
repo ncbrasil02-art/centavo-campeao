@@ -58,6 +58,7 @@ function AuthPage() {
             username,
             cpf,
             phone,
+            gender,
           }
         }
       });
