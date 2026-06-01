@@ -756,10 +756,10 @@ function AuctionPage() {
                   </div>
                 ) : (
                   <div className="py-20 text-center space-y-4">
-                    <div className="inline-flex p-4 rounded-full bg-white/5 text-white/10">
+                    <div className="inline-flex p-4 rounded-full bg-muted text-muted-foreground/20">
                       <Zap className="w-12 h-12" />
                     </div>
-                    <p className="text-white/20 font-black uppercase tracking-[0.2em] italic text-sm">
+                    <p className="text-muted-foreground/30 font-black uppercase tracking-[0.2em] italic text-sm">
                       {auction.status === 'scheduled' && currentWinner ? (
                         <span className="animate-in fade-in slide-in-from-right-4 duration-500 text-primary/60">
                           {currentWinner.winner_name} arrematou {currentWinner.product_name}
