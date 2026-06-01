@@ -197,7 +197,12 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
         document.documentElement.style.setProperty("--muted", fetchedSettings.block_background_color);
         document.documentElement.style.setProperty("--background", fetchedSettings.page_background_color);
         document.documentElement.style.setProperty("--border", fetchedSettings.border_color);
-        document.documentElement.style.setProperty("--glass-border", fetchedSettings.border_color + "1A"); // 10% opacity for glass border
+        
+        // Glass effect variables derived from background/card
+        const glassColor = fetchedSettings.card_background_color;
+        document.documentElement.style.setProperty("--glass", glassColor + "66"); // 40% opacity (hex 66)
+        document.documentElement.style.setProperty("--glass-border", fetchedSettings.border_color + "33"); // 20% opacity (hex 33)
+        document.documentElement.style.setProperty("--glass-foreground", fetchedSettings.font_color_primary);
       }
     }
 
@@ -256,7 +261,13 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
           if (newData.page_background_color) document.documentElement.style.setProperty("--background", newData.page_background_color);
           if (newData.border_color) {
             document.documentElement.style.setProperty("--border", newData.border_color);
-            document.documentElement.style.setProperty("--glass-border", newData.border_color + "1A");
+            document.documentElement.style.setProperty("--glass-border", newData.border_color + "33");
+          }
+          if (newData.card_background_color) {
+            document.documentElement.style.setProperty("--glass", newData.card_background_color + "66");
+          }
+          if (newData.font_color_primary) {
+            document.documentElement.style.setProperty("--glass-foreground", newData.font_color_primary);
           }
         }
       )
