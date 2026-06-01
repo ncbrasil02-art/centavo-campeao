@@ -170,13 +170,13 @@ export function Hero() {
         {banners.length > 1 && (
           <>
             <button 
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md flex items-center justify-center text-white transition-all z-10 border border-white/10"
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-background/20 hover:bg-background/40 backdrop-blur-md flex items-center justify-center text-foreground transition-all z-10 border border-border"
               onClick={scrollPrev}
             >
               <ChevronLeft className="w-6 h-6" />
             </button>
             <button 
-              className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md flex items-center justify-center text-white transition-all z-10 border border-white/10"
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-background/20 hover:bg-background/40 backdrop-blur-md flex items-center justify-center text-foreground transition-all z-10 border border-border"
               onClick={scrollNext}
             >
               <ChevronRight className="w-6 h-6" />
