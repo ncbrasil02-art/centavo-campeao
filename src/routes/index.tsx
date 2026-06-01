@@ -199,7 +199,7 @@ function Index() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-white selection:bg-primary selection:text-primary-foreground flex flex-col overflow-hidden">
+    <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-primary-foreground flex flex-col overflow-hidden">
       <Navbar />
       
       <div className="flex flex-1 relative overflow-hidden">
@@ -222,8 +222,8 @@ function Index() {
               <div className="flex flex-col md:flex-row items-end justify-between mb-12 gap-6">
                 <div className="max-w-xl">
                   <Badge variant="outline" className="mb-4 border-primary/30 bg-primary/10 text-primary uppercase">LEILÕES EM DESTAQUE</Badge>
-                  <h2 className="text-4xl font-black tracking-tight text-white mb-4 italic">Leilões <span className="text-primary">ao vivo</span> agora</h2>
-                  <p className="text-white/40">Não perca a chance de arrematar os produtos mais cobiçados do momento por uma fração do preço original.</p>
+                  <h2 className="text-4xl font-black tracking-tight text-foreground mb-4 italic">Leilões <span className="text-primary">ao vivo</span> agora</h2>
+                  <p className="text-muted-foreground">Não perca a chance de arrematar os produtos mais cobiçados do momento por uma fração do preço original.</p>
                 </div>
                 <Button variant="ghost" className="text-primary hover:text-primary hover:bg-primary/10 group">
                   Ver todos os leilões
@@ -257,8 +257,8 @@ function Index() {
                   ))}
                 </motion.div>
               ) : (
-                <div className="text-center py-20 bg-white/5 rounded-3xl border border-dashed border-white/10">
-                  <p className="text-white/40">Nenhum leilão ao vivo no momento.</p>
+                <div className="text-center py-20 bg-muted/50 rounded-3xl border border-dashed border-border">
+                  <p className="text-muted-foreground">Nenhum leilão ao vivo no momento.</p>
                 </div>
               )}
             </div>
@@ -279,8 +279,8 @@ function Index() {
             <div className="container mx-auto px-4">
               <div className="text-center max-w-3xl mx-auto mb-16">
                 <Badge variant="outline" className="mb-4 border-accent/30 bg-accent/10 text-accent uppercase">SIMPLES E DIVERTIDO</Badge>
-                <h2 className="text-4xl font-black tracking-tight text-white mb-6">Como o Lance Certo funciona?</h2>
-                <p className="text-white/60 italic">Arrematar produtos premium nunca foi tão fácil. Siga os passos e comece a disputar agora mesmo.</p>
+                <h2 className="text-4xl font-black tracking-tight text-foreground mb-6">Como o Lance Certo funciona?</h2>
+                <p className="text-muted-foreground italic">Arrematar produtos premium nunca foi tão fácil. Siga os passos e comece a disputar agora mesmo.</p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
@@ -296,8 +296,8 @@ function Index() {
             <div className="container mx-auto px-4">
               <div className="text-center mb-16">
                 <Badge variant="outline" className="mb-4 border-primary/30 bg-primary/10 text-primary uppercase">GALERIA DE HONRA</Badge>
-                <h2 className="text-4xl font-black tracking-tight text-white mb-4 italic uppercase">Ranking de <span className="text-primary">Ganhadores</span></h2>
-                <p className="text-white/40">Pessoas reais, economias reais. Veja quem já levou o prêmio para casa esta semana.</p>
+                <h2 className="text-4xl font-black tracking-tight text-foreground mb-4 italic uppercase">Ranking de <span className="text-primary">Ganhadores</span></h2>
+                <p className="text-muted-foreground">Pessoas reais, economias reais. Veja quem já levou o prêmio para casa esta semana.</p>
                 <Button variant="link" className="text-primary font-black italic uppercase text-xs mt-4" asChild>
                   <Link to="/ranking">Ver Ranking Completo <ArrowUpRight className="ml-1 w-3 h-3" /></Link>
                 </Button>
