@@ -500,9 +500,9 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
                 <MessageSquare className="h-4 w-4" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-full border-white/10 bg-background p-0 sm:max-w-md">
-              <SheetHeader className="border-b border-white/10 p-4">
-                <SheetTitle className="font-black italic uppercase tracking-tighter text-white">
+            <SheetContent side="right" className="w-full border-border bg-background p-0 sm:max-w-md">
+              <SheetHeader className="border-b border-border p-4">
+                <SheetTitle className="font-black italic uppercase tracking-tighter text-foreground">
                   Chat do <span className="text-primary">Leilão</span>
                 </SheetTitle>
               </SheetHeader>
@@ -519,7 +519,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
               e.stopPropagation();
               setIsMuted(!isMuted);
             }}
-            className="h-10 w-10 rounded-full border border-white/10 bg-black/40 text-white/60 backdrop-blur-md transition-all hover:bg-primary/20 hover:text-primary"
+            className="h-10 w-10 rounded-full border border-border bg-background/40 text-muted-foreground backdrop-blur-md transition-all hover:bg-primary/20 hover:text-primary"
           >
             {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
           </Button>
