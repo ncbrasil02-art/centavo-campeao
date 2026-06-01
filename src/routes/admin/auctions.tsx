@@ -367,7 +367,7 @@ function AdminAuctions() {
             }
           }}>
             <DialogTrigger asChild>
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold" onClick={() => {
+              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs" onClick={() => {
                 setEditingAuction(null);
                 setFormData(initialFormData);
               }}>
@@ -622,7 +622,7 @@ function AdminAuctions() {
                 </div>
 
                 <DialogFooter className="pt-4">
-                  <Button type="submit" className="w-full bg-primary font-bold">
+                  <Button type="submit" className="w-full bg-primary font-bold text-xs">
                     {editingAuction ? "Salvar Alterações" : "Criar Leilão"}
                   </Button>
                 </DialogFooter>
@@ -687,7 +687,7 @@ function AdminAuctions() {
                         {auction.status === 'pending_audit' && (
                           <Button 
                             size="sm" 
-                            className="bg-green-600 hover:bg-green-500 text-white font-bold h-8"
+                            className="bg-green-600 hover:bg-green-500 text-white font-bold h-8 text-xs"
                             onClick={() => handleConfirmWinner(auction.id)}
                           >
                             <CheckCircle className="w-4 h-4 mr-2" /> Em Auditoria
