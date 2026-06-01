@@ -196,7 +196,7 @@ export function Navbar() {
               )}
 
               <Button variant="outline" size="icon" className="h-10 w-10 rounded-full border-border bg-muted/50 hover:bg-muted overflow-hidden" asChild>
-                <Link to="/profile">
+                <Link to={"/profile" as any}>
                   <Avatar className="h-full w-full">
                     <AvatarImage src={profile?.avatar_url || getFallbackAvatarUrl(profile?.username)} />
                     <AvatarFallback className="bg-primary/20 text-primary text-[10px]">
@@ -241,10 +241,10 @@ export function Navbar() {
             className="lg:hidden border-t border-border bg-background/95 backdrop-blur-xl overflow-hidden"
           >
             <div className="container mx-auto px-4 py-6 flex flex-col gap-4">
-              <Link to="/" className="text-lg font-bold p-2 hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Leilões</Link>
+              <Link to={"/profile" as any} className="text-lg font-bold p-2 hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Leilões</Link>
               <Link to="/ranking" className="text-lg font-bold p-2 hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Ranking</Link>
               <Link to="/packages" className="text-lg font-bold p-2 hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Comprar Lances</Link>
-              <Link to="/profile" className="text-lg font-bold p-2 hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Meu Perfil</Link>
+              <Link to={"/profile" as any} className="text-lg font-bold p-2 hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Meu Perfil</Link>
 
               {(profile?.is_admin || user?.id === 'cdf027bb-f239-4ba0-b8a9-7bf52341df4b') && (
                 <Link 

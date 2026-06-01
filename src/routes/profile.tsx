@@ -18,7 +18,7 @@ export const Route = createFileRoute("/profile")({
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
       throw redirect({
-        to: "/auth",
+        to: "/auth" as any,
       });
     }
   },
@@ -88,7 +88,7 @@ function ProfilePage() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    navigate({ to: "/" });
+    navigate({ to: "/" as any });
   };
 
   if (loading && !profile) {
