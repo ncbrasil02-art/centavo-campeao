@@ -99,7 +99,7 @@ function WinnerCard({ name, product, price, saving, avatarUrl, productImage }: {
 }
 
 function Index() {
-  const { google_reviews_widget, logo_url } = useSettings();
+  const { google_reviews_widget, logo_url, logo_height, logo_height_mobile, logo_padding_x, logo_padding_y } = useSettings();
   const [auctions, setAuctions] = useState<any[]>([]);
   const [finishedAuctions, setFinishedAuctions] = useState<any[]>([]);
   const [winners, setWinners] = useState<any[]>([]);
@@ -442,13 +442,23 @@ function Index() {
                   </div>
                 </div>
 
-                <div className="flex flex-col items-center md:items-end gap-4">
-                  <div className="text-white/60 text-sm text-center md:text-right font-medium">
-                    sistema de leilão <a href="https://www.ncbrasil.com.br" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 transition-colors font-bold border-b border-primary/30">centavos</a>
+                <div className="flex flex-col items-center md:items-end gap-6">
+                  <div className="text-white/80 text-sm text-center md:text-right font-medium">
+                    sistema de leilão <a href="https://www.ncbrasil.com.br" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 transition-all font-black uppercase italic tracking-widest border-b-2 border-primary/30 pb-0.5 hover:border-primary">centavos</a>
                   </div>
                   {logo_url ? (
-                    <div className="mt-2 flex flex-col items-center md:items-end gap-2">
-                      <img src={logo_url} alt="Logo" className="h-10 md:h-12 w-auto opacity-80 hover:opacity-100 transition-all filter drop-shadow-[0_0_8px_rgba(var(--color-primary),0.3)]" />
+                    <div 
+                      className="mt-2 flex flex-col items-center md:items-end gap-2"
+                      style={{ 
+                        padding: `${logo_padding_y || 0}px ${logo_padding_x || 0}px`
+                      }}
+                    >
+                      <img 
+                        src={logo_url} 
+                        alt="Logo" 
+                        className="object-contain opacity-90 hover:opacity-100 transition-all filter drop-shadow-[0_0_15px_rgba(var(--color-primary),0.4)]" 
+                        style={{ height: `${logo_height || 40}px` }}
+                      />
                     </div>
                   ) : (
                     <div className="text-xs font-black text-white/20 tracking-tighter uppercase italic mt-2">LANCECERTO</div>
