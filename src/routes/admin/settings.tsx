@@ -410,6 +410,82 @@ function AdminSettings() {
                 </div>
               </CardContent>
             </Card>
+
+            <Card className="bg-white/5 border-white/10 overflow-hidden backdrop-blur-md">
+              <CardHeader className="border-b border-white/5 bg-white/[0.02]">
+                <div className="flex items-center gap-2">
+                  <Sun className="w-5 h-5 text-yellow-500" />
+                  <div>
+                    <CardTitle className="text-lg">Cores Avançadas (Detalhadas)</CardTitle>
+                    <CardDescription className="text-white/40">Controle total sobre cada elemento do site</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="p-6 space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="space-y-3">
+                    <Label>Cor da Fonte Principal</Label>
+                    <div className="flex gap-2">
+                      <div className="w-10 h-10 rounded border border-white/10 overflow-hidden" style={{ backgroundColor: settings.font_color_primary }}>
+                        <Input type="color" value={settings.font_color_primary || "#000000"} onChange={(e) => setSettings({...settings, font_color_primary: e.target.value})} className="w-full h-full opacity-0 cursor-pointer" />
+                      </div>
+                      <Input value={settings.font_color_primary || ""} onChange={(e) => setSettings({...settings, font_color_primary: e.target.value})} className="bg-white/5 border-white/10 flex-1 font-mono" placeholder="#HEX" />
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <Label>Cor da Fonte Secundária</Label>
+                    <div className="flex gap-2">
+                      <div className="w-10 h-10 rounded border border-white/10 overflow-hidden" style={{ backgroundColor: settings.font_color_secondary }}>
+                        <Input type="color" value={settings.font_color_secondary || "#666666"} onChange={(e) => setSettings({...settings, font_color_secondary: e.target.value})} className="w-full h-full opacity-0 cursor-pointer" />
+                      </div>
+                      <Input value={settings.font_color_secondary || ""} onChange={(e) => setSettings({...settings, font_color_secondary: e.target.value})} className="bg-white/5 border-white/10 flex-1 font-mono" placeholder="#HEX" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="space-y-3">
+                    <Label>Fundo dos Cards</Label>
+                    <div className="flex gap-2">
+                      <div className="w-10 h-10 rounded border border-white/10 overflow-hidden" style={{ backgroundColor: settings.card_background_color }}>
+                        <Input type="color" value={settings.card_background_color || "#ffffff"} onChange={(e) => setSettings({...settings, card_background_color: e.target.value})} className="w-full h-full opacity-0 cursor-pointer" />
+                      </div>
+                      <Input value={settings.card_background_color || ""} onChange={(e) => setSettings({...settings, card_background_color: e.target.value})} className="bg-white/5 border-white/10 flex-1 font-mono" placeholder="#HEX" />
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <Label>Fundo dos Blocos/Seções</Label>
+                    <div className="flex gap-2">
+                      <div className="w-10 h-10 rounded border border-white/10 overflow-hidden" style={{ backgroundColor: settings.block_background_color }}>
+                        <Input type="color" value={settings.block_background_color || "#f3f4f6"} onChange={(e) => setSettings({...settings, block_background_color: e.target.value})} className="w-full h-full opacity-0 cursor-pointer" />
+                      </div>
+                      <Input value={settings.block_background_color || ""} onChange={(e) => setSettings({...settings, block_background_color: e.target.value})} className="bg-white/5 border-white/10 flex-1 font-mono" placeholder="#HEX" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="space-y-3">
+                    <Label>Fundo da Página (Body)</Label>
+                    <div className="flex gap-2">
+                      <div className="w-10 h-10 rounded border border-white/10 overflow-hidden" style={{ backgroundColor: settings.page_background_color }}>
+                        <Input type="color" value={settings.page_background_color || "#ffffff"} onChange={(e) => setSettings({...settings, page_background_color: e.target.value})} className="w-full h-full opacity-0 cursor-pointer" />
+                      </div>
+                      <Input value={settings.page_background_color || ""} onChange={(e) => setSettings({...settings, page_background_color: e.target.value})} className="bg-white/5 border-white/10 flex-1 font-mono" placeholder="#HEX" />
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <Label>Cor das Bordas</Label>
+                    <div className="flex gap-2">
+                      <div className="w-10 h-10 rounded border border-white/10 overflow-hidden" style={{ backgroundColor: settings.border_color }}>
+                        <Input type="color" value={settings.border_color || "#e5e7eb"} onChange={(e) => setSettings({...settings, border_color: e.target.value})} className="w-full h-full opacity-0 cursor-pointer" />
+                      </div>
+                      <Input value={settings.border_color || ""} onChange={(e) => setSettings({...settings, border_color: e.target.value})} className="bg-white/5 border-white/10 flex-1 font-mono" placeholder="#HEX" />
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
           {/* SEO & Integrations */}
