@@ -100,6 +100,12 @@ function AdminSettings() {
           meta_description: data.meta_description || "",
           meta_keywords: data.meta_keywords || "",
           google_site_verification: data.google_site_verification || "",
+          font_color_primary: data.font_color_primary || "",
+          font_color_secondary: data.font_color_secondary || "",
+          card_background_color: data.card_background_color || "",
+          block_background_color: data.block_background_color || "",
+          page_background_color: data.page_background_color || "",
+          border_color: data.border_color || "",
         });
       }
     } catch (error) {
