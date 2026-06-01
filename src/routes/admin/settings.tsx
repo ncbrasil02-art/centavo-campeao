@@ -60,6 +60,12 @@ function AdminSettings() {
     meta_description: "",
     meta_keywords: "",
     google_site_verification: "",
+    font_color_primary: "",
+    font_color_secondary: "",
+    card_background_color: "",
+    block_background_color: "",
+    page_background_color: "",
+    border_color: "",
   });
 
   useEffect(() => {
