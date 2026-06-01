@@ -382,7 +382,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           
           {/* Hover Overlay */}
           <div className="absolute inset-0 flex items-center justify-center bg-primary/10 opacity-0 backdrop-blur-[2px] transition-opacity group-hover:opacity-100">
-            <div className="flex items-center gap-2 rounded-full bg-white px-6 py-2.5 font-black text-black shadow-xl transition-transform translate-y-4 group-hover:translate-y-0">
+            <div className="flex items-center gap-2 rounded-full bg-primary px-6 py-2.5 font-black text-primary-foreground shadow-xl transition-transform translate-y-4 group-hover:translate-y-0">
               <Eye className="h-4 w-4" />
               VER DETALHES
             </div>
