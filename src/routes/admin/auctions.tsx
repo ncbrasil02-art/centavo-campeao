@@ -725,6 +725,11 @@ function AdminAuctions() {
                         <span className="font-bold">{auction.product?.name}</span>
                       </div>
                     </TableCell>
+                    <TableCell>
+                      <span className="text-[10px] font-bold uppercase bg-white/5 px-2 py-1 rounded border border-white/10">
+                        {auction.modality || 'default'}
+                      </span>
+                    </TableCell>
                     <TableCell className="text-white/60">
                       {format(new Date(auction.start_time), "dd/MM HH:mm", { locale: ptBR })}
                     </TableCell>
