@@ -261,7 +261,13 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
           if (newData.page_background_color) document.documentElement.style.setProperty("--background", newData.page_background_color);
           if (newData.border_color) {
             document.documentElement.style.setProperty("--border", newData.border_color);
-            document.documentElement.style.setProperty("--glass-border", newData.border_color + "1A");
+            document.documentElement.style.setProperty("--glass-border", newData.border_color + "33");
+          }
+          if (newData.card_background_color) {
+            document.documentElement.style.setProperty("--glass", newData.card_background_color + "66");
+          }
+          if (newData.font_color_primary) {
+            document.documentElement.style.setProperty("--glass-foreground", newData.font_color_primary);
           }
         }
       )
