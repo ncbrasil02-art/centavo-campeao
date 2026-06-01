@@ -365,7 +365,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   const timePercentage = (timeLeft / timerDuration) * 100;
 
   return (
-    <Card className={`group relative flex flex-col h-full overflow-hidden rounded-[32px] border-white/10 bg-zinc-950/40 backdrop-blur-md transition-all duration-500 hover:border-primary/50 hover:shadow-[0_0_40px_rgba(var(--color-primary),0.3)] border-2 ${!isFinished && !isScheduled ? 'animate-float-slow' : ''}`}>
+    <Card className={`group relative flex flex-col h-full overflow-hidden rounded-[32px] border-glass-border bg-glass backdrop-blur-md transition-all duration-500 hover:border-primary/50 hover:shadow-[0_0_40px_rgba(var(--color-primary),0.3)] border-2 ${!isFinished && !isScheduled ? 'animate-float-slow' : ''}`}>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_rgba(var(--color-primary),0.05),_transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity"></div>
       {/* Product Image Section */}
       <div className="relative aspect-square overflow-hidden rounded-t-[32px]">
@@ -390,14 +390,14 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         </Link>
 
         {isScheduled && auction.start_time && (
-          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 bg-primary/40 backdrop-blur-[2px] py-3 flex flex-col items-center justify-center z-20 shadow-[0_0_40px_rgba(var(--color-primary),0.2)] border-y border-white/10 rotate-[-2deg] scale-105 origin-center transition-all duration-500 group-hover:bg-primary/60 group-hover:backdrop-blur-sm">
+          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 bg-primary/40 backdrop-blur-[2px] py-3 flex flex-col items-center justify-center z-20 shadow-[0_0_40px_rgba(var(--color-primary),0.2)] border-y border-glass-border rotate-[-2deg] scale-105 origin-center transition-all duration-500 group-hover:bg-primary/60 group-hover:backdrop-blur-sm">
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.1)_0%,_transparent_70%)] animate-pulse"></div>
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-black/90 mb-1 relative z-10">COMEÇA EM</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground mb-1 relative z-10">COMEÇA EM</span>
             <div className="flex flex-col items-center relative z-10">
               <div className="flex gap-1 mb-1">
                 {timeLeft >= 3600 * 24 && (
                   <div className="flex flex-col items-center">
-                    <div className="bg-black/80 rounded-lg px-2 py-1.5 min-w-[45px] flex items-center justify-center shadow-xl border border-white/10">
+                    <div className="bg-card/80 rounded-lg px-2 py-1.5 min-w-[45px] flex items-center justify-center shadow-xl border border-glass-border">
                       <span className="text-xl font-black text-primary tabular-nums tracking-tighter">
                         {timeParts.d}
                       </span>
@@ -407,21 +407,21 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
                 )}
                 {timeLeft >= 3600 && (
                   <div className="flex flex-col items-center">
-                    <div className="bg-black/80 rounded-lg px-2 py-1.5 min-w-[45px] flex items-center justify-center shadow-xl border border-white/10">
+                    <div className="bg-card/80 rounded-lg px-2 py-1.5 min-w-[45px] flex items-center justify-center shadow-xl border border-glass-border">
                       <span className="text-xl font-black text-primary tabular-nums tracking-tighter">
                         {timeParts.h}
                       </span>
                     </div>
-                    <span className="text-[7px] font-black text-black/60 mt-0.5">HORAS</span>
+                    <span className="text-[7px] font-black text-muted-foreground mt-0.5">HORAS</span>
                   </div>
                 )}
                 <div className="flex flex-col items-center">
-                  <div className="bg-black/80 rounded-lg px-2 py-1.5 min-w-[45px] flex items-center justify-center shadow-xl border border-white/10">
+                  <div className="bg-card/80 rounded-lg px-2 py-1.5 min-w-[45px] flex items-center justify-center shadow-xl border border-glass-border">
                     <span className="text-xl font-black text-primary tabular-nums tracking-tighter">
                       {timeParts.m}
                     </span>
                   </div>
-                  <span className="text-[7px] font-black text-black/60 mt-0.5">MIN</span>
+                  <span className="text-[7px] font-black text-muted-foreground mt-0.5">MIN</span>
                 </div>
                 <div className="flex flex-col items-center">
                   <div className="flex gap-0.5">
