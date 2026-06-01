@@ -87,7 +87,7 @@ function AdminAuctions() {
     setLoading(true);
     try {
       const [auctionsRes, productsRes] = await Promise.all([
-        supabase.from("auctions").select("*, product:products(*)", { count: 'exact' }).order("created_at", { ascending: false }).range((page - 1) * auctionsPerPage, page * auctionsPerPage - 1),
+        supabase.from("auctions").select("*, product:products(*)").order("status", { ascending: true }).order("start_time", { ascending: true }).range((page - 1) * auctionsPerPage, page * auctionsPerPage - 1),
         supabase.from("products").select("*").limit(100)
       ]);
 
