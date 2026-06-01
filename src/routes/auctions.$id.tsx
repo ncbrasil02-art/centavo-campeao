@@ -474,43 +474,43 @@ function AuctionPage() {
               )}
             </div>
 
-            <Card className="bg-white/5 border-white/10 overflow-hidden rounded-3xl">
+            <Card className="bg-card border-border overflow-hidden rounded-3xl">
               <Tabs defaultValue="description" className="w-full">
-                <TabsList className="w-full grid grid-cols-2 bg-white/5 p-1">
+                <TabsList className="w-full grid grid-cols-2 bg-muted p-1">
                   <TabsTrigger value="description" className="rounded-2xl py-3 font-bold">DESCRIÇÃO</TabsTrigger>
                   <TabsTrigger value="rules" className="rounded-2xl py-3 font-bold">REGRAS DO LEILÃO</TabsTrigger>
                 </TabsList>
                 <div className="p-8">
                   <TabsContent value="description" className="mt-0 space-y-6">
                     <h2 className="text-2xl font-black italic uppercase tracking-tighter">Sobre o <span className="text-primary">Produto</span></h2>
-                    <p className="text-white/60 leading-relaxed text-lg">
+                    <p className="text-muted-foreground leading-relaxed text-lg">
                       {auction.product?.description || "Este produto incrível pode ser seu por uma fração do preço original. Participe da disputa e arremate agora!"}
                     </p>
                     <div className="grid grid-cols-2 gap-6 pt-6">
-                      <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
-                        <span className="block text-xs text-white/40 font-bold uppercase mb-1">Valor de Mercado</span>
+                      <div className="p-4 rounded-2xl bg-muted/50 border border-border">
+                        <span className="block text-xs text-muted-foreground font-bold uppercase mb-1">Valor de Mercado</span>
                         <span className="text-xl font-bold">R$ {auction.product?.market_value?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                       </div>
-                      <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
-                        <span className="block text-xs text-white/40 font-bold uppercase mb-1">Categoria</span>
+                      <div className="p-4 rounded-2xl bg-muted/50 border border-border">
+                        <span className="block text-xs text-muted-foreground font-bold uppercase mb-1">Categoria</span>
                         <span className="text-xl font-bold">{auction.product?.category || "Eletrônicos"}</span>
                       </div>
                     </div>
                   </TabsContent>
                   <TabsContent value="rules" className="mt-0 space-y-4">
                     <h2 className="text-2xl font-black italic uppercase tracking-tighter">Como <span className="text-primary">Ganhar</span></h2>
-                    <ul className="space-y-4 text-white/60">
+                    <ul className="space-y-4 text-muted-foreground">
                       <li className="flex gap-3">
                         <div className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</div>
-                        <p>Cada lance aumenta o preço do produto em <span className="text-white font-bold">R$ 0,01</span>.</p>
+                        <p>Cada lance aumenta o preço do produto em <span className="text-foreground font-bold">R$ 0,01</span>.</p>
                       </li>
                       <li className="flex gap-3">
                         <div className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</div>
-                        <p>Cada lance reinicia o cronômetro para <span className="text-white font-bold">{timerDuration} segundos</span>.</p>
+                        <p>Cada lance reinicia o cronômetro para <span className="text-foreground font-bold">{timerDuration} segundos</span>.</p>
                       </li>
                       <li className="flex gap-3">
                         <div className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</div>
-                        <p>O último usuário a dar o lance quando o tempo chegar a <span className="text-white font-bold">00:00</span> vence!</p>
+                        <p>O último usuário a dar o lance quando o tempo chegar a <span className="text-foreground font-bold">00:00</span> vence!</p>
                       </li>
                     </ul>
                   </TabsContent>
@@ -521,7 +521,7 @@ function AuctionPage() {
 
           {/* Right Column: Bidding Controls & History */}
           <div className="lg:col-span-5 space-y-8">
-            <Card className="bg-zinc-950/80 border-primary/40 p-8 md:p-10 rounded-[48px] relative overflow-hidden shadow-[0_0_50px_rgba(var(--color-primary),0.15)] backdrop-blur-3xl group/card border-2">
+            <Card className="bg-card border-primary/40 p-8 md:p-10 rounded-[48px] relative overflow-hidden shadow-[0_0_50px_rgba(var(--color-primary),0.15)] backdrop-blur-3xl group/card border-2">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_rgba(var(--color-primary),0.15),_transparent_70%)]"></div>
               <div className="absolute -inset-[100%] bg-[conic-gradient(from_0deg,transparent_0deg,transparent_150deg,rgba(var(--color-primary),0.1)_180deg,transparent_210deg)] animate-[spin_8s_linear_infinite]"></div>
 
