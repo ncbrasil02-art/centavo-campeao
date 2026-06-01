@@ -798,14 +798,14 @@ function AuctionPage() {
 function TrustItem({ icon, title, desc }: { icon: React.ReactNode, title: string, desc: string }) {
   return (
     <div className="flex flex-col items-center text-center gap-4 group/trust cursor-default">
-      <div className="p-6 rounded-[24px] bg-white/5 border border-white/5 transition-all duration-500 group-hover/trust:bg-primary/10 group-hover/trust:border-primary/20 group-hover/trust:-translate-y-2 shadow-lg">
+      <div className="p-6 rounded-[24px] bg-card border border-border transition-all duration-500 group-hover/trust:bg-primary/10 group-hover/trust:border-primary/20 group-hover/trust:-translate-y-2 shadow-lg">
         <div className="transition-transform duration-500 group-hover/trust:scale-110">
           {icon}
         </div>
       </div>
       <div className="space-y-1">
-        <h4 className="font-black text-white uppercase tracking-[0.2em] text-[10px] italic">{title}</h4>
-        <p className="text-white/30 text-[10px] font-bold uppercase tracking-widest leading-tight max-w-[120px]">{desc}</p>
+        <h4 className="font-black text-foreground uppercase tracking-[0.2em] text-[10px] italic">{title}</h4>
+        <p className="text-muted-foreground text-[10px] font-bold uppercase tracking-widest leading-tight max-w-[120px]">{desc}</p>
       </div>
     </div>
   );
