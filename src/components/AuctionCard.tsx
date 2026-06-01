@@ -392,7 +392,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         {isScheduled && auction.start_time && (
           <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 bg-primary/40 backdrop-blur-[2px] py-3 flex flex-col items-center justify-center z-20 shadow-[0_0_40px_rgba(var(--color-primary),0.2)] border-y border-glass-border rotate-[-2deg] scale-105 origin-center transition-all duration-500 group-hover:bg-primary/60 group-hover:backdrop-blur-sm">
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.1)_0%,_transparent_70%)] animate-pulse"></div>
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground mb-1 relative z-10">COMEÇA EM</span>
+            <span className="text-xs font-black uppercase tracking-[0.3em] text-foreground mb-1 relative z-10">COMEÇA EM</span>
             <div className="flex flex-col items-center relative z-10">
               <div className="flex gap-1 mb-1">
                 {timeLeft >= 3600 * 24 && (
@@ -402,7 +402,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
                         {timeParts.d}
                       </span>
                     </div>
-                    <span className="text-[7px] font-black text-black/60 mt-0.5">DIAS</span>
+                    <span className="text-[9px] font-black text-muted-foreground mt-0.5">DIAS</span>
                   </div>
                 )}
                 {timeLeft >= 3600 && (
@@ -412,7 +412,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
                         {timeParts.h}
                       </span>
                     </div>
-                    <span className="text-[7px] font-black text-muted-foreground mt-0.5">HORAS</span>
+                    <span className="text-[9px] font-black text-muted-foreground mt-0.5">HORAS</span>
                   </div>
                 )}
                 <div className="flex flex-col items-center">
@@ -421,23 +421,27 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
                       {timeParts.m}
                     </span>
                   </div>
-                  <span className="text-[7px] font-black text-muted-foreground mt-0.5">MIN</span>
+                  <span className="text-[9px] font-black text-muted-foreground mt-0.5">MIN</span>
                 </div>
                 <div className="flex flex-col items-center">
                   <div className="flex gap-0.5">
-                    <div className="bg-black/80 rounded-lg px-2 py-1.5 min-w-[45px] flex items-center justify-center shadow-xl border border-white/10">
+                    <div className="bg-card/80 rounded-lg px-2 py-1.5 min-w-[45px] flex items-center justify-center shadow-xl border border-glass-border">
                       <span className="text-xl font-black text-primary tabular-nums tracking-tighter">
                         {timeParts.s}
                       </span>
                     </div>
                     {timeLeft < 60 && (
-                      <div className="bg-black/60 rounded-lg px-1.5 py-1.5 flex items-end shadow-xl border border-white/10">
+                      <div className="bg-card/60 rounded-lg px-1.5 py-1.5 flex items-end shadow-xl border border-glass-border">
                         <span className="text-sm font-black text-primary/80 tabular-nums">
                           ,{timeParts.ms}
                         </span>
                       </div>
                     )}
                   </div>
+                  <span className="text-[9px] font-black text-muted-foreground mt-0.5">SEG</span>
+                </div>
+              </div>
+            </div>
                   <span className="text-[7px] font-black text-muted-foreground mt-0.5">SEG</span>
                 </div>
               </div>
