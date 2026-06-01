@@ -330,12 +330,12 @@ function Index() {
 
           {/* Finished Auctions Section */}
           {finishedAuctions.length > 0 && (
-            <section className="py-20 bg-black/40 border-y border-white/5">
+            <section className="py-20 bg-muted/40 border-y border-border">
               <div className="container mx-auto px-4">
                 <div className="mb-12">
-                  <Badge variant="outline" className="mb-4 border-white/20 bg-white/5 text-white/60 uppercase tracking-widest">GALERIA DE ARREMATADOS</Badge>
-                  <h2 className="text-4xl font-black tracking-tight text-white italic uppercase">Leilões <span className="text-white/40">Encerrados</span></h2>
-                  <p className="text-white/20 mt-2">Veja os últimos produtos que foram arrematados com sucesso na plataforma.</p>
+                  <Badge variant="outline" className="mb-4 border-border bg-card text-muted-foreground uppercase tracking-widest">GALERIA DE ARREMATADOS</Badge>
+                  <h2 className="text-4xl font-black tracking-tight text-foreground italic uppercase">Leilões <span className="text-muted-foreground">Encerrados</span></h2>
+                  <p className="text-muted-foreground/60 mt-2">Veja os últimos produtos que foram arrematados com sucesso na plataforma.</p>
                 </div>
 
                 <motion.div 
