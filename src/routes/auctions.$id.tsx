@@ -12,7 +12,8 @@ import { AuctionChat } from "@/components/AuctionChat";
 import { useTimeSync } from "@/hooks/useTimeSync";
 // confetti will be imported dynamically on the client
 import { toast } from "sonner";
-import { FALLBACK_PRODUCT_IMAGE, getFallbackAvatarUrl, FICTITIOUS_PARTICIPANTS } from "@/lib/constants";
+import { FALLBACK_PRODUCT_IMAGE, getFallbackAvatarUrl, FICTITIOUS_PARTICIPANTS, MODALITY_CONFIG } from "@/lib/constants";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Progress } from "@/components/ui/progress";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
