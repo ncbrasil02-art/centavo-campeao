@@ -546,9 +546,12 @@ export type Database = {
           amount: number
           created_at: string
           description: string | null
+          external_id: string | null
           id: string
           package_id: string | null
           payment_method: string | null
+          pix_copy_paste: string | null
+          pix_qr_code: string | null
           status: string | null
           type: string | null
           user_id: string | null
@@ -557,9 +560,12 @@ export type Database = {
           amount: number
           created_at?: string
           description?: string | null
+          external_id?: string | null
           id?: string
           package_id?: string | null
           payment_method?: string | null
+          pix_copy_paste?: string | null
+          pix_qr_code?: string | null
           status?: string | null
           type?: string | null
           user_id?: string | null
@@ -568,9 +574,12 @@ export type Database = {
           amount?: number
           created_at?: string
           description?: string | null
+          external_id?: string | null
           id?: string
           package_id?: string | null
           payment_method?: string | null
+          pix_copy_paste?: string | null
+          pix_qr_code?: string | null
           status?: string | null
           type?: string | null
           user_id?: string | null
