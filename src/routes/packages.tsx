@@ -253,11 +253,18 @@ function PackagesPage() {
 
               {paymentStep === "pix" && (
                 <div className="text-center space-y-6">
-                  <div className="w-48 h-48 bg-white p-2 mx-auto rounded-lg">
-                    {/* Placeholder for QR Code */}
-                    <div className="w-full h-full bg-zinc-100 flex items-center justify-center border-2 border-dashed border-zinc-300">
-                      <QrCode className="w-20 h-20 text-zinc-400" />
-                    </div>
+                  <div className="w-48 h-48 bg-white p-2 mx-auto rounded-lg flex items-center justify-center overflow-hidden">
+                    {buying?.pix_qr_code ? (
+                      <img 
+                        src={`data:image/png;base64,${buying.pix_qr_code}`} 
+                        alt="QR Code PIX" 
+                        className="w-full h-full object-contain"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-zinc-100 flex items-center justify-center border-2 border-dashed border-zinc-300">
+                        <QrCode className="w-20 h-20 text-zinc-400" />
+                      </div>
+                    )}
                   </div>
                   
                   <div className="space-y-4">
