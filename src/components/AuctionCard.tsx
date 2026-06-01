@@ -402,7 +402,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
                         {timeParts.d}
                       </span>
                     </div>
-                    <span className="text-[9px] font-black text-muted-foreground mt-0.5">DIAS</span>
+                    <span className="text-[10px] font-black text-muted-foreground mt-0.5">DIAS</span>
                   </div>
                 )}
                 {timeLeft >= 3600 && (
@@ -412,7 +412,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
                         {timeParts.h}
                       </span>
                     </div>
-                    <span className="text-[9px] font-black text-muted-foreground mt-0.5">HORAS</span>
+                    <span className="text-[10px] font-black text-muted-foreground mt-0.5">HORAS</span>
                   </div>
                 )}
                 <div className="flex flex-col items-center">
@@ -421,7 +421,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
                       {timeParts.m}
                     </span>
                   </div>
-                  <span className="text-[9px] font-black text-muted-foreground mt-0.5">MIN</span>
+                  <span className="text-[10px] font-black text-muted-foreground mt-0.5">MIN</span>
                 </div>
                 <div className="flex flex-col items-center">
                   <div className="flex gap-0.5">
@@ -438,17 +438,13 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
                       </div>
                     )}
                   </div>
-                  <span className="text-[9px] font-black text-muted-foreground mt-0.5">SEG</span>
-                </div>
-              </div>
-            </div>
-                  <span className="text-[7px] font-black text-muted-foreground mt-0.5">SEG</span>
+                  <span className="text-[10px] font-black text-muted-foreground mt-0.5">SEG</span>
                 </div>
               </div>
               <div className="flex flex-col items-center gap-1">
                 <div className="flex items-center gap-2 px-3 py-0.5 rounded-full bg-glass/20 border border-glass-border">
                   <Calendar className="w-2.5 h-2.5 text-muted-foreground" />
-                  <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
+                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                     {new Date(auction.start_time).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })} às {new Date(auction.start_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
