@@ -87,7 +87,7 @@ function AdminAuctions() {
     setLoading(true);
     try {
       const [auctionsRes, productsRes] = await Promise.all([
-        supabase.from("auctions").select("*, product:products(*)", { count: 'exact' }).order("created_at", { ascending: false }).range((page - 1) * auctionsPerPage, page * auctionsPerPage - 1),
+        supabase.from("auctions").select("*, product:products(*)").order("status", { ascending: true }).order("start_time", { ascending: true }).range((page - 1) * auctionsPerPage, page * auctionsPerPage - 1),
         supabase.from("products").select("*").limit(100)
       ]);
 
@@ -699,6 +699,7 @@ function AdminAuctions() {
             <TableHeader className="bg-white/5">
               <TableRow className="border-white/5">
                 <TableHead className="text-white/40 font-bold uppercase text-[10px]">Produto</TableHead>
+                <TableHead className="text-white/40 font-bold uppercase text-[10px]">Modalidade</TableHead>
                 <TableHead className="text-white/40 font-bold uppercase text-[10px]">Início</TableHead>
                 <TableHead className="text-white/40 font-bold uppercase text-[10px]">Expira em</TableHead>
                 <TableHead className="text-white/40 font-bold uppercase text-[10px]">Lances</TableHead>
@@ -723,6 +724,11 @@ function AdminAuctions() {
                         </div>
                         <span className="font-bold">{auction.product?.name}</span>
                       </div>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-[10px] font-bold uppercase bg-white/5 px-2 py-1 rounded border border-white/10">
+                        {auction.modality || 'default'}
+                      </span>
                     </TableCell>
                     <TableCell className="text-white/60">
                       {format(new Date(auction.start_time), "dd/MM HH:mm", { locale: ptBR })}
