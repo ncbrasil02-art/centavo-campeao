@@ -729,7 +729,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         </Button>
 
         {!isFinished && (
-          <p className="text-[9px] text-center text-white/20 uppercase tracking-[0.2em] font-bold mt-2 italic">
+          <p className="text-[10px] text-center text-muted-foreground/30 uppercase tracking-[0.2em] font-bold mt-2 italic">
             {incentivePhrase.split(' ').slice(1).join(' ')}
           </p>
         )}
