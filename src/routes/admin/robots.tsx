@@ -143,6 +143,27 @@ function AdminRobotsPage() {
     }
   };
 
+  const finishDisputeEarly = async (auctionId: string, settingsId: string) => {
+    // 1. Set stop_after_minutes to 0
+    const { error: settingsError } = await supabase
+      .from("robot_settings")
+      .update({ stop_after_minutes: 0 })
+      .eq("id", settingsId);
+    
+    // 2. Set is_finalizing to true on the auction
+    const { error: auctionError } = await supabase
+      .from("auctions")
+      .update({ is_finalizing: true })
+      .eq("id", auctionId);
+    
+    if (!settingsError && !auctionError) {
+      toast.success("Disputa encerrada. O robô irá parar de cobrir lances e o leilão encerrará normalmente.");
+      fetchAuctionsWithRobots();
+    } else {
+      toast.error("Erro ao encerrar disputa");
+    }
+  };
+
 
   
 
@@ -288,9 +309,20 @@ function AdminRobotsPage() {
                       </TableCell>
 
                       <TableCell className="text-right">
-                        <Button size="sm" variant="ghost" className="text-white/40 hover:text-primary hover:bg-primary/10">
-                          <Settings2 className="w-4 h-4" />
-                        </Button>
+                        <div className="flex justify-end gap-2">
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="text-amber-500 border-amber-500/20 hover:bg-amber-500/10 hover:text-amber-400 font-bold"
+                            onClick={() => finishDisputeEarly(auction.id, settings.id)}
+                            title="Encerrar disputa (arrematar)"
+                          >
+                            <StopCircle className="w-4 h-4 mr-1" /> Arrematar Agora
+                          </Button>
+                          <Button size="sm" variant="ghost" className="text-white/40 hover:text-primary hover:bg-primary/10">
+                            <Settings2 className="w-4 h-4" />
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   );

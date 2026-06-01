@@ -715,7 +715,7 @@ function AdminAuctions() {
                             size="icon" 
                             variant="ghost" 
                             className={`h-8 w-8 ${auction.is_finalizing ? 'text-orange-500 bg-orange-500/10' : 'text-green-500 hover:bg-green-500/10'}`} 
-                            title={auction.is_finalizing ? "Cancelar Finalização" : "Finalizar Leilão"}
+                            title={auction.is_finalizing ? "Disputa Encerrada (Clique para reativar robô)" : "Encerrar Disputa (Arrematar)"}
                             onClick={() => toggleFinalize(auction)}
                           >
                             <Power className="w-4 h-4" />
