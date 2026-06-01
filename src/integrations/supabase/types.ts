@@ -456,8 +456,13 @@ export type Database = {
       }
       site_settings: {
         Row: {
+          block_background_color: string | null
+          border_color: string | null
+          card_background_color: string | null
           favicon_url: string | null
           fb_pixel_id: string | null
+          font_color_primary: string | null
+          font_color_secondary: string | null
           ga_id: string | null
           google_site_verification: string | null
           hero_display_mode: string | null
@@ -468,6 +473,7 @@ export type Database = {
           meta_description: string | null
           meta_keywords: string | null
           meta_title: string | null
+          page_background_color: string | null
           pix_key: string | null
           pix_name: string | null
           primary_color: string | null
@@ -477,8 +483,13 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          block_background_color?: string | null
+          border_color?: string | null
+          card_background_color?: string | null
           favicon_url?: string | null
           fb_pixel_id?: string | null
+          font_color_primary?: string | null
+          font_color_secondary?: string | null
           ga_id?: string | null
           google_site_verification?: string | null
           hero_display_mode?: string | null
@@ -489,6 +500,7 @@ export type Database = {
           meta_description?: string | null
           meta_keywords?: string | null
           meta_title?: string | null
+          page_background_color?: string | null
           pix_key?: string | null
           pix_name?: string | null
           primary_color?: string | null
@@ -498,8 +510,13 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          block_background_color?: string | null
+          border_color?: string | null
+          card_background_color?: string | null
           favicon_url?: string | null
           fb_pixel_id?: string | null
+          font_color_primary?: string | null
+          font_color_secondary?: string | null
           ga_id?: string | null
           google_site_verification?: string | null
           hero_display_mode?: string | null
@@ -510,6 +527,7 @@ export type Database = {
           meta_description?: string | null
           meta_keywords?: string | null
           meta_title?: string | null
+          page_background_color?: string | null
           pix_key?: string | null
           pix_name?: string | null
           primary_color?: string | null
