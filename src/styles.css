@@ -71,6 +71,9 @@ aside:has(a[href*="lovable.dev"]) {
   --color-neon-blue: oklch(0.704 0.191 250.7);
   --color-neon-purple: oklch(0.627 0.265 303.9);
   --color-neon-pink: oklch(0.645 0.246 16.4);
+  --color-glass: var(--glass);
+  --color-glass-foreground: var(--glass-foreground);
+  --color-glass-border: var(--glass-border);
 }
 
 :root {
@@ -107,6 +110,9 @@ aside:has(a[href*="lovable.dev"]) {
   --sidebar-accent-foreground: oklch(0.129 0.042 264.695);
   --sidebar-border: oklch(0.9 0.01 260);
   --sidebar-ring: oklch(0.6 0.18 250.7);
+  --glass: oklch(1 0 0 / 30%);
+  --glass-foreground: oklch(0.129 0.042 264.695);
+  --glass-border: oklch(0 0 0 / 10%);
 }
 
 .dark {
@@ -137,6 +143,9 @@ aside:has(a[href*="lovable.dev"]) {
   --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.704 0.191 250.7);
+  --glass: oklch(0.15 0.03 264.7 / 40%);
+  --glass-foreground: oklch(0.984 0.003 247.858);
+  --glass-border: oklch(1 0 0 / 10%);
 }
 
 @layer base {
