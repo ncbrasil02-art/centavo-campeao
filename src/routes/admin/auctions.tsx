@@ -70,7 +70,8 @@ function AdminAuctions() {
     robot_max_delay: 5,
     robot_bid_chance: 0.3,
     robot_active: true,
-    robot_dispute_duration: 30
+    robot_start_after: 0,
+    robot_stop_after: 30
   };
 
   const [formData, setFormData] = useState(initialFormData);
@@ -243,7 +244,8 @@ function AdminAuctions() {
             max_delay: formData.robot_max_delay,
             bid_chance: formData.robot_bid_chance,
             active: formData.robot_active,
-            dispute_duration_minutes: formData.robot_dispute_duration
+            start_after_minutes: formData.robot_start_after,
+            stop_after_minutes: formData.robot_stop_after
           }, { onConflict: 'auction_id' });
         
         if (robotError) {
@@ -305,7 +307,8 @@ function AdminAuctions() {
       robot_max_delay: robotSettings?.max_delay || 5,
       robot_bid_chance: typeof robotSettings?.bid_chance === 'string' ? parseFloat(robotSettings.bid_chance) : (robotSettings?.bid_chance || 0.3),
       robot_active: robotSettings?.active ?? true,
-      robot_dispute_duration: robotSettings?.dispute_duration_minutes || 30
+      robot_start_after: robotSettings?.start_after_minutes || 0,
+      robot_stop_after: robotSettings?.stop_after_minutes || 30
     });
     setIsDialogOpen(true);
   }
@@ -607,16 +610,30 @@ function AdminAuctions() {
                         />
                         <p className="text-[9px] text-white/30 italic">Define a frequência da disputa. 0.3 = 30% chance por segundo.</p>
                       </div>
-                      <div className="space-y-2">
-                        <Label className="text-xs">Tempo de Trabalho do Robô (minutos)</Label>
-                        <Input 
-                          type="number"
-                          value={formData.robot_dispute_duration}
-                          onChange={e => setFormData({...formData, robot_dispute_duration: parseInt(e.target.value) || 30})}
-                          className="bg-zinc-950 border-white/10 h-8"
-                        />
-                        <p className="text-[9px] text-white/30 italic">Tempo que o robô ficará "disputando" antes de deixar o leilão encerrar ou arrematar.</p>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label className="text-xs">Início do Robô (min)</Label>
+                          <Input 
+                            type="number"
+                            value={formData.robot_start_after}
+                            onChange={e => setFormData({...formData, robot_start_after: parseInt(e.target.value) || 0})}
+                            className="bg-zinc-950 border-white/10 h-8"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-xs">Fim do Robô (min)</Label>
+                          <Input 
+                            type="number"
+                            value={formData.robot_stop_after}
+                            onChange={e => setFormData({...formData, robot_stop_after: parseInt(e.target.value) || 30})}
+                            className="bg-zinc-950 border-white/10 h-8"
+                          />
+                        </div>
                       </div>
+                      <p className="text-[9px] text-white/30 italic leading-tight">
+                        Define quando os robôs começam e param de disputar lances com usuários Reais (em minutos após o início). 
+                        Após o tempo de fim, o robô só dará lances se ele mesmo for o último (para manter o leilão vivo) ou se estiver configurado para vencer.
+                      </p>
                     </div>
                   )}
                 </div>
