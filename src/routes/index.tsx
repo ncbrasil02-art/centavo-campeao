@@ -99,7 +99,7 @@ function WinnerCard({ name, product, price, saving, avatarUrl, productImage }: {
 }
 
 function Index() {
-  const { google_reviews_widget } = useSettings();
+  const { google_reviews_widget, logo_url } = useSettings();
   const [auctions, setAuctions] = useState<any[]>([]);
   const [finishedAuctions, setFinishedAuctions] = useState<any[]>([]);
   const [winners, setWinners] = useState<any[]>([]);
@@ -195,7 +195,11 @@ function Index() {
       setFinishedAuctions(finishedRes.data || []);
     }
     
-    if (testimonialsRes.error) console.error("Error fetching testimonials:", testimonialsRes.error);
+    if (testimonialsRes.error) {
+      console.error("Error fetching testimonials:", testimonialsRes.error);
+    } else {
+      setTestimonials(testimonialsRes.data || []);
+    }
     
     setLoading(false);
   }
@@ -359,6 +363,15 @@ function Index() {
                     </motion.div>
                   ))}
                 </motion.div>
+                
+                <div className="mt-12 flex justify-center">
+                  <Button variant="outline" className="border-border hover:bg-muted/50 font-bold uppercase tracking-widest text-xs h-12 px-8 rounded-xl group" asChild>
+                    <Link to={"/finished-auctions" as any} className="flex items-center gap-2">
+                      Ver todos os leilões arrematados
+                      <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                    </Link>
+                  </Button>
+                </div>
               </div>
             </section>
           )}
@@ -414,21 +427,36 @@ function Index() {
           </section>
 
           {/* Footer */}
-          <footer className="py-12 border-t border-white/10">
-            <div className="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6">
-              <div className="flex items-center gap-2">
-                <span className="text-xl font-bold tracking-tighter text-white">
-                  LANCE<span className="text-primary">CERTO</span>
-                </span>
-                <span className="text-white/40 text-sm">© 2026 Todos os direitos reservados.</span>
-              </div>
-              <div className="flex gap-8 text-sm text-white/40">
-                <Link to="/" className="hover:text-primary transition-colors">Privacidade</Link>
-                <Link to="/" className="hover:text-primary transition-colors">Termos de Uso</Link>
-                <Link to="/" className="hover:text-primary transition-colors">Contato</Link>
-              </div>
-              <div className="flex items-center gap-1 text-white/40 text-sm">
-                Feito com <Heart className="w-4 h-4 text-red-500 fill-red-500" /> para arrematadores.
+          <footer className="py-12 border-t border-white/10 bg-zinc-950/20">
+            <div className="container mx-auto px-4">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-10">
+                <div className="flex flex-col gap-4 items-center md:items-start">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl font-bold tracking-tighter text-white">
+                      LANCE<span className="text-primary">CERTO</span>
+                    </span>
+                    <span className="text-white/40 text-sm">© 2026 Todos os direitos reservados.</span>
+                  </div>
+                  <div className="flex gap-6 text-sm text-white/40">
+                    <Link to="/" className="hover:text-primary transition-colors">Privacidade</Link>
+                    <Link to="/" className="hover:text-primary transition-colors">Termos de Uso</Link>
+                    <Link to="/" className="hover:text-primary transition-colors">Contato</Link>
+                  </div>
+                </div>
+
+                <div className="flex flex-col items-center md:items-end gap-3">
+                  <div className="text-white/40 text-sm text-center md:text-right">
+                    sistema de leilão <a href="https://www.ncbrasil.com.br" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">centavos</a>
+                  </div>
+                  {logo_url ? (
+                    <img src={logo_url} alt="Logo" className="h-8 md:h-10 w-auto opacity-50 hover:opacity-100 transition-opacity" />
+                  ) : (
+                    <div className="text-xs font-black text-white/20 tracking-tighter uppercase italic">LANCECERTO</div>
+                  )}
+                  <div className="flex items-center gap-1 text-[10px] text-white/20 uppercase tracking-[0.2em] mt-2">
+                    Feito com <Heart className="w-2.5 h-2.5 text-red-500/40 fill-red-500/40" /> para arrematadores.
+                  </div>
+                </div>
               </div>
             </div>
           </footer>
