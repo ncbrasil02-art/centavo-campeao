@@ -34,50 +34,6 @@ const INCENTIVE_PHRASES = [
   "🎮 O melhor custo-benefício está aqui!"
 ];
 
-const MODALITY_CONFIG = {
-  novice: {
-    icon: Trophy,
-    label: "Iniciante",
-    description: "Exclusivo para quem nunca ganhou um leilão.",
-    color: "text-amber-400",
-    bgColor: "bg-amber-400/20",
-    effect: "shadow-[0_0_15px_rgba(251,191,36,0.5)]",
-  },
-  male: {
-    icon: User,
-    label: "Masculino",
-    description: "Somente para o público masculino.",
-    color: "text-blue-400",
-    bgColor: "bg-blue-400/20",
-    effect: "shadow-[0_0_15px_rgba(96,165,250,0.5)]",
-  },
-  female: {
-    icon: User,
-    label: "Feminino",
-    description: "Somente para o público feminino.",
-    color: "text-pink-400",
-    bgColor: "bg-pink-400/20",
-    effect: "shadow-[0_0_15px_rgba(244,114,182,0.5)]",
-  },
-  free: {
-    icon: Zap,
-    label: "Livre",
-    description: "Lances gratuitos! Não desconta do seu saldo.",
-    color: "text-green-400",
-    bgColor: "bg-green-400/20",
-    effect: "animate-pulse shadow-[0_0_15px_rgba(74,222,128,0.5)]",
-  },
-  min_balance: {
-    icon: Wallet,
-    label: "Saldo Mínimo",
-    description: "Requer um saldo mínimo de lances para participar.",
-    color: "text-purple-400",
-    bgColor: "bg-purple-400/20",
-    effect: "shadow-[0_0_15px_rgba(192,132,252,0.5)]",
-  },
-  default: null
-};
-
 interface AuctionCardProps {
   auction: any;
 }
