@@ -330,7 +330,7 @@ function Index() {
 
           {/* Finished Auctions Section */}
           {finishedAuctions.length > 0 && (
-            <section className="py-20 bg-muted/40 border-y border-border">
+            <section className="py-20 bg-muted/50 border-y border-border">
               <div className="container mx-auto px-4">
                 <div className="mb-12">
                   <Badge variant="outline" className="mb-4 border-border bg-card text-muted-foreground uppercase tracking-widest">GALERIA DE ARREMATADOS</Badge>
