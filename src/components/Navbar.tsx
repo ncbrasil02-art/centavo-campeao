@@ -92,6 +92,21 @@ export function Navbar() {
     navigate({ to: "/" });
   };
 
+  const updateProfile = async (newData: any) => {
+    if (!user) return;
+    const { error } = await supabase
+      .from("profiles")
+      .update(newData)
+      .eq("id", user.id);
+    
+    if (error) {
+      toast.error("Erro ao atualizar perfil");
+    } else {
+      toast.success("Perfil atualizado com sucesso");
+      fetchProfile(user.id);
+    }
+  };
+
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md text-foreground">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
