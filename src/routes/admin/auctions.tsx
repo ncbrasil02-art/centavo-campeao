@@ -426,8 +426,8 @@ function AdminAuctions() {
                 <SelectItem value="finished">Finalizados</SelectItem>
               </SelectContent>
             </Select>
-          
-          <Dialog open={isDialogOpen} onOpenChange={(open) => {
+
+            <Dialog open={isDialogOpen} onOpenChange={(open) => {
             setIsDialogOpen(open);
             if (!open) {
               setEditingAuction(null);
