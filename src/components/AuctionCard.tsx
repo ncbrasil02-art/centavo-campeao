@@ -527,7 +527,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       </div>
       
       {/* Content Section */}
-      <div className="relative flex flex-1 flex-col gap-4 bg-gradient-to-b from-white/[0.02] to-transparent p-6 pt-2">
+      <div className="relative flex flex-1 flex-col gap-4 bg-gradient-to-b from-foreground/[0.02] to-transparent p-6 pt-2">
         {!isFinished && !isScheduled && (
           <div className="flex justify-center mb-1">
             <span className="text-[10px] font-black text-primary/60 uppercase tracking-widest animate-pulse italic bg-primary/5 px-3 py-1 rounded-full border border-primary/10">
@@ -537,22 +537,22 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         )}
         <div>
           <Link to="/auctions/$id" params={{ id: auction.id }} className="cursor-pointer">
-            <h3 className="mb-1 line-clamp-1 text-xl font-black uppercase italic tracking-tighter text-white transition-colors group-hover:text-primary">
+            <h3 className="mb-1 line-clamp-1 text-xl font-black uppercase italic tracking-tighter text-foreground transition-colors group-hover:text-primary">
               {auction.product?.name || "Produto"}
             </h3>
           </Link>
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-white/30">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40">
               Valor Original:
             </span>
-            <span className="text-xs font-bold text-white/40 line-through">
+            <span className="text-xs font-bold text-muted-foreground/50 line-through">
               R$ {auction.product?.market_value?.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) || "0,00"}
             </span>
           </div>
           {!isFinished && !isScheduled && (
             <div className="flex items-center gap-1.5 mt-1.5">
               <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.8)]"></div>
-              <span className="text-[9px] font-black text-white/40 uppercase tracking-widest">
+              <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
                 {activeWatchers} pessoas disputando agora
               </span>
             </div>
