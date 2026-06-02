@@ -64,7 +64,7 @@ function AuthPage() {
   
   const navigate = useNavigate();
   const search = Route.useSearch() as any;
-  const [activeTab, setActiveTab] = useState(search.register === "true" || search.register === true ? "register" : "login");
+  const [activeTab, setActiveTab] = useState(search.register === "true" || search.register === true || search.register === "undefined" ? "register" : "login");
 
   useEffect(() => {
     if (search.offer === "welcome_bids") {
@@ -209,10 +209,10 @@ function AuthPage() {
             style={{ height: `${logo_height || 40}px` }} 
             className="object-contain" 
             onError={(e) => {
-              // Fallback if logo fails to load
-              (e.target as HTMLImageElement).style.display = 'none';
-              const sibling = (e.target as HTMLElement).nextElementSibling as HTMLElement;
-              if (sibling) sibling.style.display = 'flex';
+              const target = e.target as HTMLImageElement;
+              target.style.display = 'none';
+              const fallback = document.getElementById('logo-fallback');
+              if (fallback) fallback.style.display = 'flex';
             }}
           />
         ) : null}

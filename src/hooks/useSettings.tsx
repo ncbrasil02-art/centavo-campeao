@@ -48,7 +48,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     }
     return {
       site_name: "Leilão de Centavos",
-      logo_url: "",
+      logo_url: "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/logo-0.8516991638992043.png",
       favicon_url: "",
       primary_color: "#8B5CF6",
       secondary_color: "#7C3AED",
@@ -338,7 +338,7 @@ export const useSettings = () => {
   if (!context) {
     return {
       site_name: "Leilão de Centavos",
-      logo_url: "",
+      logo_url: "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/logo-0.8516991638992043.png",
       favicon_url: "",
       primary_color: "#8B5CF6",
       secondary_color: "#7C3AED",
