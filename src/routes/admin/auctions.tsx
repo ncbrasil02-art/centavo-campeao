@@ -96,20 +96,10 @@ function AdminAuctions() {
       let query = supabase
         .from("auctions")
         .select("*, product:products(*)")
-        .order("status", { ascending: true })
-        .order("start_time", { ascending: true })
         .range((page - 1) * auctionsPerPage, page * auctionsPerPage - 1);
       
       if (statusFilter !== "all") {
         query = query.eq("status", statusFilter);
-      }
-
-      if (searchTerm) {
-        // Search in products table via join might be tricky in PostgREST without specific setup
-        // But since we have product:products(*) it might work if we use dot notation or just fetch and filter
-        // Actually, let's just do client-side search for now as it's easier and the admin won't have millions of auctions
-        // OR better: search by product name using ilike on the joined table if supported.
-        // For now, let's stick to client-side filter but maybe increase the limit.
       }
 
       const [auctionsRes, productsRes] = await Promise.all([
@@ -117,11 +107,40 @@ function AdminAuctions() {
         supabase.from("products").select("*").limit(100)
       ]);
 
-
       if (auctionsRes.error) throw auctionsRes.error;
       if (productsRes.error) throw productsRes.error;
 
-      setAuctions(auctionsRes.data || []);
+      // Custom sorting for admin panel:
+      // 1. live
+      // 2. pending_audit
+      // 3. confirmed
+      // 4. scheduled
+      // 5. finished
+      // 6. cancelled
+      const statusPriority: Record<string, number> = {
+        'live': 0,
+        'pending_audit': 1,
+        'confirmed': 2,
+        'scheduled': 3,
+        'finished': 4,
+        'cancelled': 5
+      };
+
+      const sortedAuctions = (auctionsRes.data || []).sort((a, b) => {
+        const priorityA = statusPriority[a.status as string] ?? 10;
+        const priorityB = statusPriority[b.status as string] ?? 10;
+        
+        if (priorityA !== priorityB) {
+          return priorityA - priorityB;
+        }
+        
+        // Secondary sort by start_time
+        const timeA = a.start_time ? new Date(a.start_time).getTime() : 0;
+        const timeB = b.start_time ? new Date(b.start_time).getTime() : 0;
+        return timeA - timeB;
+      });
+
+      setAuctions(sortedAuctions);
       setProducts(productsRes.data || []);
     } catch (error: any) {
       console.error("Error fetching data:", error);
