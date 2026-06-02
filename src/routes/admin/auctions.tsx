@@ -365,6 +365,24 @@ function AdminAuctions() {
       toast.dismiss(loadingToast);
     }
   }
+  
+  async function handleFinishAuction(auctionId: string) {
+    const loadingToast = toast.loading("Finalizando leilão...");
+    try {
+      const { error } = await supabase
+        .from("auctions")
+        .update({ status: 'finished' })
+        .eq("id", auctionId);
+      
+      if (error) throw error;
+      toast.success("Leilão finalizado com sucesso!");
+      fetchData();
+    } catch (err: any) {
+      toast.error(err.message || "Erro ao finalizar leilão");
+    } finally {
+      toast.dismiss(loadingToast);
+    }
+  }
 
   const toggleFinalize = async (auction: any) => {
     try {
@@ -436,6 +454,7 @@ function AdminAuctions() {
                 <SelectItem value="live">Ativos</SelectItem>
                 <SelectItem value="scheduled">Agendados</SelectItem>
                 <SelectItem value="pending_audit">Em Auditoria</SelectItem>
+                <SelectItem value="confirmed">Confirmados</SelectItem>
                 <SelectItem value="finished">Finalizados</SelectItem>
               </SelectContent>
             </Select>
@@ -827,6 +846,15 @@ function AdminAuctions() {
                       <div className="flex justify-end gap-2">
                         {auction.status === 'scheduled' && (
                           <NotificationDialog auction={auction} />
+                        )}
+                        {auction.status === 'confirmed' && (
+                          <Button 
+                            size="sm" 
+                            className="bg-amber-600 hover:bg-amber-500 text-white font-black h-9 text-[10px] shadow-[0_0_20px_rgba(217,119,6,0.5)] border-2 border-amber-400"
+                            onClick={() => handleFinishAuction(auction.id)}
+                          >
+                            <CheckCircle className="w-4 h-4 mr-2" /> ARQUIVAR / FINALIZAR
+                          </Button>
                         )}
                         {auction.status === 'pending_audit' && (
                           <Button 

@@ -154,9 +154,7 @@ function Index() {
       supabase
         .from("v_home_live_auctions")
         .select("*")
-        .order("status", { ascending: true }) // 'live' first, then 'scheduled'
-        .order("start_time", { ascending: true })
-        .limit(12),
+        .order("start_time", { ascending: true }),
       supabase
         .from("v_home_recent_winners")
         .select("*")
@@ -184,7 +182,26 @@ function Index() {
       console.error("Error fetching live auctions:", auctionsRes.error);
       toast.error(`Erro ao carregar leilões: ${auctionsRes.error.message}`);
     } else {
-      setAuctions(auctionsRes.data || []);
+      // Ordenação personalizada: Ativos > Agendados > Em Auditoria > Confirmados
+      const statusOrder: Record<string, number> = {
+        'live': 0,
+        'scheduled': 1,
+        'pending_audit': 2,
+        'confirmed': 3
+      };
+      
+      const sortedAuctions = [...(auctionsRes.data || [])].sort((a, b) => {
+        const orderA = a.status ? (statusOrder[a.status] ?? 4) : 4;
+        const orderB = b.status ? (statusOrder[b.status] ?? 4) : 4;
+        const diff = orderA - orderB;
+        if (diff !== 0) return diff;
+        
+        const timeA = a.start_time ? new Date(a.start_time).getTime() : 0;
+        const timeB = b.start_time ? new Date(b.start_time).getTime() : 0;
+        return timeA - timeB;
+      });
+      
+      setAuctions(sortedAuctions.slice(0, 12));
     }
     
     if (winnersRes.error) console.error("Error fetching winners:", winnersRes.error);
