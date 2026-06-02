@@ -10,8 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RankingRouteImport } from './routes/ranking'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PackagesRouteImport } from './routes/packages'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
+import { Route as FinishedAuctionsRouteImport } from './routes/finished-auctions'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
@@ -33,6 +35,11 @@ const RankingRoute = RankingRouteImport.update({
   path: '/ranking',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PackagesRoute = PackagesRouteImport.update({
   id: '/packages',
   path: '/packages',
@@ -41,6 +48,11 @@ const PackagesRoute = PackagesRouteImport.update({
 const HowItWorksRoute = HowItWorksRouteImport.update({
   id: '/how-it-works',
   path: '/how-it-works',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FinishedAuctionsRoute = FinishedAuctionsRouteImport.update({
+  id: '/finished-auctions',
+  path: '/finished-auctions',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -123,8 +135,10 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
+  '/finished-auctions': typeof FinishedAuctionsRoute
   '/how-it-works': typeof HowItWorksRoute
   '/packages': typeof PackagesRoute
+  '/profile': typeof ProfileRoute
   '/ranking': typeof RankingRoute
   '/admin/auctions': typeof AdminAuctionsRoute
   '/admin/banners': typeof AdminBannersRoute
@@ -142,8 +156,10 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/finished-auctions': typeof FinishedAuctionsRoute
   '/how-it-works': typeof HowItWorksRoute
   '/packages': typeof PackagesRoute
+  '/profile': typeof ProfileRoute
   '/ranking': typeof RankingRoute
   '/admin/auctions': typeof AdminAuctionsRoute
   '/admin/banners': typeof AdminBannersRoute
@@ -163,8 +179,10 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
+  '/finished-auctions': typeof FinishedAuctionsRoute
   '/how-it-works': typeof HowItWorksRoute
   '/packages': typeof PackagesRoute
+  '/profile': typeof ProfileRoute
   '/ranking': typeof RankingRoute
   '/admin/auctions': typeof AdminAuctionsRoute
   '/admin/banners': typeof AdminBannersRoute
@@ -185,8 +203,10 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/auth'
+    | '/finished-auctions'
     | '/how-it-works'
     | '/packages'
+    | '/profile'
     | '/ranking'
     | '/admin/auctions'
     | '/admin/banners'
@@ -204,8 +224,10 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/finished-auctions'
     | '/how-it-works'
     | '/packages'
+    | '/profile'
     | '/ranking'
     | '/admin/auctions'
     | '/admin/banners'
@@ -224,8 +246,10 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/auth'
+    | '/finished-auctions'
     | '/how-it-works'
     | '/packages'
+    | '/profile'
     | '/ranking'
     | '/admin/auctions'
     | '/admin/banners'
@@ -245,8 +269,10 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
   AuthRoute: typeof AuthRoute
+  FinishedAuctionsRoute: typeof FinishedAuctionsRoute
   HowItWorksRoute: typeof HowItWorksRoute
   PackagesRoute: typeof PackagesRoute
+  ProfileRoute: typeof ProfileRoute
   RankingRoute: typeof RankingRoute
   AuctionsIdRoute: typeof AuctionsIdRoute
 }
@@ -258,6 +284,13 @@ declare module '@tanstack/react-router' {
       path: '/ranking'
       fullPath: '/ranking'
       preLoaderRoute: typeof RankingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/packages': {
@@ -272,6 +305,13 @@ declare module '@tanstack/react-router' {
       path: '/how-it-works'
       fullPath: '/how-it-works'
       preLoaderRoute: typeof HowItWorksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/finished-auctions': {
+      id: '/finished-auctions'
+      path: '/finished-auctions'
+      fullPath: '/finished-auctions'
+      preLoaderRoute: typeof FinishedAuctionsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -416,21 +456,13 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
   AuthRoute: AuthRoute,
+  FinishedAuctionsRoute: FinishedAuctionsRoute,
   HowItWorksRoute: HowItWorksRoute,
   PackagesRoute: PackagesRoute,
+  ProfileRoute: ProfileRoute,
   RankingRoute: RankingRoute,
   AuctionsIdRoute: AuctionsIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
