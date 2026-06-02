@@ -12,6 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Gavel, Mail, Lock, User, Phone, MapPin, Hash, Camera, Info } from "lucide-react";
+import { useSettings } from "@/hooks/useSettings";
 
 export const Route = createFileRoute("/auth")({
   beforeLoad: async () => {
@@ -46,6 +47,7 @@ function AuthPage() {
   const [avatarUrl, setAvatarUrl] = useState(PREDEFINED_AVATARS[0]);
   const [uploading, setUploading] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
+  const { site_name, logo_url, logo_height } = useSettings();
   
   const navigate = useNavigate();
   const search = Route.useSearch() as any;
@@ -182,10 +184,16 @@ function AuthPage() {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[100px] -z-10"></div>
       
       <Link to="/" className="flex items-center gap-2 mb-8 group">
-        <Gavel className="h-10 w-10 text-primary transition-transform group-hover:rotate-12" />
-        <span className="text-3xl font-bold tracking-tighter text-white">
-          LANCE<span className="text-primary">CERTO</span>
-        </span>
+        {logo_url ? (
+          <img src={logo_url} alt={site_name} style={{ height: `${logo_height || 40}px` }} className="object-contain" />
+        ) : (
+          <>
+            <Gavel className="h-10 w-10 text-primary transition-transform group-hover:rotate-12" />
+            <span className="text-3xl font-bold tracking-tighter text-white">
+              {site_name.split(' ')[0]}<span className="text-primary">{site_name.split(' ').slice(1).join('')}</span>
+            </span>
+          </>
+        )}
       </Link>
 
       <Card className="w-full max-w-md bg-white/5 border-white/10 backdrop-blur-xl">

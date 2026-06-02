@@ -15,9 +15,11 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { useSettings } from "@/hooks/useSettings";
 
 export function AdminSidebar() {
   const location = useLocation();
+  const { site_name, logo_url } = useSettings();
   
   const navItems = [
     { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -41,10 +43,16 @@ export function AdminSidebar() {
     <aside className="w-64 min-h-screen bg-zinc-950 border-r border-white/5 flex flex-col sticky top-0">
       <div className="p-6 border-b border-white/5">
         <Link to="/" className="flex items-center gap-2">
-          <Gavel className="h-6 w-6 text-primary" />
-          <span className="text-xl font-black italic tracking-tighter text-white">
-            ADMIN<span className="text-primary">PANEL</span>
-          </span>
+          {logo_url ? (
+            <img src={logo_url} alt={site_name} className="h-8 object-contain" />
+          ) : (
+            <>
+              <Gavel className="h-6 w-6 text-primary" />
+              <span className="text-xl font-black italic tracking-tighter text-white">
+                ADMIN<span className="text-primary">PANEL</span>
+              </span>
+            </>
+          )}
         </Link>
       </div>
 
