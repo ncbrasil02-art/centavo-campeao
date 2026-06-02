@@ -459,13 +459,14 @@ function Index() {
                   </div>
                 </div>
 
-                <div className="flex flex-col items-center md:items-end gap-6">
+                <div className="flex flex-col items-center md:items-end gap-4">
                   <div className="text-white/80 text-sm text-center md:text-right font-medium">
                     sistema de leilão <a href="https://www.ncbrasil.com.br" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 transition-all font-black uppercase italic tracking-widest border-b-2 border-primary/30 pb-0.5 hover:border-primary">centavos</a>
                   </div>
+                  
                   {logo_url ? (
                     <div 
-                      className="mt-2 flex flex-col items-center md:items-end gap-2"
+                      className="flex flex-col items-center md:items-end"
                       style={{ 
                         padding: `${logo_padding_y || 0}px ${logo_padding_x || 0}px`
                       }}
@@ -478,7 +479,9 @@ function Index() {
                       />
                     </div>
                   ) : (
-                    <div className="text-xs font-black text-white/20 tracking-tighter uppercase italic mt-2">LANCECERTO</div>
+                    <div className="text-xl font-black text-primary tracking-tighter uppercase italic drop-shadow-[0_0_10px_rgba(var(--color-primary),0.5)]">
+                      LANCE<span className="text-white">CERTO</span>
+                    </div>
                   )}
                   <div className="flex items-center gap-1 text-[10px] text-white/20 uppercase tracking-[0.2em]">
                     Feito com <Heart className="w-2.5 h-2.5 text-red-500/40 fill-red-500/40" /> para arrematadores.
