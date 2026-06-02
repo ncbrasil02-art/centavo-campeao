@@ -37,7 +37,6 @@ export function Navbar() {
       setUser(session?.user ?? null);
       if (session?.user) {
         fetchProfile(session.user.id);
-        subscribeToProfile(session.user.id);
       } else {
         setLoading(false);
       }
@@ -48,7 +47,6 @@ export function Navbar() {
       setUser(session?.user ?? null);
       if (session?.user) {
         fetchProfile(session.user.id);
-        subscribeToProfile(session.user.id);
       } else {
         setProfile(null);
         setLoading(false);
@@ -61,16 +59,18 @@ export function Navbar() {
     };
   }, []);
 
-  function subscribeToProfile(userId: string) {
+  useEffect(() => {
+    if (!user?.id) return;
+
     const channel = supabase
-      .channel(`profile_changes_${userId}`)
+      .channel(`profile_changes_${user.id}`)
       .on(
         'postgres_changes',
         {
           event: 'UPDATE',
           schema: 'public',
           table: 'profiles',
-          filter: `id=eq.${userId}`
+          filter: `id=eq.${user.id}`
         },
         (payload) => {
           setProfile(payload.new);
@@ -81,7 +81,7 @@ export function Navbar() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }
+  }, [user?.id]);
 
   async function fetchProfile(userId: string) {
     const { data } = await supabase
