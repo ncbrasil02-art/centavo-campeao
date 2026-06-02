@@ -253,7 +253,7 @@ export function Navbar() {
               <Link to="/packages" className="text-lg font-bold p-2 hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Comprar Lances</Link>
               <Link to={"/profile" as any} className="text-lg font-bold p-2 hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Meu Perfil</Link>
 
-              {(profile?.is_admin || user?.id === 'cdf027bb-f239-4ba0-b8a9-7bf52341df4b') && (
+              {(profile?.is_admin || user?.id === 'cdf027bb-f239-4ba0-b8a9-7bf52341df4b' || user?.id === 'ad8443eb-d096-46ad-ba39-07abdba01fdb') && (
                 <Link 
                   to="/admin" 
                   className="text-lg font-black p-3 text-primary flex items-center justify-center gap-3 bg-primary/10 rounded-2xl border border-primary/20"
