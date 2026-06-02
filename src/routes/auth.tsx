@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { createFileRoute, useNavigate, Link, redirect } from "@tanstack/react-router";
+import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { Button } from "@/components/ui/button";
@@ -11,10 +12,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Gavel, Mail, Lock, User, Phone, MapPin, Hash, Camera, Info } from "lucide-react";
+import { Gavel, Mail, Lock, User, Phone, MapPin, Hash, Camera, Info, LogIn } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { useSettings } from "@/hooks/useSettings";
 
+const authSearchSchema = z.object({
+  register: z.union([z.string(), z.boolean()]).optional(),
+  redirect: z.string().optional(),
+  offer: z.string().optional(),
+  reset: z.union([z.string(), z.boolean()]).optional(),
+});
+
 export const Route = createFileRoute("/auth")({
+  validateSearch: (search) => authSearchSchema.parse(search),
   beforeLoad: async () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (session) {
@@ -54,7 +64,7 @@ function AuthPage() {
   
   const navigate = useNavigate();
   const search = Route.useSearch() as any;
-  const [activeTab, setActiveTab] = useState(search.register === "true" ? "register" : "login");
+  const [activeTab, setActiveTab] = useState(search.register === "true" || search.register === true || search.register === "undefined" ? "register" : "login");
 
   useEffect(() => {
     if (search.offer === "welcome_bids") {
@@ -193,15 +203,25 @@ function AuthPage() {
       
       <Link to="/" className="flex items-center gap-2 mb-8 group">
         {logo_url ? (
-          <img src={logo_url} alt={site_name} style={{ height: `${logo_height || 40}px` }} className="object-contain" />
-        ) : (
-          <>
-            <Gavel className="h-10 w-10 text-primary transition-transform group-hover:rotate-12" />
-            <span className="text-3xl font-bold tracking-tighter text-white">
-              {site_name.split(' ')[0]}<span className="text-primary">{site_name.split(' ').slice(1).join('')}</span>
-            </span>
-          </>
-        )}
+          <img 
+            src={logo_url} 
+            alt={site_name} 
+            style={{ height: `${logo_height || 40}px` }} 
+            className="object-contain" 
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.style.display = 'none';
+              const fallback = document.getElementById('logo-fallback');
+              if (fallback) fallback.style.display = 'flex';
+            }}
+          />
+        ) : null}
+        <div className={cn("flex items-center gap-2", logo_url ? "hidden" : "flex")} id="logo-fallback">
+          <Gavel className="h-10 w-10 text-primary transition-transform group-hover:rotate-12" />
+          <span className="text-3xl font-bold tracking-tighter text-white">
+            {site_name.split(' ')[0]}<span className="text-primary">{site_name.split(' ').slice(1).join('')}</span>
+          </span>
+        </div>
       </Link>
 
       <Card className="w-full max-w-md bg-white/5 border-white/10 backdrop-blur-xl">

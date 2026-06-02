@@ -48,7 +48,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     }
     return {
       site_name: "Leilão de Centavos",
-      logo_url: "",
+      logo_url: "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/logo-0.8516991638992043.png",
       favicon_url: "",
       primary_color: "#8B5CF6",
       secondary_color: "#7C3AED",
@@ -202,47 +202,56 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     async function fetchSettings() {
-      const { data, error } = await supabase
-        .from("site_settings")
-        .select("*")
-        .single();
+      try {
+        const { data, error } = await supabase
+          .from("site_settings")
+          .select("*")
+          .maybeSingle();
 
-      if (data && !error) {
-        const fetchedSettings: SiteSettings = {
-          site_name: data.site_name || "Leilão de Centavos",
-          logo_url: data.logo_url || "",
-          favicon_url: data.favicon_url || "",
-          primary_color: data.primary_color || "#8B5CF6",
-          secondary_color: data.secondary_color || "#7C3AED",
-          mercado_pago_public_key: data.mercado_pago_public_key || "",
-          pix_key: data.pix_key || "",
-          pix_name: data.pix_name || "",
-          hero_display_mode: (data.hero_display_mode as any) || 'phrases',
-          theme_mode: (data.theme_mode as any) || 'dark',
-          ga_id: data.ga_id || "",
-          fb_pixel_id: data.fb_pixel_id || "",
-          meta_title: data.meta_title || "",
-          meta_description: data.meta_description || "",
-          meta_keywords: data.meta_keywords || "",
-          google_site_verification: data.google_site_verification || "",
-          font_color_primary: data.font_color_primary || (data.theme_mode === 'dark' ? "#ffffff" : "#000000"),
-          font_color_secondary: data.font_color_secondary || (data.theme_mode === 'dark' ? "#a1a1aa" : "#666666"),
-          card_background_color: data.card_background_color || (data.theme_mode === 'dark' ? "#18181b" : "#ffffff"),
-          block_background_color: data.block_background_color || (data.theme_mode === 'dark' ? "#27272a" : "#f3f4f6"),
-          page_background_color: data.page_background_color || (data.theme_mode === 'dark' ? "#09090b" : "#ffffff"),
-          border_color: data.border_color || (data.theme_mode === 'dark' ? "#3f3f46" : "#e5e7eb"),
-          logo_height: data.logo_height || 40,
-          logo_height_mobile: data.logo_height_mobile || 32,
-          logo_padding_x: data.logo_padding_x || 0,
-          logo_padding_y: data.logo_padding_y || 0,
-          google_reviews_widget: data.google_reviews_widget || "",
-        };
-        
-        setSettings(fetchedSettings);
-        localStorage.setItem('site_settings', JSON.stringify(fetchedSettings));
-        updateMetaTags(fetchedSettings);
-        injectScripts(fetchedSettings.ga_id, fetchedSettings.fb_pixel_id);
-        applySettingsToDOM(fetchedSettings);
+        if (error) {
+          console.error("Error fetching site settings:", error);
+          return;
+        }
+
+        if (data) {
+          const fetchedSettings: SiteSettings = {
+            site_name: data.site_name || "Leilão de Centavos",
+            logo_url: data.logo_url || "",
+            favicon_url: data.favicon_url || "",
+            primary_color: data.primary_color || "#8B5CF6",
+            secondary_color: data.secondary_color || "#7C3AED",
+            mercado_pago_public_key: data.mercado_pago_public_key || "",
+            pix_key: data.pix_key || "",
+            pix_name: data.pix_name || "",
+            hero_display_mode: (data.hero_display_mode as any) || 'phrases',
+            theme_mode: (data.theme_mode as any) || 'dark',
+            ga_id: data.ga_id || "",
+            fb_pixel_id: data.fb_pixel_id || "",
+            meta_title: data.meta_title || "",
+            meta_description: data.meta_description || "",
+            meta_keywords: data.meta_keywords || "",
+            google_site_verification: data.google_site_verification || "",
+            font_color_primary: data.font_color_primary || (data.theme_mode === 'dark' ? "#ffffff" : "#000000"),
+            font_color_secondary: data.font_color_secondary || (data.theme_mode === 'dark' ? "#a1a1aa" : "#666666"),
+            card_background_color: data.card_background_color || (data.theme_mode === 'dark' ? "#18181b" : "#ffffff"),
+            block_background_color: data.block_background_color || (data.theme_mode === 'dark' ? "#27272a" : "#f3f4f6"),
+            page_background_color: data.page_background_color || (data.theme_mode === 'dark' ? "#09090b" : "#ffffff"),
+            border_color: data.border_color || (data.theme_mode === 'dark' ? "#3f3f46" : "#e5e7eb"),
+            logo_height: data.logo_height || 40,
+            logo_height_mobile: data.logo_height_mobile || 32,
+            logo_padding_x: data.logo_padding_x || 0,
+            logo_padding_y: data.logo_padding_y || 0,
+            google_reviews_widget: data.google_reviews_widget || "",
+          };
+          
+          setSettings(fetchedSettings);
+          localStorage.setItem('site_settings', JSON.stringify(fetchedSettings));
+          updateMetaTags(fetchedSettings);
+          injectScripts(fetchedSettings.ga_id, fetchedSettings.fb_pixel_id);
+          applySettingsToDOM(fetchedSettings);
+        }
+      } catch (err) {
+        console.error("Critical error in fetchSettings:", err);
       }
     }
 
@@ -329,7 +338,7 @@ export const useSettings = () => {
   if (!context) {
     return {
       site_name: "Leilão de Centavos",
-      logo_url: "",
+      logo_url: "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/logo-0.8516991638992043.png",
       favicon_url: "",
       primary_color: "#8B5CF6",
       secondary_color: "#7C3AED",

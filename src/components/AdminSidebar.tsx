@@ -19,7 +19,7 @@ import { useSettings } from "@/hooks/useSettings";
 
 export function AdminSidebar() {
   const location = useLocation();
-  const { site_name, logo_url } = useSettings();
+  const { site_name, logo_url, logo_height } = useSettings();
   
   const navItems = [
     { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -44,7 +44,7 @@ export function AdminSidebar() {
       <div className="p-6 border-b border-white/5">
         <Link to="/" className="flex items-center gap-2">
           {logo_url ? (
-            <img src={logo_url} alt={site_name} className="h-8 object-contain" />
+            <img src={logo_url} alt={site_name} style={{ height: `${(logo_height || 40) * 0.8}px` }} className="object-contain" />
           ) : (
             <>
               <Gavel className="h-6 w-6 text-primary" />
