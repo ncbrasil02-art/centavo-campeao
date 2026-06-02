@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { createFileRoute, useNavigate, Link, redirect } from "@tanstack/react-router";
+import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { Button } from "@/components/ui/button";
@@ -15,15 +16,15 @@ import { Gavel, Mail, Lock, User, Phone, MapPin, Hash, Camera, Info, LogIn } fro
 import { cn } from "@/lib/utils";
 import { useSettings } from "@/hooks/useSettings";
 
+const authSearchSchema = z.object({
+  register: z.string().optional(),
+  redirect: z.string().optional(),
+  offer: z.string().optional(),
+  reset: z.string().optional(),
+});
+
 export const Route = createFileRoute("/auth")({
-  validateSearch: (search: Record<string, unknown>) => {
-    return {
-      register: (search.register as string) || undefined,
-      redirect: (search.redirect as string) || undefined,
-      offer: (search.offer as string) || undefined,
-      reset: (search.reset as string) || undefined,
-    };
-  },
+  validateSearch: (search) => authSearchSchema.parse(search),
   beforeLoad: async () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (session) {
