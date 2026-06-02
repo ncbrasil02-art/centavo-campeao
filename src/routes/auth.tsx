@@ -165,6 +165,23 @@ function AuthPage() {
       setLoading(false);
     }
   };
+  
+  const handleUpdatePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword,
+      });
+      if (error) throw error;
+      toast.success("Senha atualizada com sucesso!");
+      setActiveTab("login");
+      navigate({ to: "/auth", search: { reset: undefined } as any });
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
 
   const handleSocialLogin = async (provider: "google" | "facebook") => {
     try {
