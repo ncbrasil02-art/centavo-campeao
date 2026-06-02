@@ -60,11 +60,12 @@ function AuthPage() {
   const [avatarUrl, setAvatarUrl] = useState(PREDEFINED_AVATARS[0]);
   const [uploading, setUploading] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const { site_name, logo_url, logo_height } = useSettings();
   
   const navigate = useNavigate();
   const search = Route.useSearch();
-  const [activeTab, setActiveTab] = useState(search.register === "true" || search.register === true ? "register" : "login");
+  const [activeTab, setActiveTab] = useState(search.reset === "true" || search.reset === true ? "reset" : search.register === "true" || search.register === true ? "register" : "login");
 
   useEffect(() => {
     console.log("AuthPage loaded with tab:", activeTab, "search:", search);
@@ -164,6 +165,24 @@ function AuthPage() {
       setLoading(false);
     }
   };
+  
+  const handleUpdatePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword,
+      });
+      if (error) throw error;
+      toast.success("Senha atualizada com sucesso!");
+      setActiveTab("login");
+      navigate({ to: "/auth", search: { reset: undefined } as any });
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSocialLogin = async (provider: "google" | "facebook") => {
     try {
@@ -231,8 +250,32 @@ function AuthPage() {
             <TabsList className="grid w-full grid-cols-2 bg-white/5 mb-6">
               <TabsTrigger value="login">Login</TabsTrigger>
               <TabsTrigger value="register">Cadastro</TabsTrigger>
+              {search.reset === "true" && <TabsTrigger value="reset">Nova Senha</TabsTrigger>}
             </TabsList>
             
+            <TabsContent value="reset">
+              <form onSubmit={handleUpdatePassword} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="new-password">Nova Senha</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-3 h-4 w-4 text-white/40" />
+                    <Input 
+                      id="new-password" 
+                      type="password" 
+                      placeholder="Sua nova senha" 
+                      className="pl-10 bg-white/5 border-white/10 placeholder:text-primary/50" 
+                      value={newPassword} 
+                      onChange={e => setNewPassword(e.target.value)} 
+                      required 
+                    />
+                  </div>
+                </div>
+                <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90" disabled={loading}>
+                  {loading ? "Atualizando..." : "Salvar nova senha"}
+                </Button>
+              </form>
+            </TabsContent>
+
             <TabsContent value="login">
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div className="space-y-2">
