@@ -191,9 +191,14 @@ function Index() {
       };
       
       const sortedAuctions = [...(auctionsRes.data || [])].sort((a, b) => {
-        const diff = (statusOrder[a.status] ?? 4) - (statusOrder[b.status] ?? 4);
+        const orderA = a.status ? (statusOrder[a.status] ?? 4) : 4;
+        const orderB = b.status ? (statusOrder[b.status] ?? 4) : 4;
+        const diff = orderA - orderB;
         if (diff !== 0) return diff;
-        return new Date(a.start_time).getTime() - new Date(b.start_time).getTime();
+        
+        const timeA = a.start_time ? new Date(a.start_time).getTime() : 0;
+        const timeB = b.start_time ? new Date(b.start_time).getTime() : 0;
+        return timeA - timeB;
       });
       
       setAuctions(sortedAuctions.slice(0, 12));
