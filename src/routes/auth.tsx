@@ -182,6 +182,7 @@ function AuthPage() {
     } finally {
       setLoading(false);
     }
+  };
 
   const handleSocialLogin = async (provider: "google" | "facebook") => {
     try {
