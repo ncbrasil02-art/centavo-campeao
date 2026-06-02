@@ -60,11 +60,12 @@ function AuthPage() {
   const [avatarUrl, setAvatarUrl] = useState(PREDEFINED_AVATARS[0]);
   const [uploading, setUploading] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const { site_name, logo_url, logo_height } = useSettings();
   
   const navigate = useNavigate();
   const search = Route.useSearch();
-  const [activeTab, setActiveTab] = useState(search.register === "true" || search.register === true ? "register" : "login");
+  const [activeTab, setActiveTab] = useState(search.reset === "true" || search.reset === true ? "reset" : search.register === "true" || search.register === true ? "register" : "login");
 
   useEffect(() => {
     console.log("AuthPage loaded with tab:", activeTab, "search:", search);
