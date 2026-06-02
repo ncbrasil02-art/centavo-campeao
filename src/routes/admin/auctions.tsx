@@ -837,7 +837,15 @@ function AdminAuctions() {
                             <img src={auction.product.images[0]} alt="" className="w-full h-full object-cover" />
                           )}
                         </div>
-                        <span className="font-bold">{auction.product?.name}</span>
+                        <div className="flex flex-col">
+                          <span className="font-bold">{auction.product?.name}</span>
+                          {auction.last_bidder?.username && (
+                            <span className="text-[10px] text-primary font-black uppercase tracking-tighter italic">
+                              {auction.status === 'confirmed' || auction.status === 'finished' ? 'Vencedor: ' : 'Último lance: '}
+                              {auction.last_bidder.username}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </TableCell>
                     <TableCell>
