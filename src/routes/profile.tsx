@@ -13,12 +13,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getFallbackAvatarUrl } from "@/lib/constants";
 import { Badge } from "@/components/ui/badge";
 
-export const Route = createFileRoute("/profile" as any)({
+export const Route = createFileRoute("/profile")({
   beforeLoad: async () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
       throw redirect({
-        to: "/auth" as any,
+        to: "/auth",
       });
     }
   },
@@ -87,7 +87,7 @@ function ProfilePage() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    navigate({ to: "/" as any });
+    navigate({ to: "/" });
   };
 
   if (loading && !profile) {

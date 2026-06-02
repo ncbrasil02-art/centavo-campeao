@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/finished-auctions" as any)({
+export const Route = createFileRoute("/finished-auctions")({
   component: FinishedAuctions,
 });
 
