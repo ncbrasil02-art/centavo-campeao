@@ -11,7 +11,7 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Plus, Gavel, Calendar, Clock, Edit, Trash2, CheckCircle, XCircle, Power, Upload, Loader2, Image as ImageIcon, ChevronLeft, ChevronRight, Bell } from "lucide-react";
+import { Plus, Gavel, Calendar, Clock, Edit, Trash2, CheckCircle, XCircle, Power, Upload, Loader2, Image as ImageIcon, ChevronLeft, ChevronRight, Bell, List } from "lucide-react";
 import { toast } from "sonner";
 import { 
   Dialog, 
@@ -50,7 +50,9 @@ function AdminAuctions() {
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [viewingBidsAuction, setViewingBidsAuction] = useState<any>(null);
   const auctionsPerPage = 50; 
+
   const { formatBrasiliaTime } = useTimeSync();
 
   
@@ -95,7 +97,7 @@ function AdminAuctions() {
     try {
       let query = supabase
         .from("auctions")
-        .select("*, product:products(*)")
+        .select("*, product:products(*), last_bidder:profiles(username)")
         .range((page - 1) * auctionsPerPage, page * auctionsPerPage - 1);
       
       if (statusFilter !== "all") {
@@ -835,7 +837,15 @@ function AdminAuctions() {
                             <img src={auction.product.images[0]} alt="" className="w-full h-full object-cover" />
                           )}
                         </div>
-                        <span className="font-bold">{auction.product?.name}</span>
+                        <div className="flex flex-col">
+                          <span className="font-bold">{auction.product?.name}</span>
+                          {auction.last_bidder?.username && (
+                            <span className="text-[10px] text-primary font-black uppercase tracking-tighter italic">
+                              {auction.status === 'confirmed' || auction.status === 'finished' ? 'Vencedor: ' : 'Último lance: '}
+                              {auction.last_bidder.username}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -906,6 +916,9 @@ function AdminAuctions() {
                             </Button>
                           </>
                         )}
+                        <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-white/10 text-white" title="Ver Histórico de Lances" onClick={() => setViewingBidsAuction(auction)}>
+                          <List className="w-4 h-4" />
+                        </Button>
                         <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-primary/20 text-primary" onClick={() => handleEdit(auction)}>
                           <Edit className="w-4 h-4" />
                         </Button>
@@ -944,8 +957,69 @@ function AdminAuctions() {
           </div>
         </Card>
 
+        {viewingBidsAuction && (
+          <BidHistoryDialog 
+            auction={viewingBidsAuction} 
+            onClose={() => setViewingBidsAuction(null)} 
+          />
+        )}
       </main>
     </div>
+  );
+}
+
+function BidHistoryDialog({ auction, onClose }: { auction: any, onClose: () => void }) {
+  const [bids, setBids] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchBids() {
+      const { data, error } = await supabase
+        .from("bids")
+        .select("*, profile:profiles(username)")
+        .eq("auction_id", auction.id)
+        .order("created_at", { ascending: false })
+        .limit(100);
+      
+      if (data) setBids(data);
+      setLoading(false);
+    }
+    fetchBids();
+  }, [auction.id]);
+
+  return (
+    <Dialog open={!!auction} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="bg-zinc-900 border-white/10 text-white sm:max-w-[400px]">
+        <DialogHeader>
+          <DialogTitle className="text-xl font-black uppercase italic">
+            Histórico de <span className="text-primary">Lances</span>
+          </DialogTitle>
+          <p className="text-xs text-white/40 uppercase tracking-tighter font-bold">{auction.product?.name}</p>
+        </DialogHeader>
+        <div className="py-4 max-h-[60vh] overflow-y-auto custom-scrollbar pr-2">
+          {loading ? (
+            <div className="flex justify-center py-8"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>
+          ) : bids.length === 0 ? (
+            <p className="text-center text-white/40 py-8">Nenhum lance registrado</p>
+          ) : (
+            <div className="space-y-1.5">
+              {bids.map((bid) => (
+                <div key={bid.id} className="flex justify-between items-center p-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
+                  <div className="flex flex-col">
+                    <span className="text-xs font-black uppercase italic tracking-tight">{bid.profile?.username || "Usuário"}</span>
+                    <span className="text-[9px] text-white/30 font-medium">{format(new Date(bid.created_at), "HH:mm:ss.SSS - dd/MM", { locale: ptBR })}</span>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <span className="text-primary font-black text-sm italic">R$ {Number(bid.price_at_bid).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                    <span className="text-[8px] text-white/20 uppercase font-bold tracking-widest">Lance #{bids.length - bids.indexOf(bid)}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 
