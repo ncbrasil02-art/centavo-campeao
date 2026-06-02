@@ -5,9 +5,11 @@ import { Navbar } from "@/components/Navbar";
 
 export const Route = createFileRoute("/admin")({
   beforeLoad: async ({ location }) => {
+    console.log("Admin route beforeLoad, location:", location.href);
     const { data: { session } } = await supabase.auth.getSession();
     
     if (!session) {
+      console.log("No session found in admin route, redirecting to /auth");
       throw redirect({
         to: "/auth",
         search: {
@@ -23,7 +25,15 @@ export const Route = createFileRoute("/admin")({
       .eq("id", session.user.id)
       .single();
 
-    if (!profile?.is_admin && session.user.id !== 'cdf027bb-f239-4ba0-b8a9-7bf52341df4b') {
+    console.log("User profile admin status:", profile?.is_admin, "User ID:", session.user.id);
+
+    // Permit based on is_admin flag OR the known admin IDs
+    const isAdmin = profile?.is_admin || 
+                   session.user.id === 'cdf027bb-f239-4ba0-b8a9-7bf52341df4b' || 
+                   session.user.id === 'ad8443eb-d096-46ad-ba39-07abdba01fdb';
+
+    if (!isAdmin) {
+      console.log("User is not an admin, redirecting to /");
       throw redirect({
         to: "/",
       });
