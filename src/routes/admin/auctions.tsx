@@ -97,7 +97,7 @@ function AdminAuctions() {
     try {
       let query = supabase
         .from("auctions")
-        .select("*, product:products(*)")
+        .select("*, product:products(*), last_bidder:profiles(username)")
         .range((page - 1) * auctionsPerPage, page * auctionsPerPage - 1);
       
       if (statusFilter !== "all") {
