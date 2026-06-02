@@ -187,7 +187,7 @@ export function Navbar() {
                 </div>
               </div>
               
-              {(profile?.is_admin || user?.id === 'cdf027bb-f239-4ba0-b8a9-7bf52341df4b') && (
+              {(profile?.is_admin || user?.id === 'cdf027bb-f239-4ba0-b8a9-7bf52341df4b' || user?.id === 'ad8443eb-d096-46ad-ba39-07abdba01fdb') && (
                 <Button variant="outline" size="icon" className="hidden sm:flex border-primary/40 bg-primary/20 text-primary hover:bg-primary/30 h-10 w-10 shadow-[0_0_15px_rgba(var(--color-primary),0.2)]" asChild>
                   <Link to="/admin" title="Painel Administrativo">
                     <LayoutDashboard className="w-5 h-5" />
