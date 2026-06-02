@@ -720,12 +720,11 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         <Button 
           onClick={(e) => {
             e.stopPropagation();
-            if (isPendingAudit && isAdmin) {
-              handleConfirmWinner();
-            } else if (!isFinished && !isScheduled && !isPendingAudit && !isConfirmed) {
+            if (!isFinished && !isScheduled && !isPendingAudit && !isConfirmed) {
               handleBid();
             }
           }} 
+
           disabled={loading || (isFinished || isScheduled || isConfirmed || (isPendingAudit && !isAdmin))}
           className={`h-14 w-full rounded-2xl text-base font-black uppercase italic tracking-tighter transition-all relative overflow-hidden group/bidbtn ${
             isFinished || isConfirmed
