@@ -231,7 +231,7 @@ function AuctionPage() {
 
     if (error || !data) {
       toast.error("Leilão não encontrado.");
-      navigate({ to: "/" as any });
+      navigate({ to: "/" });
     } else {
       setAuction(data);
       // Initialize timeLeft immediately
