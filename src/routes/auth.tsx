@@ -1,14 +1,17 @@
 import { useState, useEffect } from "react";
 import { createFileRoute, useNavigate, Link, redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Gavel, Mail, Lock, User, Phone, MapPin, Hash } from "lucide-react";
+import { Gavel, Mail, Lock, User, Phone, MapPin, Hash, Camera, Info } from "lucide-react";
 
 export const Route = createFileRoute("/auth")({
   beforeLoad: async () => {
@@ -22,6 +25,15 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
 });
 
+const PREDEFINED_AVATARS = [
+  "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix",
+  "https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka",
+  "https://api.dicebear.com/7.x/avataaars/svg?seed=George",
+  "https://api.dicebear.com/7.x/avataaars/svg?seed=Sophie",
+  "https://api.dicebear.com/7.x/avataaars/svg?seed=Milo",
+  "https://api.dicebear.com/7.x/avataaars/svg?seed=Jasper",
+];
+
 function AuthPage() {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
@@ -31,6 +43,10 @@ function AuthPage() {
   const [cpf, setCpf] = useState("");
   const [phone, setPhone] = useState("");
   const [gender, setGender] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState(PREDEFINED_AVATARS[0]);
+  const [uploading, setUploading] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  
   const navigate = useNavigate();
   const search = Route.useSearch() as any;
   const [activeTab, setActiveTab] = useState(search.register === "true" ? "register" : "login");
@@ -44,6 +60,30 @@ function AuthPage() {
     }
   }, [search.offer]);
 
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      setUploading(true);
+      if (!event.target.files || event.target.files.length === 0) {
+        throw new Error('Você deve selecionar uma imagem para fazer o upload.');
+      }
+
+      const file = event.target.files[0];
+      const fileExt = file.name.split('.').pop();
+      const filePath = `${Math.random()}.${fileExt}`;
+
+      // We need to be logged in to upload to 'avatars' bucket based on our policies
+      // But we are on the register page. 
+      // Alternative: store it temporarily or use a public bucket if possible.
+      // Since public buckets are blocked, let's just stick to predefined avatars for now during registration
+      // Or we can tell the user they can change their photo after logging in.
+      
+      toast.error("Upload de foto disponível apenas após o login. Escolha um dos avatares abaixo por enquanto.");
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,6 +100,7 @@ function AuthPage() {
             cpf,
             phone,
             gender,
+            avatar_url: avatarUrl,
           }
         }
       });
@@ -68,11 +109,9 @@ function AuthPage() {
 
       if (data.user) {
         toast.success("Cadastro realizado com sucesso!");
-        // If session is created (auto-confirm is on), redirect to home
         if (data.session) {
           navigate({ to: "/" });
         } else {
-          // Tell user to check email if auto-confirm is not instant or they need to verify
           toast.info("Por favor, verifique seu e-mail para ativar a conta.");
         }
       }
@@ -96,20 +135,8 @@ function AuthPage() {
       if (error) throw error;
       
       toast.success("Bem-vindo de volta!");
-      
       const redirectPath = search.redirect || "/";
-      
-      // If the redirect path is a full URL, we need to extract the path
-      if (redirectPath.startsWith('http')) {
-        try {
-          const url = new URL(redirectPath);
-          navigate({ to: url.pathname as any });
-        } catch (e) {
-          navigate({ to: "/" });
-        }
-      } else {
-        navigate({ to: redirectPath as any });
-      }
+      navigate({ to: redirectPath.startsWith('http') ? "/" : (redirectPath as any) });
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -117,9 +144,41 @@ function AuthPage() {
     }
   };
 
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+        redirectTo: `${window.location.origin}/auth?reset=true`,
+      });
+      if (error) throw error;
+      toast.success("E-mail de recuperação enviado!");
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSocialLogin = async (provider: "google" | "facebook") => {
+    try {
+      if (provider === "facebook") {
+        toast.error("Login com Facebook será implementado em breve.");
+        return;
+      }
+      
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin + "/",
+      });
+
+      if (result?.error) throw result.error;
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 relative overflow-hidden">
-      {/* Background Decor */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[100px] -z-10"></div>
       
       <Link to="/" className="flex items-center gap-2 mb-8 group">
@@ -151,7 +210,31 @@ function AuthPage() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="password">Senha</Label>
+                  <div className="flex justify-between items-center">
+                    <Label htmlFor="password">Senha</Label>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <button type="button" className="text-xs text-primary hover:underline">Esqueci minha senha</button>
+                      </DialogTrigger>
+                      <DialogContent className="bg-zinc-900 border-white/10 text-white">
+                        <DialogHeader>
+                          <DialogTitle>Recuperar Conta</DialogTitle>
+                          <DialogDescription className="text-white/60">
+                            Insira seu e-mail para receber um link de recuperação de senha.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <form onSubmit={handleForgotPassword} className="space-y-4 pt-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="reset-email">E-mail</Label>
+                            <Input id="reset-email" type="email" placeholder="seu@email.com" className="bg-white/5 border-white/10" value={resetEmail} onChange={e => setResetEmail(e.target.value)} required />
+                          </div>
+                          <Button type="submit" className="w-full" disabled={loading}>
+                            {loading ? "Enviando..." : "Enviar link de recuperação"}
+                          </Button>
+                        </form>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
                   <div className="relative">
                     <Lock className="absolute left-3 top-3 h-4 w-4 text-white/40" />
                     <Input id="password" type="password" placeholder="••••••••" className="pl-10 bg-white/5 border-white/10 placeholder:text-primary/50" value={password} onChange={e => setPassword(e.target.value)} required />
@@ -165,6 +248,31 @@ function AuthPage() {
 
             <TabsContent value="register">
               <form onSubmit={handleSignUp} className="space-y-4">
+                <div className="flex flex-col items-center gap-4 mb-6">
+                  <Label>Escolha seu Avatar</Label>
+                  <div className="flex flex-wrap justify-center gap-3">
+                    {PREDEFINED_AVATARS.map((url, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => setAvatarUrl(url)}
+                        className={`rounded-full p-1 transition-all ${avatarUrl === url ? "ring-2 ring-primary scale-110" : "opacity-60 hover:opacity-100"}`}
+                      >
+                        <Avatar className="h-12 w-12">
+                          <AvatarImage src={url} />
+                          <AvatarFallback><User /></AvatarFallback>
+                        </Avatar>
+                      </button>
+                    ))}
+                  </div>
+                  <div className="text-center">
+                    <Label htmlFor="avatar-upload" className="cursor-pointer text-xs text-primary flex items-center gap-1 hover:underline">
+                      <Camera className="h-3 w-3" /> Ou envie sua foto
+                    </Label>
+                    <Input id="avatar-upload" type="file" accept="image/*" className="hidden" onChange={handleFileUpload} disabled={uploading} />
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="reg-name">Nome Completo</Label>
@@ -242,8 +350,12 @@ function AuthPage() {
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4 w-full">
-            <Button variant="outline" className="border-white/10 hover:bg-white/5">Google</Button>
-            <Button variant="outline" className="border-white/10 hover:bg-white/5">Facebook</Button>
+            <Button variant="outline" className="border-white/10 hover:bg-white/5 text-white" onClick={() => handleSocialLogin("google")}>
+              Google
+            </Button>
+            <Button variant="outline" className="border-white/10 hover:bg-white/5 text-white" onClick={() => handleSocialLogin("facebook")}>
+              Facebook
+            </Button>
           </div>
         </CardFooter>
       </Card>
