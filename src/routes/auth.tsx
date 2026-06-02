@@ -17,10 +17,10 @@ import { cn } from "@/lib/utils";
 import { useSettings } from "@/hooks/useSettings";
 
 const authSearchSchema = z.object({
-  register: z.string().optional(),
+  register: z.union([z.string(), z.boolean()]).optional(),
   redirect: z.string().optional(),
   offer: z.string().optional(),
-  reset: z.string().optional(),
+  reset: z.union([z.string(), z.boolean()]).optional(),
 });
 
 export const Route = createFileRoute("/auth")({
@@ -64,7 +64,7 @@ function AuthPage() {
   
   const navigate = useNavigate();
   const search = Route.useSearch() as any;
-  const [activeTab, setActiveTab] = useState(search.register === "true" ? "register" : "login");
+  const [activeTab, setActiveTab] = useState(search.register === "true" || search.register === true ? "register" : "login");
 
   useEffect(() => {
     if (search.offer === "welcome_bids") {
