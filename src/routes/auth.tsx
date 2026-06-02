@@ -15,6 +15,14 @@ import { Gavel, Mail, Lock, User, Phone, MapPin, Hash, Camera, Info } from "luci
 import { useSettings } from "@/hooks/useSettings";
 
 export const Route = createFileRoute("/auth")({
+  validateSearch: (search: Record<string, unknown>) => {
+    return {
+      register: (search.register as string) || "false",
+      redirect: (search.redirect as string) || "/",
+      offer: (search.offer as string) || "",
+      reset: (search.reset as string) || "false",
+    };
+  },
   beforeLoad: async () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (session) {
