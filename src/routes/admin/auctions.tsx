@@ -127,15 +127,17 @@ function AdminAuctions() {
       };
 
       const sortedAuctions = (auctionsRes.data || []).sort((a, b) => {
-        const priorityA = statusPriority[a.status] ?? 10;
-        const priorityB = statusPriority[b.status] ?? 10;
+        const priorityA = statusPriority[a.status as string] ?? 10;
+        const priorityB = statusPriority[b.status as string] ?? 10;
         
         if (priorityA !== priorityB) {
           return priorityA - priorityB;
         }
         
         // Secondary sort by start_time
-        return new Date(a.start_time).getTime() - new Date(b.start_time).getTime();
+        const timeA = a.start_time ? new Date(a.start_time).getTime() : 0;
+        const timeB = b.start_time ? new Date(b.start_time).getTime() : 0;
+        return timeA - timeB;
       });
 
       setAuctions(sortedAuctions);
