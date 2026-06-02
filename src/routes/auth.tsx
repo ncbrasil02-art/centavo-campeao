@@ -11,16 +11,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Gavel, Mail, Lock, User, Phone, MapPin, Hash, Camera, Info } from "lucide-react";
+import { Gavel, Mail, Lock, User, Phone, MapPin, Hash, Camera, Info, LogIn } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { useSettings } from "@/hooks/useSettings";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (search: Record<string, unknown>) => {
     return {
-      register: (search.register as string) || "false",
-      redirect: (search.redirect as string) || "/",
-      offer: (search.offer as string) || "",
-      reset: (search.reset as string) || "false",
+      register: (search.register as string) || undefined,
+      redirect: (search.redirect as string) || undefined,
+      offer: (search.offer as string) || undefined,
+      reset: (search.reset as string) || undefined,
     };
   },
   beforeLoad: async () => {
@@ -201,15 +202,25 @@ function AuthPage() {
       
       <Link to="/" className="flex items-center gap-2 mb-8 group">
         {logo_url ? (
-          <img src={logo_url} alt={site_name} style={{ height: `${logo_height || 40}px` }} className="object-contain" />
-        ) : (
-          <>
-            <Gavel className="h-10 w-10 text-primary transition-transform group-hover:rotate-12" />
-            <span className="text-3xl font-bold tracking-tighter text-white">
-              {site_name.split(' ')[0]}<span className="text-primary">{site_name.split(' ').slice(1).join('')}</span>
-            </span>
-          </>
-        )}
+          <img 
+            src={logo_url} 
+            alt={site_name} 
+            style={{ height: `${logo_height || 40}px` }} 
+            className="object-contain" 
+            onError={(e) => {
+              // Fallback if logo fails to load
+              (e.target as HTMLImageElement).style.display = 'none';
+              const sibling = (e.target as HTMLElement).nextElementSibling as HTMLElement;
+              if (sibling) sibling.style.display = 'flex';
+            }}
+          />
+        ) : null}
+        <div className={cn("flex items-center gap-2", logo_url ? "hidden" : "flex")} id="logo-fallback">
+          <Gavel className="h-10 w-10 text-primary transition-transform group-hover:rotate-12" />
+          <span className="text-3xl font-bold tracking-tighter text-white">
+            {site_name.split(' ')[0]}<span className="text-primary">{site_name.split(' ').slice(1).join('')}</span>
+          </span>
+        </div>
       </Link>
 
       <Card className="w-full max-w-md bg-white/5 border-white/10 backdrop-blur-xl">
