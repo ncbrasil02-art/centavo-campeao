@@ -846,6 +846,15 @@ function AdminAuctions() {
                         {auction.status === 'scheduled' && (
                           <NotificationDialog auction={auction} />
                         )}
+                        {auction.status === 'confirmed' && (
+                          <Button 
+                            size="sm" 
+                            className="bg-amber-600 hover:bg-amber-500 text-white font-black h-9 text-[10px] shadow-[0_0_20px_rgba(217,119,6,0.5)] border-2 border-amber-400"
+                            onClick={() => handleFinishAuction(auction.id)}
+                          >
+                            <CheckCircle className="w-4 h-4 mr-2" /> ARQUIVAR / FINALIZAR
+                          </Button>
+                        )}
                         {auction.status === 'pending_audit' && (
                           <Button 
                             size="sm" 
