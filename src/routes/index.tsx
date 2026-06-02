@@ -174,11 +174,8 @@ function Index() {
         .from("testimonials")
         .select("*")
         .eq("active", true)
-        .order("created_at", { ascending: false }),
-      supabase
-        .from("app_phrases")
-        .select("*")
-        .limit(1) // Just to have a 4th promise if needed, or keep it 3 if preferred.
+        .order("created_at", { ascending: false })
+        .limit(12)
     ]);
 
     if (auctionsRes.error) {
