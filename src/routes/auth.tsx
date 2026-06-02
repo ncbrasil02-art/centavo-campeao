@@ -63,17 +63,18 @@ function AuthPage() {
   const { site_name, logo_url, logo_height } = useSettings();
   
   const navigate = useNavigate();
-  const search = Route.useSearch() as any;
-  const [activeTab, setActiveTab] = useState(search.register === "true" || search.register === true || search.register === "undefined" ? "register" : "login");
+  const search = Route.useSearch();
+  const [activeTab, setActiveTab] = useState(search.register === "true" || search.register === true ? "register" : "login");
 
   useEffect(() => {
+    console.log("AuthPage loaded with tab:", activeTab, "search:", search);
     if (search.offer === "welcome_bids") {
       toast.info("Oferta Especial!", {
         description: "Complete seu cadastro agora e ganhe 50% de desconto no seu primeiro pacote de lances!",
         duration: 10000,
       });
     }
-  }, [search.offer]);
+  }, [search.offer, activeTab, search]);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     try {
@@ -81,17 +82,6 @@ function AuthPage() {
       if (!event.target.files || event.target.files.length === 0) {
         throw new Error('Você deve selecionar uma imagem para fazer o upload.');
       }
-
-      const file = event.target.files[0];
-      const fileExt = file.name.split('.').pop();
-      const filePath = `${Math.random()}.${fileExt}`;
-
-      // We need to be logged in to upload to 'avatars' bucket based on our policies
-      // But we are on the register page. 
-      // Alternative: store it temporarily or use a public bucket if possible.
-      // Since public buckets are blocked, let's just stick to predefined avatars for now during registration
-      // Or we can tell the user they can change their photo after logging in.
-      
       toast.error("Upload de foto disponível apenas após o login. Escolha um dos avatares abaixo por enquanto.");
     } catch (error: any) {
       toast.error(error.message);
@@ -178,7 +168,6 @@ function AuthPage() {
   const handleSocialLogin = async (provider: "google" | "facebook") => {
     try {
       if (provider === "google") {
-        // Try managed first, fall back to direct
         const result = await lovable.auth.signInWithOAuth("google", {
           redirect_uri: window.location.origin + "/",
         });
@@ -197,34 +186,42 @@ function AuthPage() {
     }
   };
 
+  const renderLogo = () => {
+    const fallback = (
+      <div className="flex items-center gap-2">
+        <Gavel className="h-10 w-10 text-primary" />
+        <span className="text-3xl font-bold tracking-tighter text-white">
+          {site_name.split(' ')[0]}<span className="text-primary">{site_name.split(' ').slice(1).join('')}</span>
+        </span>
+      </div>
+    );
+
+    if (!logo_url) return fallback;
+
+    return (
+      <img 
+        src={logo_url} 
+        alt={site_name} 
+        style={{ height: `${logo_height || 40}px` }} 
+        className="object-contain" 
+        onError={(e) => {
+          (e.target as HTMLImageElement).style.display = 'none';
+        }}
+      />
+    );
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 relative overflow-hidden">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[100px] -z-10"></div>
       
       <Link to="/" className="flex items-center gap-2 mb-8 group">
-        {logo_url ? (
-          <img 
-            src={logo_url} 
-            alt={site_name} 
-            style={{ height: `${logo_height || 40}px` }} 
-            className="object-contain" 
-            onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              target.style.display = 'none';
-              const fallback = document.getElementById('logo-fallback');
-              if (fallback) fallback.style.display = 'flex';
-            }}
-          />
-        ) : null}
-        <div className={cn("flex items-center gap-2", logo_url ? "hidden" : "flex")} id="logo-fallback">
-          <Gavel className="h-10 w-10 text-primary transition-transform group-hover:rotate-12" />
-          <span className="text-3xl font-bold tracking-tighter text-white">
-            {site_name.split(' ')[0]}<span className="text-primary">{site_name.split(' ').slice(1).join('')}</span>
-          </span>
-        </div>
+        {renderLogo()}
       </Link>
 
-      <Card className="w-full max-w-md bg-white/5 border-white/10 backdrop-blur-xl">
+      <Card className="w-full max-w-md bg-white/5 border-white/10 backdrop-blur-xl relative">
+        <div className="absolute -top-3 right-4 bg-primary/20 text-primary text-[8px] px-2 py-0.5 rounded-full border border-primary/30 uppercase font-black tracking-widest z-50">Versão 2.1 Atualizada</div>
+        
         <CardHeader>
           <CardTitle className="text-2xl text-center">Acesse sua conta</CardTitle>
           <CardDescription className="text-center text-white/60">Participe dos melhores leilões do Brasil</CardDescription>
@@ -284,8 +281,8 @@ function AuthPage() {
 
             <TabsContent value="register">
               <form onSubmit={handleSignUp} className="space-y-4">
-                <div className="flex flex-col items-center gap-4 mb-6">
-                  <Label>Escolha seu Avatar</Label>
+                <div className="flex flex-col items-center gap-4 mb-6 p-4 bg-white/5 rounded-2xl border border-white/5">
+                  <Label className="font-bold text-primary uppercase text-xs tracking-widest">Escolha seu Avatar</Label>
                   <div className="flex flex-wrap justify-center gap-3">
                     {PREDEFINED_AVATARS.map((url, idx) => (
                       <button
@@ -302,8 +299,8 @@ function AuthPage() {
                     ))}
                   </div>
                   <div className="text-center">
-                    <Label htmlFor="avatar-upload" className="cursor-pointer text-xs text-primary flex items-center gap-1 hover:underline">
-                      <Camera className="h-3 w-3" /> Ou envie sua foto
+                    <Label htmlFor="avatar-upload" className="cursor-pointer text-[10px] text-primary flex items-center gap-1 hover:underline">
+                      <Camera className="h-3 w-3" /> Ou envie sua foto (após o login)
                     </Label>
                     <Input id="avatar-upload" type="file" accept="image/*" className="hidden" onChange={handleFileUpload} disabled={uploading} />
                   </div>
@@ -386,11 +383,11 @@ function AuthPage() {
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4 w-full">
-            <Button variant="outline" className="border-white/10 hover:bg-white/5 text-white" onClick={() => handleSocialLogin("google")}>
-              Google
+            <Button variant="outline" className="border-white/10 hover:bg-white/5 text-white flex items-center gap-2" onClick={() => handleSocialLogin("google")}>
+              <LogIn className="h-4 w-4" /> Google
             </Button>
-            <Button variant="outline" className="border-white/10 hover:bg-white/5 text-white" onClick={() => handleSocialLogin("facebook")}>
-              Facebook
+            <Button variant="outline" className="border-white/10 hover:bg-white/5 text-white flex items-center gap-2" onClick={() => handleSocialLogin("facebook")}>
+              <LogIn className="h-4 w-4" /> Facebook
             </Button>
           </div>
         </CardFooter>
