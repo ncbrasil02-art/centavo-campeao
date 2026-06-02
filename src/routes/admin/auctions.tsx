@@ -11,7 +11,7 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Plus, Gavel, Calendar, Clock, Edit, Trash2, CheckCircle, XCircle, Power, Upload, Loader2, Image as ImageIcon, ChevronLeft, ChevronRight, Bell } from "lucide-react";
+import { Plus, Gavel, Calendar, Clock, Edit, Trash2, CheckCircle, XCircle, Power, Upload, Loader2, Image as ImageIcon, ChevronLeft, ChevronRight, Bell, List } from "lucide-react";
 import { toast } from "sonner";
 import { 
   Dialog, 
