@@ -365,6 +365,24 @@ function AdminAuctions() {
       toast.dismiss(loadingToast);
     }
   }
+  
+  async function handleFinishAuction(auctionId: string) {
+    const loadingToast = toast.loading("Finalizando leilão...");
+    try {
+      const { error } = await supabase
+        .from("auctions")
+        .update({ status: 'finished' })
+        .eq("id", auctionId);
+      
+      if (error) throw error;
+      toast.success("Leilão finalizado com sucesso!");
+      fetchData();
+    } catch (err: any) {
+      toast.error(err.message || "Erro ao finalizar leilão");
+    } finally {
+      toast.dismiss(loadingToast);
+    }
+  }
 
   const toggleFinalize = async (auction: any) => {
     try {
