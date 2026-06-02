@@ -454,6 +454,7 @@ function AdminAuctions() {
                 <SelectItem value="live">Ativos</SelectItem>
                 <SelectItem value="scheduled">Agendados</SelectItem>
                 <SelectItem value="pending_audit">Em Auditoria</SelectItem>
+                <SelectItem value="confirmed">Confirmados</SelectItem>
                 <SelectItem value="finished">Finalizados</SelectItem>
               </SelectContent>
             </Select>
