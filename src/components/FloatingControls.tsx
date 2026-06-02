@@ -48,29 +48,51 @@ export function FloatingControls() {
     if (savedSoundEnabled !== null) setSoundEnabled(savedSoundEnabled === "true");
     if (savedSelectedSound !== null) setSelectedSound(savedSelectedSound);
 
-    // Initial profile fetch
-    fetchProfile();
+    // Initial session check
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        fetchProfile(session.user.id);
+      }
+    });
 
-    // Subscribe to profile changes
+    // Subscribe to auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
-        fetchProfile();
-        subscribeToProfile(session.user.id);
+        fetchProfile(session.user.id);
       } else {
         setProfile(null);
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
-  async function fetchProfile() {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.user) {
+  useEffect(() => {
+    if (!profile?.id) return;
+
+    const channel = supabase
+      .channel(`floating_profile_${profile.id}`)
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'profiles', filter: `id=eq.${profile.id}` },
+        (payload) => setProfile(payload.new)
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [profile?.id]);
+
+  async function fetchProfile(userId?: string) {
+    const targetId = userId || profile?.id;
+    if (targetId) {
       const { data } = await supabase
         .from("profiles")
         .select("*")
-        .eq("id", session.user.id)
+        .eq("id", targetId)
         .single();
       if (data) {
         setProfile(data);
@@ -78,18 +100,6 @@ export function FloatingControls() {
         setEditingAvatar(data.avatar_url || "");
       }
     }
-  }
-
-  function subscribeToProfile(userId: string) {
-    const channel = supabase
-      .channel(`floating_profile_${userId}`)
-      .on(
-        'postgres_changes',
-        { event: 'UPDATE', schema: 'public', table: 'profiles', filter: `id=eq.${userId}` },
-        (payload) => setProfile(payload.new)
-      )
-      .subscribe();
-    return () => supabase.removeChannel(channel);
   }
 
   const toggleSound = () => {
