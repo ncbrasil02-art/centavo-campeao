@@ -50,7 +50,9 @@ function AdminAuctions() {
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [viewingBidsAuction, setViewingBidsAuction] = useState<any>(null);
   const auctionsPerPage = 50; 
+
   const { formatBrasiliaTime } = useTimeSync();
 
   
