@@ -152,7 +152,7 @@ export function Navbar() {
           <Link to="/ranking" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Ranking</Link>
           <Link to="/packages" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Comprar Lances</Link>
           
-          {(profile?.is_admin || user?.id === 'cdf027bb-f239-4ba0-b8a9-7bf52341df4b') && (
+          {(profile?.is_admin || user?.id === 'cdf027bb-f239-4ba0-b8a9-7bf52341df4b' || user?.id === 'ad8443eb-d096-46ad-ba39-07abdba01fdb') && (
             <Link 
               to="/admin" 
               className="p-2 text-primary transition-all hover:scale-110 bg-primary/10 rounded-full border border-primary/30 shadow-[0_0_20px_rgba(var(--color-primary),0.3)]"
