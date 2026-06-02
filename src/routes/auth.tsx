@@ -96,7 +96,20 @@ function AuthPage() {
       if (error) throw error;
       
       toast.success("Bem-vindo de volta!");
-      navigate({ to: "/" });
+      
+      const redirectPath = search.redirect || "/";
+      
+      // If the redirect path is a full URL, we need to extract the path
+      if (redirectPath.startsWith('http')) {
+        try {
+          const url = new URL(redirectPath);
+          navigate({ to: url.pathname as any });
+        } catch (e) {
+          navigate({ to: "/" });
+        }
+      } else {
+        navigate({ to: redirectPath as any });
+      }
     } catch (error: any) {
       toast.error(error.message);
     } finally {
