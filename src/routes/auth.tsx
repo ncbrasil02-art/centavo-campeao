@@ -33,6 +33,9 @@ const PREDEFINED_AVATARS = [
   "https://api.dicebear.com/7.x/avataaars/svg?seed=Sophie",
   "https://api.dicebear.com/7.x/avataaars/svg?seed=Milo",
   "https://api.dicebear.com/7.x/avataaars/svg?seed=Jasper",
+  "https://api.dicebear.com/7.x/avataaars/svg?seed=Lucky",
+  "https://api.dicebear.com/7.x/avataaars/svg?seed=Buster",
+  "https://api.dicebear.com/7.x/avataaars/svg?seed=Cookie",
 ];
 
 function AuthPage() {
@@ -164,16 +167,21 @@ function AuthPage() {
 
   const handleSocialLogin = async (provider: "google" | "facebook") => {
     try {
-      if (provider === "facebook") {
-        toast.error("Login com Facebook será implementado em breve.");
-        return;
+      if (provider === "google") {
+        // Try managed first, fall back to direct
+        const result = await lovable.auth.signInWithOAuth("google", {
+          redirect_uri: window.location.origin + "/",
+        });
+        if (result?.error) throw result.error;
+      } else {
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: 'facebook',
+          options: {
+            redirectTo: window.location.origin + "/",
+          }
+        });
+        if (error) throw error;
       }
-      
-      const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin + "/",
-      });
-
-      if (result?.error) throw result.error;
     } catch (error: any) {
       toast.error(error.message);
     }
