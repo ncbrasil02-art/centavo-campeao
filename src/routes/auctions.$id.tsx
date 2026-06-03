@@ -695,7 +695,7 @@ function AuctionPage() {
                       isFinished 
                         ? 'bg-green-500/10 text-green-500 border border-green-500/20 cursor-default' 
                         : timeLeft <= 5
-                        ? 'bg-red-600 text-white shadow-[0_0_60px_rgba(220,38,38,0.8)]'
+                        ? 'bg-red-600 text-white shadow-[0_0_60px_rgba(220,38,38,1)] scale-[1.05] animate-pulse border-white/20 border-2'
                         : 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_20px_50px_rgba(var(--color-primary),0.6)] hover:-translate-y-1 active:translate-y-1'
                     }`}
                   >
@@ -713,7 +713,7 @@ function AuctionPage() {
                       </div>
                     ) : (
                       <span className="flex items-center gap-4 relative z-10">
-                        {timeLeft <= 5 ? "DAR LANCE AGORA" : "DAR LANCE"} <Zap className={`w-8 h-8 fill-current ${timeLeft <= 5 ? 'animate-bounce' : 'animate-pulse'}`} />
+                        {timeLeft <= 5 ? "VAI PERDER..." : "DAR LANCE"} <Zap className={`w-8 h-8 fill-current ${timeLeft <= 5 ? 'animate-bounce' : 'animate-pulse'}`} />
                       </span>
                     )}
                   </Button>

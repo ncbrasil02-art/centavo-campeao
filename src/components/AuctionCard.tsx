@@ -383,7 +383,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   const timePercentage = (timeLeft / timerDuration) * 100;
 
   return (
-    <Card className={`group relative flex flex-col h-full overflow-hidden rounded-[32px] border-glass-border bg-glass backdrop-blur-md transition-all duration-500 hover:border-primary/50 hover:shadow-[0_0_40px_rgba(var(--color-primary),0.3)] border-2 ${!isFinished && !isScheduled ? 'animate-float-slow' : ''} ${auction.modality && MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG]?.effect || ''}`}>
+    <Card className={`group relative flex flex-col h-full overflow-hidden rounded-[32px] border-glass-border bg-glass backdrop-blur-md transition-all duration-500 hover:border-primary/50 hover:shadow-[0_0_40px_rgba(var(--color-primary),0.3)] border-2 ${!isFinished && !isScheduled ? 'animate-float-slow bg-primary/5 border-primary/20 shadow-[inset_0_0_30px_rgba(var(--color-primary),0.05)]' : ''} ${auction.modality && MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG]?.effect || ''}`}>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_rgba(var(--color-primary),0.05),_transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity"></div>
       
       {/* Modality Icon */}
@@ -754,7 +754,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
               : isScheduled
               ? 'cursor-not-allowed border border-border bg-muted text-muted-foreground'
               : timeLeft <= 5
-              ? 'bg-red-600 text-white shadow-[0_0_30px_rgba(220,38,38,0.8)] hover:bg-red-700'
+              ? 'bg-red-600 text-white shadow-[0_0_40px_rgba(220,38,38,1)] scale-[1.05] animate-pulse border-white/20 border-2'
               : 'bg-primary text-primary-foreground shadow-[0_8px_25px_rgba(var(--color-primary),0.3)] hover:scale-[1.02] hover:bg-primary/90 active:scale-95'
           }`}
         >
@@ -776,7 +776,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             ) : "EM AUDITORIA"
           ) : isScheduled ? "AGUARDANDO INÍCIO" : (
             <span className="flex items-center gap-2">
-              {timeLeft <= 5 ? "DAR LANCE AGORA" : "DAR LANCE"} <Zap className={`h-5 w-5 fill-current ${timeLeft <= 5 ? 'animate-bounce' : ''}`} />
+              {timeLeft <= 5 ? "VAI PERDER..." : "DAR LANCE"} <Zap className={`h-5 w-5 fill-current ${timeLeft <= 5 ? 'animate-bounce' : ''}`} />
             </span>
           )}
         </Button>
