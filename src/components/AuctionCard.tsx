@@ -231,7 +231,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       // Transition check: if scheduled and timer is zero, force a status check
       if (isScheduled && diff <= 0 && !isRefreshing) {
         isRefreshing = true;
-        console.log("Scheduled auction reached zero, refreshing...");
+        console.log("Scheduled auction reached zero, initiating server tick...");
         
         try {
           // Call tick_auctions to ensure server status is updated
@@ -239,10 +239,10 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           
           // Re-fetch to get updated status and timing
           const { data, error } = await supabase
-            .from("v_home_live_auctions")
-            .select("*")
+            .from("auctions")
+            .select("*, product:products(*), last_bidder:profiles(*)")
             .eq("id", auction.id)
-            .maybeSingle();
+            .single();
           
           if (data && data.status !== 'scheduled') {
             console.log("Auction is now live:", data);
