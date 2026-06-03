@@ -768,7 +768,6 @@ function AdminSettings() {
                   />
                   <p className="text-[10px] text-white/40">Este link será usado no botão de atendimento do rodapé.</p>
                 </div>
-                </div>
               </CardContent>
             </Card>
 
