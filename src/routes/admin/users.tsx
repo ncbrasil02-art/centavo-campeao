@@ -1,4 +1,14 @@
 import { useState, useEffect } from "react";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogFooter 
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { REAL_PERSON_PHOTOS } from "@/lib/constants";
+import { Check } from "lucide-react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -47,6 +57,14 @@ function AdminUsersPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
+  const [isEditUserDialogOpen, setIsEditUserDialogOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState<any>(null);
+  const [userFormData, setUserFormData] = useState({
+    username: "",
+    avatar_url: "",
+    is_bot: false,
+    is_admin: false
+  });
   const usersPerPage = 10;
 
   useEffect(() => {
@@ -85,6 +103,42 @@ function AdminUsersPage() {
       toast.error("Erro ao atualizar perfil");
     } else {
       toast.success("Perfil atualizado com sucesso!");
+      fetchUsers();
+    }
+  };
+
+  const handleEditUser = (user: any) => {
+    setEditingUser(user);
+    setUserFormData({
+      username: user.username || "",
+      avatar_url: user.avatar_url || "",
+      is_bot: !!user.is_bot,
+      is_admin: !!user.is_admin
+    });
+    setIsEditUserDialogOpen(true);
+  };
+
+  const handleSaveUser = async () => {
+    if (!userFormData.username.trim()) {
+      toast.error("Nome de usuário obrigatório");
+      return;
+    }
+
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        username: userFormData.username,
+        avatar_url: userFormData.avatar_url,
+        is_bot: userFormData.is_bot,
+        is_admin: userFormData.is_admin
+      })
+      .eq("id", editingUser.id);
+
+    if (error) {
+      toast.error("Erro ao salvar usuário");
+    } else {
+      toast.success("Usuário atualizado!");
+      setIsEditUserDialogOpen(false);
       fetchUsers();
     }
   };
@@ -255,6 +309,9 @@ function AdminUsersPage() {
                         <DropdownMenuContent align="end" className="bg-[#1a1a1a] border-white/10 text-white w-48">
                           <DropdownMenuLabel>Ações</DropdownMenuLabel>
                           <DropdownMenuSeparator className="bg-white/10" />
+                          <DropdownMenuItem onClick={() => handleEditUser(u)} className="hover:bg-primary/20 hover:text-primary cursor-pointer">
+                            <Edit2 className="w-4 h-4 mr-2" /> Editar / Escolher Avatar
+                          </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => handleAddCredits(u.id)} className="hover:bg-primary/20 hover:text-primary cursor-pointer">
                             <Wallet className="w-4 h-4 mr-2" /> Adicionar Lances
                           </DropdownMenuItem>
@@ -296,6 +353,61 @@ function AdminUsersPage() {
             </div>
           </div>
         </Card>
+
+        {/* Modal de Edição / Avatar */}
+        <Dialog open={isEditUserDialogOpen} onOpenChange={setIsEditUserDialogOpen}>
+          <DialogContent className="bg-zinc-950 border-white/10 text-white sm:max-w-[450px] rounded-[32px] overflow-hidden p-0">
+            <div className="bg-primary/20 p-8 flex flex-col items-center border-b border-white/5">
+              <Avatar className="h-24 w-24 border-4 border-primary shadow-2xl mb-4">
+                <AvatarImage src={userFormData.avatar_url || getFallbackAvatarUrl(userFormData.username)} />
+                <AvatarFallback className="bg-zinc-900 text-primary text-3xl font-black italic">
+                  {userFormData.username?.substring(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <DialogTitle className="text-2xl font-black italic uppercase tracking-tighter">
+                Editar <span className="text-primary">{userFormData.is_bot ? "Robô" : "Usuário"}</span>
+              </DialogTitle>
+            </div>
+
+            <div className="p-8 space-y-6">
+              <div className="space-y-2">
+                <Label className="text-xs font-black uppercase tracking-widest text-white/40">Nickname / Nome do Robô</Label>
+                <Input 
+                  value={userFormData.username}
+                  onChange={e => setUserFormData({...userFormData, username: e.target.value})}
+                  className="bg-white/5 border-white/10 h-12 text-lg font-bold rounded-xl"
+                />
+              </div>
+
+              <div className="space-y-3">
+                <Label className="text-xs font-black uppercase tracking-widest text-white/40">Escolher Avatar</Label>
+                <div className="grid grid-cols-5 gap-3 h-40 overflow-y-auto pr-2 scrollbar-hide">
+                  {REAL_PERSON_PHOTOS.slice(0, 25).map((photo, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setUserFormData({...userFormData, avatar_url: photo})}
+                      className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-all hover:scale-105 ${userFormData.avatar_url === photo ? 'border-primary shadow-[0_0_15px_rgba(var(--color-primary),0.5)] scale-110 z-10' : 'border-transparent opacity-60 hover:opacity-100'}`}
+                    >
+                      <img src={photo} className="w-full h-full object-cover" alt={`Avatar ${i}`} />
+                      {userFormData.avatar_url === photo && (
+                        <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
+                          <Check className="h-6 w-6 text-primary" strokeWidth={4} />
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <Button 
+                className="w-full h-14 bg-primary text-primary-foreground text-lg font-black uppercase italic tracking-tighter rounded-2xl shadow-[0_10px_30px_rgba(var(--color-primary),0.3)] hover:scale-[1.02] transition-all"
+                onClick={handleSaveUser}
+              >
+                Salvar Alterações
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </main>
     </div>
   );
