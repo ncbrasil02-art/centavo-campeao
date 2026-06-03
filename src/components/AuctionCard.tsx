@@ -228,7 +228,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       
       setTimeLeft(diff);
 
-      // Handle transition from scheduled to live
+      // Transition check: if scheduled and timer is zero, force a status check
       if (isScheduled && diff <= 0 && !isRefreshing) {
         isRefreshing = true;
         console.log("Scheduled auction reached zero, refreshing...");
