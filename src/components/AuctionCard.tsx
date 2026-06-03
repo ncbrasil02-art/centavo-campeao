@@ -771,12 +771,12 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           ) : isPendingAudit ? (
             isAdmin ? (
               <span className="flex items-center gap-2">
-                <ShieldCheck className="h-5 w-5" /> EM AUDITORIA
+                <ShieldCheck className="h-5 w-5" /> ARREMATAR AGORA
               </span>
             ) : "EM AUDITORIA"
           ) : isScheduled ? "AGUARDANDO INÍCIO" : (
             <span className="flex items-center gap-2">
-              {timeLeft <= 5 ? "VAI PERDER! LANCE AGORA" : "Dar Lance"} <Zap className={`h-5 w-5 fill-current ${timeLeft <= 5 ? 'animate-bounce' : ''}`} />
+              {timeLeft <= 5 ? "DAR LANCE AGORA" : "DAR LANCE"} <Zap className={`h-5 w-5 fill-current ${timeLeft <= 5 ? 'animate-bounce' : ''}`} />
             </span>
           )}
         </Button>
