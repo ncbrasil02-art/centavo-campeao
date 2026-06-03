@@ -387,14 +387,12 @@ export type Database = {
           avatar_url: string | null
           bid_balance: number | null
           city: string | null
-          cpf: string | null
           created_at: string
           full_name: string | null
           gender: string | null
           id: string
           is_admin: boolean | null
           is_bot: boolean | null
-          phone: string | null
           state: string | null
           username: string | null
         }
@@ -402,14 +400,12 @@ export type Database = {
           avatar_url?: string | null
           bid_balance?: number | null
           city?: string | null
-          cpf?: string | null
           created_at?: string
           full_name?: string | null
           gender?: string | null
           id: string
           is_admin?: boolean | null
           is_bot?: boolean | null
-          phone?: string | null
           state?: string | null
           username?: string | null
         }
@@ -417,14 +413,12 @@ export type Database = {
           avatar_url?: string | null
           bid_balance?: number | null
           city?: string | null
-          cpf?: string | null
           created_at?: string
           full_name?: string | null
           gender?: string | null
           id?: string
           is_admin?: boolean | null
           is_bot?: boolean | null
-          phone?: string | null
           state?: string | null
           username?: string | null
         }
