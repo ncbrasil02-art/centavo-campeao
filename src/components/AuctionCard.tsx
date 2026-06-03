@@ -220,6 +220,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
     let isRefreshing = false;
     const timer = setInterval(async () => {
       const targetTime = isScheduled ? auction.start_time : auction.end_time;
+      const currentStatus = auction.status;
       if (!targetTime) return;
       
       const target = new Date(targetTime).getTime();
