@@ -57,6 +57,16 @@ function AdminAuctions() {
 
   
   const [uploading, setUploading] = useState(false);
+  const [isBulkDialogOpen, setIsBulkDialogOpen] = useState(false);
+  const [bulkData, setBulkBulkData] = useState({
+    product_id: "",
+    days: ["1", "2", "3", "4", "5", "6", "0"], // Sunday to Saturday (0-6)
+    startTime: "12:00",
+    auctionsPerDay: 4,
+    intervalMinutes: 60,
+    timerDuration: 30,
+    robotStopMinutes: 60
+  });
   
   const initialFormData = {
     product_id: "",
@@ -444,6 +454,84 @@ function AdminAuctions() {
     }
   }
 
+  const handleBulkSchedule = async () => {
+    if (!bulkData.product_id) {
+      toast.error("Selecione um produto para o agendamento");
+      return;
+    }
+
+    const loadingToast = toast.loading("Agendando leilões...");
+    try {
+      const selectedDays = bulkData.days.map(Number);
+      const now = new Date();
+      const next7Days = [];
+      
+      for (let i = 0; i < 7; i++) {
+        const d = new Date();
+        d.setDate(now.getDate() + i);
+        if (selectedDays.includes(d.getDay())) {
+          next7Days.push(d);
+        }
+      }
+
+      const auctionInserts = [];
+      
+      for (const dayDate of next7Days) {
+        const [hours, minutes] = bulkData.startTime.split(':').map(Number);
+        
+        for (let j = 0; j < bulkData.auctionsPerDay; j++) {
+          const auctionStart = new Date(dayDate);
+          auctionStart.setHours(hours, minutes + (j * bulkData.intervalMinutes), 0, 0);
+          
+          if (auctionStart > now) {
+            auctionInserts.push({
+              product_id: bulkData.product_id,
+              start_time: auctionStart.toISOString(),
+              timer_duration: bulkData.timerDuration,
+              status: 'scheduled',
+              current_price: 0.01,
+              bid_count: 0,
+              robot_enabled: true
+            });
+          }
+        }
+      }
+
+      if (auctionInserts.length === 0) {
+        toast.error("Nenhum horário válido encontrado para os próximos 7 dias");
+        return;
+      }
+
+      const { data: newAuctions, error } = await supabase
+        .from("auctions")
+        .insert(auctionInserts)
+        .select();
+
+      if (error) throw error;
+
+      // Add robot settings for each
+      const robotInserts = newAuctions.map(a => ({
+        auction_id: a.id,
+        active: true,
+        stop_after_minutes: bulkData.robotStopMinutes,
+        bid_chance: 0.95,
+        min_delay: 1,
+        max_delay: 5
+      }));
+
+      await supabase.from("robot_settings").insert(robotInserts);
+
+      toast.success(`${auctionInserts.length} leilões agendados com sucesso!`);
+      setIsBulkDialogOpen(false);
+      fetchData();
+    } catch (err: any) {
+      toast.error("Erro ao agendar em massa: " + err.message);
+    } finally {
+      toast.dismiss(loadingToast);
+    }
+  };
+
+
   return (
     <div className="min-h-screen bg-background text-white">
       
@@ -457,6 +545,9 @@ function AdminAuctions() {
           </div>
           
           <div className="flex items-center gap-3 w-full md:w-auto">
+            <Button variant="outline" className="border-white/10 hover:bg-white/5 text-white" onClick={() => setIsBulkDialogOpen(true)}>
+              <Calendar className="w-4 h-4 mr-2" /> Agendamento em Massa
+            </Button>
             <div className="relative flex-1 md:w-64">
               <Input 
                 placeholder="Buscar produto..." 
@@ -805,6 +896,74 @@ function AdminAuctions() {
             </DialogContent>
             </Dialog>
           </div>
+
+          <Dialog open={isBulkDialogOpen} onOpenChange={setIsBulkDialogOpen}>
+            <DialogContent className="bg-zinc-900 border-white/10 text-white sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle className="text-xl font-black uppercase italic">Agendamento em <span className="text-primary">Massa</span></DialogTitle>
+                <p className="text-xs text-white/40">Crie múltiplos leilões automaticamente para a semana.</p>
+              </DialogHeader>
+              <div className="py-6 space-y-6">
+                <div className="space-y-2">
+                  <Label>Produto</Label>
+                  <Select value={bulkData.product_id} onValueChange={(v) => setBulkBulkData({...bulkData, product_id: v})}>
+                    <SelectTrigger className="bg-white/5 border-white/10">
+                      <SelectValue placeholder="Selecione o produto" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-zinc-800 border-white/10 text-white">
+                      {products.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Hora de Início</Label>
+                    <Input type="time" value={bulkData.startTime} onChange={e => setBulkBulkData({...bulkData, startTime: e.target.value})} className="bg-white/5 border-white/10" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Leilões por Dia</Label>
+                    <Input type="number" value={bulkData.auctionsPerDay} onChange={e => setBulkBulkData({...bulkData, auctionsPerDay: Number(e.target.value)})} className="bg-white/5 border-white/10" />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Intervalo (minutos)</Label>
+                    <Input type="number" value={bulkData.intervalMinutes} onChange={e => setBulkBulkData({...bulkData, intervalMinutes: Number(e.target.value)})} className="bg-white/5 border-white/10" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Duração Robô (min)</Label>
+                    <Input type="number" value={bulkData.robotStopMinutes} onChange={e => setBulkBulkData({...bulkData, robotStopMinutes: Number(e.target.value)})} className="bg-white/5 border-white/10" />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Dias da Semana</Label>
+                  <div className="flex flex-wrap gap-2 pt-2">
+                    {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'].map((label, i) => (
+                      <button 
+                        key={i}
+                        onClick={() => {
+                          const days = bulkData.days.includes(String(i)) 
+                            ? bulkData.days.filter(d => d !== String(i)) 
+                            : [...bulkData.days, String(i)];
+                          setBulkBulkData({...bulkData, days});
+                        }}
+                        className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${bulkData.days.includes(String(i)) ? 'bg-primary text-black' : 'bg-white/5 text-white/40 border border-white/10'}`}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <Button className="w-full bg-primary text-black font-black uppercase italic" onClick={handleBulkSchedule}>
+                  GERAR PROGRAMAÇÃO AUTOMÁTICA
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
 
         <Card className="bg-white/5 border-white/10 backdrop-blur-md overflow-hidden">
@@ -829,7 +988,12 @@ function AdminAuctions() {
                 auctions
                   .filter(a => a.product?.name?.toLowerCase().includes(searchTerm.toLowerCase()))
                   .map((auction) => (
-                  <TableRow key={auction.id} className={`border-white/5 transition-colors ${auction.status === 'live' ? 'bg-green-500/10 hover:bg-green-500/15' : 'hover:bg-white/[0.02]'}`}>
+                  <TableRow key={auction.id} className={`border-white/5 transition-colors ${
+                    auction.status === 'live' ? 'bg-green-500/10 hover:bg-green-500/15' : 
+                    auction.status === 'pending_audit' ? 'bg-red-500/10 hover:bg-red-500/15' :
+                    auction.status === 'confirmed' ? 'bg-amber-500/10 hover:bg-amber-500/15' :
+                    'hover:bg-white/[0.02]'
+                  }`}>
                     <TableCell>
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg bg-white/5 overflow-hidden flex-shrink-0">
