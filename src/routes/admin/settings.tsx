@@ -73,6 +73,7 @@ function AdminSettings() {
     logo_padding_x: 0,
     logo_padding_y: 0,
     google_reviews_widget: "",
+    support_whatsapp: "",
   });
 
   useEffect(() => {
@@ -128,6 +129,7 @@ function AdminSettings() {
           logo_padding_x: publicData.logo_padding_x || 0,
           logo_padding_y: publicData.logo_padding_y || 0,
           google_reviews_widget: publicData.google_reviews_widget || "",
+          support_whatsapp: publicData.support_whatsapp || "",
         });
       }
     } catch (error) {
