@@ -442,28 +442,25 @@ function Index() {
           </section>
 
           {/* Footer */}
-          <footer className="py-12 border-t border-white/10 bg-zinc-950/20">
+          <footer className="py-24 border-t border-white/10 bg-zinc-950/40 mt-20">
             <div className="container mx-auto px-4">
-              <div className="flex flex-col md:flex-row items-center justify-between gap-10">
-                <div className="flex flex-col gap-4 items-center md:items-start">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xl font-bold tracking-tighter text-white">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-16">
+                <div className="flex flex-col gap-6 items-center md:items-start">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl font-black tracking-tighter text-white uppercase italic">
                       LANCE<span className="text-primary">CERTO</span>
                     </span>
-                    <span className="text-white/40 text-sm">© 2026 Todos os direitos reservados.</span>
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary/40"></div>
+                    <span className="text-white/40 text-xs font-medium uppercase tracking-widest">© 2026</span>
                   </div>
-                  <div className="flex gap-6 text-sm text-white/40">
-                    <Link to="/" className="hover:text-primary transition-colors">Privacidade</Link>
-                    <Link to="/" className="hover:text-primary transition-colors">Termos de Uso</Link>
-                    <Link to="/" className="hover:text-primary transition-colors">Contato</Link>
+                  <div className="flex flex-wrap justify-center md:justify-start gap-8 text-[10px] font-black uppercase tracking-[0.2em] text-white/30">
+                    <Link to="/" className="hover:text-primary transition-colors hover:tracking-[0.3em] duration-300">Privacidade</Link>
+                    <Link to="/" className="hover:text-primary transition-colors hover:tracking-[0.3em] duration-300">Termos de Uso</Link>
+                    <Link to="/" className="hover:text-primary transition-colors hover:tracking-[0.3em] duration-300">Contato</Link>
                   </div>
                 </div>
 
-                <div className="flex flex-col items-center md:items-end gap-4">
-                  <div className="text-white/80 text-sm text-center md:text-right font-medium">
-                    sistema de leilão <a href="https://www.ncbrasil.com.br" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 transition-all font-black uppercase italic tracking-widest border-b-2 border-primary/30 pb-0.5 hover:border-primary">centavos</a>
-                  </div>
-                  
+                <div className="flex flex-col items-center md:items-end gap-6">
                   {logo_url ? (
                     <div 
                       className="flex flex-col items-center md:items-end"
@@ -474,17 +471,24 @@ function Index() {
                       <img 
                         src={logo_url} 
                         alt="Logo" 
-                        className="object-contain opacity-90 hover:opacity-100 transition-all filter drop-shadow-[0_0_15px_rgba(var(--color-primary),0.4)]" 
+                        className="object-contain opacity-80 hover:opacity-100 transition-all filter drop-shadow-[0_0_15px_rgba(var(--color-primary),0.3)]" 
                         style={{ height: `${logo_height || 40}px` }}
                       />
                     </div>
                   ) : (
-                    <div className="text-xl font-black text-primary tracking-tighter uppercase italic drop-shadow-[0_0_10px_rgba(var(--color-primary),0.5)]">
+                    <div className="text-2xl font-black text-primary tracking-tighter uppercase italic drop-shadow-[0_0_10px_rgba(var(--color-primary),0.4)] opacity-80">
                       LANCE<span className="text-white">CERTO</span>
                     </div>
                   )}
-                  <div className="flex items-center gap-1 text-[10px] text-white/20 uppercase tracking-[0.2em]">
-                    Feito com <Heart className="w-2.5 h-2.5 text-red-500/40 fill-red-500/40" /> para arrematadores.
+
+                  <div className="flex flex-col items-center md:items-end gap-2">
+                    <div className="text-white/40 text-[10px] text-center md:text-right font-bold uppercase tracking-[0.2em]">
+                      sistema de leilão por centavos <a href="https://www.ncbrasil.com.br" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 transition-all font-black italic border-b border-primary/30 pb-0.5 hover:border-primary">nc brasil</a>
+                    </div>
+                    
+                    <div className="flex items-center gap-1.5 text-[9px] text-white/10 uppercase tracking-[0.3em] font-medium">
+                      Feito com <Heart className="w-2.5 h-2.5 text-red-500/20 fill-red-500/20" /> para arrematadores de elite.
+                    </div>
                   </div>
                 </div>
               </div>
