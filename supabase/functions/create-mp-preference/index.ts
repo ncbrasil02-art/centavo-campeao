@@ -27,13 +27,13 @@ serve(async (req) => {
 
     const { package_id, transaction_id } = await req.json()
 
-    // 1. Fetch MP Access Token from site_settings
-    const { data: settings, error: settingsError } = await supabaseClient
-      .from('site_settings')
+    // 1. Fetch MP Access Token from admin_settings
+    const { data: adminSettings, error: adminError } = await supabaseClient
+      .from('admin_settings')
       .select('mercado_pago_access_token')
-      .single()
+      .maybeSingle()
 
-    if (settingsError || !settings?.mercado_pago_access_token) {
+    if (adminError || !adminSettings?.mercado_pago_access_token) {
       return new Response(JSON.stringify({ error: 'Configuração do Mercado Pago não encontrada.' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
     }
 
@@ -52,7 +52,7 @@ serve(async (req) => {
     const response = await fetch('https://api.mercadopago.com/checkout/preferences', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${settings.mercado_pago_access_token}`,
+        'Authorization': `Bearer ${adminSettings.mercado_pago_access_token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({

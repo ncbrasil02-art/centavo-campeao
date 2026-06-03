@@ -26,20 +26,20 @@ serve(async (req) => {
     const paymentId = payload.data?.id || (type === 'payment' ? payload.id : null)
     
     if (type === 'payment' && paymentId) {
-      // 1. Fetch MP Access Token from site_settings
-      const { data: settings } = await supabaseClient
-        .from('site_settings')
+      // 1. Fetch MP Access Token from admin_settings
+      const { data: adminSettings } = await supabaseClient
+        .from('admin_settings')
         .select('mercado_pago_access_token')
-        .single()
+        .maybeSingle()
 
-      if (!settings?.mercado_pago_access_token) {
-        throw new Error('MP Access Token not found')
+      if (!adminSettings?.mercado_pago_access_token) {
+        throw new Error('MP Access Token not found in admin_settings')
       }
 
       // 2. Fetch payment details from Mercado Pago
       const mpResponse = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
         headers: {
-          'Authorization': `Bearer ${settings.mercado_pago_access_token}`,
+          'Authorization': `Bearer ${adminSettings.mercado_pago_access_token}`,
         }
       })
 
