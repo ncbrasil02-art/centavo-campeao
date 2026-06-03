@@ -232,18 +232,34 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       if (isScheduled && diff <= 0 && !isRefreshing) {
         isRefreshing = true;
         console.log("Scheduled auction reached zero, refreshing...");
-        // Call tick_auctions to ensure server status is updated
-        await supabase.rpc('tick_auctions');
-        const { data } = await supabase
-          .from("v_home_live_auctions")
-          .select("*")
-          .eq("id", auction.id)
-          .single();
         
-        if (data && data.status !== 'scheduled') {
-          setAuction(data);
+        try {
+          // Call tick_auctions to ensure server status is updated
+          await supabase.rpc('tick_auctions');
+          
+          // Re-fetch to get updated status and timing
+          const { data, error } = await supabase
+            .from("v_home_live_auctions")
+            .select("*")
+            .eq("id", auction.id)
+            .maybeSingle();
+          
+          if (data && data.status !== 'scheduled') {
+            console.log("Auction is now live:", data);
+            setAuction(data);
+            if (data.end_time) {
+              const newEnd = new Date(data.end_time).getTime();
+              const newNow = getAdjustedNow();
+              setTimeLeft(Math.max(0, (newEnd - newNow) / 1000));
+            }
+          } else if (error) {
+            console.error("Error refreshing auction:", error);
+          }
+        } catch (err) {
+          console.error("Failed to tick/refresh auction:", err);
+        } finally {
+          isRefreshing = false;
         }
-        isRefreshing = false;
       }
 
       if (!isScheduled && diff <= 0 && !confettiFired.current && auction.status === 'live') {
