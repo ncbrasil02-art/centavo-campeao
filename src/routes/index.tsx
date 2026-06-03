@@ -481,9 +481,9 @@ function Index() {
                     </div>
                   )}
 
-                  <div className="flex flex-col items-center md:items-end gap-2">
+                  <div className="flex flex-col items-center md:items-end gap-2 mt-8">
                     <div className="text-white/40 text-[10px] text-center md:text-right font-bold uppercase tracking-[0.2em]">
-                      sistema de leilão por centavos <a href="https://www.ncbrasil.com.br" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 transition-all font-black italic border-b border-primary/30 pb-0.5 hover:border-primary uppercase">nc brasil</a>
+                      sistema de leilão por centavos <a href="https://www.ncbrasil.com.br" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 transition-all font-black italic border-b border-primary/30 pb-0.5 hover:border-primary uppercase">NC BRASIL</a>
                     </div>
                     
                     <div className="flex items-center gap-1.5 text-[9px] text-white/10 uppercase tracking-[0.3em] font-medium">
