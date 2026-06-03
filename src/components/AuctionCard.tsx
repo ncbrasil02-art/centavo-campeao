@@ -51,7 +51,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   const [activeWatchers, setActiveWatchers] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const confettiFired = useRef(false);
-  const { getAdjustedNow, formatBrasiliaTime } = useTimeSync();
+  const { getAdjustedNow, formatBrasiliaTime, offset } = useTimeSync();
   const { currentWinner, hasWinners } = useRecentWinners();
   const [isAdmin, setIsAdmin] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
@@ -224,7 +224,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       if (!targetTime) return;
       
       const target = new Date(targetTime).getTime();
-      const now = getAdjustedNow();
+      const now = Date.now() + offset; // Use offset directly for performance
       const diff = Math.max(0, (target - now) / 1000);
       
       setTimeLeft(diff);
@@ -250,7 +250,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             setAuction(data);
             if (data.end_time) {
               const newEnd = new Date(data.end_time).getTime();
-              const newNow = getAdjustedNow();
+              const newNow = Date.now() + offset;
               setTimeLeft(Math.max(0, (newEnd - newNow) / 1000));
             }
           } else if (error) {
