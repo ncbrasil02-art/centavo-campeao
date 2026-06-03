@@ -230,7 +230,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       setTimeLeft(diff);
 
       // Transition check: if scheduled and timer is zero, force a status check
-      if (isScheduled && diff <= 0 && !isRefreshing) {
+      if ((isScheduled || currentStatus === 'scheduled') && diff <= 0 && !isRefreshing) {
         isRefreshing = true;
         console.log("Scheduled auction reached zero, initiating server tick...");
         
