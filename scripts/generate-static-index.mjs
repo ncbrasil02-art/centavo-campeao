@@ -3,7 +3,7 @@ import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
 
 const siteUrl = process.env.SITE_URL || "https://sistemaparaleilaocentavos.site/";
-const serverEntryUrl = pathToFileURL(resolve("dist/server/index.js")).href;
+const serverEntryUrl = pathToFileURL(resolve("dist/server/server.js")).href;
 const serverEntry = await import(serverEntryUrl);
 const handler = serverEntry.default ?? serverEntry;
 
