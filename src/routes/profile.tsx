@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { User, Mail, Phone, MapPin, Hash, ShieldCheck, Wallet, LogOut, Camera } from "lucide-react";
+import { User, Mail, Phone, MapPin, Hash, ShieldCheck, Wallet, LogOut, Camera, Zap } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getFallbackAvatarUrl } from "@/lib/constants";
