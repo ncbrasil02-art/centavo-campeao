@@ -33,15 +33,15 @@ serve(async (req) => {
       return new Response(JSON.stringify({ error: 'ID do pacote não fornecido.' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
     }
 
-    // 1. Fetch MP Access Token from site_settings
-    const { data: settings, error: settingsError } = await supabaseClient
-      .from('site_settings')
+    // 1. Fetch MP Access Token from admin_settings
+    const { data: adminSettings, error: adminError } = await supabaseClient
+      .from('admin_settings')
       .select('mercado_pago_access_token')
-      .single()
-
-    if (settingsError || !settings?.mercado_pago_access_token) {
-      console.error('Settings error:', settingsError)
-      return new Response(JSON.stringify({ error: 'Configuração do Mercado Pago não encontrada no painel.' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+      .maybeSingle()
+    
+    if (adminError || !adminSettings?.mercado_pago_access_token) {
+      console.error('Admin settings error:', adminError)
+      return new Response(JSON.stringify({ error: 'Configuração do Mercado Pago (Access Token) não encontrada.' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
     }
 
     // 2. Fetch package details
@@ -88,7 +88,7 @@ serve(async (req) => {
     const mpResponse = await fetch('https://api.mercadopago.com/v1/payments', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${settings.mercado_pago_access_token.trim()}`,
+        'Authorization': `Bearer ${adminSettings.mercado_pago_access_token.trim()}`,
         'Content-Type': 'application/json',
         'X-Idempotency-Key': transaction_id,
       },

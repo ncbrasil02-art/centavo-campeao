@@ -81,43 +81,53 @@ function AdminSettings() {
 
   async function fetchSettings() {
     try {
-      const { data, error } = await supabase
+      // Fetch public settings
+      const { data: publicData, error: publicError } = await supabase
         .from("site_settings")
         .select("*")
         .single();
 
-      if (error) throw error;
-      if (data) {
+      if (publicError) throw publicError;
+
+      // Fetch admin secrets separately
+      const { data: adminData, error: adminError } = await supabase
+        .from("admin_settings")
+        .select("mercado_pago_access_token")
+        .maybeSingle();
+
+      // If adminData is missing, it's not an error, just means it hasn't been set yet
+      
+      if (publicData) {
         setSettings({
-          id: data.id,
-          site_name: data.site_name || "",
-          logo_url: data.logo_url || "",
-          favicon_url: data.favicon_url || "",
-          primary_color: data.primary_color || "#8B5CF6",
-          secondary_color: data.secondary_color || "#7C3AED",
-          mercado_pago_public_key: data.mercado_pago_public_key || "",
-          mercado_pago_access_token: data.mercado_pago_access_token || "",
-          pix_key: data.pix_key || "",
-          pix_name: data.pix_name || "",
-          hero_display_mode: data.hero_display_mode || "phrases",
-          theme_mode: data.theme_mode || "dark",
-          ga_id: data.ga_id || "",
-          fb_pixel_id: data.fb_pixel_id || "",
-          meta_title: data.meta_title || "",
-          meta_description: data.meta_description || "",
-          meta_keywords: data.meta_keywords || "",
-          google_site_verification: data.google_site_verification || "",
-          font_color_primary: data.font_color_primary || "",
-          font_color_secondary: data.font_color_secondary || "",
-          card_background_color: data.card_background_color || "",
-          block_background_color: data.block_background_color || "",
-          page_background_color: data.page_background_color || "",
-          border_color: data.border_color || "",
-          logo_height: data.logo_height || 40,
-          logo_height_mobile: data.logo_height_mobile || 32,
-          logo_padding_x: data.logo_padding_x || 0,
-          logo_padding_y: data.logo_padding_y || 0,
-          google_reviews_widget: data.google_reviews_widget || "",
+          id: publicData.id,
+          site_name: publicData.site_name || "",
+          logo_url: publicData.logo_url || "",
+          favicon_url: publicData.favicon_url || "",
+          primary_color: publicData.primary_color || "#8B5CF6",
+          secondary_color: publicData.secondary_color || "#7C3AED",
+          mercado_pago_public_key: publicData.mercado_pago_public_key || "",
+          mercado_pago_access_token: adminData?.mercado_pago_access_token || "",
+          pix_key: publicData.pix_key || "",
+          pix_name: publicData.pix_name || "",
+          hero_display_mode: publicData.hero_display_mode || "phrases",
+          theme_mode: publicData.theme_mode || "dark",
+          ga_id: publicData.ga_id || "",
+          fb_pixel_id: publicData.fb_pixel_id || "",
+          meta_title: publicData.meta_title || "",
+          meta_description: publicData.meta_description || "",
+          meta_keywords: publicData.meta_keywords || "",
+          google_site_verification: publicData.google_site_verification || "",
+          font_color_primary: publicData.font_color_primary || "",
+          font_color_secondary: publicData.font_color_secondary || "",
+          card_background_color: publicData.card_background_color || "",
+          block_background_color: publicData.block_background_color || "",
+          page_background_color: publicData.page_background_color || "",
+          border_color: publicData.border_color || "",
+          logo_height: publicData.logo_height || 40,
+          logo_height_mobile: publicData.logo_height_mobile || 32,
+          logo_padding_x: publicData.logo_padding_x || 0,
+          logo_padding_y: publicData.logo_padding_y || 0,
+          google_reviews_widget: publicData.google_reviews_widget || "",
         });
       }
     } catch (error) {
@@ -180,12 +190,36 @@ function AdminSettings() {
   async function handleSave() {
     setSaving(true);
     try {
-      const { error } = await supabase
+      // Split settings into public and private
+      const { mercado_pago_access_token, ...publicSettings } = settings;
+
+      // Update public settings
+      const { error: publicError } = await supabase
         .from("site_settings")
-        .update(settings)
+        .update(publicSettings)
         .eq("id", settings.id);
 
-      if (error) throw error;
+      if (publicError) throw publicError;
+
+      // Update admin secrets
+      const { data: existingAdminData } = await supabase
+        .from("admin_settings")
+        .select("id")
+        .maybeSingle();
+
+      if (existingAdminData) {
+        const { error: adminError } = await supabase
+          .from("admin_settings")
+          .update({ mercado_pago_access_token })
+          .eq("id", existingAdminData.id);
+        if (adminError) throw adminError;
+      } else {
+        const { error: adminError } = await supabase
+          .from("admin_settings")
+          .insert({ mercado_pago_access_token });
+        if (adminError) throw adminError;
+      }
+
       toast.success("Configurações salvas com sucesso!");
     } catch (error) {
       console.error("Error saving settings:", error);

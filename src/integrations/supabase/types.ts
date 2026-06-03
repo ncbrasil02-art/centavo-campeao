@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_settings: {
+        Row: {
+          created_at: string | null
+          id: string
+          mercado_pago_access_token: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          mercado_pago_access_token?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          mercado_pago_access_token?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       app_phrases: {
         Row: {
           active: boolean | null
@@ -482,7 +503,6 @@ export type Database = {
           logo_padding_x: number | null
           logo_padding_y: number | null
           logo_url: string | null
-          mercado_pago_access_token: string | null
           mercado_pago_public_key: string | null
           meta_description: string | null
           meta_keywords: string | null
@@ -514,7 +534,6 @@ export type Database = {
           logo_padding_x?: number | null
           logo_padding_y?: number | null
           logo_url?: string | null
-          mercado_pago_access_token?: string | null
           mercado_pago_public_key?: string | null
           meta_description?: string | null
           meta_keywords?: string | null
@@ -546,7 +565,6 @@ export type Database = {
           logo_padding_x?: number | null
           logo_padding_y?: number | null
           logo_url?: string | null
-          mercado_pago_access_token?: string | null
           mercado_pago_public_key?: string | null
           meta_description?: string | null
           meta_keywords?: string | null
