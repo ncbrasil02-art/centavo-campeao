@@ -784,7 +784,6 @@ export type Database = {
           robot_enabled: boolean | null
           start_time: string | null
           status: string | null
-          target_winner: string | null
           timer_duration: number | null
         }
         Relationships: [
@@ -812,7 +811,6 @@ export type Database = {
         Row: {
           avatar_url: string | null
           avg_savings: number | null
-          full_name: string | null
           total_savings_sum: number | null
           total_wins: number | null
           user_id: string | null
