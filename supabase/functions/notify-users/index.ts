@@ -19,6 +19,25 @@ serve(async (req) => {
 
     const { auction_id, time_before, channel, message } = await req.json()
 
+    // 1. Verify that the requester is an admin
+    const authHeader = req.headers.get('Authorization')
+    const { data: { user }, error: userError } = await supabase.auth.getUser(authHeader?.replace('Bearer ', ''))
+    
+    if (userError || !user) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+    }
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('is_admin')
+      .eq('id', user.id)
+      .single()
+
+    if (!profile?.is_admin) {
+      return new Response(JSON.stringify({ error: 'Forbidden: Admin access required' }), { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+    }
+
+
     // Fetch auction details
     const { data: auction, error: auctionError } = await supabase
       .from('auctions')
