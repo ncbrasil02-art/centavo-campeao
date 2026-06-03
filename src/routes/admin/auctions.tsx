@@ -829,7 +829,7 @@ function AdminAuctions() {
                 auctions
                   .filter(a => a.product?.name?.toLowerCase().includes(searchTerm.toLowerCase()))
                   .map((auction) => (
-                  <TableRow key={auction.id} className="border-white/5 hover:bg-white/[0.02] transition-colors">
+                  <TableRow key={auction.id} className={`border-white/5 transition-colors ${auction.status === 'live' ? 'bg-green-500/10 hover:bg-green-500/15' : 'hover:bg-white/[0.02]'}`}>
                     <TableCell>
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg bg-white/5 overflow-hidden flex-shrink-0">
