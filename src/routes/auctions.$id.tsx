@@ -56,7 +56,9 @@ function AuctionPage() {
 
 
   const isFinished = auction?.status === 'finished';
-  const isTimeUp = timeLeft <= 0 && !isFinished;
+  const isPendingAudit = auction?.status === 'pending_audit';
+  const isConfirmed = auction?.status === 'confirmed';
+  const isTimeUp = timeLeft <= 0 && !isFinished && !isPendingAudit;
   const discount = auction?.product?.market_value 
     ? Math.round((1 - (auction.current_price / auction.product.market_value)) * 100)
     : 0;
