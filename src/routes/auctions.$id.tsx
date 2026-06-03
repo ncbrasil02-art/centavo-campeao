@@ -668,7 +668,7 @@ function AuctionPage() {
                     </div>
                     <div>
                       <span className={`block text-[10px] font-black uppercase tracking-[0.2em] mb-1 leading-none transition-colors ${isNewBid ? 'text-primary' : isFinished ? 'text-green-500' : 'text-muted-foreground'}`}>
-                        {isFinished ? "Grande Arrematador" : "Vantagem Atual"}
+                        {isFinished || isConfirmed || isPendingAudit ? "Grande Arrematador" : "Liderando Agora"}
                       </span>
                       <span className={`text-xl font-black transition-all italic uppercase ${isNewBid ? 'text-primary scale-105 origin-left' : isFinished ? 'text-green-500' : 'text-foreground group-hover/bidder:text-primary'}`}>
                         {auction.last_bidder?.username || (isFinished ? "Encerrado" : (auction.status === 'scheduled' || !auction.last_bidder?.username) && currentWinner ? (
