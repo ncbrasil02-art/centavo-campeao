@@ -47,6 +47,14 @@ function AdminUsersPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
+  const [isEditUserDialogOpen, setIsEditUserDialogOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState<any>(null);
+  const [userFormData, setUserFormData] = useState({
+    username: "",
+    avatar_url: "",
+    is_bot: false,
+    is_admin: false
+  });
   const usersPerPage = 10;
 
   useEffect(() => {
