@@ -757,6 +757,18 @@ function AdminSettings() {
                   />
                   <p className="text-[10px] text-white/40">Este código será renderizado na seção de depoimentos da página inicial.</p>
                 </div>
+                <div className="space-y-2">
+                  <Label htmlFor="support_whatsapp">Link de Atendimento WhatsApp (URL completa)</Label>
+                  <Input 
+                    id="support_whatsapp" 
+                    value={settings.support_whatsapp || ""} 
+                    onChange={(e) => setSettings({...settings, support_whatsapp: e.target.value})}
+                    placeholder="https://wa.me/55..."
+                    className="bg-white/5 border-white/10 h-12"
+                  />
+                  <p className="text-[10px] text-white/40">Este link será usado no botão de atendimento do rodapé.</p>
+                </div>
+                </div>
               </CardContent>
             </Card>
 
