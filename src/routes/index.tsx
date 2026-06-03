@@ -99,7 +99,7 @@ function WinnerCard({ name, product, price, saving, avatarUrl, productImage }: {
 }
 
 function Index() {
-  const { google_reviews_widget, logo_url, logo_height, logo_height_mobile, logo_padding_x, logo_padding_y } = useSettings();
+  const { google_reviews_widget, logo_url, logo_height, logo_height_mobile, logo_padding_x, logo_padding_y, support_whatsapp } = useSettings();
   const [auctions, setAuctions] = useState<any[]>([]);
   const [finishedAuctions, setFinishedAuctions] = useState<any[]>([]);
   const [winners, setWinners] = useState<any[]>([]);
