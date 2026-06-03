@@ -29,6 +29,7 @@ interface SiteSettings {
   logo_padding_x: number;
   logo_padding_y: number;
   google_reviews_widget: string;
+  support_whatsapp: string;
 }
 
 const SettingsContext = createContext<SiteSettings | null>(null);
@@ -74,6 +75,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
       logo_padding_x: 0,
       logo_padding_y: 0,
       google_reviews_widget: "",
+      support_whatsapp: "",
     };
   });
 
@@ -242,6 +244,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
             logo_padding_x: data.logo_padding_x || 0,
             logo_padding_y: data.logo_padding_y || 0,
             google_reviews_widget: data.google_reviews_widget || "",
+            support_whatsapp: data.support_whatsapp || "",
           };
           
           setSettings(fetchedSettings);
@@ -292,6 +295,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
               logo_padding_x: newData.logo_padding_x || prev.logo_padding_x,
               logo_padding_y: newData.logo_padding_y || prev.logo_padding_y,
               google_reviews_widget: newData.google_reviews_widget || prev.google_reviews_widget,
+              support_whatsapp: newData.support_whatsapp || prev.support_whatsapp,
             };
             updateMetaTags(updated);
             injectScripts(updated.ga_id, updated.fb_pixel_id);
