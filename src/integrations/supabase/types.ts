@@ -546,6 +546,7 @@ export type Database = {
           primary_color: string | null
           secondary_color: string | null
           site_name: string | null
+          support_whatsapp: string | null
           theme_mode: string | null
           updated_at: string | null
         }
@@ -577,6 +578,7 @@ export type Database = {
           primary_color?: string | null
           secondary_color?: string | null
           site_name?: string | null
+          support_whatsapp?: string | null
           theme_mode?: string | null
           updated_at?: string | null
         }
@@ -608,6 +610,7 @@ export type Database = {
           primary_color?: string | null
           secondary_color?: string | null
           site_name?: string | null
+          support_whatsapp?: string | null
           theme_mode?: string | null
           updated_at?: string | null
         }
