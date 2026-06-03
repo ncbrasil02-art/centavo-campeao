@@ -446,7 +446,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         {isScheduled && auction.start_time && (
           <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 bg-primary/40 backdrop-blur-[2px] py-3 flex flex-col items-center justify-center z-20 shadow-[0_0_40px_rgba(var(--color-primary),0.2)] border-y border-glass-border rotate-[-2deg] scale-105 origin-center transition-all duration-500 group-hover:bg-primary/60 group-hover:backdrop-blur-sm">
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.1)_0%,_transparent_70%)] animate-pulse"></div>
-            <span className="text-xs font-black uppercase tracking-[0.3em] text-foreground mb-1 relative z-10">COMEÇA EM (HORÁRIO DE BRASÍLIA)</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground mb-1 relative z-10 text-center px-4">COMEÇA EM (HORÁRIO DE BRASÍLIA)</span>
             <div className="flex flex-col items-center relative z-10">
               <div className="flex gap-1 mb-1">
                 {timeLeft >= 3600 * 24 && (
@@ -697,35 +697,38 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             ? 'bg-primary/30 border-primary shadow-[0_0_20px_rgba(var(--color-primary),0.5)] animate-pulse' 
             : 'bg-muted/30 border-border'
         }`}>
-          <div className={`flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border transition-all duration-500 ${
-            isNewBid ? 'border-primary scale-110' : 'border-primary/20'
-          }`}>
-            <img 
-              src={
-                (isScheduled || !auction.last_bidder?.username)
-                  ? getFallbackAvatarUrl(undefined)
-                  : (auction.last_bidder?.avatar_url || getFallbackAvatarUrl(auction.last_bidder?.username))
-              } 
-              className={`h-full w-full object-cover transition-opacity duration-500 ${isNewBid ? 'opacity-100' : 'opacity-90'}`} 
-              alt="Bidder" 
-              onError={(e) => (e.target as HTMLImageElement).src = getFallbackAvatarUrl(auction.last_bidder?.username)}
-            />
-          </div>
+          {!isScheduled && (
+            <div className={`flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border transition-all duration-500 ${
+              isNewBid ? 'border-primary scale-110' : 'border-primary/20'
+            }`}>
+              <img 
+                src={
+                  (!auction.last_bidder?.username)
+                    ? getFallbackAvatarUrl(undefined)
+                    : (auction.last_bidder?.avatar_url || getFallbackAvatarUrl(auction.last_bidder?.username))
+                } 
+                className={`h-full w-full object-cover transition-opacity duration-500 ${isNewBid ? 'opacity-100' : 'opacity-90'}`} 
+                alt="Bidder" 
+                onError={(e) => (e.target as HTMLImageElement).src = getFallbackAvatarUrl(auction.last_bidder?.username)}
+              />
+            </div>
+          )}
 
-          <div className="flex flex-col overflow-hidden">
+          <div className="flex flex-col overflow-hidden w-full">
             <span className={`text-[11px] font-black uppercase tracking-widest transition-colors ${
               isNewBid ? 'text-primary' : (isFinished || isConfirmed) ? 'text-green-500' : isPendingAudit ? 'text-red-500' : 'text-muted-foreground'
             }`}>
-              {(isFinished || isConfirmed) ? "🏆 Vencedor" : isPendingAudit ? "🔍 Em Auditoria" : (isScheduled || !auction.last_bidder?.username) ? "Aguardando Início" : "Último Lance"}
+              {(isFinished || isConfirmed) ? "🏆 Vencedor" : isPendingAudit ? "🔍 Em Auditoria" : isScheduled ? "Aguardando Início" : "Último Lance"}
             </span>
             <span className={`truncate text-sm font-bold transition-all ${
               isNewBid ? 'text-primary scale-105 origin-left' : (isFinished || isConfirmed) ? 'text-green-500' : isPendingAudit ? 'text-red-400' : 'text-foreground'
             }`}>
-              {auction.last_bidder?.username || ((isScheduled || !auction.last_bidder?.username) ? (
-                <span className="italic text-muted-foreground/50">Nenhum lance ainda</span>
-              ) : "Aguardando...")}
+              {isScheduled ? (
+                <span className="italic text-muted-foreground/50">Prepare seus lances!</span>
+              ) : (
+                auction.last_bidder?.username || <span className="italic text-muted-foreground/50">Nenhum lance ainda</span>
+              )}
             </span>
-
           </div>
           {isNewBid && (
             <div className="ml-auto">
