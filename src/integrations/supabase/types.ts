@@ -343,6 +343,45 @@ export type Database = {
         }
         Relationships: []
       }
+      profile_secrets: {
+        Row: {
+          cpf: string | null
+          created_at: string | null
+          id: string
+          phone: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          cpf?: string | null
+          created_at?: string | null
+          id: string
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          cpf?: string | null
+          created_at?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profile_secrets_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profile_secrets_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "v_user_ranking"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -823,7 +862,6 @@ export type Database = {
       process_robot_bids: { Args: never; Returns: Json }
       slugify: { Args: { v_text: string }; Returns: string }
       tick_auctions: { Args: never; Returns: Json }
-      unaccent: { Args: { "": string }; Returns: string }
     }
     Enums: {
       [_ in never]: never
