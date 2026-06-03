@@ -124,11 +124,20 @@ function AuctionPage() {
         'postgres_changes',
         { event: 'UPDATE', schema: 'public', table: 'auctions', filter: `id=eq.${id}` },
         (payload) => {
+          console.log('Auction real-time update:', payload.new);
+          // Update auction state immediately
           setAuction((prev: any) => ({ ...prev, ...payload.new }));
+
+          // Recalculate time remaining instantly
+          if (payload.new.end_time) {
+            const end = new Date(payload.new.end_time).getTime();
+            const now = getAdjustedNow();
+            setTimeLeft(Math.max(0, (end - now) / 1000));
+          }
 
           setIsNewBid(true);
           setTimeout(() => setIsNewBid(false), 500);
-          fetchBids(); // Refresh history on new bid
+          fetchBids(); // Refresh history
         }
       )
       .subscribe();
@@ -704,7 +713,7 @@ function AuctionPage() {
                       </div>
                     ) : (
                       <span className="flex items-center gap-4 relative z-10">
-                        {timeLeft <= 5 ? "CORRE! LANCE AGORA" : "Arrematar Agora"} <Zap className={`w-8 h-8 fill-current ${timeLeft <= 5 ? 'animate-bounce' : 'animate-pulse'}`} />
+                        {timeLeft <= 5 ? "DAR LANCE AGORA" : "DAR LANCE"} <Zap className={`w-8 h-8 fill-current ${timeLeft <= 5 ? 'animate-bounce' : 'animate-pulse'}`} />
                       </span>
                     )}
                   </Button>
