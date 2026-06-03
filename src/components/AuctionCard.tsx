@@ -194,11 +194,11 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         async (payload) => {
           console.log('Auction update:', payload);
           // Fetch full data to get nested relations (last_bidder)
-          const { data } = await supabase
-            .from("v_home_live_auctions")
-            .select("*")
+          const { data, error } = await supabase
+            .from("auctions")
+            .select("*, product:products(*), last_bidder:profiles(*)")
             .eq("id", auction.id)
-            .single();
+            .maybeSingle();
           
           if (data) {
             setIsNewBid(true);
