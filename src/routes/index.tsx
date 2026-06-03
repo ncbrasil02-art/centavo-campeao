@@ -99,7 +99,7 @@ function WinnerCard({ name, product, price, saving, avatarUrl, productImage }: {
 }
 
 function Index() {
-  const { google_reviews_widget, logo_url, logo_height, logo_height_mobile, logo_padding_x, logo_padding_y } = useSettings();
+  const { google_reviews_widget, logo_url, logo_height, logo_height_mobile, logo_padding_x, logo_padding_y, support_whatsapp } = useSettings();
   const [auctions, setAuctions] = useState<any[]>([]);
   const [finishedAuctions, setFinishedAuctions] = useState<any[]>([]);
   const [winners, setWinners] = useState<any[]>([]);
@@ -441,11 +441,13 @@ function Index() {
             </div>
           </section>
 
-          {/* Footer */}
-          <footer className="py-24 border-t border-white/10 bg-zinc-950/40 mt-20">
-            <div className="container mx-auto px-4">
-              <div className="flex flex-col md:flex-row items-center justify-between gap-16">
-                <div className="flex flex-col gap-6 items-center md:items-start">
+          <footer className="py-20 border-t border-white/5 bg-zinc-950/60 mt-20 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent"></div>
+            
+            <div className="container mx-auto px-4 relative z-10">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
+                {/* Brand & Mission */}
+                <div className="flex flex-col gap-6 items-center md:items-start text-center md:text-left">
                   <div className="flex items-center gap-3">
                     <span className="text-2xl font-black tracking-tighter text-white uppercase italic">
                       LANCE<span className="text-primary">CERTO</span>
@@ -453,43 +455,70 @@ function Index() {
                     <div className="w-1.5 h-1.5 rounded-full bg-primary/40"></div>
                     <span className="text-white/40 text-xs font-medium uppercase tracking-widest">© 2026</span>
                   </div>
-                  <div className="flex flex-wrap justify-center md:justify-start gap-8 text-[10px] font-black uppercase tracking-[0.2em] text-white/30">
-                    <Link to="/" className="hover:text-primary transition-colors hover:tracking-[0.3em] duration-300">Privacidade</Link>
-                    <Link to="/" className="hover:text-primary transition-colors hover:tracking-[0.3em] duration-300">Termos de Uso</Link>
-                    <Link to="/" className="hover:text-primary transition-colors hover:tracking-[0.3em] duration-300">Contato</Link>
+                  <p className="text-white/40 text-xs leading-relaxed max-w-sm italic">
+                    O Lance Certo Premium é uma plataforma de leilões de centavos que prioriza a transparência, a agilidade e a emoção da disputa real. Nossa missão é proporcionar a melhor experiência de arremate com total segurança e suporte ao usuário.
+                  </p>
+                  <div className="flex gap-4">
+                    {support_whatsapp && (
+                      <Button asChild className="bg-green-600 hover:bg-green-700 text-white font-bold h-10 px-6 rounded-xl shadow-[0_0_20px_rgba(22,163,74,0.3)]">
+                        <a href={support_whatsapp} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                          <MessageSquare className="w-4 h-4" /> Atendimento WhatsApp
+                        </a>
+                      </Button>
+                    )}
                   </div>
                 </div>
 
-                <div className="flex flex-col items-center md:items-end gap-6">
+                {/* Important Links & Info */}
+                <div className="flex flex-col items-center md:items-start text-center md:text-left">
+                  <h4 className="text-xs font-black uppercase tracking-widest text-primary mb-6">Informações</h4>
+                  <div className="grid grid-cols-2 gap-x-8 gap-y-4 text-[10px] font-bold uppercase tracking-widest text-white/30">
+                    <Link to="/" className="hover:text-primary transition-colors">Privacidade</Link>
+                    <Link to="/" className="hover:text-primary transition-colors">Termos de Uso</Link>
+                    <Link to="/" className="hover:text-primary transition-colors">Contato</Link>
+                    <Link to="/" className="hover:text-primary transition-colors">Como Funciona</Link>
+                    <Link to="/" className="hover:text-primary transition-colors">Minha Conta</Link>
+                    <Link to="/" className="hover:text-primary transition-colors">Dúvidas</Link>
+                  </div>
+                  <div className="mt-8 p-4 rounded-2xl bg-white/5 border border-white/5">
+                    <p className="text-[9px] text-white/40 leading-relaxed uppercase tracking-tighter">
+                      <span className="text-primary font-black">COMPROMISSO:</span> Todos os nossos leilões possuem sincronização atômica via servidor para garantir que todos os participantes disputem em tempo real, sem atrasos ou injustiças.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Logo & Credits */}
+                <div className="flex flex-col items-center md:items-end justify-between">
                   {logo_url ? (
-                    <div 
-                      className="flex flex-col items-center md:items-end"
-                      style={{ 
-                        padding: `${logo_padding_y || 0}px ${logo_padding_x || 0}px`
-                      }}
-                    >
-                      <img 
-                        src={logo_url} 
-                        alt="Logo" 
-                        className="object-contain opacity-80 hover:opacity-100 transition-all filter drop-shadow-[0_0_15px_rgba(var(--color-primary),0.3)]" 
-                        style={{ height: `${logo_height || 40}px` }}
-                      />
-                    </div>
+                    <img 
+                      src={logo_url} 
+                      alt="Logo" 
+                      className="object-contain opacity-60 hover:opacity-100 transition-all filter grayscale hover:grayscale-0" 
+                      style={{ height: `${(logo_height || 40) * 0.8}px` }}
+                    />
                   ) : (
-                    <div className="text-2xl font-black text-primary tracking-tighter uppercase italic drop-shadow-[0_0_10px_rgba(var(--color-primary),0.4)] opacity-80">
-                      LANCE<span className="text-white">CERTO</span>
-                    </div>
+                    <div className="text-xl font-black text-primary tracking-tighter uppercase italic opacity-50">LANCECERTO</div>
                   )}
 
-                  <div className="flex flex-col items-center md:items-end gap-2 mt-8">
-                    <div className="text-white/40 text-[10px] text-center md:text-right font-bold uppercase tracking-[0.2em]">
-                      sistema de leilão por centavos <a href="https://www.ncbrasil.com.br" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 transition-all font-black italic border-b border-primary/30 pb-0.5 hover:border-primary uppercase">NC BRASIL</a>
+                  <div className="flex flex-col items-center md:items-end gap-2 text-center md:text-right">
+                    <div className="text-white/40 text-[10px] font-bold uppercase tracking-[0.2em]">
+                      SISTEMA DE LEILÃO DESENVOLVIDO POR <a href="https://www.ncbrasil.com.br" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 transition-all font-black italic border-b border-primary/30 pb-0.5 hover:border-primary">NC BRASIL</a>
                     </div>
-                    
-                    <div className="flex items-center gap-1.5 text-[9px] text-white/10 uppercase tracking-[0.3em] font-medium">
-                      Feito com <Heart className="w-2.5 h-2.5 text-red-500/20 fill-red-500/20" /> para arrematadores de elite.
+                    <div className="flex items-center gap-1.5 text-[8px] text-white/10 uppercase tracking-[0.4em] font-medium">
+                      FEITO COM <Heart className="w-2 h-2 text-red-500/20 fill-red-500/20" /> PARA ARREMATADORES DE ELITE.
                     </div>
                   </div>
+                </div>
+              </div>
+
+              {/* Bottom Line */}
+              <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div className="flex gap-6 items-center">
+                   <ShieldCheck className="w-4 h-4 text-primary opacity-40" />
+                   <span className="text-[8px] text-white/20 font-black uppercase tracking-[0.3em]">Ambiente 100% Seguro e Criptografado</span>
+                </div>
+                <div className="text-[8px] text-white/10 font-bold uppercase tracking-widest">
+                  Centavo do Milhão © Todos os direitos reservados.
                 </div>
               </div>
             </div>

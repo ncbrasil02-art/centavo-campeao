@@ -73,6 +73,7 @@ function AdminSettings() {
     logo_padding_x: 0,
     logo_padding_y: 0,
     google_reviews_widget: "",
+    support_whatsapp: "",
   });
 
   useEffect(() => {
@@ -128,6 +129,7 @@ function AdminSettings() {
           logo_padding_x: publicData.logo_padding_x || 0,
           logo_padding_y: publicData.logo_padding_y || 0,
           google_reviews_widget: publicData.google_reviews_widget || "",
+          support_whatsapp: publicData.support_whatsapp || "",
         });
       }
     } catch (error) {
@@ -754,6 +756,17 @@ function AdminSettings() {
                     className="bg-white/5 border-white/10 min-h-[120px] font-mono text-xs"
                   />
                   <p className="text-[10px] text-white/40">Este código será renderizado na seção de depoimentos da página inicial.</p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="support_whatsapp">Link de Atendimento WhatsApp (URL completa)</Label>
+                  <Input 
+                    id="support_whatsapp" 
+                    value={settings.support_whatsapp || ""} 
+                    onChange={(e) => setSettings({...settings, support_whatsapp: e.target.value})}
+                    placeholder="https://wa.me/55..."
+                    className="bg-white/5 border-white/10 h-12"
+                  />
+                  <p className="text-[10px] text-white/40">Este link será usado no botão de atendimento do rodapé.</p>
                 </div>
               </CardContent>
             </Card>
