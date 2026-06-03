@@ -713,7 +713,7 @@ function AuctionPage() {
                       </div>
                     ) : (
                       <span className="flex items-center gap-4 relative z-10">
-                        {timeLeft <= 5 ? "CORRE! LANCE AGORA" : "Arrematar Agora"} <Zap className={`w-8 h-8 fill-current ${timeLeft <= 5 ? 'animate-bounce' : 'animate-pulse'}`} />
+                        {timeLeft <= 5 ? "DAR LANCE AGORA" : "DAR LANCE"} <Zap className={`w-8 h-8 fill-current ${timeLeft <= 5 ? 'animate-bounce' : 'animate-pulse'}`} />
                       </span>
                     )}
                   </Button>
