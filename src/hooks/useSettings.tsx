@@ -368,6 +368,7 @@ export const useSettings = () => {
       logo_padding_x: 0,
       logo_padding_y: 0,
       google_reviews_widget: "",
+      support_whatsapp: "",
     };
   }
   return context;
