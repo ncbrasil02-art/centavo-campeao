@@ -854,6 +854,7 @@ export type Database = {
         Returns: Json
       }
       process_robot_bids: { Args: never; Returns: Json }
+      process_robot_bids_admin: { Args: never; Returns: Json }
       slugify: { Args: { v_text: string }; Returns: string }
       tick_auctions: { Args: never; Returns: Json }
     }
