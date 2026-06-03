@@ -31,6 +31,7 @@ function ProfilePage() {
   const [username, setUsername] = useState("");
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
+  const [cpf, setCpf] = useState("");
   const [gender, setGender] = useState("");
   const navigate = useNavigate();
 
@@ -42,18 +43,28 @@ function ProfilePage() {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) return;
 
-    const { data } = await supabase
+    const { data: profileData } = await supabase
       .from("profiles")
       .select("*")
       .eq("id", session.user.id)
       .single();
     
-    if (data) {
-      setProfile(data);
-      setUsername(data.username || "");
-      setFullName(data.full_name || "");
-      setPhone(data.phone || "");
-      setGender(data.gender || "not_specified");
+    const { data: secretData } = await supabase
+      .from("profile_secrets")
+      .select("cpf, phone")
+      .eq("id", session.user.id)
+      .single();
+    
+    if (profileData) {
+      setProfile(profileData);
+      setUsername(profileData.username || "");
+      setFullName(profileData.full_name || "");
+      setGender(profileData.gender || "not_specified");
+    }
+
+    if (secretData) {
+      setPhone(secretData.phone || "");
+      setCpf(secretData.cpf || "");
     }
     setLoading(false);
   }
@@ -66,17 +77,26 @@ function ProfilePage() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
 
-      const { error } = await supabase
+      const { error: profileError } = await supabase
         .from("profiles")
         .update({
           username,
           full_name: fullName,
-          phone,
           gender,
         })
         .eq("id", session.user.id);
 
-      if (error) throw error;
+      if (profileError) throw profileError;
+
+      const { error: secretError } = await supabase
+        .from("profile_secrets")
+        .update({
+          phone,
+          cpf,
+        })
+        .eq("id", session.user.id);
+
+      if (secretError) throw secretError;
       toast.success("Perfil atualizado com sucesso!");
     } catch (error: any) {
       toast.error(error.message);
@@ -167,6 +187,13 @@ function ProfilePage() {
                         <div className="relative">
                           <Phone className="absolute left-3 top-3 h-4 w-4 text-white/40" />
                           <Input id="phone" className="pl-10 bg-white/5 border-white/10" value={phone} onChange={e => setPhone(e.target.value)} />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="cpf">CPF</Label>
+                        <div className="relative">
+                          <Hash className="absolute left-3 top-3 h-4 w-4 text-white/40" />
+                          <Input id="cpf" className="pl-10 bg-white/5 border-white/10" value={cpf} onChange={e => setCpf(e.target.value)} placeholder="000.000.000-00" />
                         </div>
                       </div>
                       <div className="space-y-2">
