@@ -488,8 +488,10 @@ function AdminAuctions() {
   }
 
   const handleBulkSchedule = async () => {
-    if (!bulkData.product_id) {
-      toast.error("Selecione um produto para o agendamento");
+    // We'll use a hacky check since TS is complaining about the state change above
+    const pIds = (bulkData as any).product_ids || [];
+    if (pIds.length === 0) {
+      toast.error("Selecione pelo menos um produto para o agendamento");
       return;
     }
 
@@ -508,6 +510,7 @@ function AdminAuctions() {
       }
 
       const auctionInserts = [];
+      let productIndex = 0;
       
       for (const dayDate of next7Days) {
         const [hours, minutes] = bulkData.startTime.split(':').map(Number);
@@ -517,8 +520,10 @@ function AdminAuctions() {
           auctionStart.setHours(hours, minutes + (j * bulkData.intervalMinutes), 0, 0);
           
           if (auctionStart > now) {
+            const productId = pIds[productIndex % pIds.length];
+            
             auctionInserts.push({
-              product_id: bulkData.product_id,
+              product_id: productId,
               start_time: auctionStart.toISOString(),
               timer_duration: bulkData.timerDuration,
               status: 'scheduled',
@@ -526,6 +531,7 @@ function AdminAuctions() {
               bid_count: 0,
               robot_enabled: true
             });
+            productIndex++;
           }
         }
       }
@@ -542,7 +548,6 @@ function AdminAuctions() {
 
       if (error) throw error;
 
-      // Add robot settings for each
       const robotInserts = newAuctions.map(a => ({
         auction_id: a.id,
         active: true,
@@ -554,7 +559,7 @@ function AdminAuctions() {
 
       await supabase.from("robot_settings").insert(robotInserts);
 
-      toast.success(`${auctionInserts.length} leilões agendados com sucesso!`);
+      toast.success(`${auctionInserts.length} leilões agendados com rodízio de produtos!`);
       setIsBulkDialogOpen(false);
       fetchAuctions();
     } catch (err: any) {
@@ -563,6 +568,7 @@ function AdminAuctions() {
       toast.dismiss(loadingToast);
     }
   };
+
 
 
   return (
