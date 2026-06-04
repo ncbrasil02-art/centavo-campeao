@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Plus, Trash2, Megaphone, Sparkles, MessageSquare } from "lucide-react";
+import { Plus, Trash2, Megaphone, Sparkles, MessageSquare, Zap, LayoutTemplate } from "lucide-react";
 import { useSettings } from "@/hooks/useSettings";
 
 export function NarrationSettings() {
