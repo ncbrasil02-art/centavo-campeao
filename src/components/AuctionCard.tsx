@@ -262,7 +262,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       // Isso ajuda a manter a disputa ativa mesmo se o cron externo demorar
       if (!isScheduled && currentStatus === 'live' && diff <= 2 && diff > 0 && !isRefreshing) {
         // Chamada silenciosa para processar robôs se estiver nos últimos segundos
-        supabase.rpc('tick_auctions').then(() => {}).catch(() => {});
+        void supabase.rpc('tick_auctions');
       }
 
       if (!isScheduled && diff <= 0 && !confettiFired.current && auction.status === 'live') {
