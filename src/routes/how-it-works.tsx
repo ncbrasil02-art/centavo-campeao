@@ -6,6 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Link } from '@tanstack/react-router';
 import { useSettings } from '@/hooks/useSettings';
 import { Footer } from '@/components/Footer';
+import { DemoAuctionBlock } from '@/components/DemoAuctionBlock';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 export const Route = createFileRoute('/how-it-works')({
   component: HowItWorks,
@@ -28,6 +31,22 @@ function Step({ icon, step, title, desc }: { icon: React.ReactNode, step: string
 
 function HowItWorks() {
   const { site_name } = useSettings();
+  const [demoAuctions, setDemoAuctions] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function fetchDemo() {
+      const { data } = await supabase
+        .from("demo_auctions")
+        .select("*")
+        .eq("is_active", true)
+        .order("order_index", { ascending: true })
+        .limit(1); // Only one for how it works page as requested
+      
+      if (data) setDemoAuctions(data);
+    }
+    fetchDemo();
+  }, []);
+
   return (
     <div className="min-h-screen bg-background text-white flex flex-col">
       <Navbar />
@@ -63,6 +82,18 @@ function HowItWorks() {
               desc="Cada vez que alguém dá um lance, o cronômetro reinicia (geralmente em 15 segundos) e o preço sobe apenas R$ 0,01." 
             />
           </div>
+
+          {demoAuctions.length > 0 && (
+            <div className="mb-32">
+              <div className="text-center mb-12">
+                <Badge variant="outline" className="mb-4 border-primary/30 bg-primary/10 text-primary uppercase">SIMULAÇÃO REAL</Badge>
+                <h2 className="text-3xl font-black text-white italic uppercase tracking-tighter">Veja na <span className="text-primary">prática</span></h2>
+              </div>
+              <div className="max-w-md mx-auto">
+                <DemoAuctionBlock auctions={demoAuctions} />
+              </div>
+            </div>
+          )}
 
           <div className="bg-white/[0.02] border border-white/5 rounded-[48px] p-8 md:p-16 mb-20 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] -z-10 translate-x-1/2 -translate-y-1/2"></div>

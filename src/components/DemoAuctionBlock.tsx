@@ -21,6 +21,7 @@ interface DemoAuction {
 export function DemoAuctionBlock({ auctions: initialAuctions }: { auctions: DemoAuction[] }) {
   const [auctions, setAuctions] = useState<DemoAuction[]>(initialAuctions);
   const [localTimes, setLocalTimes] = useState<Record<string, number>>({});
+  const [winners, setWinners] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     // Initialize timers
@@ -34,12 +35,22 @@ export function DemoAuctionBlock({ auctions: initialAuctions }: { auctions: Demo
       setLocalTimes(prev => {
         const next = { ...prev };
         Object.keys(next).forEach(id => {
+          if (winners[id]) return;
+
           if (next[id] > 0) {
             next[id] -= 1;
           } else {
-            // Simulate a bot bid when timer hits 0
             const auctionIndex = auctions.findIndex(a => a.id === id);
             if (auctionIndex !== -1) {
+              const auction = auctions[auctionIndex];
+              
+              // 10% chance to end the auction when timer hits 0
+              if (Math.random() < 0.1) {
+                setWinners(prevWinners => ({ ...prevWinners, [id]: true }));
+                next[id] = 0;
+                return;
+              }
+
               const bot = FICTITIOUS_PARTICIPANTS[Math.floor(Math.random() * FICTITIOUS_PARTICIPANTS.length)];
               const botName = typeof bot === 'string' ? bot : (bot as any).name;
               
@@ -53,7 +64,7 @@ export function DemoAuctionBlock({ auctions: initialAuctions }: { auctions: Demo
                 };
                 return newAuctions;
               });
-              next[id] = auctions[auctionIndex].timer_seconds;
+              next[id] = auction.timer_seconds;
             }
           }
         });
@@ -62,7 +73,7 @@ export function DemoAuctionBlock({ auctions: initialAuctions }: { auctions: Demo
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [initialAuctions]);
+  }, [initialAuctions, winners]);
 
   return (
     <div className="py-12 px-4 bg-primary/5 rounded-[48px] border border-primary/10 mb-16 relative overflow-hidden">
@@ -90,9 +101,16 @@ export function DemoAuctionBlock({ auctions: initialAuctions }: { auctions: Demo
             const Icon = modality.icon;
             
             return (
-              <Card key={auction.id} className="bg-zinc-900/50 border-white/10 rounded-[32px] overflow-hidden flex flex-col h-full group hover:border-primary/50 transition-all">
+              <Card key={auction.id} className={`bg-zinc-900/50 border-white/10 rounded-[32px] overflow-hidden flex flex-col h-full group transition-all duration-500 ${winners[auction.id] ? 'border-red-500 shadow-[0_0_30px_rgba(239,68,68,0.2)]' : 'hover:border-primary/50'}`}>
                 <div className="relative aspect-square">
-                  <img src={auction.product_image} alt={auction.product_name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <img 
+                    src={auction.product_image} 
+                    alt={auction.product_name} 
+                    className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500" 
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800&auto=format&fit=crop";
+                    }}
+                  />
                   <div className="absolute top-4 left-4 z-10">
                     <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-md border border-white/10 ${modality.bgColor} ${modality.color}`}>
                       <Icon className="w-3 h-3" />
@@ -110,35 +128,38 @@ export function DemoAuctionBlock({ auctions: initialAuctions }: { auctions: Demo
                     </div>
                   </div>
 
-                  <div className="bg-black/40 rounded-2xl p-4 flex flex-col items-center justify-center border border-white/5 relative overflow-hidden">
-                    <div className="text-2xl font-black text-primary tabular-nums">R$ {auction.current_price.toFixed(2)}</div>
-                    <div className="text-[10px] font-medium text-white/40 uppercase tracking-widest mt-1">Preço Atual</div>
+                  <div className={`rounded-2xl p-4 flex flex-col items-center justify-center border relative overflow-hidden transition-colors duration-500 ${winners[auction.id] ? 'bg-red-500/20 border-red-500/50' : 'bg-black/40 border-white/5'}`}>
+                    <div className={`text-2xl font-black tabular-nums ${winners[auction.id] ? 'text-red-500' : 'text-primary'}`}>R$ {auction.current_price.toFixed(2)}</div>
+                    <div className="text-[10px] font-medium text-white/40 uppercase tracking-widest mt-1">{winners[auction.id] ? 'Arrematado por' : 'Preço Atual'}</div>
                     
                     <div className="w-full mt-4 space-y-1.5">
                       <div className="flex justify-between items-end mb-1">
-                        <span className={`text-xl font-black italic tabular-nums ${time <= 5 ? 'text-red-500 animate-pulse' : 'text-white'}`}>
+                        <span className={`text-xl font-black italic tabular-nums ${winners[auction.id] ? 'text-red-500' : time <= 5 ? 'text-red-500 animate-pulse' : 'text-white'}`}>
                           00:{time.toString().padStart(2, '0')}
                         </span>
-                        <Clock className={`w-4 h-4 ${time <= 5 ? 'text-red-500' : 'text-white/20'}`} />
+                        <Clock className={`w-4 h-4 ${winners[auction.id] || time <= 5 ? 'text-red-500' : 'text-white/20'}`} />
                       </div>
-                      <Progress value={(time / auction.timer_seconds) * 100} className="h-1.5 bg-white/5" />
+                      <Progress value={winners[auction.id] ? 0 : (time / auction.timer_seconds) * 100} className="h-1.5 bg-white/5" />
                     </div>
                   </div>
 
                   <div className="mt-auto space-y-4">
-                    <div className="flex items-center gap-3 p-2 bg-white/5 rounded-xl border border-white/5">
-                      <div className="w-8 h-8 rounded-full overflow-hidden border border-primary/30">
+                    <div className={`flex items-center gap-3 p-2 rounded-xl border transition-colors duration-500 ${winners[auction.id] ? 'bg-red-500/10 border-red-500/30' : 'bg-white/5 border-white/5'}`}>
+                      <div className={`w-8 h-8 rounded-full overflow-hidden border ${winners[auction.id] ? 'border-red-500' : 'border-primary/30'}`}>
                         <img src={auction.last_bidder_avatar || getFallbackAvatarUrl("Bot")} className="w-full h-full object-cover" />
                       </div>
                       <div className="flex-1 overflow-hidden">
-                        <p className="text-[10px] text-white/40 uppercase font-black">Líder</p>
-                        <p className="text-xs font-bold truncate">{auction.last_bidder_name || "Aguardando..."}</p>
+                        <p className={`text-[10px] uppercase font-black ${winners[auction.id] ? 'text-red-500' : 'text-white/40'}`}>{winners[auction.id] ? 'Ganhador' : 'Líder'}</p>
+                        <p className={`text-xs font-bold truncate ${winners[auction.id] ? 'text-red-500' : ''}`}>{auction.last_bidder_name || "Aguardando..."}</p>
                       </div>
-                      <Trophy className="w-4 h-4 text-yellow-500/50" />
+                      <Trophy className={`w-4 h-4 ${winners[auction.id] ? 'text-red-500 animate-bounce' : 'text-yellow-500/50'}`} />
                     </div>
 
-                    <Button disabled className="w-full bg-primary/20 text-primary border border-primary/30 font-black uppercase italic text-xs h-12">
-                      LANCE (DEMO)
+                    <Button 
+                      disabled 
+                      className={`w-full font-black uppercase italic text-xs h-12 transition-all duration-500 ${winners[auction.id] ? 'bg-red-500 text-white border-none' : 'bg-primary/20 text-primary border border-primary/30'}`}
+                    >
+                      {winners[auction.id] ? 'ARREMATADO' : 'LANCE (DEMO)'}
                     </Button>
                   </div>
                 </div>
