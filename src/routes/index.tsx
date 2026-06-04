@@ -302,7 +302,7 @@ function Index() {
             <div className="container mx-auto px-4">
               <div className="text-center max-w-3xl mx-auto mb-16">
                 <Badge variant="outline" className="mb-4 border-accent/30 bg-accent/10 text-accent uppercase">SIMPLES E DIVERTIDO</Badge>
-                <h2 className="text-4xl font-black tracking-tight text-foreground mb-6">Como o Lance Certo funciona?</h2>
+                <h2 className="text-4xl font-black tracking-tight text-foreground mb-6">Como o {useSettings().site_name} funciona?</h2>
                 <p className="text-muted-foreground italic">Arrematar produtos premium nunca foi tão fácil. Siga os passos e comece a disputar agora mesmo.</p>
               </div>
 
