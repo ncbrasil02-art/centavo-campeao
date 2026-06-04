@@ -355,6 +355,33 @@ export type Database = {
           },
         ]
       }
+      narration_phrases: {
+        Row: {
+          category: string
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          phrase: string
+          updated_at: string | null
+        }
+        Insert: {
+          category?: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          phrase: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          phrase?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           category: string | null
@@ -581,6 +608,8 @@ export type Database = {
           logo_padding_x: number | null
           logo_padding_y: number | null
           logo_url: string | null
+          marquee_enabled: boolean | null
+          marquee_text: string | null
           mercado_pago_public_key: string | null
           meta_description: string | null
           meta_keywords: string | null
@@ -616,6 +645,8 @@ export type Database = {
           logo_padding_x?: number | null
           logo_padding_y?: number | null
           logo_url?: string | null
+          marquee_enabled?: boolean | null
+          marquee_text?: string | null
           mercado_pago_public_key?: string | null
           meta_description?: string | null
           meta_keywords?: string | null
@@ -651,6 +682,8 @@ export type Database = {
           logo_padding_x?: number | null
           logo_padding_y?: number | null
           logo_url?: string | null
+          marquee_enabled?: boolean | null
+          marquee_text?: string | null
           mercado_pago_public_key?: string | null
           meta_description?: string | null
           meta_keywords?: string | null
