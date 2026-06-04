@@ -94,37 +94,52 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         setIncentivePhrase(CACHED_INCENTIVES[Math.floor(Math.random() * CACHED_INCENTIVES.length)]);
         return;
       }
-      const { data } = await supabase
-        .from("app_phrases")
-        .select("text")
-        .eq("type", "incentive")
-        .eq("active", true);
       
-      const phrases = (data && data.length > 0) ? data.map(p => p.text) : INCENTIVE_PHRASES;
-      CACHED_INCENTIVES = phrases;
-      setIncentivePhrase(phrases[Math.floor(Math.random() * phrases.length)]);
+      const [incentivesRes, futureAuctionsRes, templatesRes] = await Promise.all([
+        supabase.from("app_phrases").select("text").eq("type", "incentive").eq("active", true),
+        supabase.from("auctions").select("*, product:products(*)").eq("status", "scheduled").order("start_time", { ascending: true }).limit(3),
+        supabase.from("future_auction_templates").select("template_text").eq("is_active", true)
+      ]);
+      
+      let allPhrases = (incentivesRes.data && incentivesRes.data.length > 0) 
+        ? incentivesRes.data.map(p => p.text) 
+        : INCENTIVE_PHRASES;
+
+      // Add dynamic future auction phrases
+      if (futureAuctionsRes.data && futureAuctionsRes.data.length > 0 && templatesRes.data && templatesRes.data.length > 0) {
+        futureAuctionsRes.data.forEach(auction => {
+          const template = templatesRes.data![Math.floor(Math.random() * templatesRes.data!.length)].template_text;
+          const startDate = new Date(auction.start_time || "");
+          const dateStr = startDate.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: '2-digit' });
+          const timeStr = startDate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+          
+          const phrase = template
+            .replace('{product}', auction.product?.name || 'produto')
+            .replace('{date}', dateStr)
+            .replace('{time}', timeStr);
+
+          
+          allPhrases.push(phrase);
+        });
+      }
+
+      CACHED_INCENTIVES = allPhrases;
+      setIncentivePhrase(allPhrases[Math.floor(Math.random() * allPhrases.length)]);
     }
 
     loadIncentives();
     setActiveWatchers(Math.floor(Math.random() * 45) + 12);
     
     // Rotate phrases every 8-12 seconds
-    const interval = setInterval(async () => {
-      const { data: phrases } = await supabase
-        .from("narration_phrases")
-        .select("phrase")
-        .eq("is_active", true);
-
-      const allPhrases = (phrases && phrases.length > 0) ? phrases.map(p => p.phrase) : INCENTIVE_PHRASES;
-      setIncentivePhrase(allPhrases[Math.floor(Math.random() * allPhrases.length)]);
-      setActiveWatchers(prev => {
-        const change = Math.floor(Math.random() * 7) - 3;
-        return Math.max(5, prev + change);
-      });
+    const interval = setInterval(() => {
+      if (CACHED_INCENTIVES.length > 0) {
+        setIncentivePhrase(CACHED_INCENTIVES[Math.floor(Math.random() * CACHED_INCENTIVES.length)]);
+      }
     }, Math.random() * 4000 + 8000);
 
     return () => clearInterval(interval);
   }, []);
+
 
 
   useEffect(() => {
