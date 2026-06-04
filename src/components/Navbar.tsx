@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { User, LogOut, Wallet, Gavel, LayoutDashboard, Menu, X, Clock, Settings } from "lucide-react";
+import { User, LogOut, Wallet, Gavel, LayoutDashboard, Menu, X, Clock, Settings, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getFallbackAvatarUrl } from "@/lib/constants";
@@ -17,7 +17,7 @@ export function Navbar() {
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { site_name, logo_url, logo_height, logo_height_mobile, logo_padding_x, logo_padding_y } = useSettings();
+  const { site_name, logo_url, logo_height, logo_height_mobile, logo_padding_x, logo_padding_y, welcome_bids } = useSettings();
   const { getAdjustedNow, synced, formatBrasiliaTime } = useTimeSync();
   const [currentTimeStr, setCurrentTimeStr] = useState<string>("--:--:--");
   const navigate = useNavigate();
@@ -221,13 +221,26 @@ export function Navbar() {
             </div>
           ) : (
             <div className="flex items-center gap-2">
+              {welcome_bids > 0 && (
+                <motion.div 
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-primary/20 border border-primary/30 rounded-full mr-2"
+                >
+                  <Sparkles className="w-3 h-3 text-primary animate-pulse" />
+                  <span className="text-[10px] font-black text-primary uppercase tracking-tighter">
+                    Ganhe {welcome_bids} lances grátis!
+                  </span>
+                </motion.div>
+              )}
               <Button variant="ghost" className="text-foreground hover:text-primary hover:bg-muted" asChild>
                 <Link to="/auth">Entrar</Link>
               </Button>
-              <Button className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_15px_rgba(var(--color-primary),0.5)]" asChild>
+              <Button className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_15px_rgba(var(--color-primary),0.5)] font-bold" asChild>
                 <Link to="/auth" search={{ register: "true" }}>Cadastrar</Link>
               </Button>
             </div>
+
           )}
         </div>
       </div>
