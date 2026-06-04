@@ -300,6 +300,15 @@ export function Navbar() {
               <Link to={"/profile" as any} className="text-lg font-bold p-2 hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Leilões</Link>
               <Link to="/ranking" className="text-lg font-bold p-2 hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Ranking</Link>
               <Link to="/packages" className="text-lg font-bold p-2 hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Comprar Lances</Link>
+              <button 
+                className="text-lg font-black p-2 text-primary flex items-center gap-2 animate-pulse" 
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  window.dispatchEvent(new CustomEvent('show-pwa-install'));
+                }}
+              >
+                <Smartphone className="w-5 h-5" /> BAIXAR APP
+              </button>
               <Link to={"/profile" as any} className="text-lg font-bold p-2 hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Meu Perfil</Link>
 
               {(profile?.is_admin || user?.id === 'cdf027bb-f239-4ba0-b8a9-7bf52341df4b' || user?.id === 'ad8443eb-d096-46ad-ba39-07abdba01fdb') && (
