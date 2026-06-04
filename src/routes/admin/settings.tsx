@@ -1075,7 +1075,130 @@ function AdminSettings() {
                 </div>
               </CardContent>
             </Card>
+
+            <Card className="bg-white/5 border-white/10 overflow-hidden backdrop-blur-md">
+              <CardHeader className="border-b border-white/5 bg-white/[0.02]">
+                <div className="flex items-center gap-2">
+                  <Layout className="w-5 h-5 text-orange-500" />
+                  <div>
+                    <CardTitle className="text-lg">Exibição da Home</CardTitle>
+                    <CardDescription className="text-white/40">O que exibir na primeira página</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="p-6 space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10">
+                    <div className="flex items-center gap-3">
+                      <ImageIcon className="w-5 h-5 text-primary" />
+                      <div className="flex flex-col">
+                        <span className="text-sm font-bold">Banner Secundário</span>
+                        <span className="text-[10px] text-white/40 italic uppercase">Banner de Oferta Especial</span>
+                      </div>
+                    </div>
+                    <Switch 
+                      checked={settings.show_secondary_banner} 
+                      onCheckedChange={(v) => setSettings({...settings, show_secondary_banner: v})} 
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10">
+                    <div className="flex items-center gap-3">
+                      <Gavel className="w-5 h-5 text-green-500" />
+                      <div className="flex flex-col">
+                        <span className="text-sm font-bold">Leilões Arrematados</span>
+                        <span className="text-[10px] text-white/40 italic uppercase">Seção de encerrados</span>
+                      </div>
+                    </div>
+                    <Switch 
+                      checked={settings.show_finished_auctions} 
+                      onCheckedChange={(v) => setSettings({...settings, show_finished_auctions: v})} 
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10">
+                    <div className="flex items-center gap-3">
+                      <Star className="w-5 h-5 text-yellow-500" />
+                      <div className="flex flex-col">
+                        <span className="text-sm font-bold">Depoimentos</span>
+                        <span className="text-[10px] text-white/40 italic uppercase">Feedbacks de usuários</span>
+                      </div>
+                    </div>
+                    <Switch 
+                      checked={settings.show_testimonials} 
+                      onCheckedChange={(v) => setSettings({...settings, show_testimonials: v})} 
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10">
+                    <div className="flex items-center gap-3">
+                      <Trophy className="w-5 h-5 text-amber-500" />
+                      <div className="flex flex-col">
+                        <span className="text-sm font-bold">Ganhadores Reais</span>
+                        <span className="text-[10px] text-white/40 italic uppercase">Ranking de arremates</span>
+                      </div>
+                    </div>
+                    <Switch 
+                      checked={settings.show_winners_ranking} 
+                      onCheckedChange={(v) => setSettings({...settings, show_winners_ranking: v})} 
+                    />
+                  </div>
+                </div>
+
+                {settings.show_secondary_banner && (
+                  <div className="space-y-6 pt-6 border-t border-white/5">
+                    <h3 className="text-sm font-black uppercase italic tracking-widest text-primary flex items-center gap-2">
+                      <ImageIcon className="w-4 h-4" /> Editar Banner Secundário
+                    </h3>
+                    
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Título do Banner</Label>
+                        <Input 
+                          value={settings.secondary_banner_title}
+                          onChange={(e) => setSettings({...settings, secondary_banner_title: e.target.value})}
+                          className="bg-white/5 border-white/10"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Link do Botão</Label>
+                        <Input 
+                          value={settings.secondary_banner_link}
+                          onChange={(e) => setSettings({...settings, secondary_banner_link: e.target.value})}
+                          className="bg-white/5 border-white/10"
+                          placeholder="/packages"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Subtítulo / Descrição</Label>
+                      <Textarea 
+                        value={settings.secondary_banner_subtitle}
+                        onChange={(e) => setSettings({...settings, secondary_banner_subtitle: e.target.value})}
+                        className="bg-white/5 border-white/10 min-h-[100px]"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>URL da Imagem de Fundo</Label>
+                      <div className="flex gap-2">
+                        <Input 
+                          value={settings.secondary_banner_image}
+                          onChange={(e) => setSettings({...settings, secondary_banner_image: e.target.value})}
+                          className="bg-white/5 border-white/10 flex-1"
+                        />
+                        <div className="w-12 h-10 rounded bg-white/5 border border-white/10 overflow-hidden">
+                          <img src={settings.secondary_banner_image} className="w-full h-full object-cover" alt="" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </div>
+
 
         </div>
       </main>
