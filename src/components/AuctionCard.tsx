@@ -469,69 +469,8 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           </div>
         </Link>
 
-        {isScheduled && auction.start_time && (
-          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 bg-zinc-950/90 backdrop-blur-md py-4 flex flex-col items-center justify-center z-20 shadow-[0_0_50px_rgba(0,0,0,0.8)] border-y-2 border-primary/30 rotate-[-2deg] scale-105 origin-center transition-all duration-500 group-hover:bg-black group-hover:scale-110">
-            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.1)_0%,_transparent_70%)] animate-pulse"></div>
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary mb-2 relative z-10 text-center px-4 drop-shadow-[0_0_8px_rgba(var(--color-primary),0.5)]">COMEÇA EM (HORÁRIO DE BRASÍLIA)</span>
-            <div className="flex flex-col items-center relative z-10">
-              <div className="flex gap-1.5 mb-2">
-                {timeLeft >= 3600 * 24 && (
-                  <div className="flex flex-col items-center">
-                    <div className="bg-zinc-900 rounded-lg px-2.5 py-2 min-w-[48px] flex items-center justify-center shadow-2xl border border-primary/20">
-                      <span className="text-2xl font-black text-white tabular-nums tracking-tighter">
-                        {timeParts.d}
-                      </span>
-                    </div>
-                    <span className="text-[9px] font-black text-primary/70 mt-1 uppercase">DIAS</span>
-                  </div>
-                )}
-                {timeLeft >= 3600 && (
-                  <div className="flex flex-col items-center">
-                    <div className="bg-zinc-900 rounded-lg px-2.5 py-2 min-w-[48px] flex items-center justify-center shadow-2xl border border-primary/20">
-                      <span className="text-2xl font-black text-white tabular-nums tracking-tighter">
-                        {timeParts.h}
-                      </span>
-                    </div>
-                    <span className="text-[9px] font-black text-primary/70 mt-1 uppercase">HORAS</span>
-                  </div>
-                )}
-                <div className="flex flex-col items-center">
-                  <div className="bg-zinc-900 rounded-lg px-2.5 py-2 min-w-[48px] flex items-center justify-center shadow-2xl border border-primary/20">
-                    <span className="text-2xl font-black text-white tabular-nums tracking-tighter">
-                      {timeParts.m}
-                    </span>
-                  </div>
-                  <span className="text-[9px] font-black text-primary/70 mt-1 uppercase">MIN</span>
-                </div>
-                <div className="flex flex-col items-center">
-                  <div className="flex gap-0.5">
-                    <div className="bg-zinc-900 rounded-lg px-2.5 py-2 min-w-[48px] flex items-center justify-center shadow-2xl border border-primary/20">
-                      <span className="text-2xl font-black text-white tabular-nums tracking-tighter">
-                        {timeParts.s}
-                      </span>
-                    </div>
-                    {timeLeft < 60 && (
-                      <div className="bg-zinc-800 rounded-lg px-1.5 py-2 flex items-end shadow-2xl border border-primary/10">
-                        <span className="text-sm font-black text-primary tabular-nums">
-                          ,{timeParts.ms}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                  <span className="text-[9px] font-black text-primary/70 mt-1 uppercase">SEG</span>
-                </div>
-              </div>
-              <div className="flex flex-col items-center gap-1">
-                <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-sm shadow-inner">
-                  <Calendar className="w-3 h-3 text-primary" />
-                  <span className="text-[10px] font-black text-white uppercase tracking-widest drop-shadow-sm">
-                    {new Date(auction.start_time).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })} às {new Date(auction.start_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Scheduled info overlay removed from here */}
+
 
         {/* Badges */}
         <div className="absolute left-4 top-4 flex flex-col gap-2">
@@ -811,6 +750,46 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           )}
         </Button>
 
+        {isScheduled && auction.start_time && (
+          <div className="flex flex-col items-center gap-2 pt-2 border-t border-border mt-2 bg-zinc-950/20 rounded-2xl p-4">
+            <span className="text-[10px] font-black uppercase tracking-[0.1em] text-primary/80">INÍCIO EM (BRASÍLIA):</span>
+            <div className="flex gap-2 mb-1">
+              {timeLeft >= 3600 * 24 && (
+                <div className="flex flex-col items-center">
+                  <div className="bg-zinc-900/80 rounded-lg px-2 py-1 min-w-[36px] flex items-center justify-center border border-primary/20">
+                    <span className="text-lg font-black text-white tabular-nums">{timeParts.d}</span>
+                  </div>
+                  <span className="text-[8px] font-black text-primary/60 mt-0.5 uppercase">DIAS</span>
+                </div>
+              )}
+              <div className="flex flex-col items-center">
+                <div className="bg-zinc-900/80 rounded-lg px-2 py-1 min-w-[36px] flex items-center justify-center border border-primary/20">
+                  <span className="text-lg font-black text-white tabular-nums">{timeParts.h}</span>
+                </div>
+                <span className="text-[8px] font-black text-primary/60 mt-0.5 uppercase">HRS</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <div className="bg-zinc-900/80 rounded-lg px-2 py-1 min-w-[36px] flex items-center justify-center border border-primary/20">
+                  <span className="text-lg font-black text-white tabular-nums">{timeParts.m}</span>
+                </div>
+                <span className="text-[8px] font-black text-primary/60 mt-0.5 uppercase">MIN</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <div className="bg-zinc-900/80 rounded-lg px-2 py-1 min-w-[36px] flex items-center justify-center border border-primary/20">
+                  <span className="text-lg font-black text-white tabular-nums">{timeParts.s}</span>
+                </div>
+                <span className="text-[8px] font-black text-primary/60 mt-0.5 uppercase">SEG</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-900/50 border border-white/5">
+              <Calendar className="w-2.5 h-2.5 text-primary/70" />
+              <span className="text-[10px] font-bold text-white/80">
+                {new Date(auction.start_time).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })} às {new Date(auction.start_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+              </span>
+            </div>
+          </div>
+        )}
+
         {!isFinished && !isScheduled && (
           <div className="flex justify-center mt-2">
             <span className="text-[10px] font-black text-primary/60 uppercase tracking-widest animate-pulse italic bg-primary/5 px-3 py-1 rounded-full border border-primary/10">
@@ -818,6 +797,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             </span>
           </div>
         )}
+
 
       </div>
     </Card>
