@@ -66,9 +66,9 @@ const SettingsContext = createContext<SettingsContextType | null>(null);
 const DEFAULT_SETTINGS: SiteSettings = {
   site_name: "Leilão de Centavos",
   logo_url: "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/logo-0.8516991638992043.png",
-  favicon_url: "",
-  primary_color: "#8B5CF6",
-  secondary_color: "#7C3AED",
+  favicon_url: "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/favicon-0.8740770155566795.png",
+  primary_color: "#f58c14",
+  secondary_color: "#1d5bd7",
   mercado_pago_public_key: "",
   pix_key: "",
   pix_name: "",

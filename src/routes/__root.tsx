@@ -83,14 +83,14 @@ export const Route = createRootRouteWithContext<{
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Plataforma de Leilões" },
-      { name: "description", content: "Participe de leilões emocionantes e arremate produtos incríveis." },
-      { property: "og:title", content: "Plataforma de Leilões" },
-      { property: "og:description", content: "Participe de leilões emocionantes e arremate produtos incríveis." },
+      { title: "Lance Certo" },
+      { name: "description", content: "Lance Certo - Plataforma líder em leilões de centavos" },
+      { property: "og:title", content: "Lance Certo" },
+      { property: "og:description", content: "Lance Certo - Plataforma líder em leilões de centavos" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:title", content: "Plataforma de Leilões" },
-      { name: "twitter:description", content: "Participe de leilões emocionantes e arremate produtos incríveis." },
+      { name: "twitter:title", content: "Lance Certo" },
+      { name: "twitter:description", content: "Lance Certo - Plataforma líder em leilões de centavos" },
     ],
     links: [
       {
@@ -100,6 +100,14 @@ export const Route = createRootRouteWithContext<{
       {
         rel: "manifest",
         href: "/manifest.json",
+      },
+      {
+        rel: "icon",
+        href: "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/favicon-0.8740770155566795.png",
+      },
+      {
+        rel: "apple-touch-icon",
+        href: "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/favicon-0.8740770155566795.png",
       },
     ],
 
