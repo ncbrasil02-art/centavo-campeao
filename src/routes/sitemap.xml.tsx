@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { supabase } from '@/integrations/supabase/client';
 
-export const Route = createFileRoute('/sitemap.xml')({
+export const Route = createFileRoute('/sitemap/xml')({
   loader: async () => {
     const { data: auctions } = await supabase
       .from('auctions')
