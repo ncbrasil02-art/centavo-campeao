@@ -11,7 +11,7 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Plus, User, Edit, Trash2, Star, MessageSquare } from "lucide-react";
+import { Plus, User, Edit, Trash2, Star, MessageSquare, Video, Image as ImageIcon, Eye } from "lucide-react";
 import { toast } from "sonner";
 import { 
   Dialog, 
@@ -220,8 +220,10 @@ function AdminTestimonials() {
               <TableRow className="border-white/5">
                 <TableHead className="text-white/40 font-bold uppercase text-[10px]">Cliente</TableHead>
                 <TableHead className="text-white/40 font-bold uppercase text-[10px]">Depoimento</TableHead>
+                <TableHead className="text-white/40 font-bold uppercase text-[10px]">Mídia</TableHead>
                 <TableHead className="text-white/40 font-bold uppercase text-[10px]">Avaliação</TableHead>
                 <TableHead className="text-white/40 font-bold uppercase text-[10px]">Status</TableHead>
+
                 <TableHead className="text-white/40 font-bold uppercase text-[10px] text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
@@ -249,6 +251,21 @@ function AdminTestimonials() {
                       <p className="text-xs text-white/60 line-clamp-2 italic">"{t.content}"</p>
                     </TableCell>
                     <TableCell>
+                      {t.media_url ? (
+                        <div className="flex items-center gap-2">
+                          {t.media_type === 'video' ? (
+                            <Video className="w-4 h-4 text-primary" />
+                          ) : (
+                            <ImageIcon className="w-4 h-4 text-primary" />
+                          )}
+                          <a href={t.media_url} target="_blank" rel="noreferrer" className="text-[10px] text-primary hover:underline">Ver Mídia</a>
+                        </div>
+                      ) : (
+                        <span className="text-[10px] text-white/20">Apenas Texto</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+
                       <div className="flex gap-0.5">
                         {Array.from({ length: 5 }).map((_, i) => (
                           <Star key={i} className={`w-3 h-3 ${i < t.rating ? "fill-yellow-500 text-yellow-500" : "text-white/10"}`} />
