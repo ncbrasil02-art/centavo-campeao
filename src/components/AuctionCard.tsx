@@ -41,7 +41,9 @@ interface AuctionCardProps {
 
 export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   const [auction, setAuction] = useState(initialAuction);
+  const { sound_enabled } = useSettings();
   const [timeLeft, setTimeLeft] = useState(0); 
+
   const [timerDuration, setTimerDuration] = useState(initialAuction.timer_duration || 15);
   const [isNewBid, setIsNewBid] = useState(false);
   const [showBonus, setShowBonus] = useState(false);
