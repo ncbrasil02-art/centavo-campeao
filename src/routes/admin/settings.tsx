@@ -80,7 +80,9 @@ function AdminSettings() {
     support_whatsapp: "",
     sound_enabled: true,
     narration_enabled: true,
+    welcome_bids: 0,
   });
+
 
   useEffect(() => {
     fetchSettings();
@@ -138,7 +140,9 @@ function AdminSettings() {
           support_whatsapp: publicData.support_whatsapp || "",
           sound_enabled: publicData.sound_enabled ?? true,
           narration_enabled: publicData.narration_enabled ?? true,
+          welcome_bids: publicData.welcome_bids || 0,
         });
+
       }
     } catch (error) {
       console.error("Error fetching settings:", error);
@@ -863,7 +867,33 @@ function AdminSettings() {
                 </div>
               </CardContent>
             </Card>
+            <Card className="bg-white/5 border-white/10 overflow-hidden backdrop-blur-md">
+              <CardHeader className="border-b border-white/5 bg-white/[0.02]">
+                <div className="flex items-center gap-2">
+                  <Zap className="w-5 h-5 text-yellow-500" />
+                  <div>
+                    <CardTitle className="text-lg">Campanhas & Brindes</CardTitle>
+                    <CardDescription className="text-white/40">Incentivos para novos usuários</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="p-6 space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="welcome_bids">Lances Grátis no Cadastro</Label>
+                  <Input 
+                    id="welcome_bids" 
+                    type="number"
+                    value={settings.welcome_bids} 
+                    onChange={(e) => setSettings({...settings, welcome_bids: parseInt(e.target.value) || 0})}
+                    placeholder="Ex: 5"
+                    className="bg-white/5 border-white/10 h-12"
+                  />
+                  <p className="text-[10px] text-white/40">Quantidade de lances que o usuário ganha automaticamente ao criar uma conta.</p>
+                </div>
+              </CardContent>
+            </Card>
           </div>
+
         </div>
       </main>
     </div>
