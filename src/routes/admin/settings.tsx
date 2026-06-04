@@ -26,7 +26,8 @@ import {
   Volume2,
   VolumeX,
   Mic,
-  Zap
+  Zap,
+  LayoutTemplate
 } from "lucide-react";
 
 import { Switch } from "@/components/ui/switch";
@@ -83,6 +84,8 @@ function AdminSettings() {
     sound_enabled: true,
     narration_enabled: true,
     welcome_bids: 0,
+    marquee_text: "",
+    marquee_enabled: true,
   });
 
 
@@ -143,6 +146,8 @@ function AdminSettings() {
           sound_enabled: publicData.sound_enabled ?? true,
           narration_enabled: publicData.narration_enabled ?? true,
           welcome_bids: publicData.welcome_bids || 0,
+          marquee_text: publicData.marquee_text || "",
+          marquee_enabled: publicData.marquee_enabled ?? true,
         });
 
       }
@@ -891,6 +896,39 @@ function AdminSettings() {
                     className="bg-white/5 border-white/10 h-12"
                   />
                   <p className="text-[10px] text-white/40">Quantidade de lances que o usuário ganha automaticamente ao criar uma conta.</p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="bg-white/5 border-white/10 overflow-hidden backdrop-blur-md">
+              <CardHeader className="border-b border-white/5 bg-white/[0.02]">
+                <div className="flex items-center gap-2">
+                  <LayoutTemplate className="w-5 h-5 text-primary" />
+                  <div>
+                    <CardTitle className="text-lg">Letreiro de Destaque (Marquee)</CardTitle>
+                    <CardDescription className="text-white/40">Faixa rolante no topo do site</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="p-6 space-y-6">
+                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10">
+                  <div className="space-y-0.5">
+                    <Label>Ativar Letreiro</Label>
+                    <p className="text-[10px] text-white/40">Exibir faixa no topo das páginas</p>
+                  </div>
+                  <Switch 
+                    checked={settings.marquee_enabled} 
+                    onCheckedChange={(val) => setSettings({...settings, marquee_enabled: val})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="marquee_text">Texto do Letreiro</Label>
+                  <Input 
+                    id="marquee_text" 
+                    value={settings.marquee_text} 
+                    onChange={(e) => setSettings({...settings, marquee_text: e.target.value})}
+                    placeholder="Ex: Ganhe 5 lances grátis ao se cadastrar!"
+                    className="bg-white/5 border-white/10 h-12"
+                  />
                 </div>
               </CardContent>
             </Card>
