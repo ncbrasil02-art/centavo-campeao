@@ -151,7 +151,7 @@ function AdminAuctions() {
         .from("auctions")
         .select(`
           *,
-          product (
+          product:products (
             id,
             name,
             images
