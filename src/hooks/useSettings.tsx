@@ -39,7 +39,10 @@ interface SiteSettings {
   pwa_enabled: boolean;
   android_app_url: string;
   ios_app_url: string;
+  whatsapp_number: string;
+  whatsapp_float_enabled: boolean;
 }
+
 
 
 interface SettingsContextType extends SiteSettings {
@@ -86,7 +89,10 @@ const DEFAULT_SETTINGS: SiteSettings = {
   pwa_enabled: true,
   android_app_url: "",
   ios_app_url: "",
+  whatsapp_number: "",
+  whatsapp_float_enabled: true,
 };
+
 
 
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
@@ -231,7 +237,10 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
             pwa_enabled: data.pwa_enabled ?? DEFAULT_SETTINGS.pwa_enabled,
             android_app_url: data.android_app_url || DEFAULT_SETTINGS.android_app_url,
             ios_app_url: data.ios_app_url || DEFAULT_SETTINGS.ios_app_url,
+            whatsapp_number: data.whatsapp_number || DEFAULT_SETTINGS.whatsapp_number,
+            whatsapp_float_enabled: data.whatsapp_float_enabled ?? DEFAULT_SETTINGS.whatsapp_float_enabled,
           };
+
 
           
           setSettings(fetchedSettings);

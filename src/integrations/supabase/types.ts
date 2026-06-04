@@ -708,6 +708,8 @@ export type Database = {
           theme_mode: string | null
           updated_at: string | null
           welcome_bids: number | null
+          whatsapp_float_enabled: boolean | null
+          whatsapp_number: string | null
         }
         Insert: {
           android_app_url?: string | null
@@ -749,6 +751,8 @@ export type Database = {
           theme_mode?: string | null
           updated_at?: string | null
           welcome_bids?: number | null
+          whatsapp_float_enabled?: boolean | null
+          whatsapp_number?: string | null
         }
         Update: {
           android_app_url?: string | null
@@ -790,6 +794,8 @@ export type Database = {
           theme_mode?: string | null
           updated_at?: string | null
           welcome_bids?: number | null
+          whatsapp_float_enabled?: boolean | null
+          whatsapp_number?: string | null
         }
         Relationships: []
       }

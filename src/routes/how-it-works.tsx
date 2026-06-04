@@ -40,7 +40,7 @@ function HowItWorks() {
         .select("*")
         .eq("is_active", true)
         .order("order_index", { ascending: true })
-        .limit(1); // Only one for how it works page as requested
+        .limit(4);
       
       if (data) setDemoAuctions(data);
     }
