@@ -83,7 +83,11 @@ const DEFAULT_SETTINGS: SiteSettings = {
   marquee_text: "Ganhe 5 lances grátis ao se cadastrar! 🚀 Participe dos leilões e arremate produtos incríveis com descontos de até 99%!",
   marquee_enabled: true,
   demo_auctions_enabled: false,
+  pwa_enabled: true,
+  android_app_url: "",
+  ios_app_url: "",
 };
+
 
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [settings, setSettings] = useState<SiteSettings>(() => {
