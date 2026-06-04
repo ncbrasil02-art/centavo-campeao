@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Clock, User, MessageSquare, Zap, Eye, Volume2, VolumeX, Calendar, ShieldCheck, Trophy, Wallet, Info } from "lucide-react";
+import { Clock, User, MessageSquare, Zap, Eye, Volume2, VolumeX, Calendar, ShieldCheck, Trophy, Wallet, Info, UserPlus } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { AuctionChat } from "./AuctionChat";
 import { toast } from "sonner";
