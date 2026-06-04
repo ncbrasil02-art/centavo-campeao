@@ -91,7 +91,10 @@ function AdminSettings() {
     pwa_enabled: true,
     android_app_url: "",
     ios_app_url: "",
+    whatsapp_number: "",
+    whatsapp_float_enabled: true,
   });
+
 
 
 
