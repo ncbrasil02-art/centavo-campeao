@@ -750,6 +750,46 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           )}
         </Button>
 
+        {isScheduled && auction.start_time && (
+          <div className="flex flex-col items-center gap-2 pt-2 border-t border-border mt-2 bg-zinc-950/20 rounded-2xl p-4">
+            <span className="text-[10px] font-black uppercase tracking-[0.1em] text-primary/80">INÍCIO EM (BRASÍLIA):</span>
+            <div className="flex gap-2 mb-1">
+              {timeLeft >= 3600 * 24 && (
+                <div className="flex flex-col items-center">
+                  <div className="bg-zinc-900/80 rounded-lg px-2 py-1 min-w-[36px] flex items-center justify-center border border-primary/20">
+                    <span className="text-lg font-black text-white tabular-nums">{timeParts.d}</span>
+                  </div>
+                  <span className="text-[8px] font-black text-primary/60 mt-0.5 uppercase">DIAS</span>
+                </div>
+              )}
+              <div className="flex flex-col items-center">
+                <div className="bg-zinc-900/80 rounded-lg px-2 py-1 min-w-[36px] flex items-center justify-center border border-primary/20">
+                  <span className="text-lg font-black text-white tabular-nums">{timeParts.h}</span>
+                </div>
+                <span className="text-[8px] font-black text-primary/60 mt-0.5 uppercase">HRS</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <div className="bg-zinc-900/80 rounded-lg px-2 py-1 min-w-[36px] flex items-center justify-center border border-primary/20">
+                  <span className="text-lg font-black text-white tabular-nums">{timeParts.m}</span>
+                </div>
+                <span className="text-[8px] font-black text-primary/60 mt-0.5 uppercase">MIN</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <div className="bg-zinc-900/80 rounded-lg px-2 py-1 min-w-[36px] flex items-center justify-center border border-primary/20">
+                  <span className="text-lg font-black text-white tabular-nums">{timeParts.s}</span>
+                </div>
+                <span className="text-[8px] font-black text-primary/60 mt-0.5 uppercase">SEG</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-900/50 border border-white/5">
+              <Calendar className="w-2.5 h-2.5 text-primary/70" />
+              <span className="text-[10px] font-bold text-white/80">
+                {new Date(auction.start_time).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })} às {new Date(auction.start_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+              </span>
+            </div>
+          </div>
+        )}
+
         {!isFinished && !isScheduled && (
           <div className="flex justify-center mt-2">
             <span className="text-[10px] font-black text-primary/60 uppercase tracking-widest animate-pulse italic bg-primary/5 px-3 py-1 rounded-full border border-primary/10">
@@ -757,6 +797,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             </span>
           </div>
         )}
+
 
       </div>
     </Card>
