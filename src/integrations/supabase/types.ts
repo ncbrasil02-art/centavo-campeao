@@ -355,6 +355,51 @@ export type Database = {
           },
         ]
       }
+      demo_auctions: {
+        Row: {
+          created_at: string | null
+          current_price: number | null
+          id: string
+          is_active: boolean | null
+          last_bidder_avatar: string | null
+          last_bidder_name: string | null
+          market_value: number
+          modality: string
+          order_index: number | null
+          product_image: string
+          product_name: string
+          timer_seconds: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          current_price?: number | null
+          id?: string
+          is_active?: boolean | null
+          last_bidder_avatar?: string | null
+          last_bidder_name?: string | null
+          market_value: number
+          modality?: string
+          order_index?: number | null
+          product_image: string
+          product_name: string
+          timer_seconds?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          current_price?: number | null
+          id?: string
+          is_active?: boolean | null
+          last_bidder_avatar?: string | null
+          last_bidder_name?: string | null
+          market_value?: number
+          modality?: string
+          order_index?: number | null
+          product_image?: string
+          product_name?: string
+          timer_seconds?: number | null
+        }
+        Relationships: []
+      }
       narration_phrases: {
         Row: {
           category: string
@@ -594,6 +639,7 @@ export type Database = {
           block_background_color: string | null
           border_color: string | null
           card_background_color: string | null
+          demo_auctions_enabled: boolean | null
           favicon_url: string | null
           fb_pixel_id: string | null
           font_color_primary: string | null
@@ -631,6 +677,7 @@ export type Database = {
           block_background_color?: string | null
           border_color?: string | null
           card_background_color?: string | null
+          demo_auctions_enabled?: boolean | null
           favicon_url?: string | null
           fb_pixel_id?: string | null
           font_color_primary?: string | null
@@ -668,6 +715,7 @@ export type Database = {
           block_background_color?: string | null
           border_color?: string | null
           card_background_color?: string | null
+          demo_auctions_enabled?: boolean | null
           favicon_url?: string | null
           fb_pixel_id?: string | null
           font_color_primary?: string | null

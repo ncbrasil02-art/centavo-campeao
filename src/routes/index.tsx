@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Navbar } from "@/components/Navbar";
 import { Hero, SecondaryBanner } from "@/components/HomeSections";
+import { DemoAuctionBlock } from "@/components/DemoAuctionBlock";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
 
 import { useSettings } from "@/hooks/useSettings";
@@ -102,7 +103,7 @@ function WinnerCard({ name, product, price, saving, avatarUrl, productImage }: {
 }
 
 function Index() {
-  const { site_name, google_reviews_widget, logo_url, logo_height, logo_height_mobile, logo_padding_x, logo_padding_y, support_whatsapp } = useSettings();
+  const { demo_auctions_enabled, site_name, google_reviews_widget, logo_url, logo_height, logo_height_mobile, logo_padding_x, logo_padding_y, support_whatsapp } = useSettings();
   const [auctions, setAuctions] = useState<any[]>([]);
   const [finishedAuctions, setFinishedAuctions] = useState<any[]>([]);
   const [winners, setWinners] = useState<any[]>([]);
@@ -111,6 +112,7 @@ function Index() {
   const [showChat, setShowChat] = useState(false);
   const [isChatExpanded, setIsChatExpanded] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [demoAuctions, setDemoAuctions] = useState<any[]>([]);
 
   useEffect(() => {
     setMounted(true);
@@ -153,7 +155,7 @@ function Index() {
 
 
   async function fetchData() {
-    const [auctionsRes, winnersRes, finishedRes, testimonialsRes] = await Promise.all([
+    const [auctionsRes, winnersRes, finishedRes, testimonialsRes, demoRes] = await Promise.all([
       supabase
         .from("v_home_live_auctions")
         .select("*")
@@ -178,7 +180,12 @@ function Index() {
         .select("*")
         .eq("active", true)
         .order("created_at", { ascending: false })
-        .limit(12)
+        .limit(12),
+      supabase
+        .from("demo_auctions")
+        .select("*")
+        .eq("is_active", true)
+        .order("order_index", { ascending: true })
     ]);
 
     if (auctionsRes.error) {
@@ -220,6 +227,10 @@ function Index() {
     } else {
       setTestimonials(testimonialsRes.data || []);
     }
+
+    if (!demoRes.error) {
+      setDemoAuctions(demoRes.data || []);
+    }
     
     setLoading(false);
   }
@@ -232,6 +243,12 @@ function Index() {
         {/* Main Content Area */}
         <div className="flex-1 overflow-y-auto scrollbar-hide">
           <Hero />
+
+          {demo_auctions_enabled && demoAuctions.length > 0 && (
+            <div className="container mx-auto px-4 mt-12">
+              <DemoAuctionBlock auctions={demoAuctions} />
+            </div>
+          )}
 
           {/* Featured Auctions Header */}
           <div className="container mx-auto px-4 mt-8">
