@@ -10,6 +10,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSettings } from "@/hooks/useSettings";
 import { AuctionChat } from "@/components/AuctionChat";
+import { AuctionVoiceAnnouncements } from "@/components/AuctionVoiceAnnouncements";
 import { useTimeSync } from "@/hooks/useTimeSync";
 // confetti will be imported dynamically on the client
 import { toast } from "sonner";
@@ -360,6 +361,11 @@ function AuctionPage() {
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
       <Navbar />
+      <AuctionVoiceAnnouncements 
+        auctionId={auction?.id} 
+        auctionName={auction?.product?.name} 
+        isLive={auction?.status === 'live'} 
+      />
       
       <main className="container mx-auto px-4 py-8 md:py-12">
         <div className="flex items-center gap-2 mb-8 text-muted-foreground hover:text-foreground transition-colors">
