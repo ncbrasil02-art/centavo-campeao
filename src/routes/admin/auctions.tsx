@@ -157,10 +157,10 @@ function AdminAuctions() {
       }
 
       if (searchTerm) {
-        // Since we are joining products, we might want to filter by product name too
-        // But for now let's keep it simple or use a dedicated view/RPC if needed
-        // For now searching by status is the primary admin task
+        // Filtragem por nome do produto
+        query = query.ilike('product.name', `%${searchTerm}%`);
       }
+
 
       if (dateFilter) {
         const startOfDay = new Date(dateFilter);
@@ -1225,8 +1225,8 @@ function AdminAuctions() {
               ) : (
 
                 auctions
-                  .filter(a => a.product?.name?.toLowerCase().includes(searchTerm.toLowerCase()))
                   .map((auction) => (
+
                   <TableRow key={auction.id} className={`border-white/5 transition-colors ${
                     selectedAuctions.includes(auction.id) ? 'bg-primary/10' :
                     auction.status === 'live' ? 'bg-green-600/20 hover:bg-green-600/30 border-l-4 border-l-green-500' : 
