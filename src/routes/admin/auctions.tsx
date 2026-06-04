@@ -11,7 +11,7 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Plus, Gavel, Calendar, Clock, Edit, Trash2, CheckCircle, XCircle, Power, Upload, Loader2, Image as ImageIcon, ChevronLeft, ChevronRight, Bell, List } from "lucide-react";
+import { Plus, Gavel, Calendar, Clock, Edit, Trash2, CheckCircle, XCircle, Power, Upload, Loader2, Image as ImageIcon, ChevronLeft, ChevronRight, Bell, List, Filter, RotateCcw, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 import { 
   Dialog, 
@@ -32,7 +32,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { format } from "date-fns";
+import { format, isSameDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { NotificationDialog } from "@/components/admin/NotificationDialog";
 import { useTimeSync } from "@/hooks/useTimeSync";
@@ -50,7 +50,9 @@ function AdminAuctions() {
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [dateFilter, setDateFilter] = useState("");
   const [viewingBidsAuction, setViewingBidsAuction] = useState<any>(null);
+  const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
   const auctionsPerPage = 50; 
 
   const { formatBrasiliaTime } = useTimeSync();
@@ -125,7 +127,7 @@ function AdminAuctions() {
       fetchAuctions();
     }, 300); // Optimized debounce
     return () => clearTimeout(timer);
-  }, [page, statusFilter, searchTerm]);
+  }, [page, statusFilter, searchTerm, dateFilter]);
 
   async function fetchInitialData() {
     try {
@@ -142,7 +144,7 @@ function AdminAuctions() {
     try {
       let query = supabase
         .from("auctions")
-        .select("*, product:products(id, name, images), last_bidder:profiles(username)")
+        .select("*, product:products(id, name, images), last_bidder:profiles(id, username, phone)")
         .range((page - 1) * auctionsPerPage, page * auctionsPerPage - 1);
       
       if (statusFilter !== "all") {
@@ -153,6 +155,17 @@ function AdminAuctions() {
         // Since we are joining products, we might want to filter by product name too
         // But for now let's keep it simple or use a dedicated view/RPC if needed
         // For now searching by status is the primary admin task
+      }
+
+      if (dateFilter) {
+        const startOfDay = new Date(dateFilter);
+        startOfDay.setHours(0, 0, 0, 0);
+        const endOfDay = new Date(dateFilter);
+        endOfDay.setHours(23, 59, 59, 999);
+        
+        query = query
+          .gte("start_time", startOfDay.toISOString())
+          .lte("start_time", endOfDay.toISOString());
       }
 
       const { data, error } = await query.order('start_time', { ascending: false });
@@ -569,6 +582,49 @@ function AdminAuctions() {
     }
   };
 
+  const handleResetAllAuctions = async () => {
+    const loadingToast = toast.loading("Zerando todos os leilões...");
+    try {
+      // Get all live or scheduled auctions
+      const { data: auctionsToCancel, error: fetchError } = await supabase
+        .from("auctions")
+        .select("id")
+        .in("status", ["live", "scheduled"]);
+
+      if (fetchError) throw fetchError;
+
+      if (auctionsToCancel && auctionsToCancel.length > 0) {
+        const ids = auctionsToCancel.map(a => a.id);
+        
+        const { error: deleteError } = await supabase
+          .from("auctions")
+          .delete()
+          .in("id", ids);
+
+        if (deleteError) throw deleteError;
+      }
+
+      toast.success("Todos os leilões ativos e agendados foram zerados!");
+      setIsResetDialogOpen(false);
+      fetchAuctions();
+    } catch (err: any) {
+      console.error("Error resetting auctions:", err);
+      toast.error("Erro ao zerar leilões: " + err.message);
+    } finally {
+      toast.dismiss(loadingToast);
+    }
+  };
+
+  const openWhatsApp = (phone: string, product: string) => {
+    if (!phone) {
+      toast.error("Usuário não possui telefone cadastrado");
+      return;
+    }
+    const cleanPhone = phone.replace(/\D/g, "");
+    const message = encodeURIComponent(`Olá! Gostaria de falar sobre o leilão do produto: ${product}`);
+    window.open(`https://wa.me/55${cleanPhone}?text=${message}`, '_blank');
+  };
+
 
 
   return (
@@ -583,8 +639,16 @@ function AdminAuctions() {
             <p className="text-white/40">Controle todos os leilões ativos e agendados</p>
           </div>
           
-          <div className="flex items-center gap-3 w-full md:w-auto">
-            <Button variant="outline" className="border-white/10 hover:bg-white/5 text-white" onClick={() => setIsBulkDialogOpen(true)}>
+          <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+            <Button 
+              variant="destructive" 
+              className="bg-red-600 hover:bg-red-700 text-white font-bold text-xs" 
+              onClick={() => setIsResetDialogOpen(true)}
+            >
+              <RotateCcw className="w-4 h-4 mr-2" /> Zerar Leilões
+            </Button>
+
+            <Button variant="outline" className="border-white/10 hover:bg-white/5 text-white text-xs h-10" onClick={() => setIsBulkDialogOpen(true)}>
               <Calendar className="w-4 h-4 mr-2" /> Agendamento em Massa
             </Button>
             <div className="relative flex-1 md:w-64">
@@ -593,6 +657,14 @@ function AdminAuctions() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="bg-white/5 border-white/10 h-10 pr-10"
+              />
+            </div>
+            <div className="relative">
+              <Input 
+                type="date"
+                value={dateFilter}
+                onChange={(e) => setDateFilter(e.target.value)}
+                className="bg-white/5 border-white/10 h-10 w-[160px] text-white"
               />
             </div>
             
@@ -1108,7 +1180,18 @@ function AdminAuctions() {
                       />
                     </TableCell>
                     <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
+                      <div className="flex justify-end gap-1">
+                        {auction.last_bidder?.phone && (
+                          <Button 
+                            size="icon" 
+                            variant="ghost" 
+                            className="h-8 w-8 text-green-500 hover:bg-green-500/10" 
+                            title="Falar no WhatsApp"
+                            onClick={() => openWhatsApp(auction.last_bidder.phone, auction.product?.name)}
+                          >
+                            <MessageCircle className="w-4 h-4" />
+                          </Button>
+                        )}
                         {auction.status === 'scheduled' && (
                           <NotificationDialog auction={auction} />
                         )}
@@ -1199,6 +1282,29 @@ function AdminAuctions() {
             onClose={() => setViewingBidsAuction(null)} 
           />
         )}
+        <Dialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
+          <DialogContent className="bg-zinc-900 border-white/10 text-white">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-black uppercase italic text-red-500">
+                Atenção: Zerar Leilões
+              </DialogTitle>
+            </DialogHeader>
+            <div className="py-4">
+              <p className="text-white/60">
+                Esta ação irá <strong>excluir permanentemente</strong> todos os leilões com status <strong>Ativo</strong> ou <strong>Agendado</strong>.
+                Esta operação não pode ser desfeita.
+              </p>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsResetDialogOpen(false)} className="bg-white/5 border-white/10 text-white">
+                Cancelar
+              </Button>
+              <Button onClick={handleResetAllAuctions} className="bg-red-600 hover:bg-red-700 text-white">
+                Confirmar e Zerar
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </main>
     </div>
   );
