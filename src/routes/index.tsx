@@ -99,7 +99,7 @@ function WinnerCard({ name, product, price, saving, avatarUrl, productImage }: {
 }
 
 function Index() {
-  const { google_reviews_widget, logo_url, logo_height, logo_height_mobile, logo_padding_x, logo_padding_y, support_whatsapp } = useSettings();
+  const { site_name, google_reviews_widget, logo_url, logo_height, logo_height_mobile, logo_padding_x, logo_padding_y, support_whatsapp } = useSettings();
   const [auctions, setAuctions] = useState<any[]>([]);
   const [finishedAuctions, setFinishedAuctions] = useState<any[]>([]);
   const [winners, setWinners] = useState<any[]>([]);
@@ -409,7 +409,7 @@ function Index() {
               <div className="text-center mb-16">
                 <Badge variant="outline" className="mb-4 border-primary/30 bg-primary/10 text-primary uppercase tracking-widest text-[10px]">COMMUNITY FEEDBACK</Badge>
                 <h2 className="text-4xl font-black tracking-tight text-white mb-4 italic uppercase">Voz da <span className="text-primary">Comunidade</span></h2>
-                <p className="text-white/40 max-w-2xl mx-auto">Milhares de usuários já vivenciaram a adrenalina do Lance Certo. Confira o que eles estão dizendo sobre a experiência.</p>
+                <p className="text-white/40 max-w-2xl mx-auto">Milhares de usuários já vivenciaram a adrenalina do {site_name}. Confira o que eles estão dizendo sobre a experiência.</p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -450,13 +450,13 @@ function Index() {
                 <div className="flex flex-col gap-6 items-center md:items-start text-center md:text-left">
                   <div className="flex items-center gap-3">
                     <span className="text-2xl font-black tracking-tighter text-white uppercase italic">
-                      LANCE<span className="text-primary">CERTO</span>
+                      {site_name.split(' ')[0]}<span className="text-primary">{site_name.split(' ').slice(1).join('')}</span>
                     </span>
                     <div className="w-1.5 h-1.5 rounded-full bg-primary/40"></div>
-                    <span className="text-white/40 text-xs font-medium uppercase tracking-widest">© 2026</span>
+                    <span className="text-white/40 text-xs font-medium uppercase tracking-widest">© {new Date().getFullYear()}</span>
                   </div>
-                  <p className="text-white/40 text-xs leading-relaxed max-w-sm italic">
-                    O Lance Certo Premium é uma plataforma de leilões de centavos que prioriza a transparência, a agilidade e a emoção da disputa real. Nossa missão é proporcionar a melhor experiência de arremate com total segurança e suporte ao usuário.
+                  <p className="text-white/40 text-[10px] leading-relaxed max-w-sm italic">
+                    O {site_name} é uma plataforma de leilões de centavos que prioriza a transparência, a agilidade e a emoção da disputa real. Nossa missão é proporcionar a melhor experiência de arremate com total segurança e suporte ao usuário.
                   </p>
                   <div className="flex gap-4">
                     {support_whatsapp && (
@@ -497,12 +497,12 @@ function Index() {
                       style={{ height: `${(logo_height || 40) * 0.8}px` }}
                     />
                   ) : (
-                    <div className="text-xl font-black text-primary tracking-tighter uppercase italic opacity-50">LANCECERTO</div>
+                    <div className="text-xl font-black text-primary tracking-tighter uppercase italic opacity-50">{site_name}</div>
                   )}
 
                   <div className="flex flex-col items-center md:items-end gap-2 text-center md:text-right">
                     <div className="text-white/40 text-[10px] font-bold uppercase tracking-[0.2em]">
-                      SISTEMA DE LEILÃO DESENVOLVIDO POR <a href="https://www.ncbrasil.com.br" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 transition-all font-black italic border-b border-primary/30 pb-0.5 hover:border-primary">NC BRASIL</a>
+                      SISTEMA DE LEILÃO DESENVOLVIDO POR <a href="https://ncbrasil.com.br" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 transition-all font-black italic border-b border-primary/30 pb-0.5 hover:border-primary">NC BRASIL</a>
                     </div>
                     <div className="flex items-center gap-1.5 text-[8px] text-white/10 uppercase tracking-[0.4em] font-medium">
                       FEITO COM <Heart className="w-2 h-2 text-red-500/20 fill-red-500/20" /> PARA ARREMATADORES DE ELITE.
