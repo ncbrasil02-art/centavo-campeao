@@ -161,7 +161,10 @@ function AdminSettings() {
           pwa_enabled: publicData.pwa_enabled ?? true,
           android_app_url: publicData.android_app_url || "",
           ios_app_url: publicData.ios_app_url || "",
+          whatsapp_number: publicData.whatsapp_number || "",
+          whatsapp_float_enabled: publicData.whatsapp_float_enabled ?? true,
         });
+
 
 
       }
