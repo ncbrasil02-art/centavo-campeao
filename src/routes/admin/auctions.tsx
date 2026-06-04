@@ -780,13 +780,30 @@ function AdminAuctions() {
               <Calendar className="w-4 h-4 mr-2" /> Agendamento em Massa
             </Button>
 
-            <div className="relative flex-1 md:w-64">
-              <Input 
-                placeholder="Buscar produto..." 
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="bg-white/5 border-white/10 h-10 pr-10"
-              />
+            <div className="relative flex-1 md:w-64 flex gap-2">
+              <div className="relative flex-1">
+                <Input 
+                  placeholder="Buscar produto..." 
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="bg-white/5 border-white/10 h-10 pr-10"
+                />
+              </div>
+              {(searchTerm || statusFilter !== "all" || dateFilter) && (
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-10 w-10 text-white/20 hover:text-white"
+                  onClick={() => {
+                    setSearchTerm("");
+                    setStatusFilter("all");
+                    setDateFilter("");
+                    setPage(1);
+                  }}
+                >
+                  <RotateCcw className="w-4 h-4" />
+                </Button>
+              )}
             </div>
             <div className="relative">
               <Input 
