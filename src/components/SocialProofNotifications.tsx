@@ -88,19 +88,20 @@ export function SocialProofNotifications() {
       // Show first one immediately when interval triggers
       showNotification();
       
-      // Schedule the second one a bit later
-      setTimeout(showNotification, 45000);
+      // Schedule the second one (at least 2 minutes later)
+      setTimeout(showNotification, 2.1 * 60 * 1000);
       
-      // Schedule the third one even later
-      setTimeout(showNotification, 90000);
+      // Schedule the third one (at least another 2 minutes later)
+      setTimeout(showNotification, 4.2 * 60 * 1000);
       
-    }, 2.5 * 60 * 1000); // 2.5 minutes interval
+    }, 10 * 60 * 1000); // Main loop runs every 10 minutes
 
     return () => {
       clearTimeout(initialTimeout);
       clearInterval(interval);
     };
   }, []);
+
 
   return null;
 }
