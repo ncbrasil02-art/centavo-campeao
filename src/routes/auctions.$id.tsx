@@ -71,11 +71,11 @@ function AuctionPage() {
   }, []);
 
   const playBidSound = useCallback(() => {
-    if (audioRef.current && !isMuted) {
+    if (audioRef.current && !isMuted && sound_enabled) {
       audioRef.current.currentTime = 0;
       audioRef.current.play().catch(err => console.error("Error playing sound:", err));
     }
-  }, [isMuted]);
+  }, [isMuted, sound_enabled]);
 
   // Play sound when auction updates (e.g. real-time bid from others)
   const lastPriceRef = useRef<number>(0);
