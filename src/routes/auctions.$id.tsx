@@ -29,6 +29,7 @@ export const Route = createFileRoute("/auctions/$id")({
 
 function AuctionPage() {
   const { id } = Route.useParams();
+  const { sound_enabled } = useSettings();
   const [auction, setAuction] = useState<any>(null);
   const [bids, setBids] = useState<any[]>([]);
   const [showAllBids, setShowAllBids] = useState(false);
