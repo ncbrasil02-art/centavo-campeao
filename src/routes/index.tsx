@@ -338,6 +338,7 @@ function Index() {
 
 
 
+
           {/* How it Works Section */}
           <section className="py-24 relative overflow-hidden">
             <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] -z-10"></div>
@@ -394,8 +395,7 @@ function Index() {
             </div>
           </section>
 
-          {/* Finished Auctions Section */}
-          {finishedAuctions.length > 0 && (
+          {show_finished_auctions && finishedAuctions.length > 0 && (
             <section className="py-20 bg-muted/50 border-y border-border">
               <div className="container mx-auto px-4">
                 <div className="mb-12">
@@ -436,16 +436,10 @@ function Index() {
             </section>
           )}
 
-          <SecondaryBanner 
-            title="Sua chance de ter um iPhone 15 Pro" 
-            subtitle="Leilões diários de smartphones premium. Participe das disputas em tempo real e economize até 90%."
-            imageUrl="https://images.unsplash.com/photo-1696446701796-da61225697cc?auto=format&fit=crop&q=80&w=2000"
-            linkUrl="/auctions"
-            reverse
-          />
+          {show_testimonials && (
+            <TestimonialsSection testimonials={testimonials} />
+          )}
 
-
-          <TestimonialsSection />
 
 
           <Footer />
