@@ -680,22 +680,39 @@ function AdminAuctions() {
       if (fetchError) throw fetchError;
 
       if (auctionsToCancel && auctionsToCancel.length > 0) {
-        const ids = auctionsToCancel.map(a => a.id);
+        const allIds = auctionsToCancel.map(a => a.id);
         
-        const { error: deleteError } = await supabase
-          .from("auctions")
-          .delete()
-          .in("id", ids);
+        // Check for auctions with winners (safety)
+        const { data: winners, error: winError } = await supabase
+          .from("winners")
+          .select("auction_id")
+          .in("auction_id", allIds);
 
-        if (deleteError) throw deleteError;
+        if (winError) throw winError;
+        
+        const auctionsWithWinners = winners?.map(w => w.auction_id) || [];
+        const safeIds = allIds.filter(id => !auctionsWithWinners.includes(id));
+
+        if (safeIds.length > 0) {
+          const { error: deleteError } = await supabase
+            .from("auctions")
+            .delete()
+            .in("id", safeIds);
+
+          if (deleteError) throw deleteError;
+          toast.success(`${safeIds.length} leilões foram zerados!`, { id: loadingToast });
+        } else {
+          toast.info("Nenhum leilão seguro para zerar foi encontrado.", { id: loadingToast });
+        }
+      } else {
+        toast.info("Não há leilões ativos ou agendados para zerar.", { id: loadingToast });
       }
 
-      toast.success("Todos os leilões ativos e agendados foram zerados!");
       setIsResetDialogOpen(false);
       fetchAuctions();
     } catch (err: any) {
       console.error("Error resetting auctions:", err);
-      toast.error("Erro ao zerar leilões: " + err.message);
+      toast.error("Erro ao zerar leilões: " + err.message, { id: loadingToast });
     } finally {
       toast.dismiss(loadingToast);
     }
