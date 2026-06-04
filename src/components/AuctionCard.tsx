@@ -224,21 +224,19 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       if (!targetTime) return;
       
       const target = new Date(targetTime).getTime();
-      const now = Date.now() + offset; // Use offset directly for performance
+      const now = Date.now() + offset; 
       const diff = Math.max(0, (target - now) / 1000);
       
       setTimeLeft(diff);
 
-      // Transition check: if scheduled and timer is zero, force a status check
+      // Transition check
       if ((isScheduled || currentStatus === 'scheduled') && diff <= 0 && !isRefreshing) {
         isRefreshing = true;
         console.log("Scheduled auction reached zero, initiating server tick...");
         
         try {
-          // Call tick_auctions to ensure server status is updated
           await supabase.rpc('tick_auctions');
           
-          // Re-fetch to get updated status and timing
           const { data, error } = await supabase
             .from("auctions")
             .select("*, product:products(*), last_bidder:profiles(*)")
@@ -246,15 +244,12 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             .single();
           
           if (data && data.status !== 'scheduled') {
-            console.log("Auction is now live:", data);
             setAuction(data);
             if (data.end_time) {
               const newEnd = new Date(data.end_time).getTime();
               const newNow = Date.now() + offset;
               setTimeLeft(Math.max(0, (newEnd - newNow) / 1000));
             }
-          } else if (error) {
-            console.error("Error refreshing auction:", error);
           }
         } catch (err) {
           console.error("Failed to tick/refresh auction:", err);
@@ -263,10 +258,17 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         }
       }
 
+      // NOVO: Tick constante para robôs se o leilão estiver LIVE e o tempo estiver baixo
+      // Isso ajuda a manter a disputa ativa mesmo se o cron externo demorar
+      if (!isScheduled && currentStatus === 'live' && diff <= 2 && diff > 0 && !isRefreshing) {
+        // Chamada silenciosa para processar robôs se estiver nos últimos segundos
+        supabase.rpc('tick_auctions').catch(() => {});
+      }
+
       if (!isScheduled && diff <= 0 && !confettiFired.current && auction.status === 'live') {
         // ... confetti logic if needed
       }
-    }, 10); // Run more frequently for decimal precision
+    }, 100); // 100ms is enough and less intensive than 10ms
 
     return () => {
       supabase.removeChannel(channel);
