@@ -78,6 +78,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
       logo_padding_y: 0,
       google_reviews_widget: "",
       support_whatsapp: "",
+      sound_enabled: true,
+      narration_enabled: true,
     };
   });
 
