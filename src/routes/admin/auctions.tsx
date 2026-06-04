@@ -161,7 +161,7 @@ function AdminAuctions() {
             username,
             phone
           )
-        `)
+        `, { count: 'exact' })
         .range((page - 1) * auctionsPerPage, page * auctionsPerPage - 1);
 
       
@@ -170,8 +170,19 @@ function AdminAuctions() {
       }
 
       if (searchTerm) {
-        // Filtragem por nome do produto
-        query = query.ilike('product.name', `%${searchTerm}%`);
+        // Filtragem direta no auctions baseada no product_id se possível,
+        // ou buscamos os produtos primeiro. Para manter a performance:
+        const { data: matchedProducts } = await supabase
+          .from("products")
+          .select("id")
+          .ilike('name', `%${searchTerm}%`);
+        
+        if (matchedProducts && matchedProducts.length > 0) {
+          query = query.in('product_id', matchedProducts.map(p => p.id));
+        } else {
+          // Se não achar produtos, forçamos retorno vazio
+          query = query.eq('product_id', '00000000-0000-0000-0000-000000000000');
+        }
       }
 
 
