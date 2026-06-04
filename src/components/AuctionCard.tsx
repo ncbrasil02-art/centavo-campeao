@@ -793,11 +793,14 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           )}
         </Button>
 
-        {!isFinished && (
-          <p className="text-[10px] text-center text-muted-foreground/30 uppercase tracking-[0.2em] font-bold mt-2 italic">
-            {incentivePhrase.split(' ').slice(1).join(' ')}
-          </p>
+        {!isFinished && !isScheduled && (
+          <div className="flex justify-center mt-2">
+            <span className="text-[10px] font-black text-primary/60 uppercase tracking-widest animate-pulse italic bg-primary/5 px-3 py-1 rounded-full border border-primary/10">
+              {incentivePhrase}
+            </span>
+          </div>
         )}
+
       </div>
     </Card>
   );
