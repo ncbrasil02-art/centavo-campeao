@@ -139,22 +139,18 @@ function AuctionPage() {
         async (payload) => {
           console.log('Auction real-time update:', payload.new);
           
-          // If the last_bidder_id changed, we need to fetch the profile data for the leader UI
-          if (payload.new.last_bidder_id !== auction.last_bidder_id) {
-            const { data: profileData } = await supabase
-              .from('profiles')
-              .select('username, avatar_url')
-              .eq('id', payload.new.last_bidder_id)
-              .maybeSingle();
-            
-            setAuction((prev: any) => ({ 
-              ...prev, 
-              ...payload.new,
-              last_bidder: profileData 
-            }));
-          } else {
-            setAuction((prev: any) => ({ ...prev, ...payload.new }));
-          }
+          // Fetch the latest profile data for the leader UI
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('username, avatar_url')
+            .eq('id', payload.new.last_bidder_id)
+            .maybeSingle();
+          
+          setAuction((prev: any) => ({ 
+            ...prev, 
+            ...payload.new,
+            last_bidder: profileData || prev?.last_bidder
+          }));
 
           // Recalculate time remaining instantly
           if (payload.new.end_time) {
@@ -699,9 +695,12 @@ function AuctionPage() {
                     : 'bg-muted/30 border-border hover:bg-muted/50'
                 }`}>
                   <div className="flex items-center gap-4">
-                    <div className={`w-14 h-14 rounded-full bg-muted flex items-center justify-center overflow-hidden shrink-0 shadow-lg border-2 transition-all duration-500 ${
-                      isNewBid ? 'border-primary scale-110' : 'border-primary/20'
-                    }`}>
+                    <div 
+                      key={auction.last_bidder_id || 'no-bidder'}
+                      className={`w-14 h-14 rounded-full bg-muted flex items-center justify-center overflow-hidden shrink-0 shadow-lg border-2 transition-all duration-500 ${
+                        isNewBid ? 'border-primary scale-110' : 'border-primary/20'
+                      }`}
+                    >
                       <img 
                         src={auction.last_bidder?.avatar_url || getFallbackAvatarUrl(auction.last_bidder?.username)} 
                         className="w-full h-full object-cover" 
@@ -714,13 +713,8 @@ function AuctionPage() {
                         {isFinished || isConfirmed || isPendingAudit ? "Grande Arrematador" : "Liderando Agora"}
                       </span>
                       <span className={`text-xl font-black transition-all italic uppercase ${isNewBid ? 'text-primary scale-105 origin-left' : isFinished ? 'text-green-500' : 'text-foreground group-hover/bidder:text-primary'}`}>
-                        {auction.last_bidder?.username || (isFinished ? "Encerrado" : (auction.status === 'scheduled' || !auction.last_bidder?.username) && currentWinner ? (
-                          <span className="animate-in fade-in slide-in-from-right-4 duration-500">
-                            {currentWinner.winner_name} levou {currentWinner.product_name}
-                          </span>
-                        ) : "Nenhum lance")}
+                        {auction.last_bidder?.username || (isFinished ? "Encerrado" : "Nenhum lance")}
                       </span>
-
                     </div>
                   </div>
                   {showBonus && (
@@ -820,18 +814,13 @@ function AuctionPage() {
                     )}
                   </div>
                 ) : (
-                  <div className="py-20 text-center space-y-4">
-                    <div className="inline-flex p-4 rounded-full bg-muted text-muted-foreground/20">
-                      <Zap className="w-12 h-12" />
+                   <div className="py-20 text-center space-y-4">
+                    <div className="inline-flex p-4 rounded-full bg-muted text-muted-foreground/10">
+                      <Gavel className="w-12 h-12" />
                     </div>
                     <p className="text-muted-foreground/30 font-black uppercase tracking-[0.2em] italic text-sm">
-                      {auction.status === 'scheduled' && currentWinner ? (
-                        <span className="animate-in fade-in slide-in-from-right-4 duration-500 text-primary/60">
-                          {currentWinner.winner_name} arrematou {currentWinner.product_name}
-                        </span>
-                      ) : "Aguardando lance inicial..."}
+                      Aguardando lance inicial...
                     </p>
-
                   </div>
                 )}
               </div>
