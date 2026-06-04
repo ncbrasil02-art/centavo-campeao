@@ -68,8 +68,9 @@ export function Footer() {
               <Link to="/how-it-works" className="hover:text-primary transition-colors">Como Funciona</Link>
               <Link to="/ranking" className="hover:text-primary transition-colors">Ranking</Link>
               <Link to="/packages" className="hover:text-primary transition-colors">Comprar Lances</Link>
-              <Link to="/" className="hover:text-primary transition-colors">Termos</Link>
-              <Link to="/" className="hover:text-primary transition-colors">Privacidade</Link>
+              <Link to="/terms-of-use" className="hover:text-primary transition-colors">Termos</Link>
+              <Link to="/privacy-policy" className="hover:text-primary transition-colors">Privacidade</Link>
+
             </nav>
           </div>
 
@@ -112,7 +113,7 @@ export function Footer() {
               rel="noopener noreferrer"
               className="hover:text-primary transition-colors duration-300 tracking-[0.3em] font-black"
             >
-              ..sistema leilão centavos..
+              sistema leilão centavos
             </a>
           </div>
         </div>

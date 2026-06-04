@@ -29,8 +29,11 @@ import {
   Zap,
   Play,
   LayoutTemplate,
-  MessageSquare
+  MessageSquare,
+  ShieldCheck,
+  FileText
 } from "lucide-react";
+
 
 
 import { Switch } from "@/components/ui/switch";
@@ -95,7 +98,10 @@ function AdminSettings() {
     ios_app_url: "",
     whatsapp_number: "",
     whatsapp_float_enabled: true,
+    terms_of_use: "",
+    privacy_policy: "",
   });
+
 
 
 
@@ -165,7 +171,10 @@ function AdminSettings() {
           ios_app_url: publicData.ios_app_url || "",
           whatsapp_number: publicData.whatsapp_number || "",
           whatsapp_float_enabled: publicData.whatsapp_float_enabled ?? true,
+          terms_of_use: publicData.terms_of_use || "",
+          privacy_policy: publicData.privacy_policy || "",
         });
+
 
 
 
