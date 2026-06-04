@@ -21,7 +21,7 @@ aside:has(a[href*="lovable.dev"]) {
   --card-foreground: oklch(0.984 0.003 247.858);
   --popover: oklch(0.15 0.03 264.7);
   --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: #8B5CF6; /* Roxo padrão antes do carregamento */
+  --primary: #f58c14; /* Cor primária atualizada */
   --primary-foreground: oklch(0.984 0.003 247.858);
   --secondary: oklch(0.208 0.042 265.755);
   --secondary-foreground: oklch(0.984 0.003 247.858);
