@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Navbar } from "@/components/Navbar";
 import { Hero, SecondaryBanner } from "@/components/HomeSections";
+import { DemoAuctionBlock } from "@/components/DemoAuctionBlock";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
 
 import { useSettings } from "@/hooks/useSettings";
