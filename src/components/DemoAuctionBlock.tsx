@@ -124,15 +124,17 @@ export function DemoAuctionBlock({ auctions: initialAuctions }: { auctions: Demo
             
             return (
               <Card key={auction.id} className={`bg-zinc-900/50 border-white/10 rounded-[32px] overflow-hidden flex flex-col h-full group transition-all duration-500 ${winners[auction.id] ? 'border-red-500 shadow-[0_0_30px_rgba(239,68,68,0.2)]' : 'hover:border-primary/50'}`}>
-                <div className="relative h-64 w-full bg-white flex items-center justify-center p-4">
+                <div className="relative h-64 w-full flex items-center justify-center overflow-hidden">
                   <img 
                     src={auction.product_image} 
                     alt={auction.product_name} 
-                    className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-500" 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                     onError={(e) => {
                       (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800&auto=format&fit=crop";
                     }}
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+
 
                   <div className="absolute top-4 left-4 z-10">
                     <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-md border border-white/10 ${modality.bgColor} ${modality.color}`}>
