@@ -53,7 +53,41 @@ export function NarrationSettings() {
     } else {
       toast.success("Frase adicionada!");
       setNewPhrase("");
-      fetchPhrases();
+      fetchAllData();
+    }
+    setLoading(false);
+  }
+
+  async function handleAddAppPhrase() {
+    if (!newAppPhrase.trim()) return;
+    setLoading(true);
+    const { error } = await supabase
+      .from("app_phrases")
+      .insert({ text: newAppPhrase.trim(), type: 'incentive', active: true });
+    
+    if (error) {
+      toast.error("Erro ao adicionar frase");
+    } else {
+      toast.success("Frase adicionada!");
+      setNewAppPhrase("");
+      fetchAllData();
+    }
+    setLoading(false);
+  }
+
+  async function handleAddTemplate() {
+    if (!newTemplate.trim()) return;
+    setLoading(true);
+    const { error } = await supabase
+      .from("future_auction_templates")
+      .insert({ template_text: newTemplate.trim(), is_active: true });
+    
+    if (error) {
+      toast.error("Erro ao adicionar template");
+    } else {
+      toast.success("Template adicionado!");
+      setNewTemplate("");
+      fetchAllData();
     }
     setLoading(false);
   }
@@ -65,7 +99,7 @@ export function NarrationSettings() {
       .eq("id", id);
     
     if (error) toast.error("Erro ao atualizar frase");
-    else fetchPhrases();
+    else fetchAllData();
   }
 
   async function deletePhrase(id: string) {
@@ -77,9 +111,56 @@ export function NarrationSettings() {
     if (error) toast.error("Erro ao excluir frase");
     else {
       toast.success("Frase removida");
-      fetchPhrases();
+      fetchAllData();
     }
   }
+
+  async function toggleAppPhrase(id: string, active: boolean) {
+    const { error } = await supabase
+      .from("app_phrases")
+      .update({ active })
+      .eq("id", id);
+    
+    if (error) toast.error("Erro ao atualizar frase");
+    else fetchAllData();
+  }
+
+  async function deleteAppPhrase(id: string) {
+    const { error } = await supabase
+      .from("app_phrases")
+      .delete()
+      .eq("id", id);
+    
+    if (error) toast.error("Erro ao excluir frase");
+    else {
+      toast.success("Frase removida");
+      fetchAllData();
+    }
+  }
+
+  async function toggleTemplate(id: string, active: boolean) {
+    const { error } = await supabase
+      .from("future_auction_templates")
+      .update({ is_active: active })
+      .eq("id", id);
+    
+    if (error) toast.error("Erro ao atualizar template");
+    else fetchAllData();
+  }
+
+  async function deleteTemplate(id: string) {
+    const { error } = await supabase
+      .from("future_auction_templates")
+      .delete()
+      .eq("id", id);
+    
+    if (error) toast.error("Erro ao excluir template");
+    else {
+      toast.success("Template removido");
+      fetchAllData();
+    }
+  }
+
 
   async function handleUpdateMarquee() {
     setLoading(true);
