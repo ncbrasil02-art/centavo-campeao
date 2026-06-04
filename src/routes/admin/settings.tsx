@@ -25,8 +25,10 @@ import {
   Moon,
   Volume2,
   VolumeX,
-  Mic
+  Mic,
+  Zap
 } from "lucide-react";
+
 import { Switch } from "@/components/ui/switch";
 import { 
   Select, 
