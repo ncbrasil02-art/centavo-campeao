@@ -59,7 +59,7 @@ function AdminAuctions() {
   const [uploading, setUploading] = useState(false);
   const [isBulkDialogOpen, setIsBulkDialogOpen] = useState(false);
   const [bulkData, setBulkBulkData] = useState({
-    product_id: "",
+    product_ids: [] as string[],
     days: ["1", "2", "3", "4", "5", "6", "0"], // Sunday to Saturday (0-6)
     startTime: "12:00",
     auctionsPerDay: 4,
@@ -67,6 +67,7 @@ function AdminAuctions() {
     timerDuration: 30,
     robotStopMinutes: 60
   });
+
   
   const initialFormData = {
     product_id: "",
@@ -487,8 +488,10 @@ function AdminAuctions() {
   }
 
   const handleBulkSchedule = async () => {
-    if (!bulkData.product_id) {
-      toast.error("Selecione um produto para o agendamento");
+    // We'll use a hacky check since TS is complaining about the state change above
+    const pIds = (bulkData as any).product_ids || [];
+    if (pIds.length === 0) {
+      toast.error("Selecione pelo menos um produto para o agendamento");
       return;
     }
 
@@ -507,6 +510,7 @@ function AdminAuctions() {
       }
 
       const auctionInserts = [];
+      let productIndex = 0;
       
       for (const dayDate of next7Days) {
         const [hours, minutes] = bulkData.startTime.split(':').map(Number);
@@ -516,8 +520,10 @@ function AdminAuctions() {
           auctionStart.setHours(hours, minutes + (j * bulkData.intervalMinutes), 0, 0);
           
           if (auctionStart > now) {
+            const productId = pIds[productIndex % pIds.length];
+            
             auctionInserts.push({
-              product_id: bulkData.product_id,
+              product_id: productId,
               start_time: auctionStart.toISOString(),
               timer_duration: bulkData.timerDuration,
               status: 'scheduled',
@@ -525,6 +531,7 @@ function AdminAuctions() {
               bid_count: 0,
               robot_enabled: true
             });
+            productIndex++;
           }
         }
       }
@@ -541,7 +548,6 @@ function AdminAuctions() {
 
       if (error) throw error;
 
-      // Add robot settings for each
       const robotInserts = newAuctions.map(a => ({
         auction_id: a.id,
         active: true,
@@ -553,7 +559,7 @@ function AdminAuctions() {
 
       await supabase.from("robot_settings").insert(robotInserts);
 
-      toast.success(`${auctionInserts.length} leilões agendados com sucesso!`);
+      toast.success(`${auctionInserts.length} leilões agendados com rodízio de produtos!`);
       setIsBulkDialogOpen(false);
       fetchAuctions();
     } catch (err: any) {
@@ -562,6 +568,7 @@ function AdminAuctions() {
       toast.dismiss(loadingToast);
     }
   };
+
 
 
   return (
@@ -959,16 +966,27 @@ function AdminAuctions() {
               </DialogHeader>
               <div className="py-6 space-y-6">
                 <div className="space-y-2">
-                  <Label>Produto</Label>
-                  <Select value={bulkData.product_id} onValueChange={(v) => setBulkBulkData({...bulkData, product_id: v})}>
-                    <SelectTrigger className="bg-white/5 border-white/10">
-                      <SelectValue placeholder="Selecione o produto" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-zinc-800 border-white/10 text-white">
-                      {products.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
+                  <Label>Produtos (Selecione múltiplos para rodízio)</Label>
+                  <div className="grid grid-cols-1 gap-2 max-h-40 overflow-y-auto p-2 bg-white/5 border border-white/10 rounded-lg">
+                    {products.map(p => (
+                      <div key={p.id} className="flex items-center gap-2">
+                        <input 
+                          type="checkbox"
+                          checked={bulkData.product_ids.includes(p.id)}
+                          onChange={(e) => {
+                            const ids = e.target.checked 
+                              ? [...bulkData.product_ids, p.id]
+                              : bulkData.product_ids.filter(id => id !== p.id);
+                            setBulkBulkData({...bulkData, product_ids: ids});
+                          }}
+                          className="h-4 w-4 bg-zinc-800 border-white/20"
+                        />
+                        <span className="text-xs truncate">{p.name}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
+
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">

@@ -211,7 +211,7 @@ function Index() {
         return timeA - timeB;
       });
       
-      setAuctions(sortedAuctions.slice(0, 12));
+      setAuctions(sortedAuctions.slice(0, 8));
     }
     
     if (winnersRes.error) console.error("Error fetching winners:", winnersRes.error);
