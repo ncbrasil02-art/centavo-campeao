@@ -35,6 +35,7 @@ interface SiteSettings {
   welcome_bids: number;
   marquee_text: string;
   marquee_enabled: boolean;
+  demo_auctions_enabled: boolean;
 }
 
 interface SettingsContextType extends SiteSettings {
@@ -77,6 +78,7 @@ const DEFAULT_SETTINGS: SiteSettings = {
   welcome_bids: 0,
   marquee_text: "Ganhe 5 lances grátis ao se cadastrar! 🚀 Participe dos leilões e arremate produtos incríveis com descontos de até 99%!",
   marquee_enabled: true,
+  demo_auctions_enabled: false,
 };
 
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
@@ -217,6 +219,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
             welcome_bids: data.welcome_bids || DEFAULT_SETTINGS.welcome_bids,
             marquee_text: data.marquee_text || DEFAULT_SETTINGS.marquee_text,
             marquee_enabled: data.marquee_enabled ?? DEFAULT_SETTINGS.marquee_enabled,
+            demo_auctions_enabled: data.demo_auctions_enabled ?? DEFAULT_SETTINGS.demo_auctions_enabled,
           };
           
           setSettings(fetchedSettings);
