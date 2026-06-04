@@ -102,8 +102,18 @@ export function Footer() {
             <span className="hidden md:inline">•</span>
             <span>Todos os direitos reservados</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            FEITO COM <Heart className="w-2.5 h-2.5 text-red-500/40 fill-red-500/40" /> PARA VENCEDORES.
+          <div className="flex flex-col items-center md:items-end gap-1.5">
+            <div className="flex items-center gap-1.5">
+              FEITO COM <Heart className="w-2.5 h-2.5 text-red-500/40 fill-red-500/40" /> PARA VENCEDORES.
+            </div>
+            <a 
+              href="https://www.ncbrasil.com.br/sistema-de-leilao-de-centavos/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="hover:text-primary transition-colors duration-300 tracking-[0.3em] font-black"
+            >
+              ..sistema leilão centavos..
+            </a>
           </div>
         </div>
       </div>
