@@ -135,16 +135,6 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
       }
       link.href = data.favicon_url;
     }
-
-    if (data.meta_description) {
-      let metaDesc = document.querySelector("meta[name='description']") as HTMLMetaElement;
-      if (!metaDesc) {
-        metaDesc = document.createElement('meta');
-        metaDesc.name = 'description';
-        document.getElementsByTagName('head')[0].appendChild(metaDesc);
-      }
-      metaDesc.content = data.meta_description;
-    }
   };
 
   const injectScripts = (ga_id?: string, fb_pixel_id?: string) => {
@@ -168,13 +158,15 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   };
 
   const updateSettings = async (data: Partial<SiteSettings>) => {
+    const { data: currentSettings } = await supabase.from("site_settings").select("id").limit(1).maybeSingle();
+    if (!currentSettings) return;
+
     const { error } = await supabase
       .from("site_settings")
       .update(data)
-      .eq("id", (await supabase.from("site_settings").select("id").limit(1).single()).data?.id);
+      .eq("id", currentSettings.id);
 
     if (error) throw error;
-    // The real-time subscription will update the local state
   };
 
   useEffect(() => {
@@ -192,14 +184,45 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
 
         if (data) {
           const fetchedSettings: SiteSettings = {
-            ...DEFAULT_SETTINGS,
-            ...data
+            site_name: data.site_name || DEFAULT_SETTINGS.site_name,
+            logo_url: data.logo_url || DEFAULT_SETTINGS.logo_url,
+            favicon_url: data.favicon_url || DEFAULT_SETTINGS.favicon_url,
+            primary_color: data.primary_color || DEFAULT_SETTINGS.primary_color,
+            secondary_color: data.secondary_color || DEFAULT_SETTINGS.secondary_color,
+            mercado_pago_public_key: data.mercado_pago_public_key || DEFAULT_SETTINGS.mercado_pago_public_key,
+            pix_key: data.pix_key || DEFAULT_SETTINGS.pix_key,
+            pix_name: data.pix_name || DEFAULT_SETTINGS.pix_name,
+            hero_display_mode: (data.hero_display_mode as any) || DEFAULT_SETTINGS.hero_display_mode,
+            theme_mode: (data.theme_mode as any) || DEFAULT_SETTINGS.theme_mode,
+            ga_id: data.ga_id || DEFAULT_SETTINGS.ga_id,
+            fb_pixel_id: data.fb_pixel_id || DEFAULT_SETTINGS.fb_pixel_id,
+            meta_title: data.meta_title || DEFAULT_SETTINGS.meta_title,
+            meta_description: data.meta_description || DEFAULT_SETTINGS.meta_description,
+            meta_keywords: data.meta_keywords || DEFAULT_SETTINGS.meta_keywords,
+            google_site_verification: data.google_site_verification || DEFAULT_SETTINGS.google_site_verification,
+            font_color_primary: data.font_color_primary || DEFAULT_SETTINGS.font_color_primary,
+            font_color_secondary: data.font_color_secondary || DEFAULT_SETTINGS.font_color_secondary,
+            card_background_color: data.card_background_color || DEFAULT_SETTINGS.card_background_color,
+            block_background_color: data.block_background_color || DEFAULT_SETTINGS.block_background_color,
+            page_background_color: data.page_background_color || DEFAULT_SETTINGS.page_background_color,
+            border_color: data.border_color || DEFAULT_SETTINGS.border_color,
+            logo_height: data.logo_height || DEFAULT_SETTINGS.logo_height,
+            logo_height_mobile: data.logo_height_mobile || DEFAULT_SETTINGS.logo_height_mobile,
+            logo_padding_x: data.logo_padding_x || DEFAULT_SETTINGS.logo_padding_x,
+            logo_padding_y: data.logo_padding_y || DEFAULT_SETTINGS.logo_padding_y,
+            google_reviews_widget: data.google_reviews_widget || DEFAULT_SETTINGS.google_reviews_widget,
+            support_whatsapp: data.support_whatsapp || DEFAULT_SETTINGS.support_whatsapp,
+            sound_enabled: data.sound_enabled ?? DEFAULT_SETTINGS.sound_enabled,
+            narration_enabled: data.narration_enabled ?? DEFAULT_SETTINGS.narration_enabled,
+            welcome_bids: data.welcome_bids || DEFAULT_SETTINGS.welcome_bids,
+            marquee_text: data.marquee_text || DEFAULT_SETTINGS.marquee_text,
+            marquee_enabled: data.marquee_enabled ?? DEFAULT_SETTINGS.marquee_enabled,
           };
           
           setSettings(fetchedSettings);
           localStorage.setItem('site_settings', JSON.stringify(fetchedSettings));
           updateMetaTags(fetchedSettings);
-          injectScripts(fetchedSettings.ga_id, fetchedSettings.fb_pixel_id);
+          if (fetchedSettings.ga_id) injectScripts(fetchedSettings.ga_id, fetchedSettings.fb_pixel_id);
           applySettingsToDOM(fetchedSettings);
         }
       } catch (err) {
@@ -219,7 +242,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
           setSettings(prev => {
             const updated = { ...prev, ...newData };
             updateMetaTags(updated);
-            injectScripts(updated.ga_id, updated.fb_pixel_id);
+            if (updated.ga_id) injectScripts(updated.ga_id, updated.fb_pixel_id);
             applySettingsToDOM(updated);
             localStorage.setItem('site_settings', JSON.stringify(updated));
             return updated;
