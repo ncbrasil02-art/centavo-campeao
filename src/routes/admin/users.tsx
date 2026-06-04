@@ -285,6 +285,21 @@ function AdminUsersPage() {
                       </div>
                     </TableCell>
                     <TableCell>
+                      <div className="flex flex-col">
+                        <span className="text-[10px] text-white/40 break-all max-w-[150px]">{user.email || "---"}</span>
+                        {user.phone && (
+                          <a 
+                            href={`https://wa.me/55${user.phone.replace(/\D/g, "")}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[10px] text-green-500 hover:underline flex items-center gap-1 mt-1"
+                          >
+                            WhatsApp: {user.phone}
+                          </a>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
                       <div className="flex items-center gap-2">
                         <div className="p-1.5 bg-primary/10 rounded-lg text-primary">
                           <Wallet className="w-3.5 h-3.5" />
