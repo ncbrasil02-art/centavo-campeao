@@ -125,7 +125,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
       const saved = localStorage.getItem('site_settings');
       if (saved) {
         try {
-          return { ...DEFAULT_SETTINGS, ...JSON.parse(saved) };
+          const parsed = JSON.parse(saved);
+          return { ...DEFAULT_SETTINGS, ...parsed };
         } catch (e) {
           console.error("Error parsing saved settings", e);
         }
@@ -143,24 +144,35 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
       document.documentElement.classList.remove('dark');
     }
 
-    document.documentElement.style.setProperty("--primary", fetchedSettings.primary_color);
-    document.documentElement.style.setProperty("--secondary", fetchedSettings.secondary_color);
-    document.documentElement.style.setProperty("--foreground", fetchedSettings.font_color_primary);
-    document.documentElement.style.setProperty("--muted-foreground", fetchedSettings.font_color_secondary);
-    document.documentElement.style.setProperty("--card", fetchedSettings.card_background_color);
-    document.documentElement.style.setProperty("--muted", fetchedSettings.block_background_color);
-    document.documentElement.style.setProperty("--background", fetchedSettings.page_background_color);
-    document.documentElement.style.setProperty("--border", fetchedSettings.border_color);
+    const root = document.documentElement.style;
+    root.setProperty("--primary", fetchedSettings.primary_color);
+    root.setProperty("--secondary", fetchedSettings.secondary_color);
+    root.setProperty("--foreground", fetchedSettings.font_color_primary);
+    root.setProperty("--muted-foreground", fetchedSettings.font_color_secondary);
+    root.setProperty("--card", fetchedSettings.card_background_color);
+    root.setProperty("--muted", fetchedSettings.block_background_color);
+    root.setProperty("--background", fetchedSettings.page_background_color);
+    root.setProperty("--border", fetchedSettings.border_color);
     
     const glassColor = fetchedSettings.card_background_color;
-    document.documentElement.style.setProperty("--glass", glassColor + "66");
-    document.documentElement.style.setProperty("--glass-border", fetchedSettings.border_color + "33");
-    document.documentElement.style.setProperty("--glass-foreground", fetchedSettings.font_color_primary);
+    root.setProperty("--glass", glassColor + "66");
+    root.setProperty("--glass-border", fetchedSettings.border_color + "33");
+    root.setProperty("--glass-foreground", fetchedSettings.font_color_primary);
+
+    // Update title immediately if possible
+    if (fetchedSettings.meta_title || fetchedSettings.site_name) {
+      document.title = fetchedSettings.meta_title || fetchedSettings.site_name;
+    }
   };
+
+  // Run on first render to avoid flicker
+  if (typeof window !== 'undefined') {
+    applySettingsToDOM(settings);
+  }
 
   useEffect(() => {
     applySettingsToDOM(settings);
-  }, []);
+  }, [settings]);
 
   const updateMetaTags = (data: Partial<SiteSettings>) => {
     const title = data.meta_title || data.site_name || "Leilão de Centavos";
