@@ -139,6 +139,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   const lastBidderIdRef = useRef<string | null>(auction.last_bidder?.id || null);
 
   const playSurpassedSound = useCallback(() => {
+    if (!sound_enabled) return;
     const isEnabled = localStorage.getItem("auction_sound_enabled") !== "false";
     if (!isEnabled) return;
 
