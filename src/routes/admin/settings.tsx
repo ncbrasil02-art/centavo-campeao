@@ -36,8 +36,10 @@ import {
   EyeOff,
   Trophy,
   Users,
-  Star
+  Star,
+  Gavel
 } from "lucide-react";
+
 
 
 

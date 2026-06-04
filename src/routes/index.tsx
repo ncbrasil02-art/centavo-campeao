@@ -441,8 +441,9 @@ function Index() {
           )}
 
           {show_testimonials && (
-            <TestimonialsSection testimonials={testimonials} />
+            <TestimonialsSection />
           )}
+
 
 
 
