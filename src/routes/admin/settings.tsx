@@ -902,6 +902,63 @@ function AdminSettings() {
                     id="welcome_bids" 
                     type="number"
                     value={settings.welcome_bids} 
+                    onChange={(e) => setSettings({...settings, welcome_bids: parseInt(e.target.value)})}
+                    className="bg-white/5 border-white/10 h-12"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/5 border-white/10 overflow-hidden backdrop-blur-md">
+              <CardHeader className="border-b border-white/5 bg-white/[0.02]">
+                <div className="flex items-center gap-2">
+                  <Monitor className="w-5 h-5 text-primary" />
+                  <div>
+                    <CardTitle className="text-lg">Configurações do Aplicativo (PWA)</CardTitle>
+                    <CardDescription className="text-white/40">Transforme seu site em um app para celular</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="p-6 space-y-6">
+                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10">
+                  <div className="space-y-0.5">
+                    <Label className="flex items-center gap-2">
+                      <Zap className="w-4 h-4 text-primary" /> Ativar Instalação (PWA)
+                    </Label>
+                    <p className="text-[10px] text-white/40">Exibe o convite para instalar o site como aplicativo</p>
+                  </div>
+                  <Switch 
+                    checked={settings.pwa_enabled} 
+                    onCheckedChange={(val) => setSettings({...settings, pwa_enabled: val})}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="android_url">URL de Download Android (Opcional APK)</Label>
+                  <Input 
+                    id="android_url" 
+                    value={settings.android_app_url || ""} 
+                    onChange={(e) => setSettings({...settings, android_app_url: e.target.value})}
+                    placeholder="https://..."
+                    className="bg-white/5 border-white/10 h-12"
+                  />
+                  <p className="text-[10px] text-white/40">Se você tiver um arquivo .apk próprio, coloque o link aqui.</p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="ios_url">URL de Download iOS (Opcional App Store)</Label>
+                  <Input 
+                    id="ios_url" 
+                    value={settings.ios_app_url || ""} 
+                    onChange={(e) => setSettings({...settings, ios_app_url: e.target.value})}
+                    placeholder="https://..."
+                    className="bg-white/5 border-white/10 h-12"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+                    value={settings.welcome_bids} 
                     onChange={(e) => setSettings({...settings, welcome_bids: parseInt(e.target.value) || 0})}
                     placeholder="Ex: 5"
                     className="bg-white/5 border-white/10 h-12"
