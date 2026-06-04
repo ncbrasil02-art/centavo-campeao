@@ -103,7 +103,26 @@ function WinnerCard({ name, product, price, saving, avatarUrl, productImage }: {
 }
 
 function Index() {
-  const { demo_auctions_enabled, site_name, google_reviews_widget, logo_url, logo_height, logo_height_mobile, logo_padding_x, logo_padding_y, support_whatsapp } = useSettings();
+  const { 
+    demo_auctions_enabled, 
+    site_name, 
+    google_reviews_widget, 
+    logo_url, 
+    logo_height, 
+    logo_height_mobile, 
+    logo_padding_x, 
+    logo_padding_y, 
+    support_whatsapp,
+    show_secondary_banner,
+    show_finished_auctions,
+    show_testimonials,
+    show_winners_ranking,
+    secondary_banner_title,
+    secondary_banner_subtitle,
+    secondary_banner_image,
+    secondary_banner_link
+  } = useSettings();
+
   const [auctions, setAuctions] = useState<any[]>([]);
   const [finishedAuctions, setFinishedAuctions] = useState<any[]>([]);
   const [winners, setWinners] = useState<any[]>([]);
@@ -307,12 +326,15 @@ function Index() {
             </div>
           </section>
           
-          <SecondaryBanner 
-            title="Pacote de Lances com 50% de Desconto" 
-            subtitle="Comece com o pé direito! Adquira seu primeiro pacote de lances agora e ganhe o dobro para disputar seus produtos favoritos."
-            imageUrl="https://images.unsplash.com/photo-1553729459-efe14ef6055d?q=80&w=2000&auto=format&fit=crop"
-            linkUrl="/packages"
-          />
+          {show_secondary_banner && (
+            <SecondaryBanner 
+              title={secondary_banner_title} 
+              subtitle={secondary_banner_subtitle}
+              imageUrl={secondary_banner_image}
+              linkUrl={secondary_banner_link}
+            />
+          )}
+
 
 
 
@@ -334,8 +356,9 @@ function Index() {
             </div>
           </section>
 
-          {/* Winners Section */}
-          <section className="py-20 bg-muted">
+          {show_winners_ranking && (
+            <section className="py-20 bg-muted">
+
             <div className="container mx-auto px-4">
               <div className="text-center mb-16">
                 <Badge variant="outline" className="mb-4 border-primary/30 bg-primary/10 text-primary uppercase">GALERIA DE HONRA</Badge>

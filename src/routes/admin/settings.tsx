@@ -31,8 +31,14 @@ import {
   LayoutTemplate,
   MessageSquare,
   ShieldCheck,
-  FileText
+  FileText,
+  Eye,
+  EyeOff,
+  Trophy,
+  Users,
+  Star
 } from "lucide-react";
+
 
 
 
@@ -100,7 +106,16 @@ function AdminSettings() {
     whatsapp_float_enabled: true,
     terms_of_use: "",
     privacy_policy: "",
+    show_secondary_banner: true,
+    show_finished_auctions: true,
+    show_testimonials: true,
+    show_winners_ranking: true,
+    secondary_banner_title: "",
+    secondary_banner_subtitle: "",
+    secondary_banner_image: "",
+    secondary_banner_link: "",
   });
+
 
 
 
@@ -173,7 +188,16 @@ function AdminSettings() {
           whatsapp_float_enabled: publicData.whatsapp_float_enabled ?? true,
           terms_of_use: publicData.terms_of_use || "",
           privacy_policy: publicData.privacy_policy || "",
+          show_secondary_banner: publicData.show_secondary_banner ?? true,
+          show_finished_auctions: publicData.show_finished_auctions ?? true,
+          show_testimonials: publicData.show_testimonials ?? true,
+          show_winners_ranking: publicData.show_winners_ranking ?? true,
+          secondary_banner_title: publicData.secondary_banner_title || "",
+          secondary_banner_subtitle: publicData.secondary_banner_subtitle || "",
+          secondary_banner_image: publicData.secondary_banner_image || "",
+          secondary_banner_link: publicData.secondary_banner_link || "",
         });
+
 
 
 

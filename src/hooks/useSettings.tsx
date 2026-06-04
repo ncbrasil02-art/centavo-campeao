@@ -43,7 +43,16 @@ interface SiteSettings {
   whatsapp_float_enabled: boolean;
   terms_of_use: string;
   privacy_policy: string;
+  show_secondary_banner: boolean;
+  show_finished_auctions: boolean;
+  show_testimonials: boolean;
+  show_winners_ranking: boolean;
+  secondary_banner_title: string;
+  secondary_banner_subtitle: string;
+  secondary_banner_image: string;
+  secondary_banner_link: string;
 }
+
 
 
 
@@ -96,7 +105,16 @@ const DEFAULT_SETTINGS: SiteSettings = {
   whatsapp_float_enabled: true,
   terms_of_use: "",
   privacy_policy: "",
+  show_secondary_banner: true,
+  show_finished_auctions: true,
+  show_testimonials: true,
+  show_winners_ranking: true,
+  secondary_banner_title: "Pacote de Lances com 50% de Desconto",
+  secondary_banner_subtitle: "Comece com o pé direito! Adquira seu primeiro pacote de lances agora e ganhe o dobro para disputar seus produtos favoritos.",
+  secondary_banner_image: "https://images.unsplash.com/photo-1553729459-efe14ef6055d?q=80&w=2000&auto=format&fit=crop",
+  secondary_banner_link: "/packages",
 };
+
 
 
 
@@ -247,7 +265,16 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
             whatsapp_float_enabled: data.whatsapp_float_enabled ?? DEFAULT_SETTINGS.whatsapp_float_enabled,
             terms_of_use: data.terms_of_use || DEFAULT_SETTINGS.terms_of_use,
             privacy_policy: data.privacy_policy || DEFAULT_SETTINGS.privacy_policy,
+            show_secondary_banner: data.show_secondary_banner ?? DEFAULT_SETTINGS.show_secondary_banner,
+            show_finished_auctions: data.show_finished_auctions ?? DEFAULT_SETTINGS.show_finished_auctions,
+            show_testimonials: data.show_testimonials ?? DEFAULT_SETTINGS.show_testimonials,
+            show_winners_ranking: data.show_winners_ranking ?? DEFAULT_SETTINGS.show_winners_ranking,
+            secondary_banner_title: data.secondary_banner_title || DEFAULT_SETTINGS.secondary_banner_title,
+            secondary_banner_subtitle: data.secondary_banner_subtitle || DEFAULT_SETTINGS.secondary_banner_subtitle,
+            secondary_banner_image: data.secondary_banner_image || DEFAULT_SETTINGS.secondary_banner_image,
+            secondary_banner_link: data.secondary_banner_link || DEFAULT_SETTINGS.secondary_banner_link,
           };
+
 
 
 
