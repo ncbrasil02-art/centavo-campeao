@@ -758,17 +758,23 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         <Button 
           onClick={(e) => {
             e.stopPropagation();
+            if (isScheduled && !currentUserId) {
+              window.location.href = "/auth?register=true&offer=welcome_bids";
+              return;
+            }
             if (!isFinished && !isScheduled && !isPendingAudit && !isConfirmed) {
               handleBid();
             }
           }} 
 
-          disabled={loading || (isFinished || isScheduled || isConfirmed || (isPendingAudit && !isAdmin))}
+          disabled={loading || (isFinished || (isScheduled && !!currentUserId) || isConfirmed || (isPendingAudit && !isAdmin))}
           className={`h-14 w-full rounded-2xl text-base font-black uppercase italic tracking-tighter transition-all relative overflow-hidden group/bidbtn ${
             isFinished || isConfirmed
               ? 'cursor-default border border-green-500/20 bg-green-500/10 text-green-500' 
               : isPendingAudit
               ? (isAdmin ? 'bg-primary text-primary-foreground shadow-[0_0_25px_rgba(var(--color-primary),0.5)] hover:scale-[1.02]' : 'cursor-default border border-red-500/20 bg-red-500/10 text-red-500 animate-pulse')
+              : (isScheduled && !currentUserId)
+              ? 'bg-primary text-primary-foreground shadow-[0_0_20px_rgba(var(--color-primary),0.4)] hover:scale-[1.02] cursor-pointer'
               : isScheduled
               ? 'cursor-not-allowed border border-border bg-muted text-muted-foreground'
               : timeLeft <= 5
