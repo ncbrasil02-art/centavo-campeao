@@ -79,6 +79,7 @@ function AdminAuctions() {
     end_time: "",
     status: "scheduled",
     robot_enabled: true,
+    robot_inner_dispute: false,
     timer_duration: 15,
     is_finalizing: false,
     target_winner: "random" as "robot" | "user" | "random",
@@ -283,6 +284,7 @@ function AdminAuctions() {
         end_time: endTime,
         status: formData.status,
         robot_enabled: formData.robot_enabled,
+        robot_inner_dispute: formData.robot_inner_dispute,
         timer_duration: formData.timer_duration,
         target_winner: formData.target_winner,
         is_finalizing: formData.is_finalizing,
@@ -333,6 +335,7 @@ function AdminAuctions() {
             max_delay: formData.robot_max_delay,
             bid_chance: formData.robot_bid_chance,
             active: formData.robot_active,
+            inner_dispute_enabled: formData.robot_inner_dispute,
             start_after_minutes: formData.robot_start_after,
             stop_after_minutes: formData.robot_stop_after
           }, { onConflict: 'auction_id' });
@@ -400,6 +403,7 @@ function AdminAuctions() {
       robot_active: robotSettings?.active ?? true,
       robot_start_after: robotSettings?.start_after_minutes || 0,
       robot_stop_after: robotSettings?.stop_after_minutes || 30,
+      robot_inner_dispute: robotSettings?.inner_dispute_enabled || false,
       slug: auction.slug || ""
     });
     setIsDialogOpen(true);
