@@ -5,6 +5,7 @@ import { Zap, ArrowRight, ShieldCheck, Clock, Wallet, Trophy, Star } from 'lucid
 import { Button } from '@/components/ui/button';
 import { Link } from '@tanstack/react-router';
 import { useSettings } from '@/hooks/useSettings';
+import { Footer } from '@/components/Footer';
 
 export const Route = createFileRoute('/how-it-works')({
   component: HowItWorks,
@@ -117,11 +118,7 @@ function HowItWorks() {
         </div>
       </main>
 
-      <footer className="py-12 border-t border-white/5 bg-black/40">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-white/20 text-sm font-medium uppercase tracking-[0.3em]">© {new Date().getFullYear()} {site_name} - DISPUTAS EM TEMPO REAL</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
