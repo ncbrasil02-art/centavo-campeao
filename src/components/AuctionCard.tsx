@@ -109,9 +109,14 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
     setActiveWatchers(Math.floor(Math.random() * 45) + 12);
     
     // Rotate phrases every 8-12 seconds
-    const interval = setInterval(() => {
-      const phrases = CACHED_INCENTIVES.length > 0 ? CACHED_INCENTIVES : INCENTIVE_PHRASES;
-      setIncentivePhrase(phrases[Math.floor(Math.random() * phrases.length)]);
+    const interval = setInterval(async () => {
+      const { data: phrases } = await supabase
+        .from("narration_phrases")
+        .select("phrase")
+        .eq("is_active", true);
+
+      const allPhrases = (phrases && phrases.length > 0) ? phrases.map(p => p.phrase) : INCENTIVE_PHRASES;
+      setIncentivePhrase(allPhrases[Math.floor(Math.random() * allPhrases.length)]);
       setActiveWatchers(prev => {
         const change = Math.floor(Math.random() * 7) - 3;
         return Math.max(5, prev + change);

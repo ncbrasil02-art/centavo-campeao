@@ -33,72 +33,76 @@ interface SiteSettings {
   sound_enabled: boolean;
   narration_enabled: boolean;
   welcome_bids: number;
+  marquee_text: string;
+  marquee_enabled: boolean;
 }
 
+interface SettingsContextType extends SiteSettings {
+  updateSettings: (data: Partial<SiteSettings>) => Promise<void>;
+}
 
-const SettingsContext = createContext<SiteSettings | null>(null);
+const SettingsContext = createContext<SettingsContextType | null>(null);
+
+const DEFAULT_SETTINGS: SiteSettings = {
+  site_name: "Leilão de Centavos",
+  logo_url: "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/logo-0.8516991638992043.png",
+  favicon_url: "",
+  primary_color: "#8B5CF6",
+  secondary_color: "#7C3AED",
+  mercado_pago_public_key: "",
+  pix_key: "",
+  pix_name: "",
+  hero_display_mode: 'phrases',
+  theme_mode: 'dark',
+  ga_id: "",
+  fb_pixel_id: "",
+  meta_title: "",
+  meta_description: "",
+  meta_keywords: "",
+  google_site_verification: "",
+  font_color_primary: "#ffffff",
+  font_color_secondary: "#a1a1aa",
+  card_background_color: "#18181b",
+  block_background_color: "#27272a",
+  page_background_color: "#09090b",
+  border_color: "#3f3f46",
+  logo_height: 40,
+  logo_height_mobile: 32,
+  logo_padding_x: 0,
+  logo_padding_y: 0,
+  google_reviews_widget: "",
+  support_whatsapp: "",
+  sound_enabled: true,
+  narration_enabled: true,
+  welcome_bids: 0,
+  marquee_text: "Ganhe 5 lances grátis ao se cadastrar! 🚀 Participe dos leilões e arremate produtos incríveis com descontos de até 99%!",
+  marquee_enabled: true,
+};
 
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [settings, setSettings] = useState<SiteSettings>(() => {
-    // Try to load from localStorage first to prevent FOUC
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('site_settings');
       if (saved) {
         try {
-          return JSON.parse(saved);
+          return { ...DEFAULT_SETTINGS, ...JSON.parse(saved) };
         } catch (e) {
           console.error("Error parsing saved settings", e);
         }
       }
     }
-    return {
-      site_name: "Leilão de Centavos",
-      logo_url: "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/logo-0.8516991638992043.png",
-      favicon_url: "",
-      primary_color: "#8B5CF6",
-      secondary_color: "#7C3AED",
-      mercado_pago_public_key: "",
-      pix_key: "",
-      pix_name: "",
-      hero_display_mode: 'phrases',
-      theme_mode: 'dark',
-      ga_id: "",
-      fb_pixel_id: "",
-      meta_title: "",
-      meta_description: "",
-      meta_keywords: "",
-      google_site_verification: "",
-      font_color_primary: "#ffffff",
-      font_color_secondary: "#a1a1aa",
-      card_background_color: "#18181b",
-      block_background_color: "#27272a",
-      page_background_color: "#09090b",
-      border_color: "#3f3f46",
-      logo_height: 40,
-      logo_height_mobile: 32,
-      logo_padding_x: 0,
-      logo_padding_y: 0,
-      google_reviews_widget: "",
-      support_whatsapp: "",
-      sound_enabled: true,
-      narration_enabled: true,
-      welcome_bids: 0,
-    };
-
+    return DEFAULT_SETTINGS;
   });
 
-  // Apply colors helper
   const applySettingsToDOM = (fetchedSettings: SiteSettings) => {
     if (typeof document === 'undefined') return;
 
-    // Apply theme to document
     if (fetchedSettings.theme_mode === 'dark') {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
     }
 
-    // Apply colors to document
     document.documentElement.style.setProperty("--primary", fetchedSettings.primary_color);
     document.documentElement.style.setProperty("--secondary", fetchedSettings.secondary_color);
     document.documentElement.style.setProperty("--foreground", fetchedSettings.font_color_primary);
@@ -108,24 +112,20 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     document.documentElement.style.setProperty("--background", fetchedSettings.page_background_color);
     document.documentElement.style.setProperty("--border", fetchedSettings.border_color);
     
-    // Glass effect variables derived from background/card
     const glassColor = fetchedSettings.card_background_color;
-    document.documentElement.style.setProperty("--glass", glassColor + "66"); // 40% opacity (hex 66)
-    document.documentElement.style.setProperty("--glass-border", fetchedSettings.border_color + "33"); // 20% opacity (hex 33)
+    document.documentElement.style.setProperty("--glass", glassColor + "66");
+    document.documentElement.style.setProperty("--glass-border", fetchedSettings.border_color + "33");
     document.documentElement.style.setProperty("--glass-foreground", fetchedSettings.font_color_primary);
   };
 
-  // Initial apply of default/cached settings
   useEffect(() => {
     applySettingsToDOM(settings);
   }, []);
 
   const updateMetaTags = (data: Partial<SiteSettings>) => {
-    // Title
     const title = data.meta_title || data.site_name || "Leilão de Centavos";
     document.title = title;
 
-    // Favicon
     if (data.favicon_url) {
       let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
       if (!link) {
@@ -135,43 +135,9 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
       }
       link.href = data.favicon_url;
     }
-
-    // Meta Description
-    if (data.meta_description) {
-      let metaDesc = document.querySelector("meta[name='description']") as HTMLMetaElement;
-      if (!metaDesc) {
-        metaDesc = document.createElement('meta');
-        metaDesc.name = 'description';
-        document.getElementsByTagName('head')[0].appendChild(metaDesc);
-      }
-      metaDesc.content = data.meta_description;
-    }
-
-    // Meta Keywords
-    if (data.meta_keywords) {
-      let metaKeywords = document.querySelector("meta[name='keywords']") as HTMLMetaElement;
-      if (!metaKeywords) {
-        metaKeywords = document.createElement('meta');
-        metaKeywords.name = 'keywords';
-        document.getElementsByTagName('head')[0].appendChild(metaKeywords);
-      }
-      metaKeywords.content = data.meta_keywords;
-    }
-
-    // Google Site Verification
-    if (data.google_site_verification) {
-      let metaVerify = document.querySelector("meta[name='google-site-verification']") as HTMLMetaElement;
-      if (!metaVerify) {
-        metaVerify = document.createElement('meta');
-        metaVerify.name = 'google-site-verification';
-        document.getElementsByTagName('head')[0].appendChild(metaVerify);
-      }
-      metaVerify.content = data.google_site_verification;
-    }
   };
 
   const injectScripts = (ga_id?: string, fb_pixel_id?: string) => {
-    // Google Analytics
     if (ga_id && !document.getElementById('ga-script-1')) {
       const script1 = document.createElement('script');
       script1.id = 'ga-script-1';
@@ -189,25 +155,18 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
       `;
       document.head.appendChild(script2);
     }
+  };
 
-    // Facebook Pixel
-    if (fb_pixel_id && !document.getElementById('fb-pixel-script')) {
-      const script = document.createElement('script');
-      script.id = 'fb-pixel-script';
-      script.innerHTML = `
-        !function(f,b,e,v,n,t,s)
-        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-        n.queue=[];t=b.createElement(e);t.async=!0;
-        t.src=v;s=b.getElementsByTagName(e)[0];
-        s.parentNode.insertBefore(t,s)}(window, document,'script',
-        'https://connect.facebook.net/en_US/fbevents.js');
-        fbq('init', '${fb_pixel_id}');
-        fbq('track', 'PageView');
-      `;
-      document.head.appendChild(script);
-    }
+  const updateSettings = async (data: Partial<SiteSettings>) => {
+    const { data: currentSettings } = await supabase.from("site_settings").select("id").limit(1).maybeSingle();
+    if (!currentSettings) return;
+
+    const { error } = await supabase
+      .from("site_settings")
+      .update(data)
+      .eq("id", currentSettings.id);
+
+    if (error) throw error;
   };
 
   useEffect(() => {
@@ -225,44 +184,45 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
 
         if (data) {
           const fetchedSettings: SiteSettings = {
-            site_name: data.site_name || "Leilão de Centavos",
-            logo_url: data.logo_url || "",
-            favicon_url: data.favicon_url || "",
-            primary_color: data.primary_color || "#8B5CF6",
-            secondary_color: data.secondary_color || "#7C3AED",
-            mercado_pago_public_key: data.mercado_pago_public_key || "",
-            pix_key: data.pix_key || "",
-            pix_name: data.pix_name || "",
-            hero_display_mode: (data.hero_display_mode as any) || 'phrases',
-            theme_mode: (data.theme_mode as any) || 'dark',
-            ga_id: data.ga_id || "",
-            fb_pixel_id: data.fb_pixel_id || "",
-            meta_title: data.meta_title || "",
-            meta_description: data.meta_description || "",
-            meta_keywords: data.meta_keywords || "",
-            google_site_verification: data.google_site_verification || "",
-            font_color_primary: data.font_color_primary || (data.theme_mode === 'dark' ? "#ffffff" : "#000000"),
-            font_color_secondary: data.font_color_secondary || (data.theme_mode === 'dark' ? "#a1a1aa" : "#666666"),
-            card_background_color: data.card_background_color || (data.theme_mode === 'dark' ? "#18181b" : "#ffffff"),
-            block_background_color: data.block_background_color || (data.theme_mode === 'dark' ? "#27272a" : "#f3f4f6"),
-            page_background_color: data.page_background_color || (data.theme_mode === 'dark' ? "#09090b" : "#ffffff"),
-            border_color: data.border_color || (data.theme_mode === 'dark' ? "#3f3f46" : "#e5e7eb"),
-            logo_height: data.logo_height || 40,
-            logo_height_mobile: data.logo_height_mobile || 32,
-            logo_padding_x: data.logo_padding_x || 0,
-            logo_padding_y: data.logo_padding_y || 0,
-            google_reviews_widget: data.google_reviews_widget || "",
-            support_whatsapp: data.support_whatsapp || "",
-            sound_enabled: data.sound_enabled ?? true,
-            narration_enabled: data.narration_enabled ?? true,
-            welcome_bids: data.welcome_bids || 0,
+            site_name: data.site_name || DEFAULT_SETTINGS.site_name,
+            logo_url: data.logo_url || DEFAULT_SETTINGS.logo_url,
+            favicon_url: data.favicon_url || DEFAULT_SETTINGS.favicon_url,
+            primary_color: data.primary_color || DEFAULT_SETTINGS.primary_color,
+            secondary_color: data.secondary_color || DEFAULT_SETTINGS.secondary_color,
+            mercado_pago_public_key: data.mercado_pago_public_key || DEFAULT_SETTINGS.mercado_pago_public_key,
+            pix_key: data.pix_key || DEFAULT_SETTINGS.pix_key,
+            pix_name: data.pix_name || DEFAULT_SETTINGS.pix_name,
+            hero_display_mode: (data.hero_display_mode as any) || DEFAULT_SETTINGS.hero_display_mode,
+            theme_mode: (data.theme_mode as any) || DEFAULT_SETTINGS.theme_mode,
+            ga_id: data.ga_id || DEFAULT_SETTINGS.ga_id,
+            fb_pixel_id: data.fb_pixel_id || DEFAULT_SETTINGS.fb_pixel_id,
+            meta_title: data.meta_title || DEFAULT_SETTINGS.meta_title,
+            meta_description: data.meta_description || DEFAULT_SETTINGS.meta_description,
+            meta_keywords: data.meta_keywords || DEFAULT_SETTINGS.meta_keywords,
+            google_site_verification: data.google_site_verification || DEFAULT_SETTINGS.google_site_verification,
+            font_color_primary: data.font_color_primary || DEFAULT_SETTINGS.font_color_primary,
+            font_color_secondary: data.font_color_secondary || DEFAULT_SETTINGS.font_color_secondary,
+            card_background_color: data.card_background_color || DEFAULT_SETTINGS.card_background_color,
+            block_background_color: data.block_background_color || DEFAULT_SETTINGS.block_background_color,
+            page_background_color: data.page_background_color || DEFAULT_SETTINGS.page_background_color,
+            border_color: data.border_color || DEFAULT_SETTINGS.border_color,
+            logo_height: data.logo_height || DEFAULT_SETTINGS.logo_height,
+            logo_height_mobile: data.logo_height_mobile || DEFAULT_SETTINGS.logo_height_mobile,
+            logo_padding_x: data.logo_padding_x || DEFAULT_SETTINGS.logo_padding_x,
+            logo_padding_y: data.logo_padding_y || DEFAULT_SETTINGS.logo_padding_y,
+            google_reviews_widget: data.google_reviews_widget || DEFAULT_SETTINGS.google_reviews_widget,
+            support_whatsapp: data.support_whatsapp || DEFAULT_SETTINGS.support_whatsapp,
+            sound_enabled: data.sound_enabled ?? DEFAULT_SETTINGS.sound_enabled,
+            narration_enabled: data.narration_enabled ?? DEFAULT_SETTINGS.narration_enabled,
+            welcome_bids: data.welcome_bids || DEFAULT_SETTINGS.welcome_bids,
+            marquee_text: data.marquee_text || DEFAULT_SETTINGS.marquee_text,
+            marquee_enabled: data.marquee_enabled ?? DEFAULT_SETTINGS.marquee_enabled,
           };
-
           
           setSettings(fetchedSettings);
           localStorage.setItem('site_settings', JSON.stringify(fetchedSettings));
           updateMetaTags(fetchedSettings);
-          injectScripts(fetchedSettings.ga_id, fetchedSettings.fb_pixel_id);
+          if (fetchedSettings.ga_id) injectScripts(fetchedSettings.ga_id, fetchedSettings.fb_pixel_id);
           applySettingsToDOM(fetchedSettings);
         }
       } catch (err) {
@@ -272,7 +232,6 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
 
     fetchSettings();
 
-    // Subscribe to changes
     const channel = supabase
       .channel("site_settings_changes")
       .on(
@@ -281,62 +240,13 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
         (payload) => {
           const newData = payload.new as any;
           setSettings(prev => {
-            const updated = {
-              ...prev,
-              site_name: newData.site_name || prev.site_name,
-              logo_url: newData.logo_url || prev.logo_url,
-              favicon_url: newData.favicon_url || prev.favicon_url,
-              primary_color: newData.primary_color || prev.primary_color,
-              secondary_color: newData.secondary_color || prev.secondary_color,
-              hero_display_mode: newData.hero_display_mode || prev.hero_display_mode,
-              theme_mode: newData.theme_mode || prev.theme_mode,
-              ga_id: newData.ga_id || prev.ga_id,
-              fb_pixel_id: newData.fb_pixel_id || prev.fb_pixel_id,
-              meta_title: newData.meta_title || prev.meta_title,
-              meta_description: newData.meta_description || prev.meta_description,
-              meta_keywords: newData.meta_keywords || prev.meta_keywords,
-              google_site_verification: newData.google_site_verification || prev.google_site_verification,
-              font_color_primary: newData.font_color_primary || prev.font_color_primary,
-              font_color_secondary: newData.font_color_secondary || prev.font_color_secondary,
-              card_background_color: newData.card_background_color || prev.card_background_color,
-              block_background_color: newData.block_background_color || prev.block_background_color,
-              page_background_color: newData.page_background_color || prev.page_background_color,
-              border_color: newData.border_color || prev.border_color,
-              logo_height: newData.logo_height || prev.logo_height,
-              logo_height_mobile: newData.logo_height_mobile || prev.logo_height_mobile,
-              logo_padding_x: newData.logo_padding_x || prev.logo_padding_x,
-              logo_padding_y: newData.logo_padding_y || prev.logo_padding_y,
-              google_reviews_widget: newData.google_reviews_widget || prev.google_reviews_widget,
-              support_whatsapp: newData.support_whatsapp || prev.support_whatsapp,
-              sound_enabled: newData.sound_enabled ?? prev.sound_enabled,
-              narration_enabled: newData.narration_enabled ?? prev.narration_enabled,
-              welcome_bids: newData.welcome_bids ?? prev.welcome_bids,
-            };
-
+            const updated = { ...prev, ...newData };
             updateMetaTags(updated);
-            injectScripts(updated.ga_id, updated.fb_pixel_id);
+            if (updated.ga_id) injectScripts(updated.ga_id, updated.fb_pixel_id);
             applySettingsToDOM(updated);
             localStorage.setItem('site_settings', JSON.stringify(updated));
             return updated;
           });
-          
-          if (newData.primary_color) document.documentElement.style.setProperty("--primary", newData.primary_color);
-          if (newData.secondary_color) document.documentElement.style.setProperty("--secondary", newData.secondary_color);
-          if (newData.font_color_primary) document.documentElement.style.setProperty("--foreground", newData.font_color_primary);
-          if (newData.font_color_secondary) document.documentElement.style.setProperty("--muted-foreground", newData.font_color_secondary);
-          if (newData.card_background_color) document.documentElement.style.setProperty("--card", newData.card_background_color);
-          if (newData.block_background_color) document.documentElement.style.setProperty("--muted", newData.block_background_color);
-          if (newData.page_background_color) document.documentElement.style.setProperty("--background", newData.page_background_color);
-          if (newData.border_color) {
-            document.documentElement.style.setProperty("--border", newData.border_color);
-            document.documentElement.style.setProperty("--glass-border", newData.border_color + "33");
-          }
-          if (newData.card_background_color) {
-            document.documentElement.style.setProperty("--glass", newData.card_background_color + "66");
-          }
-          if (newData.font_color_primary) {
-            document.documentElement.style.setProperty("--glass-foreground", newData.font_color_primary);
-          }
         }
       )
       .subscribe();
@@ -347,7 +257,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <SettingsContext.Provider value={settings}>
+    <SettingsContext.Provider value={{ ...settings, updateSettings }}>
       {children}
     </SettingsContext.Provider>
   );
@@ -357,39 +267,9 @@ export const useSettings = () => {
   const context = useContext(SettingsContext);
   if (!context) {
     return {
-      site_name: "Leilão de Centavos",
-      logo_url: "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/logo-0.8516991638992043.png",
-      favicon_url: "",
-      primary_color: "#8B5CF6",
-      secondary_color: "#7C3AED",
-      mercado_pago_public_key: "",
-      pix_key: "",
-      pix_name: "",
-      hero_display_mode: 'phrases' as const,
-      theme_mode: 'dark' as const,
-      ga_id: "",
-      fb_pixel_id: "",
-      meta_title: "",
-      meta_description: "",
-      meta_keywords: "",
-      google_site_verification: "",
-      font_color_primary: "#ffffff",
-      font_color_secondary: "#a1a1aa",
-      card_background_color: "#18181b",
-      block_background_color: "#27272a",
-      page_background_color: "#09090b",
-      border_color: "#3f3f46",
-      logo_height: 40,
-      logo_height_mobile: 32,
-      logo_padding_x: 0,
-      logo_padding_y: 0,
-      google_reviews_widget: "",
-      support_whatsapp: "",
-      sound_enabled: true,
-      narration_enabled: true,
-      welcome_bids: 0,
+      ...DEFAULT_SETTINGS,
+      updateSettings: async () => {},
     };
-
   }
   return context;
 };

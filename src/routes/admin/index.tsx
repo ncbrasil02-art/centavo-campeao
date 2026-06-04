@@ -12,7 +12,8 @@ import {
   ArrowUpRight, 
   Activity,
   Circle,
-  Package
+  Package,
+  Mic
 } from "lucide-react";
 import { 
   BarChart, 
@@ -252,6 +253,11 @@ function AdminDashboard() {
                 </Button>
                 <Button variant="secondary" className="justify-start bg-white/5 hover:bg-white/10 border-white/10" asChild>
                   <Link to="/admin/settings">Configurações Globais</Link>
+                </Button>
+                <Button variant="secondary" className="justify-start bg-primary/20 hover:bg-primary/30 border-primary/30 text-primary font-bold" asChild>
+                  <Link to="/admin/phrases">
+                    <Mic className="w-4 h-4 mr-2" /> Gerenciar Narração
+                  </Link>
                 </Button>
               </div>
             </Card>
