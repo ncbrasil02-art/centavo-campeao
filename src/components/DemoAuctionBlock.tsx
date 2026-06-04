@@ -2,7 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Clock, Zap, Trophy } from "lucide-react";
+import { Clock, Zap, Trophy, TrendingUp, Sparkles, Rocket, Star } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { MODALITY_CONFIG, getFallbackAvatarUrl, FICTITIOUS_PARTICIPANTS } from "@/lib/constants";
 
@@ -22,14 +23,30 @@ export function DemoAuctionBlock({ auctions: initialAuctions }: { auctions: Demo
   const [auctions, setAuctions] = useState<DemoAuction[]>(initialAuctions);
   const [localTimes, setLocalTimes] = useState<Record<string, number>>({});
   const [winners, setWinners] = useState<Record<string, boolean>>({});
+  const [randomPhrases, setRandomPhrases] = useState<Record<string, string>>({});
+
+  const incentivePhrases = [
+    { text: "Economia Real!", icon: TrendingUp },
+    { text: "Lances Rápidos!", icon: Zap },
+    { text: "Preço Baixo!", icon: Sparkles },
+    { text: "Vai Acabar!", icon: Clock },
+    { text: "Super Chance!", icon: Rocket },
+    { text: "Oportunidade!", icon: Star },
+  ];
+
 
   useEffect(() => {
     // Initialize timers
     const initialTimers: Record<string, number> = {};
+    const initialPhrases: Record<string, string> = {};
     initialAuctions.forEach(a => {
       initialTimers[a.id] = Math.floor(Math.random() * 5) + 10;
+      initialPhrases[a.id] = incentivePhrases[Math.floor(Math.random() * incentivePhrases.length)].text;
     });
     setLocalTimes(initialTimers);
+    setRandomPhrases(initialPhrases);
+
+
 
     const interval = setInterval(() => {
       setLocalTimes(prev => {
@@ -64,7 +81,12 @@ export function DemoAuctionBlock({ auctions: initialAuctions }: { auctions: Demo
                 };
                 return newAuctions;
               });
+              setRandomPhrases(prev => ({
+                ...prev,
+                [id]: incentivePhrases[Math.floor(Math.random() * incentivePhrases.length)].text
+              }));
               next[id] = auction.timer_seconds;
+
             }
           }
         });
@@ -122,7 +144,20 @@ export function DemoAuctionBlock({ auctions: initialAuctions }: { auctions: Demo
                 <div className="p-6 space-y-4 flex-1 flex flex-col">
                   <div>
                     <h3 className="font-bold text-sm line-clamp-1 mb-1">{auction.product_name}</h3>
+                    {!winners[auction.id] && (
+                      <div className="flex justify-start mb-2">
+                        <span className="text-[9px] font-black text-primary/80 uppercase tracking-widest animate-pulse italic bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20 flex items-center gap-1">
+                          {(() => {
+                            const phraseObj = incentivePhrases.find(p => p.text === randomPhrases[auction.id]);
+                            const PhraseIcon = phraseObj?.icon || Sparkles;
+                            return <PhraseIcon className="w-2.5 h-2.5" />;
+                          })()}
+                          {randomPhrases[auction.id]}
+                        </span>
+                      </div>
+                    )}
                     <div className="flex items-center gap-2">
+
                       <span className="text-xs text-white/40 line-through">R$ {auction.market_value.toFixed(2)}</span>
                       <Badge variant="outline" className="text-[10px] border-green-500/20 text-green-500 bg-green-500/5">99% OFF</Badge>
                     </div>

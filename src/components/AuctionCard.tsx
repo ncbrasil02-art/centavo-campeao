@@ -23,16 +23,16 @@ const BID_SOUND_URL = "https://assets.mixkit.co/active_storage/sfx/2571/2571-pre
 let CACHED_INCENTIVES: string[] = [];
 
 const INCENTIVE_PHRASES = [
-  "🔥 Este produto é o máximo!",
-  "👀 Tem poucas pessoas disputando!",
-  "💎 Quanto maior o pacote, mais chances!",
-  "⚡ Não deixe essa chance passar!",
-  "🏆 Alguém vai levar por quase nada!",
-  "🚀 O próximo lance pode ser o vencedor!",
-  "😱 Economia de mais de 90% garantida!",
-  "✨ Super oferta exclusiva de hoje!",
-  "📱 Últimas unidades em leilão!",
-  "🎮 O melhor custo-benefício está aqui!"
+  "🔥 Super Oferta!",
+  "💎 Mais chances!",
+  "⚡ Imperdível!",
+  "🏆 Quase lá!",
+  "🚀 Vencer agora!",
+  "😱 Economia!",
+  "✨ Exclusivo!",
+  "📱 Últimos lances!",
+  "🎮 Aproveite!",
+  "🤑 Arremate já!"
 ];
 
 interface AuctionCardProps {
@@ -593,19 +593,21 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       
       {/* Content Section */}
       <div className="relative flex flex-1 flex-col gap-4 bg-gradient-to-b from-foreground/[0.02] to-transparent p-6 pt-2">
-        {!isFinished && !isScheduled && (
-          <div className="flex justify-center mb-1">
-            <span className="text-[10px] font-black text-primary/60 uppercase tracking-widest animate-pulse italic bg-primary/5 px-3 py-1 rounded-full border border-primary/10">
-              {incentivePhrase}
-            </span>
-          </div>
-        )}
         <div>
           <Link to="/auctions/$id" params={{ id: auction.id }} className="cursor-pointer">
             <h3 className="mb-1 line-clamp-1 text-xl font-black uppercase italic tracking-tighter text-foreground transition-colors group-hover:text-primary">
               {auction.product?.name || "Produto"}
             </h3>
           </Link>
+          {!isFinished && !isScheduled && (
+            <div className="flex justify-start mb-2">
+              <span className="text-[9px] font-black text-primary/80 uppercase tracking-widest animate-pulse italic bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20">
+                {incentivePhrase}
+              </span>
+            </div>
+          )}
+OLD_CONTENT_IS_REPLACED_BELOW_HERE
+
           <div className="flex items-center gap-2">
             <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
               Valor Original:
