@@ -398,7 +398,8 @@ function AdminAuctions() {
       robot_bid_chance: typeof robotSettings?.bid_chance === 'string' ? parseFloat(robotSettings.bid_chance) : (robotSettings?.bid_chance || 0.3),
       robot_active: robotSettings?.active ?? true,
       robot_start_after: robotSettings?.start_after_minutes || 0,
-      robot_stop_after: robotSettings?.stop_after_minutes || 30
+      robot_stop_after: robotSettings?.stop_after_minutes || 30,
+      slug: auction.slug || ""
     });
     setIsDialogOpen(true);
   }
