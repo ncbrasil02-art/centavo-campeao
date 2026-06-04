@@ -68,7 +68,10 @@ function AdminUsersPage() {
   const usersPerPage = 10;
 
   useEffect(() => {
-    fetchUsers();
+    const timer = setTimeout(() => {
+      fetchUsers();
+    }, 300);
+    return () => clearTimeout(timer);
   }, [page, searchTerm]);
 
   async function fetchUsers() {
