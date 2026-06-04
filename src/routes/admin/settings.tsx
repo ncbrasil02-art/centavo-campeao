@@ -821,6 +821,45 @@ function AdminSettings() {
             <Card className="bg-white/5 border-white/10 overflow-hidden backdrop-blur-md">
               <CardHeader className="border-b border-white/5 bg-white/[0.02]">
                 <div className="flex items-center gap-2">
+                  <MessageSquare className="w-5 h-5 text-green-500" />
+                  <div>
+                    <CardTitle className="text-lg">Botão do WhatsApp</CardTitle>
+                    <CardDescription className="text-white/40">Configure o balão flutuante de atendimento</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="p-6 space-y-6">
+                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10">
+                  <div className="space-y-0.5">
+                    <Label className="flex items-center gap-2">
+                      <MessageSquare className="w-4 h-4 text-green-500" /> Ativar Balão Flutuante
+                    </Label>
+                    <p className="text-[10px] text-white/40">Exibir botão do WhatsApp no canto do site</p>
+                  </div>
+                  <Switch 
+                    checked={settings.whatsapp_float_enabled} 
+                    onCheckedChange={(val) => setSettings({...settings, whatsapp_float_enabled: val})}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="wa_num">Número do WhatsApp (com DDD)</Label>
+                  <Input 
+                    id="wa_num" 
+                    value={settings.whatsapp_number || ""} 
+                    onChange={(e) => setSettings({...settings, whatsapp_number: e.target.value})}
+                    placeholder="Ex: 11999999999"
+                    className="bg-white/5 border-white/10 h-12"
+                  />
+                  <p className="text-[10px] text-white/40">Apenas números, sem espaços ou símbolos.</p>
+                </div>
+              </CardContent>
+            </Card>
+
+
+            <Card className="bg-white/5 border-white/10 overflow-hidden backdrop-blur-md">
+              <CardHeader className="border-b border-white/5 bg-white/[0.02]">
+                <div className="flex items-center gap-2">
                   <CreditCard className="w-5 h-5 text-primary" />
                   <div>
                     <CardTitle className="text-lg">Pagamentos Mercado Pago</CardTitle>
