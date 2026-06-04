@@ -543,12 +543,14 @@ export type Database = {
           meta_description: string | null
           meta_keywords: string | null
           meta_title: string | null
+          narration_enabled: boolean | null
           page_background_color: string | null
           pix_key: string | null
           pix_name: string | null
           primary_color: string | null
           secondary_color: string | null
           site_name: string | null
+          sound_enabled: boolean | null
           support_whatsapp: string | null
           theme_mode: string | null
           updated_at: string | null
@@ -575,12 +577,14 @@ export type Database = {
           meta_description?: string | null
           meta_keywords?: string | null
           meta_title?: string | null
+          narration_enabled?: boolean | null
           page_background_color?: string | null
           pix_key?: string | null
           pix_name?: string | null
           primary_color?: string | null
           secondary_color?: string | null
           site_name?: string | null
+          sound_enabled?: boolean | null
           support_whatsapp?: string | null
           theme_mode?: string | null
           updated_at?: string | null
@@ -607,12 +611,14 @@ export type Database = {
           meta_description?: string | null
           meta_keywords?: string | null
           meta_title?: string | null
+          narration_enabled?: boolean | null
           page_background_color?: string | null
           pix_key?: string | null
           pix_name?: string | null
           primary_color?: string | null
           secondary_color?: string | null
           site_name?: string | null
+          sound_enabled?: boolean | null
           support_whatsapp?: string | null
           theme_mode?: string | null
           updated_at?: string | null
