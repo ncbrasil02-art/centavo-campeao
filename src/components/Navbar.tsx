@@ -100,7 +100,34 @@ export function Navbar() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md text-foreground">
+    <>
+      {marquee_enabled && marquee_text && (
+        <div className="w-full bg-primary overflow-hidden py-1.5 border-b border-black/10">
+          <div className="flex whitespace-nowrap animate-marquee">
+            <div className="flex items-center gap-8 px-4">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <span className="text-[11px] font-black uppercase italic text-black tracking-wider drop-shadow-sm">
+                    {marquee_text}
+                  </span>
+                  <Sparkles className="w-3 h-3 text-black animate-pulse" />
+                </div>
+              ))}
+            </div>
+            <div className="flex items-center gap-8 px-4">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <span className="text-[11px] font-black uppercase italic text-black tracking-wider drop-shadow-sm">
+                    {marquee_text}
+                  </span>
+                  <Sparkles className="w-3 h-3 text-black animate-pulse" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+      <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md text-foreground">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link to="/" className="flex items-center gap-2 group">
           {logo_url ? (
