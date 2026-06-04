@@ -41,7 +41,10 @@ interface SiteSettings {
   ios_app_url: string;
   whatsapp_number: string;
   whatsapp_float_enabled: boolean;
+  terms_of_use: string;
+  privacy_policy: string;
 }
+
 
 
 
@@ -91,7 +94,10 @@ const DEFAULT_SETTINGS: SiteSettings = {
   ios_app_url: "",
   whatsapp_number: "",
   whatsapp_float_enabled: true,
+  terms_of_use: "",
+  privacy_policy: "",
 };
+
 
 
 
@@ -239,7 +245,10 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
             ios_app_url: data.ios_app_url || DEFAULT_SETTINGS.ios_app_url,
             whatsapp_number: data.whatsapp_number || DEFAULT_SETTINGS.whatsapp_number,
             whatsapp_float_enabled: data.whatsapp_float_enabled ?? DEFAULT_SETTINGS.whatsapp_float_enabled,
+            terms_of_use: data.terms_of_use || DEFAULT_SETTINGS.terms_of_use,
+            privacy_policy: data.privacy_policy || DEFAULT_SETTINGS.privacy_policy,
           };
+
 
 
           

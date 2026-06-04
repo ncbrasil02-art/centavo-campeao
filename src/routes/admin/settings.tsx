@@ -29,8 +29,11 @@ import {
   Zap,
   Play,
   LayoutTemplate,
-  MessageSquare
+  MessageSquare,
+  ShieldCheck,
+  FileText
 } from "lucide-react";
+
 
 
 import { Switch } from "@/components/ui/switch";
@@ -95,7 +98,10 @@ function AdminSettings() {
     ios_app_url: "",
     whatsapp_number: "",
     whatsapp_float_enabled: true,
+    terms_of_use: "",
+    privacy_policy: "",
   });
+
 
 
 
@@ -165,7 +171,10 @@ function AdminSettings() {
           ios_app_url: publicData.ios_app_url || "",
           whatsapp_number: publicData.whatsapp_number || "",
           whatsapp_float_enabled: publicData.whatsapp_float_enabled ?? true,
+          terms_of_use: publicData.terms_of_use || "",
+          privacy_policy: publicData.privacy_policy || "",
         });
+
 
 
 
@@ -1004,8 +1013,46 @@ function AdminSettings() {
                 </div>
               </CardContent>
             </Card>
-
+            
+            <Card className="bg-white/5 border-white/10 overflow-hidden backdrop-blur-md">
+              <CardHeader className="border-b border-white/5 bg-white/[0.02]">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="w-5 h-5 text-blue-500" />
+                  <div>
+                    <CardTitle className="text-lg">Termos e Privacidade</CardTitle>
+                    <CardDescription className="text-white/40">Textos legais do rodapé</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="p-6 space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="terms_of_use" className="flex items-center gap-2">
+                    <FileText className="w-4 h-4" /> Termos de Uso
+                  </Label>
+                  <Textarea 
+                    id="terms_of_use" 
+                    value={settings.terms_of_use || ""} 
+                    onChange={(e) => setSettings({...settings, terms_of_use: e.target.value})}
+                    placeholder="Cole aqui os Termos de Uso do site..."
+                    className="bg-white/5 border-white/10 min-h-[200px]"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="privacy_policy" className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4" /> Política de Privacidade
+                  </Label>
+                  <Textarea 
+                    id="privacy_policy" 
+                    value={settings.privacy_policy || ""} 
+                    onChange={(e) => setSettings({...settings, privacy_policy: e.target.value})}
+                    placeholder="Cole aqui a Política de Privacidade do site..."
+                    className="bg-white/5 border-white/10 min-h-[200px]"
+                  />
+                </div>
+              </CardContent>
+            </Card>
           </div>
+
         </div>
       </main>
     </div>
