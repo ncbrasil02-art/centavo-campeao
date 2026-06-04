@@ -89,7 +89,8 @@ function AdminAuctions() {
     robot_bid_chance: 0.3,
     robot_active: true,
     robot_start_after: 0,
-    robot_stop_after: 30
+    robot_stop_after: 30,
+    slug: ""
   };
 
   const [formData, setFormData] = useState(initialFormData);
@@ -743,6 +744,17 @@ function AdminAuctions() {
                       className="bg-white/5 border-white/10"
                     />
                   </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label>URL Amigável (Slug)</Label>
+                  <Input 
+                    value={formData.slug} 
+                    onChange={e => setFormData({...formData, slug: e.target.value})}
+                    placeholder="ex: iphone-15-pro-desconto"
+                    className="bg-white/5 border-white/10"
+                  />
+                  <p className="text-[10px] text-white/40 italic">Deixe em branco para gerar automaticamente.</p>
                 </div>
 
                 <div className="space-y-2">
