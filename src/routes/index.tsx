@@ -394,7 +394,9 @@ function Index() {
                 )}
               </div>
             </div>
+          </section>
           )}
+
 
 
           {show_finished_auctions && finishedAuctions.length > 0 && (
