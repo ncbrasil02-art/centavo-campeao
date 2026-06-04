@@ -88,7 +88,11 @@ function AdminSettings() {
     marquee_text: "",
     marquee_enabled: true,
     demo_auctions_enabled: false,
+    pwa_enabled: true,
+    android_app_url: "",
+    ios_app_url: "",
   });
+
 
 
   useEffect(() => {
