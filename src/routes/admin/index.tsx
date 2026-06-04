@@ -64,28 +64,18 @@ function AdminDashboard() {
 
   async function fetchStats() {
     try {
-      const [
-        { count: usersCount },
-        { count: auctionsCount },
-        { data: revenueData },
-        { count: bidsCount }
-      ] = await Promise.all([
-        supabase.from("profiles").select("*", { count: 'exact', head: true }),
-        supabase.from("auctions").select("*", { count: 'exact', head: true }).eq("status", "live"),
-        // Optimized: just get the sum if possible, or limit the number of records
-        supabase.from("transactions").select("amount").eq("status", "completed").limit(1000),
-        supabase.from("bids").select("*", { count: 'exact', head: true })
-      ]);
-
-
-      const revenue = (revenueData || []).reduce((acc, curr) => acc + Number(curr.amount), 0);
+      const { data, error } = await supabase.rpc('get_admin_stats');
+      
+      if (error) throw error;
+      
+      const statsData = data as any;
 
       setStats(prev => ({
         ...prev,
-        totalUsers: usersCount || 0,
-        activeAuctions: auctionsCount || 0,
-        totalRevenue: revenue,
-        totalBids: bidsCount || 0
+        totalUsers: Number(statsData.totalUsers) || 0,
+        activeAuctions: Number(statsData.activeAuctions) || 0,
+        totalRevenue: Number(statsData.totalRevenue) || 0,
+        totalBids: Number(statsData.totalBids) || 0
       }));
     } catch (error) {
       console.error("Error fetching stats:", error);
