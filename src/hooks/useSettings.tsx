@@ -89,7 +89,10 @@ const DEFAULT_SETTINGS: SiteSettings = {
   pwa_enabled: true,
   android_app_url: "",
   ios_app_url: "",
+  whatsapp_number: "",
+  whatsapp_float_enabled: true,
 };
+
 
 
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
