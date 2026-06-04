@@ -52,7 +52,7 @@ function RankingPage() {
               Hall da <span className="text-primary">Fama</span>
             </h1>
             <p className="text-white/40 max-w-xl mx-auto">
-              Os maiores arrematadores da plataforma. Conheça as lendas que dominam os leilões do Lance Certo.
+              Os maiores arrematadores da plataforma. Conheça as lendas que dominam os leilões do {useSettings().site_name}.
             </p>
           </div>
 
