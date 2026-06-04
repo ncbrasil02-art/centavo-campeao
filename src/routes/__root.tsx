@@ -171,7 +171,9 @@ import { FloatingControls } from "@/components/FloatingControls";
 import { PromotionalMessages } from "@/components/PromotionalMessages";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { SocialProofNotifications } from "@/components/SocialProofNotifications";
 import { Toaster } from "@/components/ui/sonner";
+
 
 
 
@@ -187,10 +189,12 @@ function RootComponent() {
         <PromotionalMessages />
         <PWAInstallPrompt />
         <WhatsAppButton />
+        <SocialProofNotifications />
         <Outlet />
 
 
-        <Toaster position="top-right" richColors />
+
+        <Toaster position="bottom-center" richColors />
       </SettingsProvider>
     </QueryClientProvider>
   );
