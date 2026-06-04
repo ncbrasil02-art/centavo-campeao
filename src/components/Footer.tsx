@@ -89,7 +89,7 @@ export function Footer() {
             </div>
             <div className="pt-4 border-t border-border">
               <p className="text-[9px] font-bold text-muted-foreground/40 uppercase tracking-widest leading-relaxed">
-                SISTEMA DE LEILÃO DESENVOLVIDO POR <br/>
+                DESENVOLVIDO POR&nbsp;&nbsp;
                 <a href="https://ncbrasil.com.br" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 transition-all font-black italic border-b border-primary/30">NC BRASIL</a>
               </p>
             </div>
