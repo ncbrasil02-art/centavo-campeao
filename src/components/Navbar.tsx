@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { User, LogOut, Wallet, Gavel, LayoutDashboard, Menu, X, Clock, Settings, Sparkles } from "lucide-react";
+import { User, LogOut, Wallet, Gavel, LayoutDashboard, Menu, X, Clock, Settings, Sparkles, Smartphone } from "lucide-react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getFallbackAvatarUrl } from "@/lib/constants";
@@ -178,6 +178,15 @@ export function Navbar() {
           <Link to="/how-it-works" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Como Funciona</Link>
           <Link to="/ranking" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Ranking</Link>
           <Link to="/packages" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Comprar Lances</Link>
+          <button 
+            onClick={() => {
+              const event = new CustomEvent('show-pwa-install');
+              window.dispatchEvent(event);
+            }}
+            className="flex items-center gap-2 text-sm font-black text-primary animate-pulse hover:scale-105 transition-transform"
+          >
+            <Smartphone className="w-4 h-4" /> Baixar App
+          </button>
           
           {(profile?.is_admin || user?.id === 'cdf027bb-f239-4ba0-b8a9-7bf52341df4b' || user?.id === 'ad8443eb-d096-46ad-ba39-07abdba01fdb') && (
             <Link 
@@ -291,6 +300,15 @@ export function Navbar() {
               <Link to={"/profile" as any} className="text-lg font-bold p-2 hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Leilões</Link>
               <Link to="/ranking" className="text-lg font-bold p-2 hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Ranking</Link>
               <Link to="/packages" className="text-lg font-bold p-2 hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Comprar Lances</Link>
+              <button 
+                className="text-lg font-black p-2 text-primary flex items-center gap-2 animate-pulse" 
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  window.dispatchEvent(new CustomEvent('show-pwa-install'));
+                }}
+              >
+                <Smartphone className="w-5 h-5" /> BAIXAR APP
+              </button>
               <Link to={"/profile" as any} className="text-lg font-bold p-2 hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Meu Perfil</Link>
 
               {(profile?.is_admin || user?.id === 'cdf027bb-f239-4ba0-b8a9-7bf52341df4b' || user?.id === 'ad8443eb-d096-46ad-ba39-07abdba01fdb') && (

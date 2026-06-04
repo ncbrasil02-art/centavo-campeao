@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Clock, User, MessageSquare, Zap, Eye, Volume2, VolumeX, Calendar, ShieldCheck, Trophy, Wallet, Info } from "lucide-react";
+import { Clock, User, MessageSquare, Zap, Eye, Volume2, VolumeX, Calendar, ShieldCheck, Trophy, Wallet, Info, UserPlus } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { AuctionChat } from "./AuctionChat";
 import { toast } from "sonner";
@@ -470,61 +470,61 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         </Link>
 
         {isScheduled && auction.start_time && (
-          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 bg-primary/40 backdrop-blur-[2px] py-3 flex flex-col items-center justify-center z-20 shadow-[0_0_40px_rgba(var(--color-primary),0.2)] border-y border-glass-border rotate-[-2deg] scale-105 origin-center transition-all duration-500 group-hover:bg-primary/60 group-hover:backdrop-blur-sm">
+          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 bg-zinc-950/90 backdrop-blur-md py-4 flex flex-col items-center justify-center z-20 shadow-[0_0_50px_rgba(0,0,0,0.8)] border-y-2 border-primary/30 rotate-[-2deg] scale-105 origin-center transition-all duration-500 group-hover:bg-black group-hover:scale-110">
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.1)_0%,_transparent_70%)] animate-pulse"></div>
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground mb-1 relative z-10 text-center px-4">COMEÇA EM (HORÁRIO DE BRASÍLIA)</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary mb-2 relative z-10 text-center px-4 drop-shadow-[0_0_8px_rgba(var(--color-primary),0.5)]">COMEÇA EM (HORÁRIO DE BRASÍLIA)</span>
             <div className="flex flex-col items-center relative z-10">
-              <div className="flex gap-1 mb-1">
+              <div className="flex gap-1.5 mb-2">
                 {timeLeft >= 3600 * 24 && (
                   <div className="flex flex-col items-center">
-                    <div className="bg-card/80 rounded-lg px-2 py-1.5 min-w-[45px] flex items-center justify-center shadow-xl border border-glass-border">
-                      <span className="text-xl font-black text-primary tabular-nums tracking-tighter">
+                    <div className="bg-zinc-900 rounded-lg px-2.5 py-2 min-w-[48px] flex items-center justify-center shadow-2xl border border-primary/20">
+                      <span className="text-2xl font-black text-white tabular-nums tracking-tighter">
                         {timeParts.d}
                       </span>
                     </div>
-                    <span className="text-[10px] font-black text-muted-foreground mt-0.5">DIAS</span>
+                    <span className="text-[9px] font-black text-primary/70 mt-1 uppercase">DIAS</span>
                   </div>
                 )}
                 {timeLeft >= 3600 && (
                   <div className="flex flex-col items-center">
-                    <div className="bg-card/80 rounded-lg px-2 py-1.5 min-w-[45px] flex items-center justify-center shadow-xl border border-glass-border">
-                      <span className="text-xl font-black text-primary tabular-nums tracking-tighter">
+                    <div className="bg-zinc-900 rounded-lg px-2.5 py-2 min-w-[48px] flex items-center justify-center shadow-2xl border border-primary/20">
+                      <span className="text-2xl font-black text-white tabular-nums tracking-tighter">
                         {timeParts.h}
                       </span>
                     </div>
-                    <span className="text-[10px] font-black text-muted-foreground mt-0.5">HORAS</span>
+                    <span className="text-[9px] font-black text-primary/70 mt-1 uppercase">HORAS</span>
                   </div>
                 )}
                 <div className="flex flex-col items-center">
-                  <div className="bg-card/80 rounded-lg px-2 py-1.5 min-w-[45px] flex items-center justify-center shadow-xl border border-glass-border">
-                    <span className="text-xl font-black text-primary tabular-nums tracking-tighter">
+                  <div className="bg-zinc-900 rounded-lg px-2.5 py-2 min-w-[48px] flex items-center justify-center shadow-2xl border border-primary/20">
+                    <span className="text-2xl font-black text-white tabular-nums tracking-tighter">
                       {timeParts.m}
                     </span>
                   </div>
-                  <span className="text-[10px] font-black text-muted-foreground mt-0.5">MIN</span>
+                  <span className="text-[9px] font-black text-primary/70 mt-1 uppercase">MIN</span>
                 </div>
                 <div className="flex flex-col items-center">
                   <div className="flex gap-0.5">
-                    <div className="bg-card/80 rounded-lg px-2 py-1.5 min-w-[45px] flex items-center justify-center shadow-xl border border-glass-border">
-                      <span className="text-xl font-black text-primary tabular-nums tracking-tighter">
+                    <div className="bg-zinc-900 rounded-lg px-2.5 py-2 min-w-[48px] flex items-center justify-center shadow-2xl border border-primary/20">
+                      <span className="text-2xl font-black text-white tabular-nums tracking-tighter">
                         {timeParts.s}
                       </span>
                     </div>
                     {timeLeft < 60 && (
-                      <div className="bg-card/60 rounded-lg px-1.5 py-1.5 flex items-end shadow-xl border border-glass-border">
-                        <span className="text-sm font-black text-primary/80 tabular-nums">
+                      <div className="bg-zinc-800 rounded-lg px-1.5 py-2 flex items-end shadow-2xl border border-primary/10">
+                        <span className="text-sm font-black text-primary tabular-nums">
                           ,{timeParts.ms}
                         </span>
                       </div>
                     )}
                   </div>
-                  <span className="text-[10px] font-black text-muted-foreground mt-0.5">SEG</span>
+                  <span className="text-[9px] font-black text-primary/70 mt-1 uppercase">SEG</span>
                 </div>
               </div>
               <div className="flex flex-col items-center gap-1">
-                <div className="flex items-center gap-2 px-3 py-0.5 rounded-full bg-glass/20 border border-glass-border">
-                  <Calendar className="w-2.5 h-2.5 text-muted-foreground" />
-                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-sm shadow-inner">
+                  <Calendar className="w-3 h-3 text-primary" />
+                  <span className="text-[10px] font-black text-white uppercase tracking-widest drop-shadow-sm">
                     {new Date(auction.start_time).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })} às {new Date(auction.start_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
@@ -758,17 +758,23 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         <Button 
           onClick={(e) => {
             e.stopPropagation();
+            if (isScheduled && !currentUserId) {
+              window.location.href = "/auth?register=true&offer=welcome_bids";
+              return;
+            }
             if (!isFinished && !isScheduled && !isPendingAudit && !isConfirmed) {
               handleBid();
             }
           }} 
 
-          disabled={loading || (isFinished || isScheduled || isConfirmed || (isPendingAudit && !isAdmin))}
+          disabled={loading || (isFinished || (isScheduled && !!currentUserId) || isConfirmed || (isPendingAudit && !isAdmin))}
           className={`h-14 w-full rounded-2xl text-base font-black uppercase italic tracking-tighter transition-all relative overflow-hidden group/bidbtn ${
             isFinished || isConfirmed
               ? 'cursor-default border border-green-500/20 bg-green-500/10 text-green-500' 
               : isPendingAudit
               ? (isAdmin ? 'bg-primary text-primary-foreground shadow-[0_0_25px_rgba(var(--color-primary),0.5)] hover:scale-[1.02]' : 'cursor-default border border-red-500/20 bg-red-500/10 text-red-500 animate-pulse')
+              : (isScheduled && !currentUserId)
+              ? 'bg-primary text-primary-foreground shadow-[0_0_20px_rgba(var(--color-primary),0.4)] hover:scale-[1.02] cursor-pointer'
               : isScheduled
               ? 'cursor-not-allowed border border-border bg-muted text-muted-foreground'
               : timeLeft <= 5
@@ -792,7 +798,13 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
                 <ShieldCheck className="h-5 w-5" /> ARREMATAR AGORA
               </span>
             ) : "ARREMATADO"
-          ) : isScheduled ? "AGUARDANDO INÍCIO" : (
+          ) : isScheduled ? (
+            currentUserId ? "AGUARDANDO INÍCIO" : (
+              <span className="flex items-center gap-2">
+                <UserPlus className="h-5 w-5" /> FAZER CADASTRO
+              </span>
+            )
+          ) : (
             <span className="flex items-center gap-2">
               {timeLeft <= 5 ? "VAI PERDER..." : "DAR LANCE"} <Zap className={`h-5 w-5 fill-current ${timeLeft <= 5 ? 'animate-bounce' : ''}`} />
             </span>
