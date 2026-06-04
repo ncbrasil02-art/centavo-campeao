@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { MessageSquare, ShieldCheck, Heart, Clock, Gavel, Mail, Phone, Info } from "lucide-react";
+import { MessageSquare, ShieldCheck, Heart, Clock, Gavel, Mail, Phone, Info, Smartphone } from "lucide-react";
 import { useSettings } from "@/hooks/useSettings";
 import { Button } from "@/components/ui/button";
 
