@@ -73,6 +73,7 @@ export type Database = {
           modality: string | null
           product_id: string | null
           robot_enabled: boolean | null
+          slug: string | null
           start_time: string | null
           status: string | null
           target_winner: string | null
@@ -91,6 +92,7 @@ export type Database = {
           modality?: string | null
           product_id?: string | null
           robot_enabled?: boolean | null
+          slug?: string | null
           start_time?: string | null
           status?: string | null
           target_winner?: string | null
@@ -109,6 +111,7 @@ export type Database = {
           modality?: string | null
           product_id?: string | null
           robot_enabled?: boolean | null
+          slug?: string | null
           start_time?: string | null
           status?: string | null
           target_winner?: string | null
