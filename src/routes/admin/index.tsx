@@ -39,51 +39,52 @@ function AdminDashboard() {
     totalRevenue: 0,
     totalBids: 0
   });
+  const [onlineProfiles, setOnlineProfiles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchStats();
+    fetchOnlineProfiles();
     
-    // Track online users via Presence
-    const channel = supabase.channel('admin_presence');
-    channel
-      .on('presence', { event: 'sync' }, () => {
-        const state = channel.presenceState();
-        const count = Object.keys(state).length;
-        setStats(prev => ({ ...prev, onlineUsers: count + 12 })); // +12 for simulation of other users
+    // Subscribe to profile changes to update online list
+    const channel = supabase
+      .channel('admin_presence_tracking')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => {
+        fetchOnlineProfiles();
+        fetchStats();
       })
-      .subscribe(async (status) => {
-        if (status === 'SUBSCRIBED') {
-          await channel.track({ online_at: new Date().toISOString() });
-        }
-      });
+      .subscribe();
+
+    const statsInterval = setInterval(fetchStats, 30000); // Refresh stats every 30s
 
     return () => {
       supabase.removeChannel(channel);
+      clearInterval(statsInterval);
     };
   }, []);
 
   async function fetchStats() {
     try {
-      const { data, error } = await supabase.rpc('get_admin_stats');
-      
+      const { data, error } = await supabase.rpc('get_admin_stats_v2');
       if (error) throw error;
-      
-      const statsData = data as any;
-
-      setStats(prev => ({
-        ...prev,
-        totalUsers: Number(statsData.totalUsers) || 0,
-        activeAuctions: Number(statsData.activeAuctions) || 0,
-        totalRevenue: Number(statsData.totalRevenue) || 0,
-        totalBids: Number(statsData.totalBids) || 0
-      }));
+      if (data) setStats(data as any);
     } catch (error) {
       console.error("Error fetching stats:", error);
     } finally {
       setLoading(false);
     }
   }
+
+  async function fetchOnlineProfiles() {
+    const { data } = await supabase
+      .from('profiles')
+      .select('*')
+      .gt('last_seen_at', new Date(Date.now() - 5 * 60 * 1000).toISOString())
+      .order('last_seen_at', { ascending: false });
+    
+    if (data) setOnlineProfiles(data);
+  }
+
 
   // Mock data for charts
   const chartData = [
