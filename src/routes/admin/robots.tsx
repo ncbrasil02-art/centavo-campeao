@@ -39,20 +39,8 @@ function AdminRobotsPage() {
   }
 
   async function fetchAuctionsWithRobots() {
-    const { data, error } = await supabase
-      .from("auctions")
-      .select(`
-        *,
-        product:products(name),
-        robot_settings(*)
-      `)
-      .eq("status", "live");
-    
-    if (data) {
-      // Optimized: Use server-side function to ensure all live auctions have settings
-      await supabase.rpc('ensure_live_auctions_robot_settings');
-      
-      const { data: updatedData } = await supabase
+    try {
+      const { data, error } = await supabase
         .from("auctions")
         .select(`
           *,
@@ -61,10 +49,16 @@ function AdminRobotsPage() {
         `)
         .eq("status", "live");
       
-      if (updatedData) setAuctions(updatedData);
+      if (error) throw error;
+      
+      if (data) {
+        setAuctions(data);
+      }
+    } catch (err) {
+      console.error("Error fetching auctions:", err);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   }
 
   // Server-side automation is handled by the Heartbeat component

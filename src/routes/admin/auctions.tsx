@@ -79,6 +79,7 @@ function AdminAuctions() {
     end_time: "",
     status: "scheduled",
     robot_enabled: true,
+    robot_inner_dispute: false,
     timer_duration: 15,
     is_finalizing: false,
     target_winner: "random" as "robot" | "user" | "random",
@@ -277,7 +278,7 @@ function AdminAuctions() {
         endTime = new Date(startTime.getTime() + (timerDuration * 1000)).toISOString();
       }
 
-      const payload = {
+      const payload: any = {
         product_id: finalProductId,
         start_time: startTime.toISOString(),
         end_time: endTime,
@@ -333,6 +334,7 @@ function AdminAuctions() {
             max_delay: formData.robot_max_delay,
             bid_chance: formData.robot_bid_chance,
             active: formData.robot_active,
+            inner_dispute_enabled: formData.robot_inner_dispute,
             start_after_minutes: formData.robot_start_after,
             stop_after_minutes: formData.robot_stop_after
           }, { onConflict: 'auction_id' });
@@ -400,6 +402,7 @@ function AdminAuctions() {
       robot_active: robotSettings?.active ?? true,
       robot_start_after: robotSettings?.start_after_minutes || 0,
       robot_stop_after: robotSettings?.stop_after_minutes || 30,
+      robot_inner_dispute: robotSettings?.inner_dispute_enabled || false,
       slug: auction.slug || ""
     });
     setIsDialogOpen(true);
@@ -861,6 +864,28 @@ function AdminAuctions() {
                     <Switch 
                       checked={formData.robot_enabled} 
                       onCheckedChange={v => setFormData({...formData, robot_enabled: v})}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label>Disputa entre Robôs</Label>
+                      <p className="text-[10px] text-white/40">Robôs dão lances entre si</p>
+                    </div>
+                    <Switch 
+                      checked={formData.robot_inner_dispute} 
+                      onCheckedChange={v => setFormData({...formData, robot_inner_dispute: v})}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label>Disputa entre Robôs</Label>
+                      <p className="text-[10px] text-white/40">Robôs dão lances entre si</p>
+                    </div>
+                    <Switch 
+                      checked={formData.robot_inner_dispute} 
+                      onCheckedChange={v => setFormData({...formData, robot_inner_dispute: v})}
                     />
                   </div>
 
