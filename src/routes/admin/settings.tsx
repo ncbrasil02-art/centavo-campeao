@@ -22,8 +22,12 @@ import {
   Globe, 
   BarChart,
   Sun,
-  Moon
+  Moon,
+  Volume2,
+  VolumeX,
+  Mic
 } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 import { 
   Select, 
   SelectContent, 
