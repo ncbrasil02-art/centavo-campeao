@@ -13,6 +13,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 
+import { DemoAuctionBlock } from "./DemoAuctionBlock";
+
 export function Hero() {
   const { getAdjustedNow } = useTimeSync();
   const { hero_display_mode } = useSettings();

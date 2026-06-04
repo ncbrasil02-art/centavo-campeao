@@ -2,9 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Clock, User, Zap, ShieldCheck, Trophy, Info } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { MODALITY_CONFIG, FALLBACK_PRODUCT_IMAGE, getFallbackAvatarUrl, FICTITIOUS_PARTICIPANTS } from "@/lib/constants";
+import { Clock, Zap, Trophy } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { MODALITY_CONFIG, getFallbackAvatarUrl, FICTITIOUS_PARTICIPANTS } from "@/lib/constants";
 
 interface DemoAuction {
   id: string;
@@ -20,7 +20,6 @@ interface DemoAuction {
 
 export function DemoAuctionBlock({ auctions: initialAuctions }: { auctions: DemoAuction[] }) {
   const [auctions, setAuctions] = useState<DemoAuction[]>(initialAuctions);
-  const timersRef = useRef<Record<string, number>>({});
   const [localTimes, setLocalTimes] = useState<Record<string, number>>({});
 
   useEffect(() => {
@@ -29,7 +28,6 @@ export function DemoAuctionBlock({ auctions: initialAuctions }: { auctions: Demo
     initialAuctions.forEach(a => {
       initialTimers[a.id] = Math.floor(Math.random() * 5) + 10;
     });
-    timersRef.current = initialTimers;
     setLocalTimes(initialTimers);
 
     const interval = setInterval(() => {
@@ -43,15 +41,19 @@ export function DemoAuctionBlock({ auctions: initialAuctions }: { auctions: Demo
             const auctionIndex = auctions.findIndex(a => a.id === id);
             if (auctionIndex !== -1) {
               const bot = FICTITIOUS_PARTICIPANTS[Math.floor(Math.random() * FICTITIOUS_PARTICIPANTS.length)];
-              const newAuctions = [...auctions];
-              newAuctions[auctionIndex] = {
-                ...newAuctions[auctionIndex],
-                current_price: newAuctions[auctionIndex].current_price + 0.01,
-                last_bidder_name: bot.name,
-                last_bidder_avatar: getFallbackAvatarUrl(bot.name)
-              };
-              setAuctions(newAuctions);
-              next[id] = newAuctions[auctionIndex].timer_seconds;
+              const botName = typeof bot === 'string' ? bot : (bot as any).name;
+              
+              setAuctions(prevAuctions => {
+                const newAuctions = [...prevAuctions];
+                newAuctions[auctionIndex] = {
+                  ...newAuctions[auctionIndex],
+                  current_price: newAuctions[auctionIndex].current_price + 0.01,
+                  last_bidder_name: botName,
+                  last_bidder_avatar: getFallbackAvatarUrl(botName)
+                };
+                return newAuctions;
+              });
+              next[id] = auctions[auctionIndex].timer_seconds;
             }
           }
         });
@@ -84,7 +86,7 @@ export function DemoAuctionBlock({ auctions: initialAuctions }: { auctions: Demo
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {auctions.map((auction) => {
             const time = localTimes[auction.id] || 0;
-            const modality = MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG] || MODALITY_CONFIG.standard;
+            const modality = (MODALITY_CONFIG as any)[auction.modality] || (MODALITY_CONFIG as any).standard || (MODALITY_CONFIG as any).novice;
             const Icon = modality.icon;
             
             return (
