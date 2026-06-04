@@ -28,8 +28,10 @@ import {
   Mic,
   Zap,
   Play,
-  LayoutTemplate
+  LayoutTemplate,
+  MessageSquare
 } from "lucide-react";
+
 
 import { Switch } from "@/components/ui/switch";
 import { 
