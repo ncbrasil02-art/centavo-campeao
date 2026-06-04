@@ -118,17 +118,39 @@ function AuctionPage() {
 
   useEffect(() => {
     fetchAuction();
+  }, [id]);
+
+  useEffect(() => {
+    if (!auction?.id) return;
+
     fetchBids();
 
+    console.log('Subscribing to real-time for auction:', auction.id);
+
     const auctionChannel = supabase
-      .channel(channelRef.current)
+      .channel(`auction_detail_${auction.id}`)
       .on(
         'postgres_changes',
-        { event: 'UPDATE', schema: 'public', table: 'auctions', filter: `id=eq.${auction?.id || id}` },
-        (payload) => {
+        { event: 'UPDATE', schema: 'public', table: 'auctions', filter: `id=eq.${auction.id}` },
+        async (payload) => {
           console.log('Auction real-time update:', payload.new);
-          // Update auction state immediately
-          setAuction((prev: any) => ({ ...prev, ...payload.new }));
+          
+          // If the last_bidder_id changed, we need to fetch the profile data for the leader UI
+          if (payload.new.last_bidder_id !== auction.last_bidder_id) {
+            const { data: profileData } = await supabase
+              .from('profiles')
+              .select('username, avatar_url')
+              .eq('id', payload.new.last_bidder_id)
+              .maybeSingle();
+            
+            setAuction((prev: any) => ({ 
+              ...prev, 
+              ...payload.new,
+              last_bidder: profileData 
+            }));
+          } else {
+            setAuction((prev: any) => ({ ...prev, ...payload.new }));
+          }
 
           // Recalculate time remaining instantly
           if (payload.new.end_time) {
@@ -145,11 +167,12 @@ function AuctionPage() {
       .subscribe();
 
     const bidsChannel = supabase
-      .channel(bidsChannelRef.current)
+      .channel(`bids_detail_${auction.id}`)
       .on(
         'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'bids', filter: `auction_id=eq.${auction?.id || id}` },
+        { event: 'INSERT', schema: 'public', table: 'bids', filter: `auction_id=eq.${auction.id}` },
         () => {
+          console.log('New bid detected via real-time');
           fetchBids();
         }
       )
@@ -159,7 +182,7 @@ function AuctionPage() {
       supabase.removeChannel(auctionChannel);
       supabase.removeChannel(bidsChannel);
     };
-  }, [id]);
+  }, [auction?.id]);
 
   useEffect(() => {
     if (!auction?.end_time && !auction?.start_time) return;
