@@ -24,10 +24,10 @@ export function AuctionNarrator() {
         .select("id")
         .eq("status", "active");
 
-      const now = new Date().getTime();
+      const currentTime = new Date().getTime();
 
       // Random encouragement every 3 minutes if there are active auctions
-      if (activeAuctions && activeAuctions.length > 0 && (now - lastRandomNarrationRef.current) > 180000) {
+      if (activeAuctions && activeAuctions.length > 0 && (currentTime - lastRandomNarrationRef.current) > 180000) {
         const { data: phrases } = await supabase
           .from("narration_phrases")
           .select("phrase")
@@ -36,17 +36,15 @@ export function AuctionNarrator() {
         if (phrases && phrases.length > 0) {
           const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)].phrase;
           speak(randomPhrase);
-          lastRandomNarrationRef.current = now;
+          lastRandomNarrationRef.current = currentTime;
         }
       }
 
       if (!auctions) return;
 
-      const now = new Date().getTime();
-
       auctions.forEach((auction: any) => {
         const startTime = new Date(auction.start_time).getTime();
-        const diffMs = startTime - now;
+        const diffMs = startTime - currentTime;
         const diffMinutes = Math.floor(diffMs / 60000);
         const diffSeconds = Math.floor(diffMs / 1000);
 
