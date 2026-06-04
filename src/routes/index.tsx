@@ -7,7 +7,7 @@ import { TestimonialsSection } from "@/components/TestimonialsSection";
 import { useSettings } from "@/hooks/useSettings";
 import { AuctionCard } from "@/components/AuctionCard";
 import { GlobalActivityChat } from "@/components/GlobalActivityChat";
-import { MessageSquare, X, ArrowRight, Zap, ShieldCheck, Heart, User, ArrowUpRight } from "lucide-react";
+import { MessageSquare, X, ArrowRight, Zap, ShieldCheck, Heart, User, ArrowUpRight, Star, Quote } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
@@ -16,12 +16,12 @@ import { Footer } from "@/components/Footer";
 import { FALLBACK_USER_IMAGE, getFallbackAvatarUrl } from "@/lib/constants";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
-import { Star, Quote } from "lucide-react";
 
 function TestimonialCard({ name, content, avatarUrl, rating }: { name: string, content: string, avatarUrl: string, rating: number }) {
   return (
@@ -103,7 +103,26 @@ function WinnerCard({ name, product, price, saving, avatarUrl, productImage }: {
 }
 
 function Index() {
-  const { demo_auctions_enabled, site_name, google_reviews_widget, logo_url, logo_height, logo_height_mobile, logo_padding_x, logo_padding_y, support_whatsapp } = useSettings();
+  const { 
+    demo_auctions_enabled, 
+    site_name, 
+    google_reviews_widget, 
+    logo_url, 
+    logo_height, 
+    logo_height_mobile, 
+    logo_padding_x, 
+    logo_padding_y, 
+    support_whatsapp,
+    show_secondary_banner,
+    show_finished_auctions,
+    show_testimonials,
+    show_winners_ranking,
+    secondary_banner_title,
+    secondary_banner_subtitle,
+    secondary_banner_image,
+    secondary_banner_link
+  } = useSettings();
+
   const [auctions, setAuctions] = useState<any[]>([]);
   const [finishedAuctions, setFinishedAuctions] = useState<any[]>([]);
   const [winners, setWinners] = useState<any[]>([]);
@@ -307,12 +326,17 @@ function Index() {
             </div>
           </section>
           
-          <SecondaryBanner 
-            title="Pacote de Lances com 50% de Desconto" 
-            subtitle="Comece com o pé direito! Adquira seu primeiro pacote de lances agora e ganhe o dobro para disputar seus produtos favoritos."
-            imageUrl="https://images.unsplash.com/photo-1553729459-efe14ef6055d?q=80&w=2000&auto=format&fit=crop"
-            linkUrl="/packages"
-          />
+          {show_secondary_banner && (
+            <SecondaryBanner 
+              title={secondary_banner_title} 
+              subtitle={secondary_banner_subtitle}
+              imageUrl={secondary_banner_image}
+              linkUrl={secondary_banner_link}
+            />
+          )}
+
+
+
 
 
 
@@ -334,45 +358,49 @@ function Index() {
             </div>
           </section>
 
-          {/* Winners Section */}
-          <section className="py-20 bg-muted">
-            <div className="container mx-auto px-4">
-              <div className="text-center mb-16">
-                <Badge variant="outline" className="mb-4 border-primary/30 bg-primary/10 text-primary uppercase">GALERIA DE HONRA</Badge>
-                <h2 className="text-4xl font-black tracking-tight text-foreground mb-4 italic uppercase">Ranking de <span className="text-primary">Ganhadores</span></h2>
-                <p className="text-muted-foreground">Pessoas reais, economias reais. Veja quem já levou o prêmio para casa esta semana.</p>
-                <Button variant="link" className="text-primary font-black italic uppercase text-xs mt-4" asChild>
-                  <Link to="/ranking">Ver Ranking Completo <ArrowUpRight className="ml-1 w-3 h-3" /></Link>
-                </Button>
+          {show_winners_ranking && (
+            <section className="py-20 bg-muted">
+              <div className="container mx-auto px-4">
+                <div className="text-center mb-16">
+                  <Badge variant="outline" className="mb-4 border-primary/30 bg-primary/10 text-primary uppercase">GALERIA DE HONRA</Badge>
+                  <h2 className="text-4xl font-black tracking-tight text-foreground mb-4 italic uppercase">Ranking de <span className="text-primary">Ganhadores</span></h2>
+                  <p className="text-muted-foreground">Pessoas reais, economias reais. Veja quem já levou o prêmio para casa esta semana.</p>
+                  <Button variant="link" className="text-primary font-black italic uppercase text-xs mt-4" asChild>
+                    <Link to="/ranking">Ver Ranking Completo <ArrowUpRight className="ml-1 w-3 h-3" /></Link>
+                  </Button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {winners.length > 0 ? (
+                    winners.map((winner) => (
+                      <WinnerCard 
+                        key={winner.id}
+                        name={winner.profile?.full_name || winner.profile?.username || "Ganhador"}
+                        product={winner.auction?.product?.name || "Produto"}
+                        price={`R$ ${Number(winner.final_price).toFixed(2)}`}
+                        saving={`${winner.savings_percentage}%`}
+                        avatarUrl={winner.profile?.avatar_url}
+                        productImage={winner.auction?.product?.image}
+                      />
+                    ))
+                  ) : (
+                    <>
+                      <WinnerCard name="Mateus Oliveira" product="iPhone 15 Pro Max" price="R$ 142,50" saving="98%" productImage="https://images.unsplash.com/photo-1696446701796-da61225697cc?auto=format&fit=crop&q=80&w=400" />
+                      <WinnerCard name="Juliana Costa" product="PlayStation 5 Slim" price="R$ 89,12" saving="97%" productImage="https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?auto=format&fit=crop&q=80&w=400" />
+                      <WinnerCard name="Ricardo Silva" product="MacBook Air M3" price="R$ 210,00" saving="96%" productImage="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&q=80&w=400" />
+                    </>
+                  )}
+                </div>
               </div>
+            </section>
+          )}
 
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {winners.length > 0 ? (
-                  winners.map((winner) => (
-                    <WinnerCard 
-                      key={winner.id}
-                      name={winner.profile?.full_name || winner.profile?.username || "Ganhador"}
-                      product={winner.auction?.product?.name || "Produto"}
-                      price={`R$ ${Number(winner.final_price).toFixed(2)}`}
-                      saving={`${winner.savings_percentage}%`}
-                      avatarUrl={winner.profile?.avatar_url}
-                      productImage={winner.auction?.product?.image}
-                    />
-                  ))
-                ) : (
-                  <>
-                    <WinnerCard name="Mateus Oliveira" product="iPhone 15 Pro Max" price="R$ 142,50" saving="98%" productImage="https://images.unsplash.com/photo-1696446701796-da61225697cc?auto=format&fit=crop&q=80&w=400" />
-                    <WinnerCard name="Juliana Costa" product="PlayStation 5 Slim" price="R$ 89,12" saving="97%" productImage="https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?auto=format&fit=crop&q=80&w=400" />
-                    <WinnerCard name="Ricardo Silva" product="MacBook Air M3" price="R$ 210,00" saving="96%" productImage="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&q=80&w=400" />
-                  </>
-                )}
-              </div>
-            </div>
-          </section>
 
-          {/* Finished Auctions Section */}
-          {finishedAuctions.length > 0 && (
+
+
+
+          {show_finished_auctions && finishedAuctions.length > 0 && (
             <section className="py-20 bg-muted/50 border-y border-border">
               <div className="container mx-auto px-4">
                 <div className="mb-12">
@@ -413,16 +441,11 @@ function Index() {
             </section>
           )}
 
-          <SecondaryBanner 
-            title="Sua chance de ter um iPhone 15 Pro" 
-            subtitle="Leilões diários de smartphones premium. Participe das disputas em tempo real e economize até 90%."
-            imageUrl="https://images.unsplash.com/photo-1696446701796-da61225697cc?auto=format&fit=crop&q=80&w=2000"
-            linkUrl="/auctions"
-            reverse
-          />
+          {show_testimonials && (
+            <TestimonialsSection />
+          )}
 
 
-          <TestimonialsSection />
 
 
           <Footer />

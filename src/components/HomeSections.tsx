@@ -17,7 +17,21 @@ import { DemoAuctionBlock } from "./DemoAuctionBlock";
 
 export function Hero() {
   const { getAdjustedNow } = useTimeSync();
-  const { hero_display_mode } = useSettings();
+  const { hero_display_mode, site_name } = useSettings();
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
 
   useEffect(() => {
@@ -129,7 +143,7 @@ export function Hero() {
     }
   }
 
-  if (!loading && hero_display_mode === 'banners' && banners.length > 0) {
+  if (!loading && (hero_display_mode === 'banners' || (user && banners.length > 0)) && banners.length > 0) {
     return (
       <section className="relative w-full overflow-hidden bg-background">
         <div className="embla" ref={emblaRef}>

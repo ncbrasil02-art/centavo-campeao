@@ -702,7 +702,15 @@ export type Database = {
           primary_color: string | null
           privacy_policy: string | null
           pwa_enabled: boolean | null
+          secondary_banner_image: string | null
+          secondary_banner_link: string | null
+          secondary_banner_subtitle: string | null
+          secondary_banner_title: string | null
           secondary_color: string | null
+          show_finished_auctions: boolean | null
+          show_secondary_banner: boolean | null
+          show_testimonials: boolean | null
+          show_winners_ranking: boolean | null
           site_name: string | null
           sound_enabled: boolean | null
           support_whatsapp: string | null
@@ -747,7 +755,15 @@ export type Database = {
           primary_color?: string | null
           privacy_policy?: string | null
           pwa_enabled?: boolean | null
+          secondary_banner_image?: string | null
+          secondary_banner_link?: string | null
+          secondary_banner_subtitle?: string | null
+          secondary_banner_title?: string | null
           secondary_color?: string | null
+          show_finished_auctions?: boolean | null
+          show_secondary_banner?: boolean | null
+          show_testimonials?: boolean | null
+          show_winners_ranking?: boolean | null
           site_name?: string | null
           sound_enabled?: boolean | null
           support_whatsapp?: string | null
@@ -792,7 +808,15 @@ export type Database = {
           primary_color?: string | null
           privacy_policy?: string | null
           pwa_enabled?: boolean | null
+          secondary_banner_image?: string | null
+          secondary_banner_link?: string | null
+          secondary_banner_subtitle?: string | null
+          secondary_banner_title?: string | null
           secondary_color?: string | null
+          show_finished_auctions?: boolean | null
+          show_secondary_banner?: boolean | null
+          show_testimonials?: boolean | null
+          show_winners_ranking?: boolean | null
           site_name?: string | null
           sound_enabled?: boolean | null
           support_whatsapp?: string | null
