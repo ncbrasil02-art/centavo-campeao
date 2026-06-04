@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
   Users, 
@@ -13,9 +13,14 @@ import {
   Activity,
   Circle,
   Package,
-  Mic
+  Mic,
+  MessageSquare
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { CardDescription } from "@/components/ui/card";
 import { 
+
   BarChart, 
   Bar, 
   XAxis, 
@@ -39,51 +44,52 @@ function AdminDashboard() {
     totalRevenue: 0,
     totalBids: 0
   });
+  const [onlineProfiles, setOnlineProfiles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchStats();
+    fetchOnlineProfiles();
     
-    // Track online users via Presence
-    const channel = supabase.channel('admin_presence');
-    channel
-      .on('presence', { event: 'sync' }, () => {
-        const state = channel.presenceState();
-        const count = Object.keys(state).length;
-        setStats(prev => ({ ...prev, onlineUsers: count + 12 })); // +12 for simulation of other users
+    // Subscribe to profile changes to update online list
+    const channel = supabase
+      .channel('admin_presence_tracking')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => {
+        fetchOnlineProfiles();
+        fetchStats();
       })
-      .subscribe(async (status) => {
-        if (status === 'SUBSCRIBED') {
-          await channel.track({ online_at: new Date().toISOString() });
-        }
-      });
+      .subscribe();
+
+    const statsInterval = setInterval(fetchStats, 30000); // Refresh stats every 30s
 
     return () => {
       supabase.removeChannel(channel);
+      clearInterval(statsInterval);
     };
   }, []);
 
   async function fetchStats() {
     try {
-      const { data, error } = await supabase.rpc('get_admin_stats');
-      
+      const { data, error } = await supabase.rpc('get_admin_stats_v2');
       if (error) throw error;
-      
-      const statsData = data as any;
-
-      setStats(prev => ({
-        ...prev,
-        totalUsers: Number(statsData.totalUsers) || 0,
-        activeAuctions: Number(statsData.activeAuctions) || 0,
-        totalRevenue: Number(statsData.totalRevenue) || 0,
-        totalBids: Number(statsData.totalBids) || 0
-      }));
+      if (data) setStats(data as any);
     } catch (error) {
       console.error("Error fetching stats:", error);
     } finally {
       setLoading(false);
     }
   }
+
+  async function fetchOnlineProfiles() {
+    const { data } = await supabase
+      .from('profiles')
+      .select('*')
+      .gt('last_seen_at', new Date(Date.now() - 5 * 60 * 1000).toISOString())
+      .order('last_seen_at', { ascending: false });
+    
+    if (data) setOnlineProfiles(data);
+  }
+
 
   // Mock data for charts
   const chartData = [
@@ -209,34 +215,54 @@ function AdminDashboard() {
         </div>
 
         {/* Recent Activity / Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <Card className="md:col-span-2 bg-white/5 border-white/10 p-6">
-            <CardHeader className="px-0 pt-0 border-b border-white/5 pb-4 mb-4">
-              <CardTitle className="text-lg font-bold">Resumo Geral de Usuários</CardTitle>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <Card className="lg:col-span-2 bg-white/5 border-white/10 p-6 backdrop-blur-md">
+            <CardHeader className="px-0 pt-0 border-b border-white/5 pb-4 mb-4 flex flex-row items-center justify-between">
+              <div>
+                <CardTitle className="text-lg font-bold">Usuários Ativos Agora</CardTitle>
+                <CardDescription className="text-white/40 text-xs uppercase font-bold tracking-tighter">Quem está navegando no site agora</CardDescription>
+              </div>
+              <Badge className="bg-green-500/20 text-green-500 border-green-500/20">{onlineProfiles.length} ONLINE</Badge>
             </CardHeader>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
-                <div className="flex items-center gap-4">
-                  <div className="p-3 bg-primary/20 rounded-xl text-primary"><Users className="w-5 h-5" /></div>
-                  <div>
-                    <p className="font-bold">Total de Cadastros</p>
-                    <p className="text-xs text-white/40">Acumulado desde o início</p>
+            <div className="space-y-3">
+              {onlineProfiles.length > 0 ? (
+                onlineProfiles.map((p) => (
+                  <div key={p.id} className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors group">
+                    <div className="flex items-center gap-4">
+                      <div className="relative">
+                        <Avatar className="h-10 w-10 border border-primary/30">
+                          <AvatarImage src={p.avatar_url} />
+                          <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-black">{p.username?.substring(0, 2).toUpperCase()}</AvatarFallback>
+                        </Avatar>
+                        <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-[#121212] animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.5)]"></div>
+                      </div>
+                      <div>
+                        <p className="font-bold text-sm">{p.full_name || p.username || "Usuário"}</p>
+                        <p className="text-[10px] text-white/40 uppercase font-black tracking-widest flex items-center gap-1.5">
+                          <Activity className="w-2.5 h-2.5" /> 
+                          {p.current_page || "Página Inicial"}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="text-right hidden sm:block">
+                        <p className="text-[10px] text-white/40 font-bold uppercase">Último Acesso</p>
+                        <p className="text-xs font-mono">{new Date(p.last_seen_at).toLocaleTimeString()}</p>
+                      </div>
+                      <Button size="icon" variant="ghost" className="h-9 w-9 text-primary bg-primary/10 hover:bg-primary hover:text-black transition-all rounded-full" asChild>
+                         <Link to="/admin/users"><Users className="w-4 h-4" /></Link>
+                      </Button>
+                    </div>
                   </div>
+                ))
+              ) : (
+                <div className="text-center py-12 bg-white/5 rounded-3xl border border-dashed border-white/10">
+                  <p className="text-white/40 italic text-sm">Nenhum usuário ativo nos últimos 5 minutos.</p>
                 </div>
-                <span className="text-2xl font-black">{stats.totalUsers}</span>
-              </div>
-              <div className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
-                <div className="flex items-center gap-4">
-                  <div className="p-3 bg-green-500/20 rounded-xl text-green-500"><Bot className="w-5 h-5" /></div>
-                  <div>
-                    <p className="font-bold">Robôs Ativos</p>
-                    <p className="text-xs text-white/40">Simulando participação agora</p>
-                  </div>
-                </div>
-                <span className="text-2xl font-black">12</span>
-              </div>
+              )}
             </div>
           </Card>
+
 
           <div className="space-y-6">
             <Card className="bg-primary/5 border-primary/20 p-6 relative overflow-hidden group">
