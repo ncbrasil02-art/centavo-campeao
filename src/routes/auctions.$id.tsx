@@ -8,6 +8,7 @@ import { Clock, User, Gavel, ShieldCheck, Zap, ArrowLeft, Share2, Info, MessageS
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useSettings } from "@/hooks/useSettings";
 import { AuctionChat } from "@/components/AuctionChat";
 import { useTimeSync } from "@/hooks/useTimeSync";
 // confetti will be imported dynamically on the client
