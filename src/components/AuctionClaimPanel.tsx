@@ -10,6 +10,8 @@ import { getFallbackAvatarUrl } from "@/lib/constants";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+
 
 export function AuctionClaimPanel({ auctionId, winnerData }: { auctionId: string, winnerData: any }) {
   const [messages, setMessages] = useState<any[]>([]);
@@ -76,7 +78,7 @@ export function AuctionClaimPanel({ auctionId, winnerData }: { auctionId: string
       if (data.media_url) {
         setTestimonialMedia({ url: data.media_url, type: data.media_type as any });
       }
-      setTestimonialStatus(data.status);
+      setTestimonialStatus(data.status as any);
     }
   }
 
