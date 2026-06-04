@@ -249,6 +249,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
             logo_padding_y: data.logo_padding_y || 0,
             google_reviews_widget: data.google_reviews_widget || "",
             support_whatsapp: data.support_whatsapp || "",
+            sound_enabled: data.sound_enabled ?? true,
+            narration_enabled: data.narration_enabled ?? true,
           };
           
           setSettings(fetchedSettings);
