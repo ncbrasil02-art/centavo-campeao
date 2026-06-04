@@ -10,8 +10,10 @@ import {
   MessageSquare,
   Image as ImageIcon,
   LogOut,
-  ChevronRight
+  ChevronRight,
+  ClipboardCheck
 } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -30,6 +32,8 @@ export function AdminSidebar() {
     { label: "Pacotes", href: "/admin/packages", icon: History },
     { label: "Frases", href: "/admin/phrases", icon: MessageSquare },
     { label: "Vendas", href: "/admin/sales", icon: History },
+    { label: "Reivindicações", href: "/admin/claims", icon: ClipboardCheck },
+
     { label: "Banners", href: "/admin/banners", icon: ImageIcon },
     { label: "Depoimentos", href: "/admin/testimonials", icon: MessageSquare },
     { label: "Configurações", href: "/admin/settings", icon: Settings },
