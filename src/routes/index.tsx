@@ -273,7 +273,7 @@ function Index() {
           <div className="container mx-auto px-4 mt-8">
              <div className="flex items-center gap-4 mb-8">
                 <div className="h-[1px] flex-1 bg-border"></div>
-                <h2 className="text-xs font-black uppercase tracking-[0.5em] text-muted-foreground italic">Destaques da Semana</h2>
+                <h2 className="text-xs font-black uppercase tracking-[0.5em] text-muted-foreground italic">Nossos leilões</h2>
                 <div className="h-[1px] flex-1 bg-border"></div>
              </div>
           </div>
