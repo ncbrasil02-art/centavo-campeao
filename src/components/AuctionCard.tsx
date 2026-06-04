@@ -798,7 +798,13 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
                 <ShieldCheck className="h-5 w-5" /> ARREMATAR AGORA
               </span>
             ) : "ARREMATADO"
-          ) : isScheduled ? "AGUARDANDO INÍCIO" : (
+          ) : isScheduled ? (
+            currentUserId ? "AGUARDANDO INÍCIO" : (
+              <span className="flex items-center gap-2">
+                <UserPlus className="h-5 w-5" /> FAZER CADASTRO
+              </span>
+            )
+          ) : (
             <span className="flex items-center gap-2">
               {timeLeft <= 5 ? "VAI PERDER..." : "DAR LANCE"} <Zap className={`h-5 w-5 fill-current ${timeLeft <= 5 ? 'animate-bounce' : ''}`} />
             </span>
