@@ -139,22 +139,18 @@ function AuctionPage() {
         async (payload) => {
           console.log('Auction real-time update:', payload.new);
           
-          // If the last_bidder_id changed, we need to fetch the profile data for the leader UI
-          if (payload.new.last_bidder_id !== auction.last_bidder_id) {
-            const { data: profileData } = await supabase
-              .from('profiles')
-              .select('username, avatar_url')
-              .eq('id', payload.new.last_bidder_id)
-              .maybeSingle();
-            
-            setAuction((prev: any) => ({ 
-              ...prev, 
-              ...payload.new,
-              last_bidder: profileData 
-            }));
-          } else {
-            setAuction((prev: any) => ({ ...prev, ...payload.new }));
-          }
+          // Fetch the latest profile data for the leader UI
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('username, avatar_url')
+            .eq('id', payload.new.last_bidder_id)
+            .maybeSingle();
+          
+          setAuction((prev: any) => ({ 
+            ...prev, 
+            ...payload.new,
+            last_bidder: profileData || prev?.last_bidder
+          }));
 
           // Recalculate time remaining instantly
           if (payload.new.end_time) {
