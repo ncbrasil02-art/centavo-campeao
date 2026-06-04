@@ -26,7 +26,7 @@ async function test() {
     console.error('Error:', error)
   } else {
     console.log('Data count:', data.length)
-    console.log('Sample item product:', data[0]?.product)
+    console.log('Sample item last_bidder:', data[0]?.last_bidder)
   }
 }
 
