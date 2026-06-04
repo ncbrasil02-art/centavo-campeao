@@ -12,6 +12,9 @@ import { Navbar } from "@/components/Navbar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getFallbackAvatarUrl } from "@/lib/constants";
 import { Badge } from "@/components/ui/badge";
+import { AuctionClaimPanel } from "@/components/AuctionClaimPanel";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+
 
 export const Route = createFileRoute("/profile")({
   beforeLoad: async () => {
@@ -29,10 +32,12 @@ function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>(null);
   const [auctionsToPay, setAuctionsToPay] = useState<any[]>([]);
+  const [selectedAuctionForClaim, setSelectedAuctionForClaim] = useState<any>(null);
   const [username, setUsername] = useState("");
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [cpf, setCpf] = useState("");
+
   const [gender, setGender] = useState("");
   const navigate = useNavigate();
 
@@ -45,17 +50,20 @@ function ProfilePage() {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) return;
 
-    // Buscar leilões onde o usuário é o ganhador mas ainda não estão arquivados (status finished)
-    // Usamos pending_audit e confirmed para representar leilões arrematados
-    const { data } = await supabase
-      .from("auctions")
-      .select("*, product:products(*)")
-      .eq("last_bidder_id", session.user.id)
-      .in("status", ["pending_audit", "confirmed"])
+    // Buscar leilões onde o usuário é o ganhador na tabela winners
+    const { data, error } = await supabase
+      .from("winners")
+      .select("*, auction:auctions(*, product:products(*))")
+      .eq("user_id", session.user.id)
       .order("created_at", { ascending: false });
     
+    if (error) {
+      console.error("Error fetching winners:", error);
+      return;
+    }
     setAuctionsToPay(data || []);
   }
+
 
 
   async function fetchProfile() {
@@ -249,21 +257,35 @@ function ProfilePage() {
                     <CardDescription className="text-amber-500/60 font-bold">Você possui produtos aguardando pagamento do resíduo.</CardDescription>
                   </CardHeader>
                   <CardContent className="p-6 space-y-4">
-                    {auctionsToPay.map(auc => (
-                      <div key={auc.id} className="flex flex-col gap-4 p-4 rounded-2xl bg-black/40 border border-white/5 group">
+                    {auctionsToPay.map(winner => (
+                      <div key={winner.id} className="flex flex-col gap-4 p-4 rounded-2xl bg-black/40 border border-white/5 group">
                         <div className="flex items-center gap-4">
-                          <img src={auc.product?.images?.[0]} className="w-16 h-16 rounded-xl object-cover border border-white/10" alt="" />
+                          <img src={winner.auction?.product?.images?.[0]} className="w-16 h-16 rounded-xl object-cover border border-white/10" alt="" />
                           <div className="flex-1">
-                            <h4 className="font-black text-sm uppercase italic truncate">{auc.product?.name}</h4>
-                            <p className="text-xs text-white/40">Valor Final: <span className="text-primary font-bold">R$ {auc.current_price?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span></p>
+                            <h4 className="font-black text-sm uppercase italic truncate">{winner.auction?.product?.name}</h4>
+                            <div className="flex flex-col">
+                              <p className="text-xs text-white/40">Valor Final: <span className="text-primary font-bold">R$ {winner.final_price?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span></p>
+                              <div className="flex items-center gap-2 mt-1">
+                                <span className="text-[10px] text-white/40 uppercase">Status:</span>
+                                {winner.payment_status === 'approved' ? (
+                                  <Badge className="bg-green-500 text-white text-[8px] uppercase">Pago</Badge>
+                                ) : (
+                                  <Badge className="bg-amber-500 text-black text-[8px] uppercase">Pendente</Badge>
+                                )}
+                              </div>
+                            </div>
                           </div>
                         </div>
-                        <Button className="w-full bg-amber-500 hover:bg-amber-600 text-black font-black uppercase italic" asChild>
-                           <Link to="/auctions/$id" params={{ id: auc.id }}>REIVINDICAR E PAGAR AGORA</Link>
+                        <Button 
+                          className="w-full bg-amber-500 hover:bg-amber-600 text-black font-black uppercase italic" 
+                          onClick={() => setSelectedAuctionForClaim(winner)}
+                        >
+                           REIVINDICAR / SUPORTE
                         </Button>
                       </div>
                     ))}
                   </CardContent>
+
                 </Card>
               )}
 
@@ -304,6 +326,23 @@ function ProfilePage() {
           </div>
         </div>
       </main>
+
+      <Dialog open={!!selectedAuctionForClaim} onOpenChange={() => setSelectedAuctionForClaim(null)}>
+        <DialogContent className="max-w-4xl bg-zinc-900 border-white/10 text-white max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-black uppercase italic italic">
+              Reivindicar <span className="text-primary">Prêmio</span>
+            </DialogTitle>
+          </DialogHeader>
+          {selectedAuctionForClaim && (
+            <AuctionClaimPanel 
+              auctionId={selectedAuctionForClaim.auction_id} 
+              winnerData={selectedAuctionForClaim} 
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
+
   );
 }

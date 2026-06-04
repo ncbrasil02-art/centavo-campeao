@@ -11,7 +11,7 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Plus, User, Edit, Trash2, Star, MessageSquare } from "lucide-react";
+import { Plus, User, Edit, Trash2, Star, MessageSquare, Video, Image as ImageIcon, Eye } from "lucide-react";
 import { toast } from "sonner";
 import { 
   Dialog, 
@@ -40,8 +40,12 @@ function AdminTestimonials() {
     content: "",
     avatar_url: "",
     rating: 5,
-    active: true
+    active: true,
+    status: "approved",
+    media_url: "",
+    media_type: "text"
   });
+
 
   useEffect(() => {
     fetchTestimonials();
@@ -89,7 +93,8 @@ function AdminTestimonials() {
 
       setIsDialogOpen(false);
       setEditingTestimonial(null);
-      setFormData({ name: "", content: "", avatar_url: "", rating: 5, active: true });
+      setFormData({ name: "", content: "", avatar_url: "", rating: 5, active: true, status: "approved", media_url: "", media_type: "text" });
+
       fetchTestimonials();
     } catch (error) {
       console.error("Error saving testimonial:", error);
@@ -117,8 +122,12 @@ function AdminTestimonials() {
       content: t.content,
       avatar_url: t.avatar_url || "",
       rating: t.rating,
-      active: t.active
+      active: t.active,
+      status: t.status || "approved",
+      media_url: t.media_url || "",
+      media_type: t.media_type || "text"
     });
+
     setIsDialogOpen(true);
   }
 
@@ -138,7 +147,7 @@ function AdminTestimonials() {
             setIsDialogOpen(open);
             if (!open) {
               setEditingTestimonial(null);
-              setFormData({ name: "", content: "", avatar_url: "", rating: 5, active: true });
+              setFormData({ name: "", content: "", avatar_url: "", rating: 5, active: true, status: "approved", media_url: "", media_type: "text" });
             }
           }}>
             <DialogTrigger asChild>
@@ -220,8 +229,10 @@ function AdminTestimonials() {
               <TableRow className="border-white/5">
                 <TableHead className="text-white/40 font-bold uppercase text-[10px]">Cliente</TableHead>
                 <TableHead className="text-white/40 font-bold uppercase text-[10px]">Depoimento</TableHead>
+                <TableHead className="text-white/40 font-bold uppercase text-[10px]">Mídia</TableHead>
                 <TableHead className="text-white/40 font-bold uppercase text-[10px]">Avaliação</TableHead>
                 <TableHead className="text-white/40 font-bold uppercase text-[10px]">Status</TableHead>
+
                 <TableHead className="text-white/40 font-bold uppercase text-[10px] text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
@@ -249,6 +260,21 @@ function AdminTestimonials() {
                       <p className="text-xs text-white/60 line-clamp-2 italic">"{t.content}"</p>
                     </TableCell>
                     <TableCell>
+                      {t.media_url ? (
+                        <div className="flex items-center gap-2">
+                          {t.media_type === 'video' ? (
+                            <Video className="w-4 h-4 text-primary" />
+                          ) : (
+                            <ImageIcon className="w-4 h-4 text-primary" />
+                          )}
+                          <a href={t.media_url} target="_blank" rel="noreferrer" className="text-[10px] text-primary hover:underline">Ver Mídia</a>
+                        </div>
+                      ) : (
+                        <span className="text-[10px] text-white/20">Apenas Texto</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+
                       <div className="flex gap-0.5">
                         {Array.from({ length: 5 }).map((_, i) => (
                           <Star key={i} className={`w-3 h-3 ${i < t.rating ? "fill-yellow-500 text-yellow-500" : "text-white/10"}`} />
@@ -256,10 +282,15 @@ function AdminTestimonials() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${t.active ? "bg-green-500/10 text-green-500 border-green-500/20" : "bg-white/10 text-white/40 border-white/10"}`}>
-                        {t.active ? "Ativo" : "Oculto"}
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${
+                        t.status === 'approved' ? "bg-green-500/10 text-green-500 border-green-500/20" : 
+                        t.status === 'pending' ? "bg-amber-500/10 text-amber-500 border-amber-500/20" :
+                        "bg-red-500/10 text-red-500 border-red-500/20"
+                      }`}>
+                        {t.status === 'approved' ? "Aprovado" : t.status === 'pending' ? "Pendente" : "Recusado"}
                       </span>
                     </TableCell>
+
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
                         <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-primary/20 text-primary" onClick={() => handleEdit(t)}>

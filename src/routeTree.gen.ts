@@ -28,6 +28,7 @@ import { Route as AdminRobotsRouteImport } from './routes/admin/robots'
 import { Route as AdminProductsRouteImport } from './routes/admin/products'
 import { Route as AdminPhrasesRouteImport } from './routes/admin/phrases'
 import { Route as AdminPackagesRouteImport } from './routes/admin/packages'
+import { Route as AdminClaimsRouteImport } from './routes/admin/claims'
 import { Route as AdminBannersRouteImport } from './routes/admin/banners'
 import { Route as AdminAuctionsRouteImport } from './routes/admin/auctions'
 
@@ -126,6 +127,11 @@ const AdminPackagesRoute = AdminPackagesRouteImport.update({
   path: '/packages',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminClaimsRoute = AdminClaimsRouteImport.update({
+  id: '/claims',
+  path: '/claims',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminBannersRoute = AdminBannersRouteImport.update({
   id: '/banners',
   path: '/banners',
@@ -148,6 +154,7 @@ export interface FileRoutesByFullPath {
   '/ranking': typeof RankingRoute
   '/admin/auctions': typeof AdminAuctionsRoute
   '/admin/banners': typeof AdminBannersRoute
+  '/admin/claims': typeof AdminClaimsRoute
   '/admin/packages': typeof AdminPackagesRoute
   '/admin/phrases': typeof AdminPhrasesRoute
   '/admin/products': typeof AdminProductsRoute
@@ -170,6 +177,7 @@ export interface FileRoutesByTo {
   '/ranking': typeof RankingRoute
   '/admin/auctions': typeof AdminAuctionsRoute
   '/admin/banners': typeof AdminBannersRoute
+  '/admin/claims': typeof AdminClaimsRoute
   '/admin/packages': typeof AdminPackagesRoute
   '/admin/phrases': typeof AdminPhrasesRoute
   '/admin/products': typeof AdminProductsRoute
@@ -194,6 +202,7 @@ export interface FileRoutesById {
   '/ranking': typeof RankingRoute
   '/admin/auctions': typeof AdminAuctionsRoute
   '/admin/banners': typeof AdminBannersRoute
+  '/admin/claims': typeof AdminClaimsRoute
   '/admin/packages': typeof AdminPackagesRoute
   '/admin/phrases': typeof AdminPhrasesRoute
   '/admin/products': typeof AdminProductsRoute
@@ -219,6 +228,7 @@ export interface FileRouteTypes {
     | '/ranking'
     | '/admin/auctions'
     | '/admin/banners'
+    | '/admin/claims'
     | '/admin/packages'
     | '/admin/phrases'
     | '/admin/products'
@@ -241,6 +251,7 @@ export interface FileRouteTypes {
     | '/ranking'
     | '/admin/auctions'
     | '/admin/banners'
+    | '/admin/claims'
     | '/admin/packages'
     | '/admin/phrases'
     | '/admin/products'
@@ -264,6 +275,7 @@ export interface FileRouteTypes {
     | '/ranking'
     | '/admin/auctions'
     | '/admin/banners'
+    | '/admin/claims'
     | '/admin/packages'
     | '/admin/phrases'
     | '/admin/products'
@@ -425,6 +437,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPackagesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/claims': {
+      id: '/admin/claims'
+      path: '/claims'
+      fullPath: '/admin/claims'
+      preLoaderRoute: typeof AdminClaimsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/banners': {
       id: '/admin/banners'
       path: '/banners'
@@ -445,6 +464,7 @@ declare module '@tanstack/react-router' {
 interface AdminRouteChildren {
   AdminAuctionsRoute: typeof AdminAuctionsRoute
   AdminBannersRoute: typeof AdminBannersRoute
+  AdminClaimsRoute: typeof AdminClaimsRoute
   AdminPackagesRoute: typeof AdminPackagesRoute
   AdminPhrasesRoute: typeof AdminPhrasesRoute
   AdminProductsRoute: typeof AdminProductsRoute
@@ -459,6 +479,7 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAuctionsRoute: AdminAuctionsRoute,
   AdminBannersRoute: AdminBannersRoute,
+  AdminClaimsRoute: AdminClaimsRoute,
   AdminPackagesRoute: AdminPackagesRoute,
   AdminPhrasesRoute: AdminPhrasesRoute,
   AdminProductsRoute: AdminProductsRoute,
@@ -487,13 +508,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

@@ -1,6 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Navbar } from "@/components/Navbar";
 import { Hero, SecondaryBanner } from "@/components/HomeSections";
+import { TestimonialsSection } from "@/components/TestimonialsSection";
+
 import { useSettings } from "@/hooks/useSettings";
 import { AuctionCard } from "@/components/AuctionCard";
 import { GlobalActivityChat } from "@/components/GlobalActivityChat";
@@ -403,44 +405,8 @@ function Index() {
           />
 
 
-          {/* Testimonials Section */}
-          <section className="py-24 bg-zinc-950/40 relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-            <div className="container mx-auto px-4">
-              <div className="text-center mb-16">
-                <Badge variant="outline" className="mb-4 border-primary/30 bg-primary/10 text-primary uppercase tracking-widest text-[10px]">COMMUNITY FEEDBACK</Badge>
-                <h2 className="text-4xl font-black tracking-tight text-white mb-4 italic uppercase">Voz da <span className="text-primary">Comunidade</span></h2>
-                <p className="text-white/40 max-w-2xl mx-auto">Milhares de usuários já vivenciaram a adrenalina do {site_name}. Confira o que eles estão dizendo sobre a experiência.</p>
-              </div>
+          <TestimonialsSection />
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {google_reviews_widget && google_reviews_widget.trim().length > 10 ? (
-                  <div className="col-span-full" dangerouslySetInnerHTML={{ __html: google_reviews_widget }} />
-                ) : testimonials.length > 0 ? (
-                  testimonials.map((t, idx) => (
-                    <motion.div
-                      key={t.id}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.4, delay: (idx % 4) * 0.1 }}
-                    >
-                      <TestimonialCard 
-                        name={t.name}
-                        content={t.content}
-                        avatarUrl={t.avatar_url || getFallbackAvatarUrl(t.name)}
-                        rating={t.rating}
-                      />
-                    </motion.div>
-                  ))
-                ) : (
-                  <div className="col-span-full py-20 text-center">
-                    <p className="text-white/20 uppercase tracking-[0.3em] font-black italic">Carregando depoimentos da comunidade...</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </section>
 
           <Footer />
         </div>
