@@ -614,7 +614,6 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
               {auction.product?.name || "Produto"}
             </h3>
           </Link>
-
           <div className="flex items-center gap-2">
             <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
               Valor Original:
@@ -623,6 +622,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
               R$ {auction.product?.market_value?.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) || "0,00"}
             </span>
           </div>
+
         </div>
 
         <div className="relative space-y-2">
