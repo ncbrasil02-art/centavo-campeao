@@ -470,7 +470,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         </Link>
 
         {isScheduled && auction.start_time && (
-          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 bg-primary/40 backdrop-blur-[2px] py-3 flex flex-col items-center justify-center z-20 shadow-[0_0_40px_rgba(var(--color-primary),0.2)] border-y border-glass-border rotate-[-2deg] scale-105 origin-center transition-all duration-500 group-hover:bg-primary/60 group-hover:backdrop-blur-sm">
+          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 bg-zinc-950/90 backdrop-blur-md py-4 flex flex-col items-center justify-center z-20 shadow-[0_0_50px_rgba(0,0,0,0.8)] border-y-2 border-primary/30 rotate-[-2deg] scale-105 origin-center transition-all duration-500 group-hover:bg-black group-hover:scale-110">
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.1)_0%,_transparent_70%)] animate-pulse"></div>
             <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground mb-1 relative z-10 text-center px-4">COMEÇA EM (HORÁRIO DE BRASÍLIA)</span>
             <div className="flex flex-col items-center relative z-10">
