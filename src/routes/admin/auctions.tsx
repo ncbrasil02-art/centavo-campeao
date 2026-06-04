@@ -1214,7 +1214,7 @@ function AdminAuctions() {
               <TableRow className="border-white/5">
                 <TableHead className="w-[40px]">
                   <Button variant="ghost" size="icon" className="h-6 w-6" onClick={toggleSelectAll}>
-                    {selectedAuctions.length > 0 && selectedAuctions.length === auctions.filter(a => !['confirmed', 'finished'].includes(a.status)).length 
+                    {selectedAuctions.length > 0 && selectedAuctions.length === auctions.filter(a => !['confirmed', 'finished', 'pending_audit'].includes(a.status)).length 
                       ? <CheckSquare className="w-4 h-4 text-primary" /> 
                       : <Square className="w-4 h-4 text-white/20" />
                     }
