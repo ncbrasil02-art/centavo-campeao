@@ -339,6 +339,7 @@ function Index() {
 
 
 
+
           {/* How it Works Section */}
           <section className="py-24 relative overflow-hidden">
             <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] -z-10"></div>
