@@ -116,10 +116,14 @@ export const Route = createRootRouteWithContext<{
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <head>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="LanceCerto" />
         <HeadContent />
       </head>
+
       <body>
         {children}
         <Scripts />
