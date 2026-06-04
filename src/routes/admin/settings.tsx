@@ -22,8 +22,12 @@ import {
   Globe, 
   BarChart,
   Sun,
-  Moon
+  Moon,
+  Volume2,
+  VolumeX,
+  Mic
 } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 import { 
   Select, 
   SelectContent, 
@@ -74,6 +78,8 @@ function AdminSettings() {
     logo_padding_y: 0,
     google_reviews_widget: "",
     support_whatsapp: "",
+    sound_enabled: true,
+    narration_enabled: true,
   });
 
   useEffect(() => {
@@ -130,6 +136,8 @@ function AdminSettings() {
           logo_padding_y: publicData.logo_padding_y || 0,
           google_reviews_widget: publicData.google_reviews_widget || "",
           support_whatsapp: publicData.support_whatsapp || "",
+          sound_enabled: publicData.sound_enabled ?? true,
+          narration_enabled: publicData.narration_enabled ?? true,
         });
       }
     } catch (error) {
@@ -812,6 +820,45 @@ function AdminSettings() {
                     onChange={(e) => setSettings({...settings, mercado_pago_access_token: e.target.value})}
                     placeholder="APP_USR-..."
                     className="bg-white/5 border-white/10 h-12"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/5 border-white/10 overflow-hidden backdrop-blur-md">
+              <CardHeader className="border-b border-white/5 bg-white/[0.02]">
+                <div className="flex items-center gap-2">
+                  <Volume2 className="w-5 h-5 text-primary" />
+                  <div>
+                    <CardTitle className="text-lg">Áudio & Notificações</CardTitle>
+                    <CardDescription className="text-white/40">Controle de sons e narração</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="p-6 space-y-6">
+                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10">
+                  <div className="space-y-0.5">
+                    <Label className="flex items-center gap-2">
+                      <Volume2 className="w-4 h-4 text-primary" /> Sons de Lance
+                    </Label>
+                    <p className="text-[10px] text-white/40">Ativar efeitos sonoros ao dar lance</p>
+                  </div>
+                  <Switch 
+                    checked={settings.sound_enabled} 
+                    onCheckedChange={(val) => setSettings({...settings, sound_enabled: val})}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10">
+                  <div className="space-y-0.5">
+                    <Label className="flex items-center gap-2">
+                      <Mic className="w-4 h-4 text-primary" /> Narração de Voz
+                    </Label>
+                    <p className="text-[10px] text-white/40">O site avisará por voz o início dos leilões</p>
+                  </div>
+                  <Switch 
+                    checked={settings.narration_enabled} 
+                    onCheckedChange={(val) => setSettings({...settings, narration_enabled: val})}
                   />
                 </div>
               </CardContent>

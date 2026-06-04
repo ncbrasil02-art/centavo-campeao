@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { useTimeSync } from "@/hooks/useTimeSync";
+import { useSettings } from "@/hooks/useSettings";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -40,7 +41,9 @@ interface AuctionCardProps {
 
 export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   const [auction, setAuction] = useState(initialAuction);
+  const { sound_enabled } = useSettings();
   const [timeLeft, setTimeLeft] = useState(0); 
+
   const [timerDuration, setTimerDuration] = useState(initialAuction.timer_duration || 15);
   const [isNewBid, setIsNewBid] = useState(false);
   const [showBonus, setShowBonus] = useState(false);
@@ -125,17 +128,18 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   }, []);
 
   const playBidSound = useCallback(() => {
-    if (audioRef.current && !isMuted) {
+    if (audioRef.current && !isMuted && sound_enabled) {
       audioRef.current.currentTime = 0;
       audioRef.current.play().catch(err => console.error("Error playing sound:", err));
     }
-  }, [isMuted]);
+  }, [isMuted, sound_enabled]);
 
   // Play sound when auction updates (e.g. real-time bid from others)
   const lastPriceRef = useRef<number>(auction.current_price);
   const lastBidderIdRef = useRef<string | null>(auction.last_bidder?.id || null);
 
   const playSurpassedSound = useCallback(() => {
+    if (!sound_enabled) return;
     const isEnabled = localStorage.getItem("auction_sound_enabled") !== "false";
     if (!isEnabled) return;
 

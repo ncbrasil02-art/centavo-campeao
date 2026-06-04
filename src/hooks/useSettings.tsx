@@ -30,6 +30,8 @@ interface SiteSettings {
   logo_padding_y: number;
   google_reviews_widget: string;
   support_whatsapp: string;
+  sound_enabled: boolean;
+  narration_enabled: boolean;
 }
 
 const SettingsContext = createContext<SiteSettings | null>(null);
@@ -76,6 +78,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
       logo_padding_y: 0,
       google_reviews_widget: "",
       support_whatsapp: "",
+      sound_enabled: true,
+      narration_enabled: true,
     };
   });
 
@@ -245,6 +249,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
             logo_padding_y: data.logo_padding_y || 0,
             google_reviews_widget: data.google_reviews_widget || "",
             support_whatsapp: data.support_whatsapp || "",
+            sound_enabled: data.sound_enabled ?? true,
+            narration_enabled: data.narration_enabled ?? true,
           };
           
           setSettings(fetchedSettings);
@@ -296,6 +302,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
               logo_padding_y: newData.logo_padding_y || prev.logo_padding_y,
               google_reviews_widget: newData.google_reviews_widget || prev.google_reviews_widget,
               support_whatsapp: newData.support_whatsapp || prev.support_whatsapp,
+              sound_enabled: newData.sound_enabled ?? prev.sound_enabled,
+              narration_enabled: newData.narration_enabled ?? prev.narration_enabled,
             };
             updateMetaTags(updated);
             injectScripts(updated.ga_id, updated.fb_pixel_id);
@@ -369,6 +377,8 @@ export const useSettings = () => {
       logo_padding_y: 0,
       google_reviews_widget: "",
       support_whatsapp: "",
+      sound_enabled: true,
+      narration_enabled: true,
     };
   }
   return context;

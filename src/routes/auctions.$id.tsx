@@ -8,6 +8,7 @@ import { Clock, User, Gavel, ShieldCheck, Zap, ArrowLeft, Share2, Info, MessageS
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useSettings } from "@/hooks/useSettings";
 import { AuctionChat } from "@/components/AuctionChat";
 import { useTimeSync } from "@/hooks/useTimeSync";
 // confetti will be imported dynamically on the client
@@ -28,6 +29,7 @@ export const Route = createFileRoute("/auctions/$id")({
 
 function AuctionPage() {
   const { id } = Route.useParams();
+  const { sound_enabled } = useSettings();
   const [auction, setAuction] = useState<any>(null);
   const [bids, setBids] = useState<any[]>([]);
   const [showAllBids, setShowAllBids] = useState(false);
@@ -69,17 +71,18 @@ function AuctionPage() {
   }, []);
 
   const playBidSound = useCallback(() => {
-    if (audioRef.current && !isMuted) {
+    if (audioRef.current && !isMuted && sound_enabled) {
       audioRef.current.currentTime = 0;
       audioRef.current.play().catch(err => console.error("Error playing sound:", err));
     }
-  }, [isMuted]);
+  }, [isMuted, sound_enabled]);
 
   // Play sound when auction updates (e.g. real-time bid from others)
   const lastPriceRef = useRef<number>(0);
   const lastBidderIdRef = useRef<string | null>(null);
 
   const playSurpassedSound = useCallback(() => {
+    if (!sound_enabled) return;
     const isEnabled = localStorage.getItem("auction_sound_enabled") !== "false";
     if (!isEnabled) return;
 
