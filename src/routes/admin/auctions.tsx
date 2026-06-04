@@ -287,7 +287,8 @@ function AdminAuctions() {
         target_winner: formData.target_winner,
         is_finalizing: formData.is_finalizing,
         modality: formData.modality,
-        min_balance_required: formData.min_balance_required
+        min_balance_required: formData.min_balance_required,
+        slug: formData.slug || null
       };
 
       let auctionId = editingAuction?.id;
