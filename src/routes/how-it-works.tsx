@@ -89,9 +89,10 @@ function HowItWorks() {
                 <Badge variant="outline" className="mb-4 border-primary/30 bg-primary/10 text-primary uppercase">SIMULAÇÃO REAL</Badge>
                 <h2 className="text-3xl font-black text-white italic uppercase tracking-tighter">Veja na <span className="text-primary">prática</span></h2>
               </div>
-              <div className="max-w-md mx-auto">
+              <div className="max-w-7xl mx-auto">
                 <DemoAuctionBlock auctions={demoAuctions} />
               </div>
+
             </div>
           )}
 
