@@ -441,8 +441,8 @@ function Index() {
             </section>
           )}
 
-          {show_testimonials && (
-            <TestimonialsSection />
+          {show_testimonials && testimonials.length > 0 && (
+            <TestimonialsSection testimonials={testimonials} />
           )}
 
 

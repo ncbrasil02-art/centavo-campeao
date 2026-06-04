@@ -6,24 +6,38 @@ import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
-export function TestimonialsSection() {
-  const [testimonials, setTestimonials] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+interface TestimonialsSectionProps {
+  testimonials?: any[];
+}
+
+export function TestimonialsSection({ testimonials: initialTestimonials }: TestimonialsSectionProps) {
+  const [testimonials, setTestimonials] = useState<any[]>(initialTestimonials || []);
+  const [loading, setLoading] = useState(!initialTestimonials);
 
   useEffect(() => {
-    fetchTestimonials();
-  }, []);
+    if (!initialTestimonials) {
+      fetchTestimonials();
+    } else {
+      setTestimonials(initialTestimonials);
+      setLoading(false);
+    }
+  }, [initialTestimonials]);
 
   async function fetchTestimonials() {
-    const { data } = await supabase
-      .from("testimonials")
-      .select("*")
-      .eq("status", "approved")
-      .order("created_at", { ascending: false })
-      .limit(10);
-    
-    if (data) setTestimonials(data);
-    setLoading(false);
+    try {
+      const { data } = await supabase
+        .from("testimonials")
+        .select("*")
+        .eq("active", true)
+        .order("created_at", { ascending: false })
+        .limit(12);
+      
+      if (data) setTestimonials(data);
+    } catch (error) {
+      console.error("Error fetching testimonials:", error);
+    } finally {
+      setLoading(false);
+    }
   }
 
   if (loading || testimonials.length === 0) return null;
@@ -49,8 +63,8 @@ export function TestimonialsSection() {
           {testimonials.map((t, i) => (
             <motion.div
               key={t.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
               viewport={{ once: true }}
             >
