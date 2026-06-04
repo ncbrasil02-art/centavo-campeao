@@ -11,9 +11,14 @@ import { useSettings } from "@/hooks/useSettings";
 
 export function NarrationSettings() {
   const [phrases, setPhrases] = useState<any[]>([]);
+  const [appPhrases, setAppPhrases] = useState<any[]>([]);
+  const [futureTemplates, setFutureTemplates] = useState<any[]>([]);
   const [newPhrase, setNewPhrase] = useState("");
+  const [newAppPhrase, setNewAppPhrase] = useState("");
+  const [newTemplate, setNewTemplate] = useState("");
   const [loading, setLoading] = useState(false);
   const { marquee_text, marquee_enabled, updateSettings } = useSettings();
+
   const [localMarqueeText, setLocalMarqueeText] = useState(marquee_text || "");
   const [localMarqueeEnabled, setLocalMarqueeEnabled] = useState(marquee_enabled || false);
 
