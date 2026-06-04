@@ -11,8 +11,9 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Plus, Gavel, Calendar, Clock, Edit, Trash2, CheckCircle, XCircle, Power, Upload, Loader2, Image as ImageIcon, ChevronLeft, ChevronRight, Bell, List, Filter, RotateCcw, MessageCircle } from "lucide-react";
+import { Plus, Gavel, Calendar, Clock, Edit, Trash2, CheckCircle, XCircle, Power, Upload, Loader2, Image as ImageIcon, ChevronLeft, ChevronRight, Bell, List, Filter, RotateCcw, MessageCircle, Square, CheckSquare } from "lucide-react";
 import { toast } from "sonner";
+
 import { 
   Dialog, 
   DialogContent, 
@@ -53,7 +54,9 @@ function AdminAuctions() {
   const [dateFilter, setDateFilter] = useState("");
   const [viewingBidsAuction, setViewingBidsAuction] = useState<any>(null);
   const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
+  const [selectedAuctions, setSelectedAuctions] = useState<string[]>([]);
   const auctionsPerPage = 50; 
+
 
   const { formatBrasiliaTime } = useTimeSync();
 
@@ -141,21 +144,36 @@ function AdminAuctions() {
 
   async function fetchAuctions() {
     setLoading(true);
+    setSelectedAuctions([]);
+
     try {
       let query = supabase
         .from("auctions")
-        .select("*, product:products(id, name, images), last_bidder:profiles(id, username, phone)")
+        .select(`
+          *,
+          product!inner (
+            id,
+            name,
+            images
+          ),
+          last_bidder:profiles (
+            id,
+            username,
+            phone
+          )
+        `)
         .range((page - 1) * auctionsPerPage, page * auctionsPerPage - 1);
+
       
       if (statusFilter !== "all") {
         query = query.eq("status", statusFilter);
       }
 
       if (searchTerm) {
-        // Since we are joining products, we might want to filter by product name too
-        // But for now let's keep it simple or use a dedicated view/RPC if needed
-        // For now searching by status is the primary admin task
+        // Filtragem por nome do produto
+        query = query.ilike('product.name', `%${searchTerm}%`);
       }
+
 
       if (dateFilter) {
         const startOfDay = new Date(dateFilter);
@@ -582,6 +600,74 @@ function AdminAuctions() {
     }
   };
 
+  const handleBulkDelete = async () => {
+    if (selectedAuctions.length === 0) {
+      toast.error("Selecione pelo menos um leilão para excluir");
+      return;
+    }
+
+    if (!confirm(`Tem certeza que deseja excluir os ${selectedAuctions.length} leilões selecionados? Leilões com vencedores não serão excluídos para preservar o histórico.`)) return;
+
+    const loadingToast = toast.loading("Excluindo leilões selecionados...");
+    try {
+      // Filtrar apenas leilões que não têm ganhador confirmado/finalizado para segurança extra
+      const { data: safeToDelete, error: checkError } = await supabase
+        .from("auctions")
+        .select("id")
+        .in("id", selectedAuctions)
+        .not("status", "in", '("confirmed","finished")');
+
+      if (checkError) throw checkError;
+
+      if (!safeToDelete || safeToDelete.length === 0) {
+        toast.error("Nenhum dos leilões selecionados pode ser excluído (estão finalizados ou com ganhadores)");
+        return;
+      }
+
+      const idsToDelete = safeToDelete.map(a => a.id);
+      
+      const { error: deleteError } = await supabase
+        .from("auctions")
+        .delete()
+        .in("id", idsToDelete);
+
+      if (deleteError) throw deleteError;
+
+      toast.success(`${idsToDelete.length} leilões foram excluídos com sucesso!`);
+      setSelectedAuctions([]);
+      fetchAuctions();
+    } catch (err: any) {
+      console.error("Error bulk deleting auctions:", err);
+      toast.error("Erro ao excluir leilões: " + err.message);
+    } finally {
+      toast.dismiss(loadingToast);
+    }
+  };
+
+  const toggleSelectAll = () => {
+    // Only select auctions that are NOT confirmed or finished
+    const selectableAuctions = auctions
+      .filter(a => !['confirmed', 'finished'].includes(a.status))
+      .map(a => a.id);
+
+    if (selectedAuctions.length === selectableAuctions.length && selectableAuctions.length > 0) {
+      setSelectedAuctions([]);
+    } else {
+      setSelectedAuctions(selectableAuctions);
+    }
+  };
+
+  const toggleSelectAuction = (id: string, status: string) => {
+    if (['confirmed', 'finished'].includes(status)) {
+      toast.error("Leilões finalizados ou com ganhadores não podem ser excluídos em massa por segurança.");
+      return;
+    }
+
+    setSelectedAuctions(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
+
   const handleResetAllAuctions = async () => {
     const loadingToast = toast.loading("Zerando todos os leilões...");
     try {
@@ -615,6 +701,7 @@ function AdminAuctions() {
     }
   };
 
+
   const openWhatsApp = (phone: string, product: string) => {
     if (!phone) {
       toast.error("Usuário não possui telefone cadastrado");
@@ -640,17 +727,28 @@ function AdminAuctions() {
           </div>
           
           <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+            {selectedAuctions.length > 0 && (
+              <Button 
+                variant="destructive" 
+                className="bg-red-600 hover:bg-red-700 text-white font-black text-[10px] uppercase h-10 px-4 animate-pulse shadow-[0_0_15px_rgba(220,38,38,0.4)]" 
+                onClick={handleBulkDelete}
+              >
+                <Trash2 className="w-4 h-4 mr-2" /> Excluir Selecionados ({selectedAuctions.length})
+              </Button>
+            )}
+
             <Button 
-              variant="destructive" 
-              className="bg-red-600 hover:bg-red-700 text-white font-bold text-xs" 
+              variant="outline" 
+              className="border-red-500/30 bg-red-500/5 hover:bg-red-500/10 text-red-500 font-bold text-xs h-10" 
               onClick={() => setIsResetDialogOpen(true)}
             >
-              <RotateCcw className="w-4 h-4 mr-2" /> Zerar Leilões
+              <RotateCcw className="w-4 h-4 mr-2" /> Zerar Ativos
             </Button>
 
             <Button variant="outline" className="border-white/10 hover:bg-white/5 text-white text-xs h-10" onClick={() => setIsBulkDialogOpen(true)}>
               <Calendar className="w-4 h-4 mr-2" /> Agendamento em Massa
             </Button>
+
             <div className="relative flex-1 md:w-64">
               <Input 
                 placeholder="Buscar produto..." 
@@ -1114,6 +1212,15 @@ function AdminAuctions() {
           <Table>
             <TableHeader className="bg-white/5">
               <TableRow className="border-white/5">
+                <TableHead className="w-[40px]">
+                  <Button variant="ghost" size="icon" className="h-6 w-6" onClick={toggleSelectAll}>
+                    {selectedAuctions.length > 0 && selectedAuctions.length === auctions.filter(a => !['confirmed', 'finished'].includes(a.status)).length 
+                      ? <CheckSquare className="w-4 h-4 text-primary" /> 
+                      : <Square className="w-4 h-4 text-white/20" />
+                    }
+                  </Button>
+                </TableHead>
+
                 <TableHead className="text-white/40 font-bold uppercase text-[10px]">Produto</TableHead>
                 <TableHead className="text-white/40 font-bold uppercase text-[10px]">Modalidade</TableHead>
                 <TableHead className="text-white/40 font-bold uppercase text-[10px]">Início</TableHead>
@@ -1125,19 +1232,36 @@ function AdminAuctions() {
             </TableHeader>
             <TableBody>
               {loading ? (
-                <TableRow><TableCell colSpan={7} className="text-center py-8 text-white/40">Carregando...</TableCell></TableRow>
+                <TableRow><TableCell colSpan={8} className="text-center py-8 text-white/40">Carregando...</TableCell></TableRow>
               ) : auctions.length === 0 ? (
-                <TableRow><TableCell colSpan={7} className="text-center py-8 text-white/40">Nenhum leilão encontrado</TableCell></TableRow>
+                <TableRow><TableCell colSpan={8} className="text-center py-8 text-white/40">Nenhum leilão encontrado</TableCell></TableRow>
               ) : (
+
                 auctions
-                  .filter(a => a.product?.name?.toLowerCase().includes(searchTerm.toLowerCase()))
                   .map((auction) => (
+
                   <TableRow key={auction.id} className={`border-white/5 transition-colors ${
+                    selectedAuctions.includes(auction.id) ? 'bg-primary/10' :
                     auction.status === 'live' ? 'bg-green-600/20 hover:bg-green-600/30 border-l-4 border-l-green-500' : 
                     auction.status === 'pending_audit' ? 'bg-red-600/20 hover:bg-red-600/30 border-l-4 border-l-red-500' :
                     auction.status === 'confirmed' ? 'bg-amber-600/20 hover:bg-amber-600/30 border-l-4 border-l-amber-500' :
                     'hover:bg-white/[0.02]'
                   }`}>
+                    <TableCell>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-6 w-6" 
+                        onClick={() => toggleSelectAuction(auction.id, auction.status)}
+                        disabled={['confirmed', 'finished'].includes(auction.status)}
+                      >
+                        {selectedAuctions.includes(auction.id) 
+                          ? <CheckSquare className="w-4 h-4 text-primary" /> 
+                          : <Square className={`w-4 h-4 ${['confirmed', 'finished'].includes(auction.status) ? 'opacity-20' : 'text-white/20'}`} />
+                        }
+                      </Button>
+                    </TableCell>
+
                     <TableCell>
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg bg-white/5 overflow-hidden flex-shrink-0">
