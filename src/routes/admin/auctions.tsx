@@ -606,21 +606,21 @@ function AdminAuctions() {
       return;
     }
 
-    if (!confirm(`Tem certeza que deseja excluir os ${selectedAuctions.length} leilões selecionados? Leilões com vencedores não serão excluídos para preservar o histórico.`)) return;
+    if (!confirm(`Tem certeza que deseja excluir os ${selectedAuctions.length} leilões selecionados? Leilões com vencedores ou finalizados não serão excluídos para preservar o histórico.`)) return;
 
     const loadingToast = toast.loading("Excluindo leilões selecionados...");
     try {
-      // Filtrar apenas leilões que não têm ganhador confirmado/finalizado para segurança extra
+      // Filtrar apenas leilões que não têm ganhador confirmado/finalizado
       const { data: safeToDelete, error: checkError } = await supabase
         .from("auctions")
         .select("id")
         .in("id", selectedAuctions)
-        .not("status", "in", '("confirmed","finished")');
+        .not("status", "in", '("confirmed","finished","pending_audit")');
 
       if (checkError) throw checkError;
 
       if (!safeToDelete || safeToDelete.length === 0) {
-        toast.error("Nenhum dos leilões selecionados pode ser excluído (estão finalizados ou com ganhadores)");
+        toast.error("Nenhum dos leilões selecionados pode ser excluído (estão em auditoria, finalizados ou confirmados)");
         return;
       }
 
@@ -645,9 +645,9 @@ function AdminAuctions() {
   };
 
   const toggleSelectAll = () => {
-    // Only select auctions that are NOT confirmed or finished
+    // Only select auctions that are NOT confirmed, finished or in audit
     const selectableAuctions = auctions
-      .filter(a => !['confirmed', 'finished'].includes(a.status))
+      .filter(a => !['confirmed', 'finished', 'pending_audit'].includes(a.status))
       .map(a => a.id);
 
     if (selectedAuctions.length === selectableAuctions.length && selectableAuctions.length > 0) {
@@ -658,8 +658,8 @@ function AdminAuctions() {
   };
 
   const toggleSelectAuction = (id: string, status: string) => {
-    if (['confirmed', 'finished'].includes(status)) {
-      toast.error("Leilões finalizados ou com ganhadores não podem ser excluídos em massa por segurança.");
+    if (['confirmed', 'finished', 'pending_audit'].includes(status)) {
+      toast.error("Leilões em auditoria, finalizados ou com ganhadores não podem ser excluídos em massa por segurança.");
       return;
     }
 
@@ -1253,11 +1253,11 @@ function AdminAuctions() {
                         size="icon" 
                         className="h-6 w-6" 
                         onClick={() => toggleSelectAuction(auction.id, auction.status)}
-                        disabled={['confirmed', 'finished'].includes(auction.status)}
+                        disabled={['confirmed', 'finished', 'pending_audit'].includes(auction.status)}
                       >
                         {selectedAuctions.includes(auction.id) 
                           ? <CheckSquare className="w-4 h-4 text-primary" /> 
-                          : <Square className={`w-4 h-4 ${['confirmed', 'finished'].includes(auction.status) ? 'opacity-20' : 'text-white/20'}`} />
+                          : <Square className={`w-4 h-4 ${['confirmed', 'finished', 'pending_audit'].includes(auction.status) ? 'opacity-20' : 'text-white/20'}`} />
                         }
                       </Button>
                     </TableCell>
