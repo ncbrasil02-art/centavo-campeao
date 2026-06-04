@@ -70,6 +70,12 @@ export function Footer() {
               <Link to="/packages" className="hover:text-primary transition-colors">Comprar Lances</Link>
               <Link to="/terms-of-use" className="hover:text-primary transition-colors">Termos</Link>
               <Link to="/privacy-policy" className="hover:text-primary transition-colors">Privacidade</Link>
+              <button 
+                onClick={() => window.dispatchEvent(new CustomEvent('show-pwa-install'))}
+                className="hover:text-primary transition-colors text-left flex items-center gap-1.5"
+              >
+                <Smartphone className="w-3 h-3" /> Baixar App
+              </button>
 
             </nav>
           </div>
