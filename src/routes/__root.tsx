@@ -154,7 +154,9 @@ function RootComponent() {
         <FloatingControls />
         <PromotionalMessages />
         <PWAInstallPrompt />
+        <WhatsAppButton />
         <Outlet />
+
 
         <Toaster position="top-right" richColors />
       </SettingsProvider>
