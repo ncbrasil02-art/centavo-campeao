@@ -709,34 +709,40 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             ? 'bg-primary/30 border-primary shadow-[0_0_20px_rgba(var(--color-primary),0.5)] animate-pulse' 
             : 'bg-muted/30 border-border'
         }`}>
-          {!isScheduled && (
-            <div className={`flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border transition-all duration-500 ${
-              isNewBid ? 'border-primary scale-110' : 'border-primary/20'
-            }`}>
-              <img 
-                src={
-                  (!auction.last_bidder?.username)
-                    ? getFallbackAvatarUrl(undefined)
-                    : (auction.last_bidder?.avatar_url || getFallbackAvatarUrl(auction.last_bidder?.username))
-                } 
-                className={`h-full w-full object-cover transition-opacity duration-500 ${isNewBid ? 'opacity-100' : 'opacity-90'}`} 
-                alt="Bidder" 
-                onError={(e) => (e.target as HTMLImageElement).src = getFallbackAvatarUrl(auction.last_bidder?.username)}
-              />
-            </div>
-          )}
+          <div className={`flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border transition-all duration-500 ${
+            isNewBid ? 'border-primary scale-110' : 'border-primary/20'
+          }`}>
+            <img 
+              src={
+                (isScheduled || isPendingAudit || !auction.last_bidder?.username)
+                  ? useSettings().logo_url
+                  : (auction.last_bidder?.avatar_url || getFallbackAvatarUrl(auction.last_bidder?.username))
+              } 
+              className={`h-full w-full object-cover transition-opacity duration-500 ${isNewBid ? 'opacity-100' : 'opacity-90'}`} 
+              alt={isScheduled || isPendingAudit ? "Logo" : "Bidder"} 
+              onError={(e) => {
+                if (isScheduled || isPendingAudit) {
+                  (e.target as HTMLImageElement).src = FALLBACK_PRODUCT_IMAGE;
+                } else {
+                  (e.target as HTMLImageElement).src = getFallbackAvatarUrl(auction.last_bidder?.username);
+                }
+              }}
+            />
+          </div>
 
           <div className="flex flex-col overflow-hidden w-full">
             <span className={`text-[11px] font-black uppercase tracking-widest transition-colors ${
               isNewBid ? 'text-primary' : (isFinished || isConfirmed) ? 'text-green-500' : isPendingAudit ? 'text-red-500' : 'text-muted-foreground'
             }`}>
-              {(isFinished || isConfirmed) ? "🏆 Vencedor" : isPendingAudit ? "🏆 Vencedor" : isScheduled ? "Aguardando Início" : "Liderando Agora"}
+              {(isFinished || isConfirmed) ? "🏆 Vencedor" : isPendingAudit ? "Aguardando Auditoria" : isScheduled ? "Aguardando Início" : "Liderando Agora"}
             </span>
             <span className={`truncate text-sm font-bold transition-all ${
               isNewBid ? 'text-primary scale-105 origin-left' : (isFinished || isConfirmed) ? 'text-green-500' : isPendingAudit ? 'text-red-400' : 'text-foreground'
             }`}>
               {isScheduled ? (
                 <span className="italic text-muted-foreground/50">Prepare seus lances!</span>
+              ) : isPendingAudit ? (
+                <span className="italic text-muted-foreground/50">Nenhum lance ainda</span>
               ) : (
                 auction.last_bidder?.username || <span className="italic text-muted-foreground/50">Nenhum lance ainda</span>
               )}
