@@ -700,11 +700,13 @@ export type Database = {
           pix_key: string | null
           pix_name: string | null
           primary_color: string | null
+          privacy_policy: string | null
           pwa_enabled: boolean | null
           secondary_color: string | null
           site_name: string | null
           sound_enabled: boolean | null
           support_whatsapp: string | null
+          terms_of_use: string | null
           theme_mode: string | null
           updated_at: string | null
           welcome_bids: number | null
@@ -743,11 +745,13 @@ export type Database = {
           pix_key?: string | null
           pix_name?: string | null
           primary_color?: string | null
+          privacy_policy?: string | null
           pwa_enabled?: boolean | null
           secondary_color?: string | null
           site_name?: string | null
           sound_enabled?: boolean | null
           support_whatsapp?: string | null
+          terms_of_use?: string | null
           theme_mode?: string | null
           updated_at?: string | null
           welcome_bids?: number | null
@@ -786,11 +790,13 @@ export type Database = {
           pix_key?: string | null
           pix_name?: string | null
           primary_color?: string | null
+          privacy_policy?: string | null
           pwa_enabled?: boolean | null
           secondary_color?: string | null
           site_name?: string | null
           sound_enabled?: boolean | null
           support_whatsapp?: string | null
+          terms_of_use?: string | null
           theme_mode?: string | null
           updated_at?: string | null
           welcome_bids?: number | null
