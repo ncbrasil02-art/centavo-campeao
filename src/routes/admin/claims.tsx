@@ -67,7 +67,8 @@ function AdminClaims() {
     try {
       let query = supabase
         .from("winners")
-        .select("*, profile:profiles(username, full_name), auction:auctions(title, product:products(name, images))");
+        .select("*, profile:profiles(username, full_name), auction:auctions(slug, product:products(name, images))");
+
 
       if (searchTerm) {
         query = query.or(`profile.username.ilike.%${searchTerm}%,profile.full_name.ilike.%${searchTerm}%`);
