@@ -83,18 +83,14 @@ export const Route = createRootRouteWithContext<{
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lance Certo Premium" },
-      { name: "description", content: "Lance Certo Premium is a modern cent auction platform for exciting product bidding." },
-      { name: "author", content: "Lance Certo Premium" },
-      { property: "og:title", content: "Lance Certo Premium" },
-      { property: "og:description", content: "Lance Certo Premium is a modern cent auction platform for exciting product bidding." },
+      { title: "Plataforma de Leilões" },
+      { name: "description", content: "Participe de leilões emocionantes e arremate produtos incríveis." },
+      { property: "og:title", content: "Plataforma de Leilões" },
+      { property: "og:description", content: "Participe de leilões emocionantes e arremate produtos incríveis." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@LanceCerto" },
-      { name: "twitter:title", content: "Lance Certo Premium" },
-      { name: "twitter:description", content: "Lance Certo Premium is a modern cent auction platform for exciting product bidding." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/rqE5I25elIdK1C06SOEoftOdMw42/social-images/social-1778583677031-WhatsApp_Image_2026-04-15_at_09.36.08.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/rqE5I25elIdK1C06SOEoftOdMw42/social-images/social-1778583677031-WhatsApp_Image_2026-04-15_at_09.36.08.webp" },
+      { name: "twitter:title", content: "Plataforma de Leilões" },
+      { name: "twitter:description", content: "Participe de leilões emocionantes e arremate produtos incríveis." },
     ],
     links: [
       {
@@ -120,7 +116,43 @@ function RootShell({ children }: { children: React.ReactNode }) {
       <head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="LanceCerto" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                const saved = localStorage.getItem('site_settings');
+                if (saved) {
+                  const settings = JSON.parse(saved);
+                  if (settings.theme_mode === 'dark') {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                  const root = document.documentElement.style;
+                  if (settings.primary_color) root.setProperty('--primary', settings.primary_color);
+                  if (settings.secondary_color) root.setProperty('--secondary', settings.secondary_color);
+                  if (settings.font_color_primary) root.setProperty('--foreground', settings.font_color_primary);
+                  if (settings.font_color_secondary) root.setProperty('--muted-foreground', settings.font_color_secondary);
+                  if (settings.card_background_color) {
+                    root.setProperty('--card', settings.card_background_color);
+                    root.setProperty('--glass', settings.card_background_color + '66');
+                  }
+                  if (settings.block_background_color) root.setProperty('--muted', settings.block_background_color);
+                  if (settings.page_background_color) root.setProperty('--background', settings.page_background_color);
+                  if (settings.border_color) {
+                    root.setProperty('--border', settings.border_color);
+                    root.setProperty('--glass-border', settings.border_color + '33');
+                  }
+                  if (settings.meta_title || settings.site_name) {
+                    document.title = settings.meta_title || settings.site_name;
+                  }
+                }
+              } catch (e) {
+                console.error('Flicker fix error:', e);
+              }
+            `,
+          }}
+        />
         <HeadContent />
       </head>
 
