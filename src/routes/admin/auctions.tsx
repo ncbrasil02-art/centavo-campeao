@@ -530,7 +530,7 @@ function AdminAuctions() {
 
       toast.success(`${auctionInserts.length} leilões agendados com sucesso!`);
       setIsBulkDialogOpen(false);
-      fetchData();
+      fetchAuctions();
     } catch (err: any) {
       toast.error("Erro ao agendar em massa: " + err.message);
     } finally {
