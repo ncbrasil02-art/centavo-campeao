@@ -36,7 +36,11 @@ interface SiteSettings {
   marquee_text: string;
   marquee_enabled: boolean;
   demo_auctions_enabled: boolean;
+  pwa_enabled: boolean;
+  android_app_url: string;
+  ios_app_url: string;
 }
+
 
 interface SettingsContextType extends SiteSettings {
   updateSettings: (data: Partial<SiteSettings>) => Promise<void>;
@@ -79,7 +83,11 @@ const DEFAULT_SETTINGS: SiteSettings = {
   marquee_text: "Ganhe 5 lances grátis ao se cadastrar! 🚀 Participe dos leilões e arremate produtos incríveis com descontos de até 99%!",
   marquee_enabled: true,
   demo_auctions_enabled: false,
+  pwa_enabled: true,
+  android_app_url: "",
+  ios_app_url: "",
 };
+
 
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [settings, setSettings] = useState<SiteSettings>(() => {
@@ -220,7 +228,11 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
             marquee_text: data.marquee_text || DEFAULT_SETTINGS.marquee_text,
             marquee_enabled: data.marquee_enabled ?? DEFAULT_SETTINGS.marquee_enabled,
             demo_auctions_enabled: data.demo_auctions_enabled ?? DEFAULT_SETTINGS.demo_auctions_enabled,
+            pwa_enabled: data.pwa_enabled ?? DEFAULT_SETTINGS.pwa_enabled,
+            android_app_url: data.android_app_url || DEFAULT_SETTINGS.android_app_url,
+            ios_app_url: data.ios_app_url || DEFAULT_SETTINGS.ios_app_url,
           };
+
           
           setSettings(fetchedSettings);
           localStorage.setItem('site_settings', JSON.stringify(fetchedSettings));

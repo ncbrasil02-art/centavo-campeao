@@ -101,7 +101,12 @@ export const Route = createRootRouteWithContext<{
         rel: "stylesheet",
         href: appCss,
       },
+      {
+        rel: "manifest",
+        href: "/manifest.json",
+      },
     ],
+
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -111,10 +116,14 @@ export const Route = createRootRouteWithContext<{
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <head>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="LanceCerto" />
         <HeadContent />
       </head>
+
       <body>
         {children}
         <Scripts />
@@ -128,7 +137,9 @@ import { Heartbeat } from "@/components/Heartbeat";
 import { AuctionNarrator } from "@/components/AuctionNarrator";
 import { FloatingControls } from "@/components/FloatingControls";
 import { PromotionalMessages } from "@/components/PromotionalMessages";
+import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import { Toaster } from "@/components/ui/sonner";
+
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
@@ -140,7 +151,9 @@ function RootComponent() {
         <AuctionNarrator />
         <FloatingControls />
         <PromotionalMessages />
+        <PWAInstallPrompt />
         <Outlet />
+
         <Toaster position="top-right" richColors />
       </SettingsProvider>
     </QueryClientProvider>
