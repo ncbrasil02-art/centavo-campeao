@@ -132,6 +132,8 @@ function AdminSettings() {
           logo_padding_y: publicData.logo_padding_y || 0,
           google_reviews_widget: publicData.google_reviews_widget || "",
           support_whatsapp: publicData.support_whatsapp || "",
+          sound_enabled: publicData.sound_enabled ?? true,
+          narration_enabled: publicData.narration_enabled ?? true,
         });
       }
     } catch (error) {
