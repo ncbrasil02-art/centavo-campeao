@@ -596,6 +596,7 @@ export type Database = {
           support_whatsapp: string | null
           theme_mode: string | null
           updated_at: string | null
+          welcome_bids: number | null
         }
         Insert: {
           block_background_color?: string | null
@@ -630,6 +631,7 @@ export type Database = {
           support_whatsapp?: string | null
           theme_mode?: string | null
           updated_at?: string | null
+          welcome_bids?: number | null
         }
         Update: {
           block_background_color?: string | null
@@ -664,6 +666,7 @@ export type Database = {
           support_whatsapp?: string | null
           theme_mode?: string | null
           updated_at?: string | null
+          welcome_bids?: number | null
         }
         Relationships: []
       }
