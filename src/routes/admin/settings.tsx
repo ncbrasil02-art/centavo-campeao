@@ -708,6 +708,17 @@ function AdminSettings() {
                     className="bg-white/5 border-white/10 h-12"
                   />
                 </div>
+                <div className="pt-4 border-t border-white/5">
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-primary/5 border border-primary/10">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-[10px] font-black uppercase text-primary">Sitemap (Mapa do Site)</span>
+                      <span className="text-[11px] text-white/60">O mapa do site é gerado automaticamente para o Google.</span>
+                    </div>
+                    <Button variant="ghost" size="sm" asChild className="text-primary hover:text-primary hover:bg-primary/10">
+                      <a href="/sitemap.xml" target="_blank" rel="noopener noreferrer">Ver XML</a>
+                    </Button>
+                  </div>
+                </div>
               </CardContent>
             </Card>
 

@@ -124,7 +124,7 @@ function AuctionPage() {
       .channel(channelRef.current)
       .on(
         'postgres_changes',
-        { event: 'UPDATE', schema: 'public', table: 'auctions', filter: `id=eq.${id}` },
+        { event: 'UPDATE', schema: 'public', table: 'auctions', filter: `id=eq.${auction?.id || id}` },
         (payload) => {
           console.log('Auction real-time update:', payload.new);
           // Update auction state immediately
@@ -148,7 +148,7 @@ function AuctionPage() {
       .channel(bidsChannelRef.current)
       .on(
         'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'bids', filter: `auction_id=eq.${id}` },
+        { event: 'INSERT', schema: 'public', table: 'bids', filter: `auction_id=eq.${auction?.id || id}` },
         () => {
           fetchBids();
         }
@@ -229,16 +229,24 @@ function AuctionPage() {
   }, [auction?.timer_duration]);
 
   async function fetchAuction() {
-    // Mock data for fictitious mode if wanted, but we'll try to fetch first
-    const { data, error } = await supabase
+    // Try to find by UUID first, then by slug
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id);
+    
+    let query = supabase
       .from("auctions")
       .select(`
         *,
         product:products(*),
         last_bidder:profiles(username, avatar_url)
-      `)
-      .eq("id", id)
-      .single();
+      `);
+
+    if (isUuid) {
+      query = query.eq("id", id);
+    } else {
+      query = query.eq("slug", id);
+    }
+
+    const { data, error } = await query.maybeSingle();
 
     if (error || !data) {
       toast.error("Leilão não encontrado.");
@@ -258,10 +266,11 @@ function AuctionPage() {
   }
 
   async function fetchBids() {
+    if (!auction?.id) return;
     const { data } = await supabase
       .from("bids")
       .select("*, profile:profiles(username, avatar_url)")
-      .eq("auction_id", id)
+      .eq("auction_id", auction.id)
       .order("created_at", { ascending: false })
       .limit(30);
     
@@ -284,7 +293,7 @@ function AuctionPage() {
       }
 
       const { data, error } = await supabase.rpc('place_bid', {
-        p_auction_id: id
+        p_auction_id: auction.id
       }) as { data: any, error: any };
 
       if (error) {

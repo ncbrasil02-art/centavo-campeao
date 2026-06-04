@@ -288,7 +288,7 @@ function PackagesPage() {
 
                     <div className="p-3 bg-white/5 rounded-lg border border-white/10 text-left">
                       <p className="text-[10px] text-white/40 uppercase font-black mb-1">Beneficiário</p>
-                      <p className="text-sm font-bold">{settings.pix_name || "Lance Certo"}</p>
+                      <p className="text-sm font-bold">{settings.pix_name || settings.site_name}</p>
                     </div>
                   </div>
 

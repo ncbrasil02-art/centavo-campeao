@@ -8,6 +8,8 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { getFallbackAvatarUrl } from "@/lib/constants";
 import { motion } from "framer-motion";
+import { useSettings } from "@/hooks/useSettings";
+import { Footer } from "@/components/Footer";
 
 export const Route = createFileRoute("/ranking")({
   component: RankingPage,
@@ -52,7 +54,7 @@ function RankingPage() {
               Hall da <span className="text-primary">Fama</span>
             </h1>
             <p className="text-white/40 max-w-xl mx-auto">
-              Os maiores arrematadores da plataforma. Conheça as lendas que dominam os leilões do Lance Certo.
+              Os maiores arrematadores da plataforma. Conheça as lendas que dominam os leilões do {useSettings().site_name}.
             </p>
           </div>
 
@@ -129,6 +131,7 @@ function RankingPage() {
             </div>
           )}
         </div>
+        <Footer />
       </main>
     </div>
   );

@@ -4,6 +4,8 @@ import { Badge } from '@/components/ui/badge';
 import { Zap, ArrowRight, ShieldCheck, Clock, Wallet, Trophy, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from '@tanstack/react-router';
+import { useSettings } from '@/hooks/useSettings';
+import { Footer } from '@/components/Footer';
 
 export const Route = createFileRoute('/how-it-works')({
   component: HowItWorks,
@@ -25,6 +27,7 @@ function Step({ icon, step, title, desc }: { icon: React.ReactNode, step: string
 }
 
 function HowItWorks() {
+  const { site_name } = useSettings();
   return (
     <div className="min-h-screen bg-background text-white flex flex-col">
       <Navbar />
@@ -33,7 +36,7 @@ function HowItWorks() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center mb-20">
             <Badge variant="outline" className="mb-6 border-primary/30 bg-primary/10 text-primary uppercase tracking-widest px-4 py-1">TRANSPARÊNCIA TOTAL</Badge>
-            <h1 className="text-5xl md:text-7xl font-black tracking-tight text-white mb-8 italic uppercase">Como o <span className="text-primary">Lance Certo</span> funciona?</h1>
+            <h1 className="text-5xl md:text-7xl font-black tracking-tight text-white mb-8 italic uppercase">Como o <span className="text-primary">{site_name}</span> funciona?</h1>
             <p className="text-xl text-white/60 leading-relaxed italic">
               Nossa plataforma foi desenhada para ser emocionante, justa e extremamente econômica. 
               Entenda a dinâmica que permite arrematar iPhones e Consoles por valores inacreditáveis.
@@ -115,11 +118,7 @@ function HowItWorks() {
         </div>
       </main>
 
-      <footer className="py-12 border-t border-white/5 bg-black/40">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-white/20 text-sm font-medium uppercase tracking-[0.3em]">© 2026 LANCE CERTO - DISPUTAS EM TEMPO REAL</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

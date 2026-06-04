@@ -89,7 +89,8 @@ function AdminAuctions() {
     robot_bid_chance: 0.3,
     robot_active: true,
     robot_start_after: 0,
-    robot_stop_after: 30
+    robot_stop_after: 30,
+    slug: ""
   };
 
   const [formData, setFormData] = useState(initialFormData);
@@ -286,7 +287,8 @@ function AdminAuctions() {
         target_winner: formData.target_winner,
         is_finalizing: formData.is_finalizing,
         modality: formData.modality,
-        min_balance_required: formData.min_balance_required
+        min_balance_required: formData.min_balance_required,
+        slug: formData.slug || null
       };
 
       let auctionId = editingAuction?.id;
@@ -397,7 +399,8 @@ function AdminAuctions() {
       robot_bid_chance: typeof robotSettings?.bid_chance === 'string' ? parseFloat(robotSettings.bid_chance) : (robotSettings?.bid_chance || 0.3),
       robot_active: robotSettings?.active ?? true,
       robot_start_after: robotSettings?.start_after_minutes || 0,
-      robot_stop_after: robotSettings?.stop_after_minutes || 30
+      robot_stop_after: robotSettings?.stop_after_minutes || 30,
+      slug: auction.slug || ""
     });
     setIsDialogOpen(true);
   }
@@ -743,6 +746,17 @@ function AdminAuctions() {
                       className="bg-white/5 border-white/10"
                     />
                   </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label>URL Amigável (Slug)</Label>
+                  <Input 
+                    value={formData.slug} 
+                    onChange={e => setFormData({...formData, slug: e.target.value})}
+                    placeholder="ex: iphone-15-pro-desconto"
+                    className="bg-white/5 border-white/10"
+                  />
+                  <p className="text-[10px] text-white/40 italic">Deixe em branco para gerar automaticamente.</p>
                 </div>
 
                 <div className="space-y-2">

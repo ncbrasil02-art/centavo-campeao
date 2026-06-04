@@ -423,7 +423,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       )}
       {/* Product Image Section */}
       <div className="relative aspect-square overflow-hidden rounded-t-[32px]">
-        <Link to="/auctions/$id" params={{ id: auction.id }} className="block h-full w-full cursor-pointer">
+        <Link to="/auctions/$id" params={{ id: auction.slug || auction.id }} className="block h-full w-full cursor-pointer">
           <img 
             src={auction.product?.images?.[0] || FALLBACK_PRODUCT_IMAGE} 
             alt={auction.product?.name} 
