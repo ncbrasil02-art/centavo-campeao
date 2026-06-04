@@ -669,6 +669,7 @@ export type Database = {
       }
       site_settings: {
         Row: {
+          android_app_url: string | null
           block_background_color: string | null
           border_color: string | null
           card_background_color: string | null
@@ -682,6 +683,7 @@ export type Database = {
           google_site_verification: string | null
           hero_display_mode: string | null
           id: string
+          ios_app_url: string | null
           logo_height: number | null
           logo_height_mobile: number | null
           logo_padding_x: number | null
@@ -698,6 +700,7 @@ export type Database = {
           pix_key: string | null
           pix_name: string | null
           primary_color: string | null
+          pwa_enabled: boolean | null
           secondary_color: string | null
           site_name: string | null
           sound_enabled: boolean | null
@@ -707,6 +710,7 @@ export type Database = {
           welcome_bids: number | null
         }
         Insert: {
+          android_app_url?: string | null
           block_background_color?: string | null
           border_color?: string | null
           card_background_color?: string | null
@@ -720,6 +724,7 @@ export type Database = {
           google_site_verification?: string | null
           hero_display_mode?: string | null
           id?: string
+          ios_app_url?: string | null
           logo_height?: number | null
           logo_height_mobile?: number | null
           logo_padding_x?: number | null
@@ -736,6 +741,7 @@ export type Database = {
           pix_key?: string | null
           pix_name?: string | null
           primary_color?: string | null
+          pwa_enabled?: boolean | null
           secondary_color?: string | null
           site_name?: string | null
           sound_enabled?: boolean | null
@@ -745,6 +751,7 @@ export type Database = {
           welcome_bids?: number | null
         }
         Update: {
+          android_app_url?: string | null
           block_background_color?: string | null
           border_color?: string | null
           card_background_color?: string | null
@@ -758,6 +765,7 @@ export type Database = {
           google_site_verification?: string | null
           hero_display_mode?: string | null
           id?: string
+          ios_app_url?: string | null
           logo_height?: number | null
           logo_height_mobile?: number | null
           logo_padding_x?: number | null
@@ -774,6 +782,7 @@ export type Database = {
           pix_key?: string | null
           pix_name?: string | null
           primary_color?: string | null
+          pwa_enabled?: boolean | null
           secondary_color?: string | null
           site_name?: string | null
           sound_enabled?: boolean | null
