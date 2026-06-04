@@ -59,6 +59,48 @@ export type Database = {
         }
         Relationships: []
       }
+      auction_claim_messages: {
+        Row: {
+          auction_id: string
+          created_at: string | null
+          id: string
+          is_admin_reply: boolean | null
+          message: string
+          sender_id: string
+        }
+        Insert: {
+          auction_id: string
+          created_at?: string | null
+          id?: string
+          is_admin_reply?: boolean | null
+          message: string
+          sender_id: string
+        }
+        Update: {
+          auction_id?: string
+          created_at?: string | null
+          id?: string
+          is_admin_reply?: boolean | null
+          message?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auction_claim_messages_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: false
+            referencedRelation: "auctions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "auction_claim_messages_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: false
+            referencedRelation: "v_home_live_auctions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       auctions: {
         Row: {
           bid_count: number | null
@@ -628,32 +670,62 @@ export type Database = {
       testimonials: {
         Row: {
           active: boolean | null
+          auction_id: string | null
           avatar_url: string | null
           content: string
           created_at: string | null
           id: string
+          media_type: string | null
+          media_url: string | null
           name: string
           rating: number | null
+          status: string | null
+          user_id: string | null
         }
         Insert: {
           active?: boolean | null
+          auction_id?: string | null
           avatar_url?: string | null
           content: string
           created_at?: string | null
           id?: string
+          media_type?: string | null
+          media_url?: string | null
           name: string
           rating?: number | null
+          status?: string | null
+          user_id?: string | null
         }
         Update: {
           active?: boolean | null
+          auction_id?: string | null
           avatar_url?: string | null
           content?: string
           created_at?: string | null
           id?: string
+          media_type?: string | null
+          media_url?: string | null
           name?: string
           rating?: number | null
+          status?: string | null
+          user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "testimonials_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: false
+            referencedRelation: "auctions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "testimonials_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: false
+            referencedRelation: "v_home_live_auctions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       transactions: {
         Row: {
@@ -728,6 +800,8 @@ export type Database = {
           created_at: string
           final_price: number
           id: string
+          payment_receipt_url: string | null
+          payment_status: string | null
           savings_percentage: number | null
           user_id: string | null
         }
@@ -736,6 +810,8 @@ export type Database = {
           created_at?: string
           final_price: number
           id?: string
+          payment_receipt_url?: string | null
+          payment_status?: string | null
           savings_percentage?: number | null
           user_id?: string | null
         }
@@ -744,6 +820,8 @@ export type Database = {
           created_at?: string
           final_price?: number
           id?: string
+          payment_receipt_url?: string | null
+          payment_status?: string | null
           savings_percentage?: number | null
           user_id?: string | null
         }
