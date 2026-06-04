@@ -59,7 +59,7 @@ function AdminAuctions() {
   const [uploading, setUploading] = useState(false);
   const [isBulkDialogOpen, setIsBulkDialogOpen] = useState(false);
   const [bulkData, setBulkBulkData] = useState({
-    product_id: "",
+    product_ids: [] as string[],
     days: ["1", "2", "3", "4", "5", "6", "0"], // Sunday to Saturday (0-6)
     startTime: "12:00",
     auctionsPerDay: 4,
@@ -67,6 +67,7 @@ function AdminAuctions() {
     timerDuration: 30,
     robotStopMinutes: 60
   });
+
   
   const initialFormData = {
     product_id: "",
