@@ -38,12 +38,14 @@ export function DemoAuctionBlock({ auctions: initialAuctions }: { auctions: Demo
   useEffect(() => {
     // Initialize timers
     const initialTimers: Record<string, number> = {};
+    const initialPhrases: Record<string, string> = {};
     initialAuctions.forEach(a => {
       initialTimers[a.id] = Math.floor(Math.random() * 5) + 10;
       initialPhrases[a.id] = incentivePhrases[Math.floor(Math.random() * incentivePhrases.length)].text;
     });
     setLocalTimes(initialTimers);
     setRandomPhrases(initialPhrases);
+
 
 
     const interval = setInterval(() => {
