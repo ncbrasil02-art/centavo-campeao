@@ -1,14 +1,16 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { supabase } from '@/integrations/supabase/client';
 
-export const Route = createFileRoute('/sitemap/xml')({
+export const Route = createFileRoute('/sitemap.xml')({
   loader: async () => {
     const { data: auctions } = await supabase
       .from('auctions')
-      .select('slug, updated_at')
+      .select('slug, created_at')
       .eq('status', 'live');
 
-    const baseUrl = window.location.origin;
+    // In a real server environment, we'd get this from env or request
+    // For now, we'll try to use window if available, or a placeholder
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://leilaodecentavos.com.br';
 
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -37,7 +39,7 @@ export const Route = createFileRoute('/sitemap/xml')({
       (a) => `
   <url>
     <loc>${baseUrl}/auctions/${a.slug}</loc>
-    <lastmod>${new Date(a.updated_at || new Date()).toISOString().split('T')[0]}</lastmod>
+    <lastmod>${new Date(a.created_at || new Date()).toISOString().split('T')[0]}</lastmod>
     <changefreq>always</changefreq>
     <priority>0.9</priority>
   </url>`
