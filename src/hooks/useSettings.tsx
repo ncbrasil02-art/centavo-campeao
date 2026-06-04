@@ -302,6 +302,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
               logo_padding_y: newData.logo_padding_y || prev.logo_padding_y,
               google_reviews_widget: newData.google_reviews_widget || prev.google_reviews_widget,
               support_whatsapp: newData.support_whatsapp || prev.support_whatsapp,
+              sound_enabled: newData.sound_enabled ?? prev.sound_enabled,
+              narration_enabled: newData.narration_enabled ?? prev.narration_enabled,
             };
             updateMetaTags(updated);
             injectScripts(updated.ga_id, updated.fb_pixel_id);
