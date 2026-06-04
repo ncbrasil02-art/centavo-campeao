@@ -966,16 +966,27 @@ function AdminAuctions() {
               </DialogHeader>
               <div className="py-6 space-y-6">
                 <div className="space-y-2">
-                  <Label>Produto</Label>
-                  <Select value={bulkData.product_id} onValueChange={(v) => setBulkBulkData({...bulkData, product_id: v})}>
-                    <SelectTrigger className="bg-white/5 border-white/10">
-                      <SelectValue placeholder="Selecione o produto" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-zinc-800 border-white/10 text-white">
-                      {products.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
+                  <Label>Produtos (Selecione múltiplos para rodízio)</Label>
+                  <div className="grid grid-cols-1 gap-2 max-h-40 overflow-y-auto p-2 bg-white/5 border border-white/10 rounded-lg">
+                    {products.map(p => (
+                      <div key={p.id} className="flex items-center gap-2">
+                        <input 
+                          type="checkbox"
+                          checked={bulkData.product_ids.includes(p.id)}
+                          onChange={(e) => {
+                            const ids = e.target.checked 
+                              ? [...bulkData.product_ids, p.id]
+                              : bulkData.product_ids.filter(id => id !== p.id);
+                            setBulkBulkData({...bulkData, product_ids: ids});
+                          }}
+                          className="h-4 w-4 bg-zinc-800 border-white/20"
+                        />
+                        <span className="text-xs truncate">{p.name}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
+
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
