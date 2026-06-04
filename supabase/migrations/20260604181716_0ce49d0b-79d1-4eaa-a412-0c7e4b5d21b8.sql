@@ -1,0 +1,1 @@
+ALTER TABLE public.testimonials ADD CONSTRAINT testimonials_auction_id_unique UNIQUE (auction_id);
