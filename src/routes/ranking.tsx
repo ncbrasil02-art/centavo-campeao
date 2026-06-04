@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { getFallbackAvatarUrl } from "@/lib/constants";
 import { motion } from "framer-motion";
 import { useSettings } from "@/hooks/useSettings";
+import { Footer } from "@/components/Footer";
 
 export const Route = createFileRoute("/ranking")({
   component: RankingPage,
@@ -130,6 +131,7 @@ function RankingPage() {
             </div>
           )}
         </div>
+        <Footer />
       </main>
     </div>
   );
