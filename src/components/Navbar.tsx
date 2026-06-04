@@ -178,6 +178,15 @@ export function Navbar() {
           <Link to="/how-it-works" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Como Funciona</Link>
           <Link to="/ranking" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Ranking</Link>
           <Link to="/packages" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Comprar Lances</Link>
+          <button 
+            onClick={() => {
+              const event = new CustomEvent('show-pwa-install');
+              window.dispatchEvent(event);
+            }}
+            className="flex items-center gap-2 text-sm font-black text-primary animate-pulse hover:scale-105 transition-transform"
+          >
+            <Smartphone className="w-4 h-4" /> Baixar App
+          </button>
           
           {(profile?.is_admin || user?.id === 'cdf027bb-f239-4ba0-b8a9-7bf52341df4b' || user?.id === 'ad8443eb-d096-46ad-ba39-07abdba01fdb') && (
             <Link 
