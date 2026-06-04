@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { Footer } from "@/components/Footer";
 
 export const Route = createFileRoute("/finished-auctions")({
   component: FinishedAuctions,
@@ -79,6 +80,7 @@ function FinishedAuctions() {
           </div>
         )}
       </main>
+      <Footer />
     </div>
   );
 }
