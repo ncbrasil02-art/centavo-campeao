@@ -529,11 +529,14 @@ export type Database = {
           bid_balance: number | null
           city: string | null
           created_at: string
+          current_page: string | null
           full_name: string | null
           gender: string | null
           id: string
           is_admin: boolean | null
           is_bot: boolean | null
+          is_online: boolean | null
+          last_seen_at: string | null
           state: string | null
           username: string | null
         }
@@ -542,11 +545,14 @@ export type Database = {
           bid_balance?: number | null
           city?: string | null
           created_at?: string
+          current_page?: string | null
           full_name?: string | null
           gender?: string | null
           id: string
           is_admin?: boolean | null
           is_bot?: boolean | null
+          is_online?: boolean | null
+          last_seen_at?: string | null
           state?: string | null
           username?: string | null
         }
@@ -555,11 +561,14 @@ export type Database = {
           bid_balance?: number | null
           city?: string | null
           created_at?: string
+          current_page?: string | null
           full_name?: string | null
           gender?: string | null
           id?: string
           is_admin?: boolean | null
           is_bot?: boolean | null
+          is_online?: boolean | null
+          last_seen_at?: string | null
           state?: string | null
           username?: string | null
         }
@@ -902,6 +911,45 @@ export type Database = {
           },
         ]
       }
+      visitor_sessions: {
+        Row: {
+          city: string | null
+          country: string | null
+          created_at: string | null
+          current_page: string | null
+          id: string
+          ip_address: string | null
+          last_seen_at: string | null
+          session_id: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          city?: string | null
+          country?: string | null
+          created_at?: string | null
+          current_page?: string | null
+          id?: string
+          ip_address?: string | null
+          last_seen_at?: string | null
+          session_id: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          city?: string | null
+          country?: string | null
+          created_at?: string | null
+          current_page?: string | null
+          id?: string
+          ip_address?: string | null
+          last_seen_at?: string | null
+          session_id?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       winners: {
         Row: {
           auction_id: string | null
@@ -1037,6 +1085,7 @@ export type Database = {
           }
       ensure_live_auctions_robot_settings: { Args: never; Returns: undefined }
       get_admin_stats: { Args: never; Returns: Json }
+      get_admin_stats_v2: { Args: never; Returns: Json }
       get_server_time: { Args: never; Returns: string }
       increment_bid_balance: {
         Args: { p_amount: number; p_user_id: string }
@@ -1054,6 +1103,10 @@ export type Database = {
       process_robot_bids_admin: { Args: never; Returns: Json }
       slugify: { Args: { v_text: string }; Returns: string }
       tick_auctions: { Args: never; Returns: Json }
+      track_user_presence: {
+        Args: { p_page: string; p_user_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
