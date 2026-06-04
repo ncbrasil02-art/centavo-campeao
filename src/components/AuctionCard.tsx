@@ -492,12 +492,12 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
                         {timeParts.h}
                       </span>
                     </div>
-                    <span className="text-[10px] font-black text-muted-foreground mt-0.5">HORAS</span>
+                    <span className="text-[9px] font-black text-primary/70 mt-1 uppercase">HORAS</span>
                   </div>
                 )}
                 <div className="flex flex-col items-center">
-                  <div className="bg-card/80 rounded-lg px-2 py-1.5 min-w-[45px] flex items-center justify-center shadow-xl border border-glass-border">
-                    <span className="text-xl font-black text-primary tabular-nums tracking-tighter">
+                  <div className="bg-zinc-900 rounded-lg px-2.5 py-2 min-w-[48px] flex items-center justify-center shadow-2xl border border-primary/20">
+                    <span className="text-2xl font-black text-white tabular-nums tracking-tighter">
                       {timeParts.m}
                     </span>
                   </div>
