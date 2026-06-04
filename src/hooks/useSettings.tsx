@@ -36,7 +36,11 @@ interface SiteSettings {
   marquee_text: string;
   marquee_enabled: boolean;
   demo_auctions_enabled: boolean;
+  pwa_enabled: boolean;
+  android_app_url: string;
+  ios_app_url: string;
 }
+
 
 interface SettingsContextType extends SiteSettings {
   updateSettings: (data: Partial<SiteSettings>) => Promise<void>;
