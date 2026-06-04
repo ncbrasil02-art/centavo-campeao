@@ -867,29 +867,19 @@ function AdminAuctions() {
                     />
                   </div>
 
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label>Disputa entre Robôs</Label>
-                      <p className="text-[10px] text-white/40">Robôs dão lances entre si</p>
-                    </div>
-                    <Switch 
-                      checked={formData.robot_inner_dispute} 
-                      onCheckedChange={v => setFormData({...formData, robot_inner_dispute: v})}
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label>Disputa entre Robôs</Label>
-                      <p className="text-[10px] text-white/40">Robôs dão lances entre si</p>
-                    </div>
-                    <Switch 
-                      checked={formData.robot_inner_dispute} 
-                      onCheckedChange={v => setFormData({...formData, robot_inner_dispute: v})}
-                    />
-                  </div>
-
                   {formData.robot_enabled && (
+                    <div className="space-y-4 pt-4 border-t border-white/10">
+                      <div className="flex items-center justify-between">
+                        <div className="space-y-0.5">
+                          <Label>Disputa Robô vs Robô</Label>
+                          <p className="text-[10px] text-white/40">Robôs dão lances entre si (Disputa Interna)</p>
+                        </div>
+                        <Switch 
+                          checked={formData.robot_inner_dispute} 
+                          onCheckedChange={v => setFormData({...formData, robot_inner_dispute: v})}
+                        />
+                      </div>
+
                     <div className="space-y-4 pt-4 border-t border-white/10">
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
