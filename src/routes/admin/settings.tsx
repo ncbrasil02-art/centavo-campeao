@@ -27,6 +27,7 @@ import {
   VolumeX,
   Mic,
   Zap,
+  Play,
   LayoutTemplate
 } from "lucide-react";
 
