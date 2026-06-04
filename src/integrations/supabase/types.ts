@@ -841,6 +841,7 @@ export type Database = {
             Returns: Json
           }
       ensure_live_auctions_robot_settings: { Args: never; Returns: undefined }
+      get_admin_stats: { Args: never; Returns: Json }
       get_server_time: { Args: never; Returns: string }
       increment_bid_balance: {
         Args: { p_amount: number; p_user_id: string }

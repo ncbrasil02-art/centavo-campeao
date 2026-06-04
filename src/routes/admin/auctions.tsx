@@ -95,40 +95,68 @@ function AdminAuctions() {
   const [formData, setFormData] = useState(initialFormData);
 
   useEffect(() => {
+    fetchInitialData();
+  }, []);
+
+  useEffect(() => {
+    // Realtime subscription for auctions
+    const channel = supabase
+      .channel('admin-auctions-changes')
+      .on('postgres_changes', { 
+        event: '*', 
+        schema: 'public', 
+        table: 'auctions' 
+      }, () => {
+        // Refresh auctions list on any change
+        fetchAuctions();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  useEffect(() => {
     const timer = setTimeout(() => {
-      fetchData();
-    }, 500); // Debounce search
+      fetchAuctions();
+    }, 300); // Optimized debounce
     return () => clearTimeout(timer);
   }, [page, statusFilter, searchTerm]);
 
+  async function fetchInitialData() {
+    try {
+      const { data, error } = await supabase.from("products").select("*").limit(200).order('name');
+      if (error) throw error;
+      setProducts(data || []);
+    } catch (error: any) {
+      console.error("Error fetching initial data:", error);
+    }
+  }
 
-  async function fetchData() {
+  async function fetchAuctions() {
     setLoading(true);
     try {
       let query = supabase
         .from("auctions")
-        .select("*, product:products(*), last_bidder:profiles(username)")
+        .select("*, product:products(id, name, images), last_bidder:profiles(username)")
         .range((page - 1) * auctionsPerPage, page * auctionsPerPage - 1);
       
       if (statusFilter !== "all") {
         query = query.eq("status", statusFilter);
       }
 
-      const [auctionsRes, productsRes] = await Promise.all([
-        query,
-        supabase.from("products").select("*").limit(100)
-      ]);
+      if (searchTerm) {
+        // Since we are joining products, we might want to filter by product name too
+        // But for now let's keep it simple or use a dedicated view/RPC if needed
+        // For now searching by status is the primary admin task
+      }
 
-      if (auctionsRes.error) throw auctionsRes.error;
-      if (productsRes.error) throw productsRes.error;
+      const { data, error } = await query.order('start_time', { ascending: false });
 
-      // Custom sorting for admin panel:
-      // 1. live
-      // 2. pending_audit
-      // 3. confirmed
-      // 4. scheduled
-      // 5. finished
-      // 6. cancelled
+      if (error) throw error;
+
+      // Custom sorting for admin panel priority
       const statusPriority: Record<string, number> = {
         'live': 0,
         'pending_audit': 1,
@@ -138,7 +166,7 @@ function AdminAuctions() {
         'cancelled': 5
       };
 
-      const sortedAuctions = (auctionsRes.data || []).sort((a, b) => {
+      const sortedAuctions = (data || []).sort((a, b) => {
         const priorityA = statusPriority[a.status as string] ?? 10;
         const priorityB = statusPriority[b.status as string] ?? 10;
         
@@ -146,16 +174,14 @@ function AdminAuctions() {
           return priorityA - priorityB;
         }
         
-        // Secondary sort by start_time
         const timeA = a.start_time ? new Date(a.start_time).getTime() : 0;
         const timeB = b.start_time ? new Date(b.start_time).getTime() : 0;
-        return timeA - timeB;
+        return timeB - timeA; // Most recent first for same status
       });
 
       setAuctions(sortedAuctions);
-      setProducts(productsRes.data || []);
     } catch (error: any) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching auctions:", error);
       toast.error(`Erro ao carregar dados: ${error.message || "Erro desconhecido"}`);
     } finally {
       setLoading(false);
@@ -319,7 +345,7 @@ function AdminAuctions() {
       setIsDialogOpen(false);
       setEditingAuction(null);
       setFormData(initialFormData);
-      fetchData();
+      fetchAuctions();
     } catch (error: any) {
       console.error("Error saving auction:", error);
       toast.dismiss(loadingToast);
@@ -333,7 +359,7 @@ function AdminAuctions() {
       const { error } = await supabase.from("auctions").delete().eq("id", id);
       if (error) throw error;
       toast.success("Leilão excluído");
-      fetchData();
+      fetchAuctions();
     } catch (error) {
       console.error("Error deleting auction:", error);
       toast.error("Erro ao excluir leilão");
@@ -386,7 +412,7 @@ function AdminAuctions() {
       const result = data as any;
       if (result.success) {
         toast.success(result.message);
-        fetchData();
+        fetchAuctions();
       } else {
         toast.error(result.message);
       }
@@ -407,7 +433,7 @@ function AdminAuctions() {
       
       if (error) throw error;
       toast.success("Leilão finalizado com sucesso!");
-      fetchData();
+      fetchAuctions();
     } catch (err: any) {
       toast.error(err.message || "Erro ao finalizar leilão");
     } finally {
@@ -424,7 +450,7 @@ function AdminAuctions() {
       
       if (error) throw error;
       toast.success(auction.is_finalizing ? "Finalização cancelada" : "Leilão entrando em fase de finalização");
-      fetchData();
+      fetchAuctions();
     } catch (error) {
       console.error("Error toggling finalize:", error);
       toast.error("Erro ao alterar estado de finalização");
@@ -445,7 +471,7 @@ function AdminAuctions() {
       
       if (error) throw error;
       toast.success("Leilão enviado para auditoria!");
-      fetchData();
+      fetchAuctions();
     } catch (error: any) {
       console.error("Error forcing audit:", error);
       toast.error(`Erro ao encerrar: ${error.message}`);
@@ -523,7 +549,7 @@ function AdminAuctions() {
 
       toast.success(`${auctionInserts.length} leilões agendados com sucesso!`);
       setIsBulkDialogOpen(false);
-      fetchData();
+      fetchAuctions();
     } catch (err: any) {
       toast.error("Erro ao agendar em massa: " + err.message);
     } finally {
@@ -989,9 +1015,9 @@ function AdminAuctions() {
                   .filter(a => a.product?.name?.toLowerCase().includes(searchTerm.toLowerCase()))
                   .map((auction) => (
                   <TableRow key={auction.id} className={`border-white/5 transition-colors ${
-                    auction.status === 'live' ? 'bg-green-500/10 hover:bg-green-500/15' : 
-                    auction.status === 'pending_audit' ? 'bg-red-500/10 hover:bg-red-500/15' :
-                    auction.status === 'confirmed' ? 'bg-amber-500/10 hover:bg-amber-500/15' :
+                    auction.status === 'live' ? 'bg-green-600/20 hover:bg-green-600/30 border-l-4 border-l-green-500' : 
+                    auction.status === 'pending_audit' ? 'bg-red-600/20 hover:bg-red-600/30 border-l-4 border-l-red-500' :
+                    auction.status === 'confirmed' ? 'bg-amber-600/20 hover:bg-amber-600/30 border-l-4 border-l-amber-500' :
                     'hover:bg-white/[0.02]'
                   }`}>
                     <TableCell>
