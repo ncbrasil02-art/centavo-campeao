@@ -17,7 +17,7 @@ export function Navbar() {
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { site_name, logo_url, logo_height, logo_height_mobile, logo_padding_x, logo_padding_y, welcome_bids } = useSettings();
+  const { marquee_text, marquee_enabled, site_name, logo_url, logo_height, logo_height_mobile, logo_padding_x, logo_padding_y, welcome_bids } = useSettings();
   const { getAdjustedNow, synced, formatBrasiliaTime } = useTimeSync();
   const [currentTimeStr, setCurrentTimeStr] = useState<string>("--:--:--");
   const navigate = useNavigate();
