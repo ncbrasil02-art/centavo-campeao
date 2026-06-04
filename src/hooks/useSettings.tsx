@@ -32,7 +32,9 @@ interface SiteSettings {
   support_whatsapp: string;
   sound_enabled: boolean;
   narration_enabled: boolean;
+  welcome_bids: number;
 }
+
 
 const SettingsContext = createContext<SiteSettings | null>(null);
 
@@ -80,7 +82,9 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
       support_whatsapp: "",
       sound_enabled: true,
       narration_enabled: true,
+      welcome_bids: 0,
     };
+
   });
 
   // Apply colors helper
@@ -251,7 +255,9 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
             support_whatsapp: data.support_whatsapp || "",
             sound_enabled: data.sound_enabled ?? true,
             narration_enabled: data.narration_enabled ?? true,
+            welcome_bids: data.welcome_bids || 0,
           };
+
           
           setSettings(fetchedSettings);
           localStorage.setItem('site_settings', JSON.stringify(fetchedSettings));
@@ -304,7 +310,9 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
               support_whatsapp: newData.support_whatsapp || prev.support_whatsapp,
               sound_enabled: newData.sound_enabled ?? prev.sound_enabled,
               narration_enabled: newData.narration_enabled ?? prev.narration_enabled,
+              welcome_bids: newData.welcome_bids ?? prev.welcome_bids,
             };
+
             updateMetaTags(updated);
             injectScripts(updated.ga_id, updated.fb_pixel_id);
             applySettingsToDOM(updated);
@@ -379,7 +387,9 @@ export const useSettings = () => {
       support_whatsapp: "",
       sound_enabled: true,
       narration_enabled: true,
+      welcome_bids: 0,
     };
+
   }
   return context;
 };
