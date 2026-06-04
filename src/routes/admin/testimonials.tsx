@@ -40,8 +40,12 @@ function AdminTestimonials() {
     content: "",
     avatar_url: "",
     rating: 5,
-    active: true
+    active: true,
+    status: "approved",
+    media_url: "",
+    media_type: "text"
   });
+
 
   useEffect(() => {
     fetchTestimonials();
@@ -89,7 +93,8 @@ function AdminTestimonials() {
 
       setIsDialogOpen(false);
       setEditingTestimonial(null);
-      setFormData({ name: "", content: "", avatar_url: "", rating: 5, active: true });
+      setFormData({ name: "", content: "", avatar_url: "", rating: 5, active: true, status: "approved", media_url: "", media_type: "text" });
+
       fetchTestimonials();
     } catch (error) {
       console.error("Error saving testimonial:", error);
@@ -117,8 +122,12 @@ function AdminTestimonials() {
       content: t.content,
       avatar_url: t.avatar_url || "",
       rating: t.rating,
-      active: t.active
+      active: t.active,
+      status: t.status || "approved",
+      media_url: t.media_url || "",
+      media_type: t.media_type || "text"
     });
+
     setIsDialogOpen(true);
   }
 
@@ -138,7 +147,7 @@ function AdminTestimonials() {
             setIsDialogOpen(open);
             if (!open) {
               setEditingTestimonial(null);
-              setFormData({ name: "", content: "", avatar_url: "", rating: 5, active: true });
+              setFormData({ name: "", content: "", avatar_url: "", rating: 5, active: true, status: "approved", media_url: "", media_type: "text" });
             }
           }}>
             <DialogTrigger asChild>
