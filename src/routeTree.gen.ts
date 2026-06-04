@@ -9,8 +9,10 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermsOfUseRouteImport } from './routes/terms-of-use'
 import { Route as RankingRouteImport } from './routes/ranking'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as PackagesRouteImport } from './routes/packages'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as FinishedAuctionsRouteImport } from './routes/finished-auctions'
@@ -32,6 +34,11 @@ import { Route as AdminClaimsRouteImport } from './routes/admin/claims'
 import { Route as AdminBannersRouteImport } from './routes/admin/banners'
 import { Route as AdminAuctionsRouteImport } from './routes/admin/auctions'
 
+const TermsOfUseRoute = TermsOfUseRouteImport.update({
+  id: '/terms-of-use',
+  path: '/terms-of-use',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RankingRoute = RankingRouteImport.update({
   id: '/ranking',
   path: '/ranking',
@@ -40,6 +47,11 @@ const RankingRoute = RankingRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PackagesRoute = PackagesRouteImport.update({
@@ -150,8 +162,10 @@ export interface FileRoutesByFullPath {
   '/finished-auctions': typeof FinishedAuctionsRoute
   '/how-it-works': typeof HowItWorksRoute
   '/packages': typeof PackagesRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/profile': typeof ProfileRoute
   '/ranking': typeof RankingRoute
+  '/terms-of-use': typeof TermsOfUseRoute
   '/admin/auctions': typeof AdminAuctionsRoute
   '/admin/banners': typeof AdminBannersRoute
   '/admin/claims': typeof AdminClaimsRoute
@@ -173,8 +187,10 @@ export interface FileRoutesByTo {
   '/finished-auctions': typeof FinishedAuctionsRoute
   '/how-it-works': typeof HowItWorksRoute
   '/packages': typeof PackagesRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/profile': typeof ProfileRoute
   '/ranking': typeof RankingRoute
+  '/terms-of-use': typeof TermsOfUseRoute
   '/admin/auctions': typeof AdminAuctionsRoute
   '/admin/banners': typeof AdminBannersRoute
   '/admin/claims': typeof AdminClaimsRoute
@@ -198,8 +214,10 @@ export interface FileRoutesById {
   '/finished-auctions': typeof FinishedAuctionsRoute
   '/how-it-works': typeof HowItWorksRoute
   '/packages': typeof PackagesRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/profile': typeof ProfileRoute
   '/ranking': typeof RankingRoute
+  '/terms-of-use': typeof TermsOfUseRoute
   '/admin/auctions': typeof AdminAuctionsRoute
   '/admin/banners': typeof AdminBannersRoute
   '/admin/claims': typeof AdminClaimsRoute
@@ -224,8 +242,10 @@ export interface FileRouteTypes {
     | '/finished-auctions'
     | '/how-it-works'
     | '/packages'
+    | '/privacy-policy'
     | '/profile'
     | '/ranking'
+    | '/terms-of-use'
     | '/admin/auctions'
     | '/admin/banners'
     | '/admin/claims'
@@ -247,8 +267,10 @@ export interface FileRouteTypes {
     | '/finished-auctions'
     | '/how-it-works'
     | '/packages'
+    | '/privacy-policy'
     | '/profile'
     | '/ranking'
+    | '/terms-of-use'
     | '/admin/auctions'
     | '/admin/banners'
     | '/admin/claims'
@@ -271,8 +293,10 @@ export interface FileRouteTypes {
     | '/finished-auctions'
     | '/how-it-works'
     | '/packages'
+    | '/privacy-policy'
     | '/profile'
     | '/ranking'
+    | '/terms-of-use'
     | '/admin/auctions'
     | '/admin/banners'
     | '/admin/claims'
@@ -296,14 +320,23 @@ export interface RootRouteChildren {
   FinishedAuctionsRoute: typeof FinishedAuctionsRoute
   HowItWorksRoute: typeof HowItWorksRoute
   PackagesRoute: typeof PackagesRoute
+  PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   ProfileRoute: typeof ProfileRoute
   RankingRoute: typeof RankingRoute
+  TermsOfUseRoute: typeof TermsOfUseRoute
   AuctionsIdRoute: typeof AuctionsIdRoute
   SitemapXmlRoute: typeof SitemapXmlRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terms-of-use': {
+      id: '/terms-of-use'
+      path: '/terms-of-use'
+      fullPath: '/terms-of-use'
+      preLoaderRoute: typeof TermsOfUseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ranking': {
       id: '/ranking'
       path: '/ranking'
@@ -316,6 +349,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/packages': {
@@ -500,8 +540,10 @@ const rootRouteChildren: RootRouteChildren = {
   FinishedAuctionsRoute: FinishedAuctionsRoute,
   HowItWorksRoute: HowItWorksRoute,
   PackagesRoute: PackagesRoute,
+  PrivacyPolicyRoute: PrivacyPolicyRoute,
   ProfileRoute: ProfileRoute,
   RankingRoute: RankingRoute,
+  TermsOfUseRoute: TermsOfUseRoute,
   AuctionsIdRoute: AuctionsIdRoute,
   SitemapXmlRoute: SitemapXmlRoute,
 }
