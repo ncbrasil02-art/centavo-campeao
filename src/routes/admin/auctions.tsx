@@ -197,11 +197,12 @@ function AdminAuctions() {
           .lte("start_time", endOfDay.toISOString());
       }
 
-      const { data, error } = await query
+      const { data, error, count } = await query
         .order('start_time', { ascending: false })
         .range((page - 1) * auctionsPerPage, page * auctionsPerPage - 1);
 
       if (error) throw error;
+      if (count !== null) setTotalCount(count);
 
       // Custom sorting for admin panel priority
       const statusPriority: Record<string, number> = {
