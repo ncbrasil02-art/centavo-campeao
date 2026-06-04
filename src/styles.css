@@ -23,7 +23,7 @@ aside:has(a[href*="lovable.dev"]) {
   --popover-foreground: oklch(0.984 0.003 247.858);
   --primary: #f58c14; /* Cor primária atualizada */
   --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.208 0.042 265.755);
+  --secondary: #1d5bd7;
   --secondary-foreground: oklch(0.984 0.003 247.858);
   --muted: oklch(0.2 0.03 260);
   --muted-foreground: oklch(0.704 0.04 256.788);
@@ -59,7 +59,7 @@ aside:has(a[href*="lovable.dev"]) {
   --popover-foreground: oklch(0.984 0.003 247.858);
   --primary: #f58c14; /* Laranja padrão em vez de roxo */
   --primary-foreground: oklch(0.129 0.042 264.695);
-  --secondary: oklch(0.208 0.042 265.755);
+  --secondary: #1d5bd7;
   --secondary-foreground: oklch(0.984 0.003 247.858);
   --muted: oklch(0.2 0.03 260);
   --muted-foreground: oklch(0.704 0.04 256.788);
