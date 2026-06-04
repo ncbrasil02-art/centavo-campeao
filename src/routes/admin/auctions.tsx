@@ -168,7 +168,7 @@ function AdminAuctions() {
         query = query.eq("status", statusFilter);
       }
 
-      if (searchTerm) {
+      if (searchTerm.trim()) {
         // Filtragem por nome do produto
         const { data: matchedProducts } = await supabase
           .from("products")
