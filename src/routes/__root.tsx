@@ -142,7 +142,9 @@ function RootComponent() {
         <AuctionNarrator />
         <FloatingControls />
         <PromotionalMessages />
+        <PWAInstallPrompt />
         <Outlet />
+
         <Toaster position="top-right" richColors />
       </SettingsProvider>
     </QueryClientProvider>
