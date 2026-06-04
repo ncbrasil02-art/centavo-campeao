@@ -614,14 +614,6 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
               {auction.product?.name || "Produto"}
             </h3>
           </Link>
-          {!isFinished && !isScheduled && (
-            <div className="flex justify-start mb-2">
-              <span className="text-[9px] font-black text-primary/80 uppercase tracking-widest animate-pulse italic bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20">
-                {incentivePhrase}
-              </span>
-            </div>
-          )}
-OLD_CONTENT_IS_REPLACED_BELOW_HERE
 
           <div className="flex items-center gap-2">
             <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
@@ -801,11 +793,14 @@ OLD_CONTENT_IS_REPLACED_BELOW_HERE
           )}
         </Button>
 
-        {!isFinished && (
-          <p className="text-[10px] text-center text-muted-foreground/30 uppercase tracking-[0.2em] font-bold mt-2 italic">
-            {incentivePhrase.split(' ').slice(1).join(' ')}
-          </p>
+        {!isFinished && !isScheduled && (
+          <div className="flex justify-center mt-2">
+            <span className="text-[10px] font-black text-primary/60 uppercase tracking-widest animate-pulse italic bg-primary/5 px-3 py-1 rounded-full border border-primary/10">
+              {incentivePhrase}
+            </span>
+          </div>
         )}
+
       </div>
     </Card>
   );
