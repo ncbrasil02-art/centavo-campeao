@@ -116,7 +116,43 @@ function RootShell({ children }: { children: React.ReactNode }) {
       <head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="LanceCerto" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                const saved = localStorage.getItem('site_settings');
+                if (saved) {
+                  const settings = JSON.parse(saved);
+                  if (settings.theme_mode === 'dark') {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                  const root = document.documentElement.style;
+                  if (settings.primary_color) root.setProperty('--primary', settings.primary_color);
+                  if (settings.secondary_color) root.setProperty('--secondary', settings.secondary_color);
+                  if (settings.font_color_primary) root.setProperty('--foreground', settings.font_color_primary);
+                  if (settings.font_color_secondary) root.setProperty('--muted-foreground', settings.font_color_secondary);
+                  if (settings.card_background_color) {
+                    root.setProperty('--card', settings.card_background_color);
+                    root.setProperty('--glass', settings.card_background_color + '66');
+                  }
+                  if (settings.block_background_color) root.setProperty('--muted', settings.block_background_color);
+                  if (settings.page_background_color) root.setProperty('--background', settings.page_background_color);
+                  if (settings.border_color) {
+                    root.setProperty('--border', settings.border_color);
+                    root.setProperty('--glass-border', settings.border_color + '33');
+                  }
+                  if (settings.meta_title || settings.site_name) {
+                    document.title = settings.meta_title || settings.site_name;
+                  }
+                }
+              } catch (e) {
+                console.error('Flicker fix error:', e);
+              }
+            `,
+          }}
+        />
         <HeadContent />
       </head>
 
