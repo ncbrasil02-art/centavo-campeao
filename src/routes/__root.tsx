@@ -128,7 +128,9 @@ import { Heartbeat } from "@/components/Heartbeat";
 import { AuctionNarrator } from "@/components/AuctionNarrator";
 import { FloatingControls } from "@/components/FloatingControls";
 import { PromotionalMessages } from "@/components/PromotionalMessages";
+import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import { Toaster } from "@/components/ui/sonner";
+
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
