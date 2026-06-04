@@ -23,21 +23,23 @@ export function NarrationSettings() {
   const [localMarqueeEnabled, setLocalMarqueeEnabled] = useState(marquee_enabled || false);
 
   useEffect(() => {
-    fetchPhrases();
+    fetchAllData();
   }, []);
 
-  useEffect(() => {
-    setLocalMarqueeText(marquee_text || "");
-    setLocalMarqueeEnabled(marquee_enabled || false);
-  }, [marquee_text, marquee_enabled]);
-
-  async function fetchPhrases() {
-    const { data } = await supabase
-      .from("narration_phrases")
-      .select("*")
-      .order("created_at", { ascending: false });
-    if (data) setPhrases(data);
+  async function fetchAllData() {
+    setLoading(true);
+    const [narrationRes, appPhrasesRes, futureRes] = await Promise.all([
+      supabase.from("narration_phrases").select("*").order("created_at", { ascending: false }),
+      supabase.from("app_phrases").select("*").eq("type", "incentive").order("created_at", { ascending: false }),
+      supabase.from("future_auction_templates").select("*").order("created_at", { ascending: false })
+    ]);
+    
+    if (narrationRes.data) setPhrases(narrationRes.data);
+    if (appPhrasesRes.data) setAppPhrases(appPhrasesRes.data);
+    if (futureRes.data) setFutureTemplates(futureRes.data);
+    setLoading(false);
   }
+
 
   async function handleAddPhrase() {
     if (!newPhrase.trim()) return;
