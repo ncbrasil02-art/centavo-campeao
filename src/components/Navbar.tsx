@@ -315,5 +315,6 @@ export function Navbar() {
         )}
       </AnimatePresence>
     </nav>
+    </>
   );
 }

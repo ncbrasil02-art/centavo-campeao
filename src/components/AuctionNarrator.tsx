@@ -5,16 +5,40 @@ import { useSettings } from "@/hooks/useSettings";
 export function AuctionNarrator() {
   const { site_name, narration_enabled } = useSettings();
   const spokenRef = useRef<Set<string>>(new Set());
+  const lastRandomNarrationRef = useRef<number>(0);
 
   useEffect(() => {
     if (!narration_enabled) return;
 
-    const checkAuctions = async () => {
+    const checkAuctionsAndEncourage = async () => {
+      // 1. Check for upcoming auctions
       const { data: auctions } = await supabase
         .from("auctions")
         .select("id, product:products(name), start_time")
         .eq("status", "scheduled")
         .gt("start_time", new Date().toISOString());
+
+      // 2. Check for active auctions to say random phrases
+      const { data: activeAuctions } = await supabase
+        .from("auctions")
+        .select("id")
+        .eq("status", "active");
+
+      const now = new Date().getTime();
+
+      // Random encouragement every 3 minutes if there are active auctions
+      if (activeAuctions && activeAuctions.length > 0 && (now - lastRandomNarrationRef.current) > 180000) {
+        const { data: phrases } = await supabase
+          .from("narration_phrases")
+          .select("phrase")
+          .eq("is_active", true);
+
+        if (phrases && phrases.length > 0) {
+          const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)].phrase;
+          speak(randomPhrase);
+          lastRandomNarrationRef.current = now;
+        }
+      }
 
       if (!auctions) return;
 
@@ -57,7 +81,7 @@ export function AuctionNarrator() {
       window.speechSynthesis.speak(utterance);
     };
 
-    const interval = setInterval(checkAuctions, 10000); // Check every 10 seconds
+    const interval = setInterval(checkAuctionsAndEncourage, 10000); // Check every 10 seconds
     return () => clearInterval(interval);
   }, [narration_enabled, site_name]);
 
