@@ -155,7 +155,11 @@ function AdminSettings() {
           marquee_text: publicData.marquee_text || "",
           marquee_enabled: publicData.marquee_enabled ?? true,
           demo_auctions_enabled: publicData.demo_auctions_enabled ?? false,
+          pwa_enabled: publicData.pwa_enabled ?? true,
+          android_app_url: publicData.android_app_url || "",
+          ios_app_url: publicData.ios_app_url || "",
         });
+
 
       }
     } catch (error) {
