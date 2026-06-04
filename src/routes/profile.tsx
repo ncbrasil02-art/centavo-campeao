@@ -110,6 +110,7 @@ function ProfilePage() {
           username,
           full_name: fullName,
           gender,
+          phone,
         })
         .eq("id", session.user.id);
 
