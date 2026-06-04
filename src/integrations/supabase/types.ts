@@ -537,6 +537,7 @@ export type Database = {
           is_bot: boolean | null
           is_online: boolean | null
           last_seen_at: string | null
+          phone: string | null
           state: string | null
           username: string | null
         }
@@ -553,6 +554,7 @@ export type Database = {
           is_bot?: boolean | null
           is_online?: boolean | null
           last_seen_at?: string | null
+          phone?: string | null
           state?: string | null
           username?: string | null
         }
@@ -569,6 +571,7 @@ export type Database = {
           is_bot?: boolean | null
           is_online?: boolean | null
           last_seen_at?: string | null
+          phone?: string | null
           state?: string | null
           username?: string | null
         }
