@@ -86,6 +86,7 @@ function AdminSettings() {
     welcome_bids: 0,
     marquee_text: "",
     marquee_enabled: true,
+    demo_auctions_enabled: false,
   });
 
 
@@ -148,6 +149,7 @@ function AdminSettings() {
           welcome_bids: publicData.welcome_bids || 0,
           marquee_text: publicData.marquee_text || "",
           marquee_enabled: publicData.marquee_enabled ?? true,
+          demo_auctions_enabled: publicData.demo_auctions_enabled ?? false,
         });
 
       }
@@ -896,7 +898,30 @@ function AdminSettings() {
                     className="bg-white/5 border-white/10 h-12"
                   />
                   <p className="text-[10px] text-white/40">Quantidade de lances que o usuário ganha automaticamente ao criar uma conta.</p>
+            <Card className="bg-white/5 border-white/10 overflow-hidden backdrop-blur-md">
+              <CardHeader className="border-b border-white/5 bg-white/[0.02]">
+                <div className="flex items-center gap-2">
+                  <Play className="w-5 h-5 text-green-500" />
+                  <div>
+                    <CardTitle className="text-lg">Modo Demonstração</CardTitle>
+                    <CardDescription className="text-white/40">Leilões simulados na home</CardDescription>
+                  </div>
                 </div>
+              </CardHeader>
+              <CardContent className="p-6 space-y-6">
+                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10">
+                  <div className="space-y-0.5">
+                    <Label>Ativar Demonstração</Label>
+                    <p className="text-[10px] text-white/40">Exibir leilões simulados na página inicial</p>
+                  </div>
+                  <Switch 
+                    checked={settings.demo_auctions_enabled} 
+                    onCheckedChange={(val) => setSettings({...settings, demo_auctions_enabled: val})}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
               </CardContent>
             </Card>
             <Card className="bg-white/5 border-white/10 overflow-hidden backdrop-blur-md">
