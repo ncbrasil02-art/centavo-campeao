@@ -358,6 +358,7 @@ function Index() {
           </section>
 
           {show_winners_ranking && (
+
             <section className="py-20 bg-muted">
 
             <div className="container mx-auto px-4">
@@ -393,7 +394,8 @@ function Index() {
                 )}
               </div>
             </div>
-          </section>
+          )}
+
 
           {show_finished_auctions && finishedAuctions.length > 0 && (
             <section className="py-20 bg-muted/50 border-y border-border">
