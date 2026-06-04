@@ -55,7 +55,9 @@ function AdminAuctions() {
   const [viewingBidsAuction, setViewingBidsAuction] = useState<any>(null);
   const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
   const [selectedAuctions, setSelectedAuctions] = useState<string[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
   const auctionsPerPage = 50; 
+
 
 
   const { formatBrasiliaTime } = useTimeSync();
