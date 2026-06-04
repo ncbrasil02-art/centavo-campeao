@@ -7,7 +7,7 @@ import { TestimonialsSection } from "@/components/TestimonialsSection";
 import { useSettings } from "@/hooks/useSettings";
 import { AuctionCard } from "@/components/AuctionCard";
 import { GlobalActivityChat } from "@/components/GlobalActivityChat";
-import { MessageSquare, X, ArrowRight, Zap, ShieldCheck, Heart, User, ArrowUpRight } from "lucide-react";
+import { MessageSquare, X, ArrowRight, Zap, ShieldCheck, Heart, User, ArrowUpRight, Star, Quote } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
@@ -16,12 +16,12 @@ import { Footer } from "@/components/Footer";
 import { FALLBACK_USER_IMAGE, getFallbackAvatarUrl } from "@/lib/constants";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
-import { Star, Quote } from "lucide-react";
 
 function TestimonialCard({ name, content, avatarUrl, rating }: { name: string, content: string, avatarUrl: string, rating: number }) {
   return (
