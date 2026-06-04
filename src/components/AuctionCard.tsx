@@ -117,6 +117,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             .replace('{product}', auction.product?.name || 'produto')
             .replace('{date}', dateStr)
             .replace('{time}', timeStr);
+
           
           allPhrases.push(phrase);
         });
