@@ -400,12 +400,34 @@ export type Database = {
         }
         Relationships: []
       }
+      future_auction_templates: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          template_text: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          template_text: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          template_text?: string
+        }
+        Relationships: []
+      }
       narration_phrases: {
         Row: {
           category: string
           created_at: string | null
           id: string
           is_active: boolean | null
+          mention_future_auctions: boolean | null
           phrase: string
           updated_at: string | null
         }
@@ -414,6 +436,7 @@ export type Database = {
           created_at?: string | null
           id?: string
           is_active?: boolean | null
+          mention_future_auctions?: boolean | null
           phrase: string
           updated_at?: string | null
         }
@@ -422,6 +445,7 @@ export type Database = {
           created_at?: string | null
           id?: string
           is_active?: boolean | null
+          mention_future_auctions?: boolean | null
           phrase?: string
           updated_at?: string | null
         }
