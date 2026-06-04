@@ -109,7 +109,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       if (futureAuctionsRes.data && futureAuctionsRes.data.length > 0 && templatesRes.data && templatesRes.data.length > 0) {
         futureAuctionsRes.data.forEach(auction => {
           const template = templatesRes.data![Math.floor(Math.random() * templatesRes.data!.length)].template_text;
-          const startDate = new Date(auction.start_time);
+          const startDate = new Date(auction.start_time || "");
           const dateStr = startDate.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: '2-digit' });
           const timeStr = startDate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
           
