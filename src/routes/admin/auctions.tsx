@@ -55,7 +55,9 @@ function AdminAuctions() {
   const [viewingBidsAuction, setViewingBidsAuction] = useState<any>(null);
   const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
   const [selectedAuctions, setSelectedAuctions] = useState<string[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
   const auctionsPerPage = 50; 
+
 
 
   const { formatBrasiliaTime } = useTimeSync();
@@ -161,17 +163,15 @@ function AdminAuctions() {
             username,
             phone
           )
-        `, { count: 'exact' })
-        .range((page - 1) * auctionsPerPage, page * auctionsPerPage - 1);
+        `, { count: 'exact' });
 
       
       if (statusFilter !== "all") {
         query = query.eq("status", statusFilter);
       }
 
-      if (searchTerm) {
-        // Filtragem direta no auctions baseada no product_id se possível,
-        // ou buscamos os produtos primeiro. Para manter a performance:
+      if (searchTerm.trim()) {
+        // Filtragem por nome do produto
         const { data: matchedProducts } = await supabase
           .from("products")
           .select("id")
@@ -197,9 +197,12 @@ function AdminAuctions() {
           .lte("start_time", endOfDay.toISOString());
       }
 
-      const { data, error } = await query.order('start_time', { ascending: false });
+      const { data, error, count } = await query
+        .order('start_time', { ascending: false })
+        .range((page - 1) * auctionsPerPage, page * auctionsPerPage - 1);
 
       if (error) throw error;
+      if (count !== null) setTotalCount(count);
 
       // Custom sorting for admin panel priority
       const statusPriority: Record<string, number> = {
@@ -749,7 +752,7 @@ function AdminAuctions() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
             <h1 className="text-3xl font-black italic uppercase tracking-tighter">
-              Gerenciar <span className="text-primary">Leilões</span>
+              Gerenciar <span className="text-primary">Leilões</span> ({totalCount})
             </h1>
             <p className="text-white/40">Controle todos os leilões ativos e agendados</p>
           </div>
@@ -777,13 +780,30 @@ function AdminAuctions() {
               <Calendar className="w-4 h-4 mr-2" /> Agendamento em Massa
             </Button>
 
-            <div className="relative flex-1 md:w-64">
-              <Input 
-                placeholder="Buscar produto..." 
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="bg-white/5 border-white/10 h-10 pr-10"
-              />
+            <div className="relative flex-1 md:w-64 flex gap-2">
+              <div className="relative flex-1">
+                <Input 
+                  placeholder="Buscar produto..." 
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="bg-white/5 border-white/10 h-10 pr-10"
+                />
+              </div>
+              {(searchTerm || statusFilter !== "all" || dateFilter) && (
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-10 w-10 text-white/20 hover:text-white"
+                  onClick={() => {
+                    setSearchTerm("");
+                    setStatusFilter("all");
+                    setDateFilter("");
+                    setPage(1);
+                  }}
+                >
+                  <RotateCcw className="w-4 h-4" />
+                </Button>
+              )}
             </div>
             <div className="relative">
               <Input 
