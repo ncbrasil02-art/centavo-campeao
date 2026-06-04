@@ -511,20 +511,20 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
                       </span>
                     </div>
                     {timeLeft < 60 && (
-                      <div className="bg-card/60 rounded-lg px-1.5 py-1.5 flex items-end shadow-xl border border-glass-border">
-                        <span className="text-sm font-black text-primary/80 tabular-nums">
+                      <div className="bg-zinc-800 rounded-lg px-1.5 py-2 flex items-end shadow-2xl border border-primary/10">
+                        <span className="text-sm font-black text-primary tabular-nums">
                           ,{timeParts.ms}
                         </span>
                       </div>
                     )}
                   </div>
-                  <span className="text-[10px] font-black text-muted-foreground mt-0.5">SEG</span>
+                  <span className="text-[9px] font-black text-primary/70 mt-1 uppercase">SEG</span>
                 </div>
               </div>
               <div className="flex flex-col items-center gap-1">
-                <div className="flex items-center gap-2 px-3 py-0.5 rounded-full bg-glass/20 border border-glass-border">
-                  <Calendar className="w-2.5 h-2.5 text-muted-foreground" />
-                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-sm shadow-inner">
+                  <Calendar className="w-3 h-3 text-primary" />
+                  <span className="text-[10px] font-black text-white uppercase tracking-widest drop-shadow-sm">
                     {new Date(auction.start_time).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })} às {new Date(auction.start_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
