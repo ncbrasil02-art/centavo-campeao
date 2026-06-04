@@ -99,6 +99,25 @@ function AdminAuctions() {
   }, []);
 
   useEffect(() => {
+    // Realtime subscription for auctions
+    const channel = supabase
+      .channel('admin-auctions-changes')
+      .on('postgres_changes', { 
+        event: '*', 
+        schema: 'public', 
+        table: 'auctions' 
+      }, () => {
+        // Refresh auctions list on any change
+        fetchAuctions();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  useEffect(() => {
     const timer = setTimeout(() => {
       fetchAuctions();
     }, 300); // Optimized debounce
