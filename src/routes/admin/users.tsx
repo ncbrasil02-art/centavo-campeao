@@ -285,7 +285,6 @@ function AdminUsersPage() {
                       </div>
                     </TableCell>
                     <TableCell>
-                    <TableCell>
                       <div className="flex flex-col">
                         <span className="text-[10px] text-white/40 break-all max-w-[150px]">{u.email || "---"}</span>
                         {u.phone && (
