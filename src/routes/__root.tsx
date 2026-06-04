@@ -138,7 +138,9 @@ import { AuctionNarrator } from "@/components/AuctionNarrator";
 import { FloatingControls } from "@/components/FloatingControls";
 import { PromotionalMessages } from "@/components/PromotionalMessages";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
+import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { Toaster } from "@/components/ui/sonner";
+
 
 
 function RootComponent() {
