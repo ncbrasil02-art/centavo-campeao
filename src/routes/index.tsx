@@ -361,6 +361,7 @@ function Index() {
           {show_winners_ranking && (
 
 
+
             <section className="py-20 bg-muted">
 
             <div className="container mx-auto px-4">
@@ -398,6 +399,7 @@ function Index() {
             </div>
           </section>
           )}
+
 
 
 
