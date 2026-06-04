@@ -137,6 +137,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <SettingsProvider>
         <Heartbeat />
+        <AuctionNarrator />
         <FloatingControls />
         <PromotionalMessages />
         <Outlet />
