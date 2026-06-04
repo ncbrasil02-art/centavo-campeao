@@ -616,14 +616,6 @@ OLD_CONTENT_IS_REPLACED_BELOW_HERE
               R$ {auction.product?.market_value?.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) || "0,00"}
             </span>
           </div>
-          {!isFinished && !isScheduled && (
-            <div className="flex items-center gap-1.5 mt-1.5">
-              <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.8)]"></div>
-              <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-                {activeWatchers} pessoas disputando agora
-              </span>
-            </div>
-          )}
         </div>
 
         <div className="relative space-y-2">
