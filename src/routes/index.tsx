@@ -359,46 +359,42 @@ function Index() {
           </section>
 
           {show_winners_ranking && (
-
-
-
             <section className="py-20 bg-muted">
+              <div className="container mx-auto px-4">
+                <div className="text-center mb-16">
+                  <Badge variant="outline" className="mb-4 border-primary/30 bg-primary/10 text-primary uppercase">GALERIA DE HONRA</Badge>
+                  <h2 className="text-4xl font-black tracking-tight text-foreground mb-4 italic uppercase">Ranking de <span className="text-primary">Ganhadores</span></h2>
+                  <p className="text-muted-foreground">Pessoas reais, economias reais. Veja quem já levou o prêmio para casa esta semana.</p>
+                  <Button variant="link" className="text-primary font-black italic uppercase text-xs mt-4" asChild>
+                    <Link to="/ranking">Ver Ranking Completo <ArrowUpRight className="ml-1 w-3 h-3" /></Link>
+                  </Button>
+                </div>
 
-            <div className="container mx-auto px-4">
-              <div className="text-center mb-16">
-                <Badge variant="outline" className="mb-4 border-primary/30 bg-primary/10 text-primary uppercase">GALERIA DE HONRA</Badge>
-                <h2 className="text-4xl font-black tracking-tight text-foreground mb-4 italic uppercase">Ranking de <span className="text-primary">Ganhadores</span></h2>
-                <p className="text-muted-foreground">Pessoas reais, economias reais. Veja quem já levou o prêmio para casa esta semana.</p>
-                <Button variant="link" className="text-primary font-black italic uppercase text-xs mt-4" asChild>
-                  <Link to="/ranking">Ver Ranking Completo <ArrowUpRight className="ml-1 w-3 h-3" /></Link>
-                </Button>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {winners.length > 0 ? (
+                    winners.map((winner) => (
+                      <WinnerCard 
+                        key={winner.id}
+                        name={winner.profile?.full_name || winner.profile?.username || "Ganhador"}
+                        product={winner.auction?.product?.name || "Produto"}
+                        price={`R$ ${Number(winner.final_price).toFixed(2)}`}
+                        saving={`${winner.savings_percentage}%`}
+                        avatarUrl={winner.profile?.avatar_url}
+                        productImage={winner.auction?.product?.image}
+                      />
+                    ))
+                  ) : (
+                    <>
+                      <WinnerCard name="Mateus Oliveira" product="iPhone 15 Pro Max" price="R$ 142,50" saving="98%" productImage="https://images.unsplash.com/photo-1696446701796-da61225697cc?auto=format&fit=crop&q=80&w=400" />
+                      <WinnerCard name="Juliana Costa" product="PlayStation 5 Slim" price="R$ 89,12" saving="97%" productImage="https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?auto=format&fit=crop&q=80&w=400" />
+                      <WinnerCard name="Ricardo Silva" product="MacBook Air M3" price="R$ 210,00" saving="96%" productImage="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&q=80&w=400" />
+                    </>
+                  )}
+                </div>
               </div>
-
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {winners.length > 0 ? (
-                  winners.map((winner) => (
-                    <WinnerCard 
-                      key={winner.id}
-                      name={winner.profile?.full_name || winner.profile?.username || "Ganhador"}
-                      product={winner.auction?.product?.name || "Produto"}
-                      price={`R$ ${Number(winner.final_price).toFixed(2)}`}
-                      saving={`${winner.savings_percentage}%`}
-                      avatarUrl={winner.profile?.avatar_url}
-                      productImage={winner.auction?.product?.image}
-                    />
-                  ))
-                ) : (
-                  <>
-                    <WinnerCard name="Mateus Oliveira" product="iPhone 15 Pro Max" price="R$ 142,50" saving="98%" productImage="https://images.unsplash.com/photo-1696446701796-da61225697cc?auto=format&fit=crop&q=80&w=400" />
-                    <WinnerCard name="Juliana Costa" product="PlayStation 5 Slim" price="R$ 89,12" saving="97%" productImage="https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?auto=format&fit=crop&q=80&w=400" />
-                    <WinnerCard name="Ricardo Silva" product="MacBook Air M3" price="R$ 210,00" saving="96%" productImage="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&q=80&w=400" />
-                  </>
-                )}
-              </div>
-            </div>
-          </section>
+            </section>
           )}
+
 
 
 
