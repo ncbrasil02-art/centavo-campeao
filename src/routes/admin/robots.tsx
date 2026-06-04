@@ -47,7 +47,7 @@ function AdminRobotsPage() {
           product:products(name),
           robot_settings(*)
         `)
-        .eq("status", "live");
+        .in("status", ["live", "scheduled"]);
       
       if (error) throw error;
       
