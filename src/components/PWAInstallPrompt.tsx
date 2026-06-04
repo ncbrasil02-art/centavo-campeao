@@ -35,7 +35,13 @@ export function PWAInstallPrompt() {
       return () => clearTimeout(timer);
     }
 
-    return () => window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    const handleShowPrompt = () => setShowPrompt(true);
+    window.addEventListener("show-pwa-install", handleShowPrompt);
+
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+      window.removeEventListener("show-pwa-install", handleShowPrompt);
+    };
   }, [pwa_enabled]);
 
   const handleInstall = async () => {
