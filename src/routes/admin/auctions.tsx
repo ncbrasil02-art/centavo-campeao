@@ -1015,9 +1015,9 @@ function AdminAuctions() {
                   .filter(a => a.product?.name?.toLowerCase().includes(searchTerm.toLowerCase()))
                   .map((auction) => (
                   <TableRow key={auction.id} className={`border-white/5 transition-colors ${
-                    auction.status === 'live' ? 'bg-green-500/10 hover:bg-green-500/15' : 
-                    auction.status === 'pending_audit' ? 'bg-red-500/10 hover:bg-red-500/15' :
-                    auction.status === 'confirmed' ? 'bg-amber-500/10 hover:bg-amber-500/15' :
+                    auction.status === 'live' ? 'bg-green-600/20 hover:bg-green-600/30 border-l-4 border-l-green-500' : 
+                    auction.status === 'pending_audit' ? 'bg-red-600/20 hover:bg-red-600/30 border-l-4 border-l-red-500' :
+                    auction.status === 'confirmed' ? 'bg-amber-600/20 hover:bg-amber-600/30 border-l-4 border-l-amber-500' :
                     'hover:bg-white/[0.02]'
                   }`}>
                     <TableCell>
