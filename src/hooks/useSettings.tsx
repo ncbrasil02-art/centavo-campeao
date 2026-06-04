@@ -39,7 +39,10 @@ interface SiteSettings {
   pwa_enabled: boolean;
   android_app_url: string;
   ios_app_url: string;
+  whatsapp_number: string;
+  whatsapp_float_enabled: boolean;
 }
+
 
 
 interface SettingsContextType extends SiteSettings {
