@@ -278,13 +278,12 @@ function AdminAuctions() {
         endTime = new Date(startTime.getTime() + (timerDuration * 1000)).toISOString();
       }
 
-      const payload = {
+      const payload: any = {
         product_id: finalProductId,
         start_time: startTime.toISOString(),
         end_time: endTime,
         status: formData.status,
         robot_enabled: formData.robot_enabled,
-        robot_inner_dispute: formData.robot_inner_dispute,
         timer_duration: formData.timer_duration,
         target_winner: formData.target_winner,
         is_finalizing: formData.is_finalizing,
@@ -865,6 +864,17 @@ function AdminAuctions() {
                     <Switch 
                       checked={formData.robot_enabled} 
                       onCheckedChange={v => setFormData({...formData, robot_enabled: v})}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label>Disputa entre Robôs</Label>
+                      <p className="text-[10px] text-white/40">Robôs dão lances entre si</p>
+                    </div>
+                    <Switch 
+                      checked={formData.robot_inner_dispute} 
+                      onCheckedChange={v => setFormData({...formData, robot_inner_dispute: v})}
                     />
                   </div>
 
