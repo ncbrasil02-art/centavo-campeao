@@ -30,6 +30,8 @@ interface SiteSettings {
   logo_padding_y: number;
   google_reviews_widget: string;
   support_whatsapp: string;
+  sound_enabled: boolean;
+  narration_enabled: boolean;
 }
 
 const SettingsContext = createContext<SiteSettings | null>(null);
