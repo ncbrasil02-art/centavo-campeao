@@ -269,6 +269,107 @@ export function NarrationSettings() {
           </div>
         </CardContent>
       </Card>
+
+      <Card className="bg-white/5 border-white/10 rounded-[32px]">
+        <CardHeader>
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 bg-primary/20 rounded-xl">
+              <Zap className="w-5 h-5 text-primary" />
+            </div>
+            <CardTitle className="text-xl font-black uppercase italic">Frases dos <span className="text-primary">Cards de Leilão</span></CardTitle>
+          </div>
+          <CardDescription>Gerencie as frases curtas de incentivo que aparecem dentro dos cards dos leilões.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="flex gap-2">
+            <Input 
+              value={newAppPhrase}
+              onChange={(e) => setNewAppPhrase(e.target.value)}
+              placeholder="Nova frase curta (ex: Super Oferta!)..."
+              className="bg-white/5 border-white/10"
+              maxLength={25}
+            />
+            <Button onClick={handleAddAppPhrase} disabled={loading} className="bg-primary text-black">
+              <Plus className="w-4 h-4" />
+            </Button>
+          </div>
+
+          <div className="space-y-3">
+            {appPhrases.map((p) => (
+              <div key={p.id} className="flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-2xl group">
+                <div className="flex items-center gap-3 overflow-hidden">
+                  <Sparkles className="w-4 h-4 text-primary/40 flex-shrink-0" />
+                  <span className="text-sm truncate">{p.text}</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <Switch 
+                    checked={p.active} 
+                    onCheckedChange={(val) => toggleAppPhrase(p.id, val)} 
+                  />
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="text-white/20 hover:text-red-500 transition-colors"
+                    onClick={() => deleteAppPhrase(p.id)}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="bg-white/5 border-white/10 rounded-[32px]">
+        <CardHeader>
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 bg-primary/20 rounded-xl">
+              <LayoutTemplate className="w-5 h-5 text-primary" />
+            </div>
+            <CardTitle className="text-xl font-black uppercase italic">Templates de <span className="text-primary">Leilões Futuros</span></CardTitle>
+          </div>
+          <CardDescription>Configure como o sistema anuncia leilões agendados. Use {'{product}'}, {'{date}'} e {'{time}'} como variáveis.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="flex gap-2">
+            <Input 
+              value={newTemplate}
+              onChange={(e) => setNewTemplate(e.target.value)}
+              placeholder="Template (ex: O leilão do {product} será {date})..."
+              className="bg-white/5 border-white/10"
+            />
+            <Button onClick={handleAddTemplate} disabled={loading} className="bg-primary text-black">
+              <Plus className="w-4 h-4" />
+            </Button>
+          </div>
+
+          <div className="space-y-3">
+            {futureTemplates.map((p) => (
+              <div key={p.id} className="flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-2xl group">
+                <div className="flex items-center gap-3 overflow-hidden">
+                  <LayoutTemplate className="w-4 h-4 text-primary/40 flex-shrink-0" />
+                  <span className="text-sm truncate">{p.template_text}</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <Switch 
+                    checked={p.is_active} 
+                    onCheckedChange={(val) => toggleTemplate(p.id, val)} 
+                  />
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="text-white/20 hover:text-red-500 transition-colors"
+                    onClick={() => deleteTemplate(p.id)}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
