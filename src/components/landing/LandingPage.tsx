@@ -69,13 +69,23 @@ export const LandingPage = () => {
   const { site_name, primary_color, support_whatsapp } = useSettings();
   const assets = useAssets();
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [currentPhrase, setCurrentPhrase] = useState(0);
+
+  const phrases = [
+    "Leilão de Centavos",
+    "Lances em Tempo Real",
+    "Gestão de Usuários",
+    "Automação de Robôs",
+    "Sistema de Narrador",
+    "Segurança Total"
+  ];
 
   const carouselImages = [
     assets['header-settings.jpeg'],
     assets['landing-auctions.png'],
     assets['landing-winners.png'],
     assets['admin-panel.png']
-  ].filter(Boolean);
+  ].filter(img => img !== undefined);
 
   useEffect(() => {
     if (carouselImages.length <= 1) return;
@@ -84,6 +94,13 @@ export const LandingPage = () => {
     }, 3000);
     return () => clearInterval(timer);
   }, [carouselImages.length]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentPhrase((prev) => (prev + 1) % phrases.length);
+    }, 2500);
+    return () => clearInterval(timer);
+  }, []);
 
 
   const scrollToSection = (id: string) => {
