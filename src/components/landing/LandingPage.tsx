@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from '@tanstack/react-router';
 import { useSettings } from "@/hooks/useSettings";
 import { useAssets } from "@/hooks/useAssets";
 
