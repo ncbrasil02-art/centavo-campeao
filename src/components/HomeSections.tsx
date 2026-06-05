@@ -145,7 +145,7 @@ export function Hero() {
           .from("auctions")
           .select("*, products(*)")
           .eq("status", "scheduled")
-          .order("start_at", { ascending: true })
+          .order("start_time", { ascending: true })
           .limit(6);
 
         if (error) throw error;
@@ -153,8 +153,8 @@ export function Hero() {
         const productBanners = (data || []).map(auction => ({
           id: auction.id,
           title: auction.products?.name,
-          subtitle: `Leilão começa em ${format(new Date(auction.start_at), "dd/MM 'às' HH:mm", { locale: ptBR })}`,
-          image_url: auction.products?.image_url,
+          subtitle: `Leilão começa em ${format(new Date(auction.start_time), "dd/MM 'às' HH:mm", { locale: ptBR })}`,
+          image_url: auction.products?.images?.[0],
           link_url: `/auctions/${auction.id}`
         }));
 
