@@ -21,6 +21,8 @@ export function Navbar() {
   const { getAdjustedNow, synced, formatBrasiliaTime } = useTimeSync();
   const [currentTimeStr, setCurrentTimeStr] = useState<string>("--:--:--");
   const navigate = useNavigate();
+  const search = useSearch({ strict: false }) as any;
+  const isDemo = search.demo === "true" || search.demo === true;
 
   useEffect(() => {
     const timer = setInterval(() => {
