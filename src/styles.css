@@ -7,8 +7,7 @@ aside:has(a[href*="lovable.dev"]) {
   pointer-events: none !important;
 }
 
-@import "tailwindcss" source(none);
-@source "../src";
+@import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
@@ -180,8 +179,8 @@ aside:has(a[href*="lovable.dev"]) {
 }
 
 .neon-border {
-  box-shadow: 0 0 10px rgba(var(--primary), 0.3), inset 0 0 10px rgba(var(--primary), 0.1);
-  border: 1px solid rgba(var(--primary), 0.5);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--primary), transparent 70%), inset 0 0 10px color-mix(in srgb, var(--primary), transparent 90%);
+  border: 1px solid color-mix(in srgb, var(--primary), transparent 50%);
 }
 
 .neon-text {
