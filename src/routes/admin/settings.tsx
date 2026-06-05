@@ -39,6 +39,8 @@ import {
   Star,
   Gavel
 } from "lucide-react";
+import { useSettings } from "@/hooks/useSettings";
+
 
 
 
