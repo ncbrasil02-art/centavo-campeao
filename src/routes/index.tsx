@@ -3,6 +3,7 @@ import { Navbar } from "@/components/Navbar";
 import { Hero, SecondaryBanner } from "@/components/HomeSections";
 import { DemoAuctionBlock } from "@/components/DemoAuctionBlock";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
+import { LandingPage } from "@/components/landing/LandingPage";
 
 import { useSettings } from "@/hooks/useSettings";
 import { AuctionCard } from "@/components/AuctionCard";
@@ -19,8 +20,18 @@ import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const Route = createFileRoute("/")({
-  component: Index,
+  component: IndexWrapper,
 });
+
+function IndexWrapper() {
+  const { sales_page_enabled } = useSettings();
+  
+  if (sales_page_enabled) {
+    return <LandingPage />;
+  }
+  
+  return <Index />;
+}
 
 
 function TestimonialCard({ name, content, avatarUrl, rating }: { name: string, content: string, avatarUrl: string, rating: number }) {
@@ -120,7 +131,8 @@ function Index() {
     secondary_banner_title,
     secondary_banner_subtitle,
     secondary_banner_image,
-    secondary_banner_link
+    secondary_banner_link,
+    sales_page_enabled
   } = useSettings();
 
   const [auctions, setAuctions] = useState<any[]>([]);
