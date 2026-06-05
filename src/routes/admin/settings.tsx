@@ -116,6 +116,7 @@ function AdminSettings() {
     secondary_banner_subtitle: "",
     secondary_banner_image: "",
     secondary_banner_link: "",
+    sales_page_enabled: false,
   });
 
 
@@ -198,6 +199,7 @@ function AdminSettings() {
           secondary_banner_subtitle: publicData.secondary_banner_subtitle || "",
           secondary_banner_image: publicData.secondary_banner_image || "",
           secondary_banner_link: publicData.secondary_banner_link || "",
+          sales_page_enabled: publicData.sales_page_enabled ?? false,
         });
 
 

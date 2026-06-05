@@ -51,6 +51,7 @@ interface SiteSettings {
   secondary_banner_subtitle: string;
   secondary_banner_image: string;
   secondary_banner_link: string;
+  sales_page_enabled: boolean;
 }
 
 
@@ -113,6 +114,7 @@ const DEFAULT_SETTINGS: SiteSettings = {
   secondary_banner_subtitle: "Comece com o pé direito! Adquira seu primeiro pacote de lances agora e ganhe o dobro para disputar seus produtos favoritos.",
   secondary_banner_image: "https://images.unsplash.com/photo-1553729459-efe14ef6055d?q=80&w=2000&auto=format&fit=crop",
   secondary_banner_link: "/packages",
+  sales_page_enabled: false,
 };
 
 
@@ -285,6 +287,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
             secondary_banner_subtitle: data.secondary_banner_subtitle || DEFAULT_SETTINGS.secondary_banner_subtitle,
             secondary_banner_image: data.secondary_banner_image || DEFAULT_SETTINGS.secondary_banner_image,
             secondary_banner_link: data.secondary_banner_link || DEFAULT_SETTINGS.secondary_banner_link,
+            sales_page_enabled: data.sales_page_enabled ?? DEFAULT_SETTINGS.sales_page_enabled,
           };
 
 
