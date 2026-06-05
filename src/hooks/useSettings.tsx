@@ -295,7 +295,9 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
 
           
           setSettings(fetchedSettings);
-          localStorage.setItem('site_settings', JSON.stringify(fetchedSettings));
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('site_settings', JSON.stringify(fetchedSettings));
+          }
           updateMetaTags(fetchedSettings);
           if (fetchedSettings.ga_id) injectScripts(fetchedSettings.ga_id, fetchedSettings.fb_pixel_id);
           applySettingsToDOM(fetchedSettings);
