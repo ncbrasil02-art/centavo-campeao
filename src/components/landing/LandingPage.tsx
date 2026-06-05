@@ -180,14 +180,12 @@ export const LandingPage = () => {
                 className="relative"
               >
                 <div className="relative z-10 rounded-[40px] border border-white/10 overflow-hidden shadow-2xl shadow-primary/20 bg-black p-2 backdrop-blur-sm">
-                  <div className="rounded-[32px] overflow-hidden border border-white/5">
+                  <div className="rounded-[32px] overflow-hidden border border-white/5 bg-zinc-900">
                     <img 
-                      src={assets['admin-panel.png'] || "https://images.unsplash.com/photo-1551288049-bbbda5366392?q=80&w=1200&auto=format&fit=crop"} 
+                      src={assets['header-settings.jpeg'] || assets['admin-panel.png'] || "https://images.unsplash.com/photo-1551288049-bbbda5366392?q=80&w=1200&auto=format&fit=crop"} 
                       alt="Painel Administrativo" 
-                      className="w-full h-auto object-cover"
+                      className="w-full h-auto min-h-[400px] md:min-h-[600px] object-top object-cover"
                     />
-
-
                   </div>
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-primary rounded-full flex items-center justify-center cursor-pointer hover:scale-110 transition-transform shadow-[0_0_30px_rgba(var(--color-primary),0.5)]">
                     <Rocket className="w-10 h-10 text-black" />
@@ -313,32 +311,59 @@ export const LandingPage = () => {
           </div>
         </section>
 
-        {/* Platform Showcase */}
-        <section id="presentation" className="py-32 overflow-hidden bg-black">
+        <section id="presentation" className="py-32 bg-black relative">
           <div className="container mx-auto px-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-              <div className="order-2 lg:order-1 relative">
-                <div className="space-y-6">
-                  <div className="relative rounded-[32px] overflow-hidden border border-white/10 shadow-2xl transform -rotate-2 hover:rotate-0 transition-transform duration-500">
-                    <img src={assets['landing-auctions.png'] || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop"} alt="Home Platform" className="w-full" />
-                    <div className="absolute top-4 right-4 bg-primary text-black text-[10px] font-black uppercase px-3 py-1 rounded-full">INTERFACE DO USUÁRIO</div>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-center">
+              <div className="lg:col-span-7 relative">
+                <div className="grid grid-cols-2 gap-4 md:gap-8">
+                  <div className="space-y-4 md:space-y-8 mt-12">
+                    <motion.div 
+                      whileHover={{ scale: 1.02 }}
+                      className="relative rounded-[24px] md:rounded-[40px] overflow-hidden border border-white/10 shadow-2xl shadow-primary/5"
+                    >
+                      <img src={assets['landing-auctions.png'] || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop"} alt="Interface de Leilões" className="w-full h-full object-cover" />
+                      <div className="absolute top-4 left-4 md:top-6 md:left-6">
+                        <Badge className="bg-primary text-black font-black italic text-[10px]">PLATAFORMA</Badge>
+                      </div>
+                    </motion.div>
+                    <motion.div 
+                      whileHover={{ scale: 1.02 }}
+                      className="relative rounded-[24px] md:rounded-[40px] overflow-hidden border border-white/10 shadow-2xl shadow-primary/5 aspect-square"
+                    >
+                      <img src={assets['landing-winners.png'] || "https://images.unsplash.com/photo-1551288049-bbbda5366392?q=80&w=1200&auto=format&fit=crop"} alt="Ganhadores" className="w-full h-full object-cover" />
+                      <div className="absolute bottom-4 left-4 md:bottom-6 md:left-6">
+                        <Badge className="bg-primary text-black font-black italic text-[10px]">GANHADORES</Badge>
+                      </div>
+                    </motion.div>
                   </div>
-                  <div className="relative rounded-[32px] overflow-hidden border border-white/10 shadow-2xl transform rotate-2 translate-x-12 hover:rotate-0 transition-transform duration-500">
-                    <img src={assets['landing-winners.png'] || "https://images.unsplash.com/photo-1551288049-bbbda5366392?q=80&w=1200&auto=format&fit=crop"} alt="Auction Detail" className="w-full" />
-                    <div className="absolute top-4 right-4 bg-primary text-black text-[10px] font-black uppercase px-3 py-1 rounded-full">GANHADORES REAIS</div>
+                  <div className="space-y-4 md:space-y-8">
+                    <motion.div 
+                      whileHover={{ scale: 1.02 }}
+                      className="relative rounded-[24px] md:rounded-[40px] overflow-hidden border border-white/10 shadow-2xl shadow-primary/5 aspect-square"
+                    >
+                      <img src={assets['header-settings.jpeg'] || "https://images.unsplash.com/photo-1551288049-bbbda5366392?q=80&w=1200&auto=format&fit=crop"} alt="Configurações" className="w-full h-full object-cover" />
+                      <div className="absolute top-4 right-4 md:top-6 md:right-6">
+                        <Badge className="bg-primary text-black font-black italic text-[10px]">PAINEL ADM</Badge>
+                      </div>
+                    </motion.div>
+                    <motion.div 
+                      whileHover={{ scale: 1.02 }}
+                      className="relative rounded-[24px] md:rounded-[40px] overflow-hidden border border-white/10 shadow-2xl shadow-primary/5"
+                    >
+                      <img src={assets['landing-winners.png'] || "https://images.unsplash.com/photo-1551288049-bbbda5366392?q=80&w=1200&auto=format&fit=crop"} alt="Interface Mobile" className="w-full h-full object-cover" />
+                    </motion.div>
                   </div>
-
                 </div>
-                <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-primary/20 rounded-full blur-[120px] -z-10"></div>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/20 rounded-full blur-[100px] -z-10 animate-pulse"></div>
               </div>
               
-              <div className="order-1 lg:order-2">
-                <Badge className="bg-primary/10 text-primary border-primary/20 mb-6 uppercase font-black italic">Visual Premium</Badge>
-                <h2 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter mb-8 leading-tight">
-                  Uma Experiência <span className="text-primary">Visualmente Deslumbrante</span>
+              <div className="lg:col-span-5">
+                <Badge className="bg-primary/10 text-primary border-primary/20 mb-6 uppercase font-black italic">Interface Moderna</Badge>
+                <h2 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter mb-8 leading-[0.9]">
+                  Uma Experiência <br /> <span className="text-primary">Inigualável</span>
                 </h2>
-                <p className="text-xl text-white/60 mb-10">
-                  Não é apenas um site, é uma ferramenta de conversão. Cada pixel foi pensado para transmitir confiança e despertar o desejo de participação no usuário.
+                <p className="text-lg md:text-xl text-white/60 mb-10 leading-relaxed font-medium">
+                  Nossa plataforma foi desenvolvida com foco total na conversão e na experiência do usuário. Um design intuitivo que facilita a participação e aumenta o tempo de permanência no site.
                 </p>
                 
                 <ul className="space-y-6 mb-12">
