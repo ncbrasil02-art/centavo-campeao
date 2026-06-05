@@ -1143,6 +1143,7 @@ export type Database = {
         Returns: Json
       }
       is_admin: { Args: never; Returns: boolean }
+      pay_with_bid_balance: { Args: { p_auction_id: string }; Returns: Json }
       place_bid:
         | { Args: { p_auction_id: string }; Returns: Json }
         | { Args: { p_auction_id: string; p_user_id: string }; Returns: Json }
