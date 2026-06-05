@@ -111,8 +111,7 @@ export const LandingPage = () => {
   };
 
   const handleCTA = () => {
-    const message = encodeURIComponent("Olá! Gostaria de saber mais sobre a plataforma NC BRASIL.");
-    window.open(`https://wa.me/${support_whatsapp?.replace(/\D/g, '')}?text=${message}`, '_blank');
+    window.location.href = '/?demo=true';
   };
 
   return (
