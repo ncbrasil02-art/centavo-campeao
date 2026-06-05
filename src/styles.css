@@ -8,6 +8,7 @@ aside:has(a[href*="lovable.dev"]) {
 }
 
 @import "tailwindcss";
+
 @source "../src";
 
 @import "tw-animate-css";
