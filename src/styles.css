@@ -7,8 +7,9 @@ aside:has(a[href*="lovable.dev"]) {
   pointer-events: none !important;
 }
 
-@import "tailwindcss" source(none);
+@import "tailwindcss";
 @source "../src";
+
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
