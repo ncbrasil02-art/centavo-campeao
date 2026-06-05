@@ -128,13 +128,13 @@ export const LandingPage = () => {
                   transition={{ duration: 0.6 }}
                 >
                   <Badge className="bg-primary/10 text-primary border-primary/20 mb-6 px-4 py-1 font-black italic uppercase tracking-widest">
-                    A Melhor Plataforma de Leilão de Centavos
+                    Tecnologia NC BRASIL
                   </Badge>
                   <h2 className="text-5xl md:text-8xl font-black italic uppercase tracking-tighter leading-[0.9] mb-8">
-                    Sua cidade em uma <span className="text-primary">Máquina de Vendas</span>
+                    Sua plataforma de <span className="text-primary">Leilão de Centavos</span>
                   </h2>
                   <p className="text-xl md:text-2xl text-white/60 mb-10 max-w-xl font-medium leading-relaxed">
-                    A tecnologia NC BRASIL é a solução definitiva para você lucrar com leilões online. Automação completa, segurança bancária e design premium.
+                    A solução mais completa do mercado para criar seu próprio negócio digital. Gestão total, automação de lances e visual premium.
                   </p>
                   
                   <div className="flex flex-col sm:flex-row gap-4">
@@ -142,7 +142,7 @@ export const LandingPage = () => {
                       onClick={handleCTA}
                       className="h-16 px-10 bg-primary hover:bg-primary/90 text-black font-black italic uppercase text-xl rounded-full group"
                     >
-                      Solicitar Orçamento
+                      Gostaria de ter um Sistema?
                       <ArrowRight className="ml-2 w-6 h-6 transition-transform group-hover:translate-x-2" />
                     </Button>
                     <Button 
@@ -150,7 +150,7 @@ export const LandingPage = () => {
                       onClick={() => scrollToSection('presentation')}
                       className="h-16 px-10 border-white/20 hover:bg-white/10 text-white font-black italic uppercase text-xl rounded-full"
                     >
-                      Ver Demonstração
+                      Ver Recursos
                     </Button>
                   </div>
 
@@ -158,12 +158,12 @@ export const LandingPage = () => {
                     <div className="flex -space-x-4">
                       {[1,2,3,4].map(i => (
                         <div key={i} className="w-12 h-12 rounded-full border-4 border-black overflow-hidden">
-                          <img src={`https://i.pravatar.cc/150?u=${i + 10}`} alt="user" className="w-full h-full object-cover" />
+                          <img src={`https://i.pravatar.cc/150?u=${i + 15}`} alt="user" className="w-full h-full object-cover" />
                         </div>
                       ))}
                     </div>
                     <p className="text-sm font-bold text-white/40 uppercase tracking-widest">
-                      <span className="text-white">+ de 150</span> plataformas ativas no Brasil
+                      <span className="text-white">Líder em</span> criação de sites de leilão
                     </p>
                   </div>
                 </motion.div>
@@ -206,63 +206,103 @@ export const LandingPage = () => {
           </div>
         </section>
 
-        {/* Features Section */}
+        {/* Features Grid - Comprehensive List */}
         <section id="features" className="py-32 bg-white/[0.02]">
           <div className="container mx-auto px-6">
             <div className="text-center max-w-3xl mx-auto mb-24">
-              <Badge variant="outline" className="mb-6 border-primary/30 text-primary uppercase font-black italic tracking-widest">Tudo o que você precisa</Badge>
+              <Badge variant="outline" className="mb-6 border-primary/30 text-primary uppercase font-black italic tracking-widest">Funcionalidades Completas</Badge>
               <h2 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter mb-8 leading-none">
-                Recursos <span className="text-primary">Inigualáveis</span>
+                Tudo que você precisa em <span className="text-primary">um só lugar</span>
               </h2>
-              <p className="text-xl text-white/60">Nossa plataforma foi construída para dominar o mercado, com ferramentas que seus concorrentes não possuem.</p>
+              <p className="text-xl text-white/60">A tecnologia NC BRASIL entrega a gestão completa do seu negócio, desde o financeiro até a automação de lances.</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               <FeatureCard 
+                icon={Settings} 
+                title="Gestão Administrativa" 
+                description="Painel Geral com configurações do site, gestor de administradores, usuários e banners." 
+              />
+              <FeatureCard 
                 icon={Bot} 
-                title="Automação de Robôs" 
-                description="Algoritmos inteligentes que mantêm a disputa ativa 24/7, garantindo liquidez e engajamento constante." 
-              />
-              <FeatureCard 
-                icon={Volume2} 
-                title="Narrador Profissional" 
-                description="Sistema de áudio dinâmico que anuncia lances e ganhadores, criando uma atmosfera de cassino real." 
-              />
-              <FeatureCard 
-                icon={Lock} 
-                title="Segurança Militar" 
-                description="Proteção contra ataques DDoS, injeção de lances falsos e criptografia de dados de ponta a ponta." 
-              />
-              <FeatureCard 
-                icon={LayoutDashboard} 
-                title="Painel Admin Total" 
-                description="Controle absoluto sobre leilões, usuários, configurações do robô, lucros e métricas em tempo real." 
+                title="Lances Automáticos" 
+                description="Módulo de lances automáticos e robôs configuráveis para manter a liquidez dos leilões." 
               />
               <FeatureCard 
                 icon={BarChart3} 
-                title="Finanças Automáticas" 
-                description="Receba via PIX ou Cartão. Liberação de lances instantânea e conciliação bancária automática." 
+                title="Relatório Financeiro" 
+                description="Gráficos detalhados de faturamento, vendas de pacotes, leilões pagos e pendentes." 
+              />
+              <FeatureCard 
+                icon={ShieldCheck} 
+                title="Segurança e Validação" 
+                description="Cadastro com validação de CPF único, E-mail e recuperação de senha automática." 
               />
               <FeatureCard 
                 icon={Smartphone} 
-                title="App Ready" 
-                description="Interface PWA ultra veloz que funciona como um aplicativo nativo no Android e iOS." 
+                title="Painel do Usuário" 
+                description="Área exclusiva para editar perfil, histórico de lances, pagamentos e leilões ganhos." 
               />
               <FeatureCard 
-                icon={Globe} 
-                title="Escalabilidade" 
-                description="Sua plataforma suporta milhares de usuários simultâneos sem lentidão, graças à nossa infraestrutura em nuvem." 
+                icon={Rocket} 
+                title="Marketing Integrado" 
+                description="Módulo de cupons, newsletter, notícias e depoimentos integrados com YouTube." 
               />
               <FeatureCard 
-                icon={Gamepad2} 
-                title="Gamificação" 
-                description="Sistemas de conquistas e badges que fazem os usuários comprarem mais lances para subir de nível." 
+                icon={Lock} 
+                title="Segurança de Lances" 
+                description="Cancelamento de leilão com reembolso automático de lances e notificação por e-mail." 
               />
               <FeatureCard 
-                icon={Headphones} 
-                title="Suporte Especializado" 
-                description="Equipe técnica pronta para te ajudar a configurar e escalar seu negócio digital." 
+                icon={CheckCircle2} 
+                title="Fidelização" 
+                description="Lances grátis por cadastro ou depoimento, e leilões exclusivos para iniciantes." 
               />
+              <FeatureCard 
+                icon={Zap} 
+                title="Logística e Fiscal" 
+                description="Gestor de códigos de rastreio dos Correios e geração de nota fiscal eletrônica." 
+              />
+            </div>
+
+            {/* Additional Features List */}
+            <div className="mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-sm">
+              <div className="space-y-3 p-6 rounded-2xl bg-white/5 border border-white/5">
+                <h4 className="font-black italic uppercase text-primary">Operação</h4>
+                <ul className="space-y-2 text-white/40">
+                  <li>• Gestor de Produtos e Categorias</li>
+                  <li>• Busca inteligente por produtos</li>
+                  <li>• SEO: URLs amigáveis</li>
+                  <li>• Auto preenchimento via CEP</li>
+                </ul>
+              </div>
+              <div className="space-y-3 p-6 rounded-2xl bg-white/5 border border-white/5">
+                <h4 className="font-black italic uppercase text-primary">Financeiro</h4>
+                <ul className="space-y-2 text-white/40">
+                  <li>• Mercado Pago e PagSeguro</li>
+                  <li>• Compra com desconto de lances</li>
+                  <li>• Gestor de pacotes de lances</li>
+                  <li>• Histórico completo de faturas</li>
+                </ul>
+              </div>
+              <div className="space-y-3 p-6 rounded-2xl bg-white/5 border border-white/5">
+                <h4 className="font-black italic uppercase text-primary">Engajamento</h4>
+                <ul className="space-y-2 text-white/40">
+                  <li>• Top 10 usuários (mais lances)</li>
+                  <li>• Leilões em destaque</li>
+                  <li>• Notificações push e e-mail</li>
+                  <li>• Módulo de depoimentos</li>
+                </ul>
+              </div>
+              <div className="space-y-3 p-6 rounded-2xl bg-white/5 border border-white/5">
+                <h4 className="font-black italic uppercase text-primary">Conteúdo</h4>
+                <ul className="space-y-2 text-white/40">
+                  <li>• CMS: Gerenciador de páginas</li>
+                  <li>• Página de leilões finalizados</li>
+                  <li>• Detalhes técnicos do produto</li>
+                  <li>• Ativação de conta automática</li>
+                </ul>
+              </div>
             </div>
           </div>
         </section>
