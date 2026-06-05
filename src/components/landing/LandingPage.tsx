@@ -69,13 +69,23 @@ export const LandingPage = () => {
   const { site_name, primary_color, support_whatsapp } = useSettings();
   const assets = useAssets();
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [currentPhrase, setCurrentPhrase] = useState(0);
+
+  const phrases = [
+    "Leilão de Centavos",
+    "Lances em Tempo Real",
+    "Gestão de Usuários",
+    "Automação de Robôs",
+    "Sistema de Narrador",
+    "Segurança Total"
+  ];
 
   const carouselImages = [
     assets['header-settings.jpeg'],
     assets['landing-auctions.png'],
     assets['landing-winners.png'],
     assets['admin-panel.png']
-  ].filter(Boolean);
+  ].filter(img => img !== undefined);
 
   useEffect(() => {
     if (carouselImages.length <= 1) return;
@@ -84,6 +94,13 @@ export const LandingPage = () => {
     }, 3000);
     return () => clearInterval(timer);
   }, [carouselImages.length]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentPhrase((prev) => (prev + 1) % phrases.length);
+    }, 2500);
+    return () => clearInterval(timer);
+  }, []);
 
 
   const scrollToSection = (id: string) => {
@@ -121,7 +138,7 @@ export const LandingPage = () => {
             onClick={handleCTA}
             className="hidden md:flex bg-primary hover:bg-primary/90 text-black font-black italic uppercase tracking-tighter px-6 h-12 rounded-full"
           >
-            Quero minha plataforma
+            Ver demonstração
           </Button>
 
           <button className="md:hidden text-white" onClick={handleCTA}>
@@ -150,8 +167,20 @@ export const LandingPage = () => {
                   <Badge className="bg-primary/10 text-primary border-primary/20 mb-6 px-4 py-1 font-black italic uppercase tracking-widest">
                     Tecnologia NC BRASIL
                   </Badge>
-                  <h2 className="text-5xl md:text-8xl font-black italic uppercase tracking-tighter leading-[0.9] mb-8">
-                    Sua plataforma de <span className="text-primary">Leilão de Centavos</span>
+                  <h2 className="text-5xl md:text-8xl font-black italic uppercase tracking-tighter leading-[0.9] mb-8 min-h-[1.8em]">
+                    Sua plataforma de <br />
+                    <AnimatePresence mode="wait">
+                      <motion.span
+                        key={currentPhrase}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.5 }}
+                        className="text-primary inline-block"
+                      >
+                        {phrases[currentPhrase]}
+                      </motion.span>
+                    </AnimatePresence>
                   </h2>
                   <p className="text-xl md:text-2xl text-white/60 mb-10 max-w-xl font-medium leading-relaxed">
                     A solução mais completa do mercado para criar seu próprio negócio digital. Gestão total, automação de lances e visual premium.
@@ -162,7 +191,7 @@ export const LandingPage = () => {
                       onClick={handleCTA}
                       className="h-16 px-10 bg-primary hover:bg-primary/90 text-black font-black italic uppercase text-xl rounded-full group"
                     >
-                      Gostaria de ter um Sistema?
+                      Ver Demonstração
                       <ArrowRight className="ml-2 w-6 h-6 transition-transform group-hover:translate-x-2" />
                     </Button>
                     <Button 
@@ -195,42 +224,40 @@ export const LandingPage = () => {
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="relative"
               >
-                {/* Mobile Slider / Desktop Static */}
-                <div className="md:hidden relative z-10 rounded-[32px] border border-white/10 overflow-hidden shadow-2xl bg-black aspect-[4/5]">
+                {/* Unified Slider for Mobile and Desktop */}
+                <div className="relative z-10 rounded-[32px] md:rounded-[40px] border border-white/10 overflow-hidden shadow-2xl bg-black aspect-[4/5] md:aspect-square group">
                   <AnimatePresence mode="wait">
                     <motion.img
                       key={currentSlide}
                       src={carouselImages[currentSlide] || "https://images.unsplash.com/photo-1551288049-bbbda5366392?q=80&w=1200&auto=format&fit=crop"}
-                      initial={{ opacity: 0, x: 50 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -50 }}
-                      transition={{ duration: 0.5 }}
-                      className="w-full h-full object-cover"
+                      initial={{ opacity: 0, scale: 1.1 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.8 }}
+                      className="w-full h-full object-cover md:object-top"
                     />
                   </AnimatePresence>
-                  <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
+                  
+                  {/* Progress dots */}
+                  <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-3 z-20">
                     {carouselImages.map((_, i) => (
-                      <div 
+                      <button 
                         key={i} 
-                        className={`w-2 h-2 rounded-full transition-colors ${i === currentSlide ? 'bg-primary' : 'bg-white/20'}`} 
+                        onClick={() => setCurrentSlide(i)}
+                        className={`w-3 h-3 rounded-full transition-all duration-300 ${i === currentSlide ? 'bg-primary w-8' : 'bg-white/20 hover:bg-white/40'}`} 
                       />
                     ))}
                   </div>
+
+                  {/* Glass overlay for info */}
+                  <div className="absolute top-6 left-6 right-6 p-6 rounded-3xl bg-black/40 backdrop-blur-md border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 hidden md:block">
+                    <p className="text-primary font-black italic uppercase tracking-widest text-sm mb-2">Visualização Real</p>
+                    <h4 className="text-xl font-black italic uppercase tracking-tighter">Interface Responsiva Premium</h4>
+                  </div>
                 </div>
 
-                <div className="hidden md:block relative z-10 rounded-[40px] border border-white/10 overflow-hidden shadow-2xl shadow-primary/20 bg-black p-2 backdrop-blur-sm">
-                  <div className="rounded-[32px] overflow-hidden border border-white/5 bg-zinc-900">
-                    <img 
-                      src={assets['header-settings.jpeg'] || assets['admin-panel.png'] || "https://images.unsplash.com/photo-1551288049-bbbda5366392?q=80&w=1200&auto=format&fit=crop"} 
-                      alt="Painel Administrativo" 
-                      className="w-full h-auto min-h-[600px] object-top object-cover"
-                    />
-                  </div>
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-primary rounded-full flex items-center justify-center cursor-pointer hover:scale-110 transition-transform shadow-[0_0_30px_rgba(var(--color-primary),0.5)]">
-                    <Rocket className="w-10 h-10 text-black" />
-                  </div>
-                </div>
-                <div className="absolute -inset-4 border border-primary/30 rounded-[48px] -z-10 animate-pulse hidden md:block"></div>
+                <div className="absolute -inset-4 border border-primary/20 rounded-[48px] -z-10 animate-pulse hidden md:block"></div>
+                <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/20 rounded-full blur-3xl -z-10 animate-bounce"></div>
               </motion.div>
             </div>
           </div>
@@ -354,43 +381,43 @@ export const LandingPage = () => {
           <div className="container mx-auto px-6">
             {/* Desktop: Full Width Image + Side Text */}
             <div className="hidden lg:grid grid-cols-12 gap-20 items-center">
-              <div className="col-span-8">
+              <div className="col-span-7">
                 <motion.div 
                   initial={{ opacity: 0, x: -30 }}
                   whileInView={{ opacity: 1, x: 0 }}
-                  className="relative rounded-[48px] overflow-hidden border border-white/10 shadow-2xl shadow-primary/10 bg-zinc-900"
+                  className="relative rounded-[48px] overflow-hidden border border-white/10 shadow-2xl shadow-primary/10 bg-zinc-900 group"
                 >
                   <img 
-                    src={assets['header-settings.jpeg'] || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop"} 
+                    src={assets['landing-auctions.png'] || assets['header-settings.jpeg'] || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop"} 
                     alt="Template Completo" 
-                    className="w-full h-auto"
+                    className="w-full h-auto transition-transform duration-700 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                 </motion.div>
               </div>
               
-              <div className="col-span-4">
+              <div className="col-span-5">
                 <Badge className="bg-primary/10 text-primary border-primary/20 mb-6 uppercase font-black italic">Gestão Total</Badge>
                 <h2 className="text-6xl font-black italic uppercase tracking-tighter mb-8 leading-[0.9]">
                   Controle <br /> <span className="text-primary">Absoluto</span>
                 </h2>
                 <p className="text-xl text-white/60 mb-10 leading-relaxed font-medium">
-                  Nosso template completo oferece todas as ferramentas necessárias para gerenciar seu leilão com maestria. Desde paletas de cores até integrações de pagamento avançadas.
+                  Nossa plataforma completa oferece todas as ferramentas necessárias para gerenciar seu leilão com maestria. Desde paletas de cores até integrações de pagamento avançadas.
                 </p>
                 
                 <ul className="space-y-6 mb-12">
                   {[
-                    { title: "Personalização Completa", desc: "Altere cores, logos e banners com um clique." },
-                    { title: "Relatórios em Real-Time", desc: "Acompanhe faturamento e lances ao vivo." },
-                    { title: "Segurança Bancária", desc: "Integração direta com os maiores gateways." }
+                    { title: "Personalização Completa", desc: "Altere cores, logos e banners com um clique no painel administrativo." },
+                    { title: "Relatórios em Real-Time", desc: "Acompanhe faturamento, lances e atividade dos usuários ao vivo." },
+                    { title: "Segurança de Elite", desc: "Proteção contra ataques e integração direta com Mercado Pago e PIX." }
                   ].map((item, idx) => (
                     <li key={idx} className="flex items-start gap-4">
                       <div className="mt-1 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
                         <CheckCircle2 className="w-4 h-4 text-primary" />
                       </div>
                       <div>
-                        <h4 className="font-black italic uppercase tracking-tighter">{item.title}</h4>
-                        <p className="text-white/40 text-sm">{item.desc}</p>
+                        <h4 className="font-black italic uppercase tracking-tighter text-lg">{item.title}</h4>
+                        <p className="text-white/40 text-base">{item.desc}</p>
                       </div>
                     </li>
                   ))}
@@ -400,7 +427,7 @@ export const LandingPage = () => {
                   onClick={handleCTA}
                   className="h-16 w-full bg-primary hover:bg-primary/90 text-black font-black italic uppercase text-xl rounded-full"
                 >
-                  Garantir Este Layout
+                  Ver Demonstração
                 </Button>
               </div>
             </div>
@@ -548,7 +575,7 @@ export const LandingPage = () => {
                 onClick={handleCTA}
                 className="h-20 px-12 bg-black text-white hover:bg-black/80 font-black italic uppercase text-2xl rounded-full shadow-2xl transition-transform hover:scale-105"
               >
-                Garantir Minha Plataforma NC
+                Ver Demonstração
               </Button>
             </div>
           </div>
