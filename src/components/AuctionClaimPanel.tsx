@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Send, MessageSquare, Upload, CheckCircle2, Video, Camera, Clock, CheckCircle, Zap } from "lucide-react";
+import { Send, MessageSquare, Upload, CheckCircle2, Video, Camera, Clock, CheckCircle, Zap, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import { getFallbackAvatarUrl } from "@/lib/constants";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
