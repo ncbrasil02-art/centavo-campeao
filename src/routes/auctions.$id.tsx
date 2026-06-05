@@ -387,9 +387,6 @@ function AuctionPage() {
                   />
                   <div className="absolute inset-0 bg-black/20" />
                 </div>
-                {/* Removed floating foreground image to let background fill the area */}
-                  <div className="absolute inset-0 bg-black/20" />
-                </div>
                 
                 <div className="absolute inset-0 z-10 p-6 flex flex-col justify-between">
                   <div className="flex flex-col gap-3 items-start">
@@ -462,6 +459,7 @@ function AuctionPage() {
                     </div>
                   )}
                 </div>
+                {auction.status === 'scheduled' && (
                   <div className="absolute inset-0 z-30 flex items-center justify-center p-4">
                     <div className="bg-orange-500/95 backdrop-blur-md w-full max-w-[450px] p-6 rounded-3xl flex flex-col items-center justify-center shadow-[0_0_50px_rgba(249,115,22,0.4)] border border-white/20 relative overflow-hidden">
                       <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none" />
