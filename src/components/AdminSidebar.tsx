@@ -41,6 +41,7 @@ export function AdminSidebar() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    localStorage.removeItem('site_settings');
   };
 
   return (

@@ -10,7 +10,7 @@ interface SiteSettings {
   mercado_pago_public_key: string;
   pix_key: string;
   pix_name: string;
-  hero_display_mode: 'phrases' | 'banners';
+  hero_display_mode: 'phrases' | 'banners' | 'products';
   theme_mode: 'light' | 'dark';
   ga_id: string;
   fb_pixel_id: string;
@@ -295,7 +295,9 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
 
           
           setSettings(fetchedSettings);
-          localStorage.setItem('site_settings', JSON.stringify(fetchedSettings));
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('site_settings', JSON.stringify(fetchedSettings));
+          }
           updateMetaTags(fetchedSettings);
           if (fetchedSettings.ga_id) injectScripts(fetchedSettings.ga_id, fetchedSettings.fb_pixel_id);
           applySettingsToDOM(fetchedSettings);
@@ -319,7 +321,9 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
             updateMetaTags(updated);
             if (updated.ga_id) injectScripts(updated.ga_id, updated.fb_pixel_id);
             applySettingsToDOM(updated);
-            localStorage.setItem('site_settings', JSON.stringify(updated));
+            if (typeof window !== 'undefined') {
+              localStorage.setItem('site_settings', JSON.stringify(updated));
+            }
             return updated;
           });
         }

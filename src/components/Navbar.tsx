@@ -97,6 +97,7 @@ export function Navbar() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    localStorage.removeItem('site_settings');
     setIsMenuOpen(false);
     navigate({ to: "/" });
   };

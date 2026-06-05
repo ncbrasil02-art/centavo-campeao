@@ -402,7 +402,13 @@ function AdminSettings() {
                       <SelectItem value="banners">
                         <div className="flex items-center gap-2">
                           <Monitor className="w-4 h-4" />
-                          <span>Banners Hero de Produtos</span>
+                          <span>Banners de Imagens (Manual)</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="products">
+                        <div className="flex items-center gap-2">
+                          <ImageIcon className="w-4 h-4" />
+                          <span>Banners de Produtos (Automático)</span>
                         </div>
                       </SelectItem>
                     </SelectContent>
