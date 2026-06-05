@@ -56,8 +56,8 @@ function IndexWrapper() {
     );
   }
   
-  // Show system if sales page is disabled, or if explicitly in demo mode, or if user is logged in
-  if (sales_page_enabled && !demo && !session) {
+  // Show system if sales page is disabled, or if explicitly in demo mode
+  if (sales_page_enabled && !demo) {
     return <LandingPage />;
   }
   
