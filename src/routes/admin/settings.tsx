@@ -277,6 +277,10 @@ function AdminSettings() {
         .eq("id", settings.id);
 
       if (publicError) throw publicError;
+      
+      // Update the settings state locally so it persists in the session
+      setSettings(prev => ({ ...prev, ...publicSettings }));
+
 
       // Update admin secrets
       const { data: existingAdminData } = await supabase
