@@ -83,10 +83,10 @@ export const LandingPage = () => {
   ];
 
   const carouselImages = [
-    "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/header-settings.jpeg",
-    "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/landing-auctions.png",
-    "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/landing-winners.png",
-    "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/admin-panel.png"
+    "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/header-settings.jpeg?t=1",
+    "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/landing-auctions.png?t=1",
+    "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/landing-winners.png?t=1",
+    "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/admin-panel.png?t=1"
   ];
 
   useEffect(() => {
