@@ -83,11 +83,11 @@ export const LandingPage = () => {
   ];
 
   const carouselImages = [
-    assets['header-settings.jpeg'],
-    assets['landing-auctions.png'],
-    assets['landing-winners.png'],
-    assets['admin-panel.png']
-  ].filter(img => img !== undefined);
+    "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/header-settings.jpeg",
+    "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/landing-auctions.png",
+    "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/landing-winners.png",
+    "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/admin-panel.png"
+  ];
 
   useEffect(() => {
     if (carouselImages.length <= 1) return;
@@ -390,7 +390,7 @@ export const LandingPage = () => {
                   className="relative rounded-[48px] overflow-hidden border border-white/10 shadow-2xl shadow-primary/10 bg-zinc-900 group"
                 >
                   <img 
-                    src={assets['landing-auctions.png'] || assets['header-settings.jpeg'] || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop"} 
+                    src="https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/landing-auctions.png"
                     alt="Template Completo" 
                     className="w-full h-auto transition-transform duration-700 group-hover:scale-105"
                   />
