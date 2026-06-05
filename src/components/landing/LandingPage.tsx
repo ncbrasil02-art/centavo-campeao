@@ -113,7 +113,7 @@ export const LandingPage = () => {
   };
 
   const handleCTA = () => {
-    navigate({ to: '/', search: { demo: true } });
+    navigate({ to: '/', search: { demo: 'true' } as any });
   };
 
   return (

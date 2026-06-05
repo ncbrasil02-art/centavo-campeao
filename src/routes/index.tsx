@@ -30,7 +30,8 @@ export const Route = createFileRoute("/")({
 
 function IndexWrapper() {
   const { sales_page_enabled } = useSettings();
-  const { demo } = Route.useSearch();
+  const search = Route.useSearch();
+  const demo = search.demo === "true" || search.demo === true;
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
