@@ -113,7 +113,7 @@ export const LandingPage = () => {
   };
 
   const handleCTA = () => {
-    window.location.href = '/?demo=true';
+    navigate({ to: '/', search: { demo: true } });
   };
 
   return (
