@@ -83,10 +83,10 @@ export const LandingPage = () => {
   ];
 
   const carouselImages = [
-    "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/header-settings.jpeg",
-    "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/landing-auctions.png",
-    "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/landing-winners.png",
-    "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/admin-panel.png"
+    "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/header-settings.jpeg?t=1",
+    "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/landing-auctions.png?t=1",
+    "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/landing-winners.png?t=1",
+    "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/admin-panel.png?t=1"
   ];
 
   useEffect(() => {
@@ -390,7 +390,7 @@ export const LandingPage = () => {
                   className="relative rounded-[48px] overflow-hidden border border-white/10 shadow-2xl shadow-primary/10 bg-zinc-900 group"
                 >
                   <img 
-                    src="https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/landing-auctions.png"
+                    src="https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/landing-auctions.png?t=1"
                     alt="Template Completo" 
                     className="w-full h-auto transition-transform duration-700 group-hover:scale-105"
                   />
