@@ -336,6 +336,28 @@ function AdminSettings() {
           </Button>
         </div>
 
+        <Card className="bg-primary/10 border-primary/20 mb-8 overflow-hidden">
+          <CardContent className="p-6 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center">
+                <Zap className="w-6 h-6 text-primary" />
+              </div>
+              <div>
+                <h3 className="text-xl font-black italic uppercase tracking-tight">Página de Vendas Premium</h3>
+                <p className="text-white/60 text-sm">Ative uma landing page de alta conversão para vender sua plataforma</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 bg-black/20 p-2 px-4 rounded-full border border-white/5">
+              <Label htmlFor="sales_page" className="font-bold cursor-pointer uppercase">{settings.sales_page_enabled ? 'ATIVADA' : 'DESATIVADA'}</Label>
+              <Switch 
+                id="sales_page"
+                checked={settings.sales_page_enabled}
+                onCheckedChange={(checked) => setSettings({ ...settings, sales_page_enabled: checked })}
+              />
+            </div>
+          </CardContent>
+        </Card>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Identity & Hero Section */}
           <div className="space-y-8">
