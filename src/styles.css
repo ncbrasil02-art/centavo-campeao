@@ -7,15 +7,18 @@ aside:has(a[href*="lovable.dev"]) {
   pointer-events: none !important;
 }
 
-@import "tailwindcss" source(none);
+@import "tailwindcss";
+
 @source "../src";
+
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
 :root {
   --radius: 0.625rem;
-  --background: #09090b; /* Cor preta padrão antes do carregamento */
+  --background: #09090b;
+
   --foreground: oklch(0.984 0.003 247.858);
   --card: oklch(0.15 0.03 264.7);
   --card-foreground: oklch(0.984 0.003 247.858);
@@ -57,7 +60,7 @@ aside:has(a[href*="lovable.dev"]) {
   --card-foreground: oklch(0.984 0.003 247.858);
   --popover: oklch(0.15 0.03 264.7);
   --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: #f58c14; /* Laranja padrão em vez de roxo */
+  --primary: #f58c14;
   --primary-foreground: oklch(0.129 0.042 264.695);
   --secondary: #1d5bd7;
   --secondary-foreground: oklch(0.984 0.003 247.858);
