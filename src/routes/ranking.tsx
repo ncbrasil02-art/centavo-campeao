@@ -144,7 +144,7 @@ function TopUserCard({ user, rank }: { user: any, rank: number }) {
 
   return (
     <Card className={`relative overflow-hidden p-8 flex flex-col items-center gap-6 border-2 transition-all duration-500 hover:scale-[1.05] ${
-      isFirst ? "bg-primary/10 border-primary/40 shadow-[0_0_50px_rgba(var(--color-primary),0.2)]" : "bg-white/5 border-white/10"
+      isFirst ? "bg-primary/10 border-primary/40 shadow-[0_0_50px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.2 * 100%))]" : "bg-white/5 border-white/10"
     }`}>
       <div className="absolute top-4 left-4">
         {isFirst && <Crown className="w-8 h-8 text-yellow-500 drop-shadow-[0_0_10px_rgba(234,179,8,0.5)]" />}

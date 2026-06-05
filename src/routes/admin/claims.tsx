@@ -304,7 +304,7 @@ function AdminClaims() {
                   <div className="flex flex-col gap-4">
                     {messages.map((msg) => (
                       <div key={msg.id} className={`flex ${!msg.is_admin_reply ? 'justify-start' : 'justify-end'}`}>
-                        <div className={`max-w-[85%] rounded-2xl p-3 ${!msg.is_admin_reply ? 'bg-zinc-800 rounded-tl-none' : 'bg-primary text-black font-medium rounded-tr-none shadow-[0_0_15px_rgba(var(--color-primary),0.2)]'}`}>
+                        <div className={`max-w-[85%] rounded-2xl p-3 ${!msg.is_admin_reply ? 'bg-zinc-800 rounded-tl-none' : 'bg-primary text-black font-medium rounded-tr-none shadow-[0_0_15px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.2 * 100%))]'}`}>
                           <p className="text-sm">{msg.message}</p>
                           <span className={`text-[9px] mt-1 block ${!msg.is_admin_reply ? 'text-white/40' : 'text-black/60'}`}>
                             {new Date(msg.created_at).toLocaleTimeString()}

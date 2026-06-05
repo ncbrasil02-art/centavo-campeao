@@ -199,7 +199,7 @@ export function FloatingControls() {
                       <span className="text-xl font-black">{profile.bid_balance}</span>
                     </div>
                   </div>
-                  <Button size="sm" className="h-8 rounded-full bg-primary text-primary-foreground font-black text-[10px] uppercase px-4 shadow-[0_0_15px_rgba(var(--color-primary),0.3)] hover:scale-105" asChild>
+                  <Button size="sm" className="h-8 rounded-full bg-primary text-primary-foreground font-black text-[10px] uppercase px-4 shadow-[0_0_15px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.3 * 100%))] hover:scale-105" asChild>
                     <Link to="/packages">
                       <Plus className="mr-1 h-3 w-3" /> Pacotes
                     </Link>
@@ -215,7 +215,7 @@ export function FloatingControls() {
                     </div>
                     <button 
                       onClick={toggleSound}
-                      className={`h-9 w-9 rounded-full flex items-center justify-center transition-all ${soundEnabled ? 'bg-primary text-primary-foreground shadow-[0_0_15px_rgba(var(--color-primary),0.4)]' : 'bg-white/5 text-white/30'}`}
+                      className={`h-9 w-9 rounded-full flex items-center justify-center transition-all ${soundEnabled ? 'bg-primary text-primary-foreground shadow-[0_0_15px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.4 * 100%))]' : 'bg-white/5 text-white/30'}`}
                     >
                       {soundEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
                     </button>
@@ -294,7 +294,7 @@ export function FloatingControls() {
                   <button
                     key={i}
                     onClick={() => setEditingAvatar(photo)}
-                    className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-all hover:scale-105 ${editingAvatar === photo ? 'border-primary shadow-[0_0_15px_rgba(var(--color-primary),0.5)] scale-110 z-10' : 'border-transparent opacity-60 hover:opacity-100'}`}
+                    className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-all hover:scale-105 ${editingAvatar === photo ? 'border-primary shadow-[0_0_15px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.5 * 100%))] scale-110 z-10' : 'border-transparent opacity-60 hover:opacity-100'}`}
                   >
                     <img src={photo} className="w-full h-full object-cover" alt={`Avatar ${i}`} />
                     {editingAvatar === photo && (
@@ -309,7 +309,7 @@ export function FloatingControls() {
             </div>
 
             <Button 
-              className="w-full h-14 bg-primary text-primary-foreground text-lg font-black uppercase italic tracking-tighter rounded-2xl shadow-[0_10px_30px_rgba(var(--color-primary),0.3)] hover:scale-[1.02] active:scale-95 transition-all"
+              className="w-full h-14 bg-primary text-primary-foreground text-lg font-black uppercase italic tracking-tighter rounded-2xl shadow-[0_10px_30px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.3 * 100%))] hover:scale-[1.02] active:scale-95 transition-all"
               onClick={handleUpdateProfile}
               disabled={saving}
             >

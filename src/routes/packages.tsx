@@ -189,7 +189,7 @@ function PackagesPage() {
             ))
           ) : (
             packages.map((pkg) => (
-              <Card key={pkg.id} className={`relative overflow-hidden bg-white/5 border-white/10 group transition-all duration-300 hover:border-primary/50 hover:bg-white/10 ${pkg.bid_amount >= 250 ? 'border-primary/30 scale-105 shadow-[0_0_30px_rgba(var(--color-primary),0.15)]' : ''}`}>
+              <Card key={pkg.id} className={`relative overflow-hidden bg-white/5 border-white/10 group transition-all duration-300 hover:border-primary/50 hover:bg-white/10 ${pkg.bid_amount >= 250 ? 'border-primary/30 scale-105 shadow-[0_0_30px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.15 * 100%))]' : ''}`}>
                 {pkg.bid_amount >= 250 && (
                   <div className="absolute top-0 right-0 left-0 bg-primary py-1 text-[10px] font-black text-primary-foreground text-center uppercase tracking-widest">
                     Mais Popular

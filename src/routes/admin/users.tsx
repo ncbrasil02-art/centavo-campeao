@@ -404,7 +404,7 @@ function AdminUsersPage() {
                     <button
                       key={i}
                       onClick={() => setUserFormData({...userFormData, avatar_url: photo})}
-                      className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-all hover:scale-105 ${userFormData.avatar_url === photo ? 'border-primary shadow-[0_0_15px_rgba(var(--color-primary),0.5)] scale-110 z-10' : 'border-transparent opacity-60 hover:opacity-100'}`}
+                      className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-all hover:scale-105 ${userFormData.avatar_url === photo ? 'border-primary shadow-[0_0_15px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.5 * 100%))] scale-110 z-10' : 'border-transparent opacity-60 hover:opacity-100'}`}
                     >
                       <img src={photo} className="w-full h-full object-cover" alt={`Avatar ${i}`} />
                       {userFormData.avatar_url === photo && (
@@ -418,7 +418,7 @@ function AdminUsersPage() {
               </div>
 
               <Button 
-                className="w-full h-14 bg-primary text-primary-foreground text-lg font-black uppercase italic tracking-tighter rounded-2xl shadow-[0_10px_30px_rgba(var(--color-primary),0.3)] hover:scale-[1.02] transition-all"
+                className="w-full h-14 bg-primary text-primary-foreground text-lg font-black uppercase italic tracking-tighter rounded-2xl shadow-[0_10px_30px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.3 * 100%))] hover:scale-[1.02] transition-all"
                 onClick={handleSaveUser}
               >
                 Salvar Alterações

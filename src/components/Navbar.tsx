@@ -194,7 +194,7 @@ export function Navbar() {
           {(profile?.is_admin || user?.id === 'cdf027bb-f239-4ba0-b8a9-7bf52341df4b' || user?.id === 'ad8443eb-d096-46ad-ba39-07abdba01fdb') && (
             <Link 
               to="/admin" 
-              className="p-2 text-primary transition-all hover:scale-110 bg-primary/10 rounded-full border border-primary/30 shadow-[0_0_20px_rgba(var(--color-primary),0.3)]"
+              className="p-2 text-primary transition-all hover:scale-110 bg-primary/10 rounded-full border border-primary/30 shadow-[0_0_20px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.3 * 100%))]"
               title="Painel Administrativo"
             >
               <LayoutDashboard className="w-5 h-5" />
@@ -227,7 +227,7 @@ export function Navbar() {
               </div>
               
               {(profile?.is_admin || user?.id === 'cdf027bb-f239-4ba0-b8a9-7bf52341df4b' || user?.id === 'ad8443eb-d096-46ad-ba39-07abdba01fdb') && (
-                <Button variant="outline" size="icon" className="hidden sm:flex border-primary/40 bg-primary/20 text-primary hover:bg-primary/30 h-10 w-10 shadow-[0_0_15px_rgba(var(--color-primary),0.2)]" asChild>
+                <Button variant="outline" size="icon" className="hidden sm:flex border-primary/40 bg-primary/20 text-primary hover:bg-primary/30 h-10 w-10 shadow-[0_0_15px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.2 * 100%))]" asChild>
                   <Link to="/admin" title="Painel Administrativo">
                     <LayoutDashboard className="w-5 h-5" />
                   </Link>
@@ -275,7 +275,7 @@ export function Navbar() {
               <Button variant="ghost" className="text-foreground hover:text-primary hover:bg-muted" asChild>
                 <Link to="/auth">Entrar</Link>
               </Button>
-              <Button className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_15px_rgba(var(--color-primary),0.5)] font-bold" asChild>
+              <Button className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_15px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.5 * 100%))] font-bold" asChild>
                 <Link to="/auth" search={{ register: "true" }}>Cadastrar</Link>
               </Button>
             </div>

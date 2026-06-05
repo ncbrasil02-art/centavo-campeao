@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from '@tanstack/react-router';
 import { useSettings } from "@/hooks/useSettings";
 import { useAssets } from "@/hooks/useAssets";
+import { supabase } from "@/integrations/supabase/client";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -68,10 +69,16 @@ const TestimonialCard = ({ name, role, content, avatar }: { name: string, role: 
 
 export const LandingPage = () => {
   const navigate = useNavigate();
-  const { site_name, primary_color, support_whatsapp } = useSettings();
+  const { site_name, primary_color, support_whatsapp, hero_display_mode } = useSettings();
   const assets = useAssets();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentPhrase, setCurrentPhrase] = useState(0);
+  const [displayImages, setDisplayImages] = useState<string[]>([
+    "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/header-settings.jpeg?t=1",
+    "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/landing-auctions.png?t=1",
+    "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/landing-winners.png?t=1",
+    "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/admin-panel.png?t=1"
+  ]);
 
   const phrases = [
     "Leilão de Centavos",
@@ -82,20 +89,43 @@ export const LandingPage = () => {
     "Segurança Total"
   ];
 
-  const carouselImages = [
-    "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/header-settings.jpeg?t=1",
-    "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/landing-auctions.png?t=1",
-    "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/landing-winners.png?t=1",
-    "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/admin-panel.png?t=1"
-  ];
+  useEffect(() => {
+    async function loadHeroImages() {
+      if (hero_display_mode === 'products') {
+        const { data } = await supabase
+          .from('auctions')
+          .select('*, product:products(*)')
+          .eq('status', 'scheduled')
+          .order('start_time', { ascending: true })
+          .limit(6);
+        
+        if (data && data.length > 0) {
+          const images = data.map((a: any) => a.product?.images?.[0]).filter(Boolean);
+          if (images.length > 0) setDisplayImages(images);
+        }
+      } else if (hero_display_mode === 'banners') {
+        const { data } = await supabase
+          .from('banners')
+          .select('image_url')
+          .eq('active', true)
+          .order('order_index', { ascending: true });
+        
+        if (data && data.length > 0) {
+          setDisplayImages(data.map((b: any) => b.image_url));
+        }
+      }
+    }
+
+    loadHeroImages();
+  }, [hero_display_mode]);
 
   useEffect(() => {
-    if (carouselImages.length <= 1) return;
+    if (displayImages.length <= 1) return;
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % carouselImages.length);
+      setCurrentSlide((prev) => (prev + 1) % displayImages.length);
     }, 3000);
     return () => clearInterval(timer);
-  }, [carouselImages.length]);
+  }, [displayImages.length]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -230,7 +260,7 @@ export const LandingPage = () => {
                   <AnimatePresence mode="wait">
                     <motion.img
                       key={currentSlide}
-                      src={carouselImages[currentSlide] || "https://images.unsplash.com/photo-1551288049-bbbda5366392?q=80&w=1200&auto=format&fit=crop"}
+                      src={displayImages[currentSlide] || "https://images.unsplash.com/photo-1551288049-bbbda5366392?q=80&w=1200&auto=format&fit=crop"}
                       initial={{ opacity: 0, scale: 1.1 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.95 }}
@@ -241,7 +271,7 @@ export const LandingPage = () => {
                   
                   {/* Progress dots */}
                   <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-3 z-20">
-                    {carouselImages.map((_, i) => (
+                    {displayImages.map((_, i) => (
                       <button 
                         key={i} 
                         onClick={() => setCurrentSlide(i)}
