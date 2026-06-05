@@ -72,7 +72,8 @@ function AdminAuctions() {
     auctionsPerDay: 4,
     intervalMinutes: 60,
     timerDuration: 30,
-    robotStopMinutes: 60
+    robotStopMinutes: 60,
+    robotInnerDispute: true
   });
 
   
@@ -1223,9 +1224,21 @@ function AdminAuctions() {
                     <Input type="number" value={bulkData.intervalMinutes} onChange={e => setBulkBulkData({...bulkData, intervalMinutes: Number(e.target.value)})} className="bg-white/5 border-white/10" />
                   </div>
                   <div className="space-y-2">
-                    <Label>Duração Robô (min)</Label>
+                    <Label>Fim do Robô (min)</Label>
                     <Input type="number" value={bulkData.robotStopMinutes} onChange={e => setBulkBulkData({...bulkData, robotStopMinutes: Number(e.target.value)})} className="bg-white/5 border-white/10" />
                   </div>
+                </div>
+
+                <div className="flex items-center justify-between p-3 rounded-lg border border-white/5 bg-white/5">
+                  <div className="space-y-0.5">
+                    <Label className="text-xs">Disputa Robô vs Robô</Label>
+                    <p className="text-[9px] text-white/40">Robôs dão lances entre si para manter o leilão ativo.</p>
+                  </div>
+                  <Switch 
+                    checked={bulkData.robotInnerDispute} 
+                    onCheckedChange={v => setBulkBulkData({...bulkData, robotInnerDispute: v})}
+                    className="data-[state=checked]:bg-primary"
+                  />
                 </div>
 
                 <div className="space-y-2">

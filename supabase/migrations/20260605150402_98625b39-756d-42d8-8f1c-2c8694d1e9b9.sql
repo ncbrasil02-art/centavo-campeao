@@ -1,0 +1,3 @@
+-- Não é necessário alterar o schema, pois as colunas já existem em robot_settings.
+-- Apenas garantindo que as funções de robô tratem corretamente os novos parâmetros se necessário.
+-- (A lógica principal será atualizada no frontend para enviar esses dados no momento do insert/upsert)
