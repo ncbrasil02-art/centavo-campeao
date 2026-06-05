@@ -31,8 +31,32 @@ export const Route = createFileRoute("/")({
 function IndexWrapper() {
   const { sales_page_enabled } = useSettings();
   const { demo } = Route.useSearch();
+  const [session, setSession] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setLoading(false);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
   
-  if (sales_page_enabled && !demo) {
+  // Show system if sales page is disabled, or if explicitly in demo mode, or if user is logged in
+  if (sales_page_enabled && !demo && !session) {
     return <LandingPage />;
   }
   
