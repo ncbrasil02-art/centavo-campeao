@@ -575,7 +575,7 @@ export const LandingPage = () => {
                 onClick={handleCTA}
                 className="h-20 px-12 bg-black text-white hover:bg-black/80 font-black italic uppercase text-2xl rounded-full shadow-2xl transition-transform hover:scale-105"
               >
-                Garantir Minha Plataforma NC
+                Ver Demonstração
               </Button>
             </div>
           </div>
