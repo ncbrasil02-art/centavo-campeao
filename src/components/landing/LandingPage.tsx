@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useSettings } from "@/hooks/useSettings";
 import { useAssets } from "@/hooks/useAssets";
 
@@ -68,6 +68,22 @@ const TestimonialCard = ({ name, role, content, avatar }: { name: string, role: 
 export const LandingPage = () => {
   const { site_name, primary_color, support_whatsapp } = useSettings();
   const assets = useAssets();
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const carouselImages = [
+    assets['header-settings.jpeg'],
+    assets['landing-auctions.png'],
+    assets['landing-winners.png'],
+    assets['admin-panel.png']
+  ].filter(Boolean);
+
+  useEffect(() => {
+    if (carouselImages.length <= 1) return;
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % carouselImages.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, [carouselImages.length]);
 
 
   const scrollToSection = (id: string) => {
@@ -179,19 +195,42 @@ export const LandingPage = () => {
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="relative"
               >
-                <div className="relative z-10 rounded-[40px] border border-white/10 overflow-hidden shadow-2xl shadow-primary/20 bg-black p-2 backdrop-blur-sm">
+                {/* Mobile Slider / Desktop Static */}
+                <div className="md:hidden relative z-10 rounded-[32px] border border-white/10 overflow-hidden shadow-2xl bg-black aspect-[4/5]">
+                  <AnimatePresence mode="wait">
+                    <motion.img
+                      key={currentSlide}
+                      src={carouselImages[currentSlide] || "https://images.unsplash.com/photo-1551288049-bbbda5366392?q=80&w=1200&auto=format&fit=crop"}
+                      initial={{ opacity: 0, x: 50 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -50 }}
+                      transition={{ duration: 0.5 }}
+                      className="w-full h-full object-cover"
+                    />
+                  </AnimatePresence>
+                  <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
+                    {carouselImages.map((_, i) => (
+                      <div 
+                        key={i} 
+                        className={`w-2 h-2 rounded-full transition-colors ${i === currentSlide ? 'bg-primary' : 'bg-white/20'}`} 
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <div className="hidden md:block relative z-10 rounded-[40px] border border-white/10 overflow-hidden shadow-2xl shadow-primary/20 bg-black p-2 backdrop-blur-sm">
                   <div className="rounded-[32px] overflow-hidden border border-white/5 bg-zinc-900">
                     <img 
                       src={assets['header-settings.jpeg'] || assets['admin-panel.png'] || "https://images.unsplash.com/photo-1551288049-bbbda5366392?q=80&w=1200&auto=format&fit=crop"} 
                       alt="Painel Administrativo" 
-                      className="w-full h-auto min-h-[400px] md:min-h-[600px] object-top object-cover"
+                      className="w-full h-auto min-h-[600px] object-top object-cover"
                     />
                   </div>
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-primary rounded-full flex items-center justify-center cursor-pointer hover:scale-110 transition-transform shadow-[0_0_30px_rgba(var(--color-primary),0.5)]">
                     <Rocket className="w-10 h-10 text-black" />
                   </div>
                 </div>
-                <div className="absolute -inset-4 border border-primary/30 rounded-[48px] -z-10 animate-pulse"></div>
+                <div className="absolute -inset-4 border border-primary/30 rounded-[48px] -z-10 animate-pulse hidden md:block"></div>
               </motion.div>
             </div>
           </div>
@@ -313,94 +352,95 @@ export const LandingPage = () => {
 
         <section id="presentation" className="py-32 bg-black relative">
           <div className="container mx-auto px-6">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-center">
-              <div className="lg:col-span-7 relative">
-                <div className="grid grid-cols-2 gap-4 md:gap-8">
-                  <div className="space-y-4 md:space-y-8 mt-12">
-                    <motion.div 
-                      whileHover={{ scale: 1.02 }}
-                      className="relative rounded-[24px] md:rounded-[40px] overflow-hidden border border-white/10 shadow-2xl shadow-primary/5"
-                    >
-                      <img src={assets['landing-auctions.png'] || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop"} alt="Interface de Leilões" className="w-full h-full object-cover" />
-                      <div className="absolute top-4 left-4 md:top-6 md:left-6">
-                        <Badge className="bg-primary text-black font-black italic text-[10px]">PLATAFORMA</Badge>
-                      </div>
-                    </motion.div>
-                    <motion.div 
-                      whileHover={{ scale: 1.02 }}
-                      className="relative rounded-[24px] md:rounded-[40px] overflow-hidden border border-white/10 shadow-2xl shadow-primary/5 aspect-square"
-                    >
-                      <img src={assets['landing-winners.png'] || "https://images.unsplash.com/photo-1551288049-bbbda5366392?q=80&w=1200&auto=format&fit=crop"} alt="Ganhadores" className="w-full h-full object-cover" />
-                      <div className="absolute bottom-4 left-4 md:bottom-6 md:left-6">
-                        <Badge className="bg-primary text-black font-black italic text-[10px]">GANHADORES</Badge>
-                      </div>
-                    </motion.div>
-                  </div>
-                  <div className="space-y-4 md:space-y-8">
-                    <motion.div 
-                      whileHover={{ scale: 1.02 }}
-                      className="relative rounded-[24px] md:rounded-[40px] overflow-hidden border border-white/10 shadow-2xl shadow-primary/5 aspect-square"
-                    >
-                      <img src={assets['header-settings.jpeg'] || "https://images.unsplash.com/photo-1551288049-bbbda5366392?q=80&w=1200&auto=format&fit=crop"} alt="Configurações" className="w-full h-full object-cover" />
-                      <div className="absolute top-4 right-4 md:top-6 md:right-6">
-                        <Badge className="bg-primary text-black font-black italic text-[10px]">PAINEL ADM</Badge>
-                      </div>
-                    </motion.div>
-                    <motion.div 
-                      whileHover={{ scale: 1.02 }}
-                      className="relative rounded-[24px] md:rounded-[40px] overflow-hidden border border-white/10 shadow-2xl shadow-primary/5"
-                    >
-                      <img src={assets['landing-winners.png'] || "https://images.unsplash.com/photo-1551288049-bbbda5366392?q=80&w=1200&auto=format&fit=crop"} alt="Interface Mobile" className="w-full h-full object-cover" />
-                    </motion.div>
-                  </div>
-                </div>
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/20 rounded-full blur-[100px] -z-10 animate-pulse"></div>
+            {/* Desktop: Full Width Image + Side Text */}
+            <div className="hidden lg:grid grid-cols-12 gap-20 items-center">
+              <div className="col-span-8">
+                <motion.div 
+                  initial={{ opacity: 0, x: -30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  className="relative rounded-[48px] overflow-hidden border border-white/10 shadow-2xl shadow-primary/10 bg-zinc-900"
+                >
+                  <img 
+                    src={assets['header-settings.jpeg'] || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop"} 
+                    alt="Template Completo" 
+                    className="w-full h-auto"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                </motion.div>
               </div>
               
-              <div className="lg:col-span-5">
-                <Badge className="bg-primary/10 text-primary border-primary/20 mb-6 uppercase font-black italic">Interface Moderna</Badge>
-                <h2 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter mb-8 leading-[0.9]">
-                  Uma Experiência <br /> <span className="text-primary">Inigualável</span>
+              <div className="col-span-4">
+                <Badge className="bg-primary/10 text-primary border-primary/20 mb-6 uppercase font-black italic">Gestão Total</Badge>
+                <h2 className="text-6xl font-black italic uppercase tracking-tighter mb-8 leading-[0.9]">
+                  Controle <br /> <span className="text-primary">Absoluto</span>
                 </h2>
-                <p className="text-lg md:text-xl text-white/60 mb-10 leading-relaxed font-medium">
-                  Nossa plataforma foi desenvolvida com foco total na conversão e na experiência do usuário. Um design intuitivo que facilita a participação e aumenta o tempo de permanência no site.
+                <p className="text-xl text-white/60 mb-10 leading-relaxed font-medium">
+                  Nosso template completo oferece todas as ferramentas necessárias para gerenciar seu leilão com maestria. Desde paletas de cores até integrações de pagamento avançadas.
                 </p>
                 
                 <ul className="space-y-6 mb-12">
-                  <li className="flex items-start gap-4">
-                    <div className="mt-1 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-                      <CheckCircle2 className="w-4 h-4 text-primary" />
-                    </div>
-                    <div>
-                      <h4 className="font-black italic uppercase tracking-tighter">Design Dark Mode</h4>
-                      <p className="text-white/40 text-sm">Elegância e modernidade que destacam os produtos e leilões.</p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-4">
-                    <div className="mt-1 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-                      <CheckCircle2 className="w-4 h-4 text-primary" />
-                    </div>
-                    <div>
-                      <h4 className="font-black italic uppercase tracking-tighter">Animações Fluídas</h4>
-                      <p className="text-white/40 text-sm">Lances em tempo real com feedback visual instantâneo para o usuário.</p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-4">
-                    <div className="mt-1 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-                      <CheckCircle2 className="w-4 h-4 text-primary" />
-                    </div>
-                    <div>
-                      <h4 className="font-black italic uppercase tracking-tighter">Otimização Mobile First</h4>
-                      <p className="text-white/40 text-sm">Mais de 90% dos lances vêm do celular. Nossa plataforma é líder nisso.</p>
-                    </div>
-                  </li>
+                  {[
+                    { title: "Personalização Completa", desc: "Altere cores, logos e banners com um clique." },
+                    { title: "Relatórios em Real-Time", desc: "Acompanhe faturamento e lances ao vivo." },
+                    { title: "Segurança Bancária", desc: "Integração direta com os maiores gateways." }
+                  ].map((item, idx) => (
+                    <li key={idx} className="flex items-start gap-4">
+                      <div className="mt-1 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                        <CheckCircle2 className="w-4 h-4 text-primary" />
+                      </div>
+                      <div>
+                        <h4 className="font-black italic uppercase tracking-tighter">{item.title}</h4>
+                        <p className="text-white/40 text-sm">{item.desc}</p>
+                      </div>
+                    </li>
+                  ))}
                 </ul>
 
                 <Button 
                   onClick={handleCTA}
-                  className="h-16 px-10 bg-primary hover:bg-primary/90 text-black font-black italic uppercase text-xl rounded-full"
+                  className="h-16 w-full bg-primary hover:bg-primary/90 text-black font-black italic uppercase text-xl rounded-full"
                 >
-                  Quero Ver Mais Telas
+                  Garantir Este Layout
+                </Button>
+              </div>
+            </div>
+
+            {/* Mobile/Tablet: Original Bento Layout */}
+            <div className="lg:hidden grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
+              <div className="md:col-span-7 relative">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-4 mt-8">
+                    <div className="relative rounded-[24px] overflow-hidden border border-white/10 aspect-[3/4]">
+                      <img src={assets['landing-auctions.png']} alt="Plataforma" className="w-full h-full object-cover" />
+                    </div>
+                    <div className="relative rounded-[24px] overflow-hidden border border-white/10 aspect-square">
+                      <img src={assets['landing-winners.png']} alt="Ganhadores" className="w-full h-full object-cover" />
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="relative rounded-[24px] overflow-hidden border border-white/10 aspect-square">
+                      <img src={assets['header-settings.jpeg']} alt="Adm" className="w-full h-full object-cover" />
+                    </div>
+                    <div className="relative rounded-[24px] overflow-hidden border border-white/10 aspect-[3/4]">
+                      <img src={assets['admin-panel.png']} alt="Admin" className="w-full h-full object-cover" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="md:col-span-5">
+                <Badge className="bg-primary/10 text-primary border-primary/20 mb-6 uppercase font-black italic">Premium</Badge>
+                <h2 className="text-4xl md:text-5xl font-black italic uppercase tracking-tighter mb-8 leading-tight">
+                  Interface <span className="text-primary">Inigualável</span>
+                </h2>
+                <p className="text-lg text-white/60 mb-10 leading-relaxed font-medium">
+                  Uma experiência fluída e moderna pensada exclusivamente para conversão mobile.
+                </p>
+                <Button 
+                  onClick={handleCTA}
+                  className="h-16 w-full bg-primary hover:bg-primary/90 text-black font-black italic uppercase text-xl rounded-full"
+                >
+                  Ver Demonstração
                 </Button>
               </div>
             </div>
