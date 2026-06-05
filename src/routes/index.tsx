@@ -3,6 +3,7 @@ import { Navbar } from "@/components/Navbar";
 import { Hero, SecondaryBanner } from "@/components/HomeSections";
 import { DemoAuctionBlock } from "@/components/DemoAuctionBlock";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
+import { LandingPage } from "@/components/landing/LandingPage";
 
 import { useSettings } from "@/hooks/useSettings";
 import { AuctionCard } from "@/components/AuctionCard";
