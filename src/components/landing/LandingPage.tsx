@@ -1,6 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useSettings } from "@/hooks/useSettings";
+import { useAssets } from "@/hooks/useAssets";
+
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -65,6 +67,8 @@ const TestimonialCard = ({ name, role, content, avatar }: { name: string, role: 
 
 export const LandingPage = () => {
   const { site_name, primary_color, support_whatsapp } = useSettings();
+  const assets = useAssets();
+
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -178,10 +182,12 @@ export const LandingPage = () => {
                 <div className="relative z-10 rounded-[40px] border border-white/10 overflow-hidden shadow-2xl shadow-primary/20 bg-black p-2 backdrop-blur-sm">
                   <div className="rounded-[32px] overflow-hidden border border-white/5">
                     <img 
-                      src="https://images.unsplash.com/photo-1551288049-bbbda5366392?q=80&w=1200&auto=format&fit=crop" 
+                      src={assets['admin-panel.png'] || "https://images.unsplash.com/photo-1551288049-bbbda5366392?q=80&w=1200&auto=format&fit=crop"} 
                       alt="Painel Administrativo" 
                       className="w-full h-auto object-cover"
                     />
+
+
                   </div>
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-primary rounded-full flex items-center justify-center cursor-pointer hover:scale-110 transition-transform shadow-[0_0_30px_rgba(var(--color-primary),0.5)]">
                     <Rocket className="w-10 h-10 text-black" />
@@ -314,13 +320,14 @@ export const LandingPage = () => {
               <div className="order-2 lg:order-1 relative">
                 <div className="space-y-6">
                   <div className="relative rounded-[32px] overflow-hidden border border-white/10 shadow-2xl transform -rotate-2 hover:rotate-0 transition-transform duration-500">
-                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop" alt="Home Platform" className="w-full" />
+                    <img src={assets['landing-auctions.png'] || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop"} alt="Home Platform" className="w-full" />
                     <div className="absolute top-4 right-4 bg-primary text-black text-[10px] font-black uppercase px-3 py-1 rounded-full">INTERFACE DO USUÁRIO</div>
                   </div>
                   <div className="relative rounded-[32px] overflow-hidden border border-white/10 shadow-2xl transform rotate-2 translate-x-12 hover:rotate-0 transition-transform duration-500">
-                    <img src="https://images.unsplash.com/photo-1551288049-bbbda5366392?q=80&w=1200&auto=format&fit=crop" alt="Auction Detail" className="w-full" />
-                    <div className="absolute top-4 right-4 bg-primary text-black text-[10px] font-black uppercase px-3 py-1 rounded-full">PAINEL DE CONTROLE</div>
+                    <img src={assets['landing-winners.png'] || "https://images.unsplash.com/photo-1551288049-bbbda5366392?q=80&w=1200&auto=format&fit=crop"} alt="Auction Detail" className="w-full" />
+                    <div className="absolute top-4 right-4 bg-primary text-black text-[10px] font-black uppercase px-3 py-1 rounded-full">GANHADORES REAIS</div>
                   </div>
+
                 </div>
                 <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-primary/20 rounded-full blur-[120px] -z-10"></div>
               </div>
