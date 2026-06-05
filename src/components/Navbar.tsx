@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { User, LogOut, Wallet, Gavel, LayoutDashboard, Menu, X, Clock, Settings, Sparkles, Smartphone } from "lucide-react";
