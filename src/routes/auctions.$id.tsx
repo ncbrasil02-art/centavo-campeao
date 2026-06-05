@@ -434,60 +434,55 @@ function AuctionPage() {
                 </div>
 
                 {auction.status === 'scheduled' && auction.start_time && (
-                  <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-background/40 backdrop-blur-[2px]">
-                    <div className="bg-primary/70 backdrop-blur-md py-8 px-12 flex flex-col items-center justify-center shadow-[0_0_50px_rgba(var(--color-primary),0.3)] border-y border-border rotate-[-2deg] scale-110">
-                      <span className="text-sm font-black uppercase tracking-[0.4em] text-foreground mb-3">COMEÇA EM (HORÁRIO DE BRASÍLIA)</span>
-                      <div className="flex gap-2">
+                  <div className="absolute inset-0 z-30 flex items-center justify-center p-4">
+                    <div className="bg-orange-500/95 backdrop-blur-md w-full max-w-[450px] p-6 rounded-3xl flex flex-col items-center justify-center shadow-[0_0_50px_rgba(249,115,22,0.4)] border border-white/20 relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none" />
+                      
+                      <span className="text-sm font-black uppercase tracking-[0.2em] text-white mb-4 relative z-10 drop-shadow-md">
+                        COMEÇA EM (HORÁRIO DE BRASÍLIA)
+                      </span>
+                      
+                      <div className="flex gap-3 relative z-10 w-full justify-center">
                         {timeLeft >= 3600 * 24 && (
-                          <div className="flex flex-col items-center">
-                            <div className="bg-card/90 rounded-xl px-4 py-3 min-w-[70px] flex items-center justify-center shadow-2xl border border-border">
-                              <span className="text-4xl font-black text-primary tabular-nums tracking-tighter">
+                          <div className="flex flex-col items-center flex-1 max-w-[80px]">
+                            <div className="bg-white/10 rounded-2xl w-full aspect-square flex items-center justify-center border border-white/20 backdrop-blur-sm shadow-xl">
+                              <span className="text-3xl md:text-4xl font-black text-white tabular-nums tracking-tighter">
                                 {Math.floor(timeLeft / (3600 * 24)).toString().padStart(2, '0')}
                               </span>
                             </div>
-                            <span className="text-xs font-black text-muted-foreground mt-1">DIAS</span>
+                            <span className="text-[10px] font-black text-white/70 mt-2 uppercase tracking-widest">DIAS</span>
                           </div>
                         )}
-                        {timeLeft >= 3600 && (
-                          <div className="flex flex-col items-center">
-                            <div className="bg-card/90 rounded-xl px-4 py-3 min-w-[70px] flex items-center justify-center shadow-2xl border border-border">
-                              <span className="text-4xl font-black text-primary tabular-nums tracking-tighter">
-                                {Math.floor((timeLeft % (3600 * 24)) / 3600).toString().padStart(2, '0')}
-                              </span>
-                            </div>
-                            <span className="text-xs font-black text-muted-foreground mt-1">HORAS</span>
+                        <div className="flex flex-col items-center flex-1 max-w-[80px]">
+                          <div className="bg-white/10 rounded-2xl w-full aspect-square flex items-center justify-center border border-white/20 backdrop-blur-sm shadow-xl">
+                            <span className="text-3xl md:text-4xl font-black text-white tabular-nums tracking-tighter">
+                              {Math.floor((timeLeft % (3600 * 24)) / 3600).toString().padStart(2, '0')}
+                            </span>
                           </div>
-                        )}
-                        <div className="flex flex-col items-center">
-                          <div className="bg-card/90 rounded-xl px-4 py-3 min-w-[70px] flex items-center justify-center shadow-2xl border border-border">
-                            <span className="text-4xl font-black text-primary tabular-nums tracking-tighter">
+                          <span className="text-[10px] font-black text-white/70 mt-2 uppercase tracking-widest">HORAS</span>
+                        </div>
+                        <div className="flex flex-col items-center flex-1 max-w-[80px]">
+                          <div className="bg-white/10 rounded-2xl w-full aspect-square flex items-center justify-center border border-white/20 backdrop-blur-sm shadow-xl">
+                            <span className="text-3xl md:text-4xl font-black text-white tabular-nums tracking-tighter">
                               {Math.floor((timeLeft % 3600) / 60).toString().padStart(2, '0')}
                             </span>
                           </div>
-                          <span className="text-xs font-black text-muted-foreground mt-1">MIN</span>
+                          <span className="text-[10px] font-black text-white/70 mt-2 uppercase tracking-widest">MIN</span>
                         </div>
-                        <div className="flex flex-col items-center">
-                          <div className="flex gap-1">
-                            <div className="bg-black/90 rounded-xl px-4 py-3 min-w-[70px] flex items-center justify-center shadow-2xl border border-white/10">
-                              <span className="text-4xl font-black text-primary tabular-nums tracking-tighter">
-                                {Math.floor(timeLeft % 60).toString().padStart(2, '0')}
-                              </span>
-                            </div>
-                            {timeLeft < 60 && (
-                              <div className="bg-card/70 rounded-xl px-2 py-3 flex items-end shadow-2xl border border-border">
-                                <span className="text-xl font-black text-primary/80 tabular-nums">
-                                  ,{Math.floor((timeLeft % 1) * 100).toString().padStart(2, '0')}
-                                </span>
-                              </div>
-                            )}
+                        <div className="flex flex-col items-center flex-1 max-w-[80px]">
+                          <div className="bg-black/40 rounded-2xl w-full aspect-square flex items-center justify-center border border-white/20 backdrop-blur-sm shadow-xl">
+                            <span className="text-3xl md:text-4xl font-black text-white tabular-nums tracking-tighter">
+                              {Math.floor(timeLeft % 60).toString().padStart(2, '0')}
+                            </span>
                           </div>
-                          <span className="text-xs font-black text-muted-foreground mt-1">SEG</span>
+                          <span className="text-[10px] font-black text-white/70 mt-2 uppercase tracking-widest">SEG</span>
                         </div>
                       </div>
-                      <div className="mt-4 flex items-center gap-2 px-4 py-1.5 rounded-full bg-muted/20 border border-border">
-                        <Calendar className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
-                          {new Date(auction.start_time).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })} às {new Date(auction.start_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                      
+                      <div className="mt-6 flex items-center gap-2 px-5 py-2 rounded-full bg-white/10 border border-white/10 relative z-10">
+                        <Calendar className="w-4 h-4 text-white/80" />
+                        <span className="text-xs font-bold text-white uppercase tracking-wider">
+                          {new Date(auction.start_time).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long' })} às {new Date(auction.start_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                         </span>
                       </div>
                     </div>
