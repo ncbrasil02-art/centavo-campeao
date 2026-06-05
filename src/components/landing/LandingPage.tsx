@@ -182,6 +182,7 @@ export const LandingPage = () => {
                       alt="Painel Administrativo" 
                       className="w-full h-auto object-cover"
                     />
+
                   </div>
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-primary rounded-full flex items-center justify-center cursor-pointer hover:scale-110 transition-transform shadow-[0_0_30px_rgba(var(--color-primary),0.5)]">
                     <Rocket className="w-10 h-10 text-black" />
