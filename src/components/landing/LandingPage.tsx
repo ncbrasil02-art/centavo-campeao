@@ -381,16 +381,16 @@ export const LandingPage = () => {
           <div className="container mx-auto px-6">
             {/* Desktop: Full Width Image + Side Text */}
             <div className="hidden lg:grid grid-cols-12 gap-20 items-center">
-              <div className="col-span-8">
+              <div className="col-span-7">
                 <motion.div 
                   initial={{ opacity: 0, x: -30 }}
                   whileInView={{ opacity: 1, x: 0 }}
-                  className="relative rounded-[48px] overflow-hidden border border-white/10 shadow-2xl shadow-primary/10 bg-zinc-900"
+                  className="relative rounded-[48px] overflow-hidden border border-white/10 shadow-2xl shadow-primary/10 bg-zinc-900 group"
                 >
                   <img 
-                    src={assets['header-settings.jpeg'] || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop"} 
+                    src={assets['landing-auctions.png'] || assets['header-settings.jpeg'] || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop"} 
                     alt="Template Completo" 
-                    className="w-full h-auto"
+                    className="w-full h-auto transition-transform duration-700 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                 </motion.div>
