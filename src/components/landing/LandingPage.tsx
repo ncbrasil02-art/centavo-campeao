@@ -123,9 +123,9 @@ export const LandingPage = () => {
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
-              <span className="font-black text-black italic text-xl">NC</span>
+              <span className="font-black text-black italic text-xl">LC</span>
             </div>
-            <h1 className="text-2xl font-black italic uppercase tracking-tighter">NC BRASIL</h1>
+            <h1 className="text-2xl font-black italic uppercase tracking-tighter">LANCE CERTO</h1>
           </div>
           
           <nav className="hidden md:flex gap-10">
@@ -166,7 +166,7 @@ export const LandingPage = () => {
                   transition={{ duration: 0.6 }}
                 >
                   <Badge className="bg-primary/10 text-primary border-primary/20 mb-6 px-4 py-1 font-black italic uppercase tracking-widest">
-                    Tecnologia NC BRASIL
+                    Tecnologia LANCE CERTO
                   </Badge>
                   <h2 className="text-5xl md:text-8xl font-black italic uppercase tracking-tighter leading-[0.9] mb-8 min-h-[1.8em]">
                     Sua plataforma de <br />
@@ -285,7 +285,7 @@ export const LandingPage = () => {
               <h2 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter mb-8 leading-none">
                 Tudo que você precisa em <span className="text-primary">um só lugar</span>
               </h2>
-              <p className="text-xl text-white/60">A tecnologia NC BRASIL entrega a gestão completa do seu negócio, desde o financeiro até a automação de lances.</p>
+              <p className="text-xl text-white/60">A tecnologia LANCE CERTO entrega a gestão completa do seu negócio, desde o financeiro até a automação de lances.</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
