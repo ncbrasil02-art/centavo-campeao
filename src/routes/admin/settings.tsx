@@ -39,6 +39,8 @@ import {
   Star,
   Gavel
 } from "lucide-react";
+import { useSettings } from "@/hooks/useSettings";
+
 
 
 
@@ -60,7 +62,9 @@ export const Route = createFileRoute("/admin/settings")({
 });
 
 function AdminSettings() {
+  const { refreshSettings } = useSettings();
   const [loading, setLoading] = useState(true);
+
   const [saving, setSaving] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingFavicon, setUploadingFavicon] = useState(false);
@@ -277,6 +281,11 @@ function AdminSettings() {
         .eq("id", settings.id);
 
       if (publicError) throw publicError;
+      
+      // Force global settings refresh
+      await refreshSettings();
+
+
 
       // Update admin secrets
       const { data: existingAdminData } = await supabase

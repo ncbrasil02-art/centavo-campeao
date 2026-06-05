@@ -60,7 +60,9 @@ interface SiteSettings {
 
 interface SettingsContextType extends SiteSettings {
   updateSettings: (data: Partial<SiteSettings>) => Promise<void>;
+  refreshSettings: () => Promise<void>;
 }
+
 
 const SettingsContext = createContext<SettingsContextType | null>(null);
 
@@ -136,6 +138,86 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     }
     return DEFAULT_SETTINGS;
   });
+
+  // Function to refresh settings manually
+  const refreshSettings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("site_settings")
+        .select("*")
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (data) {
+        const fetchedSettings: SiteSettings = {
+          ...DEFAULT_SETTINGS,
+          site_name: data.site_name || DEFAULT_SETTINGS.site_name,
+          logo_url: data.logo_url || DEFAULT_SETTINGS.logo_url,
+          favicon_url: data.favicon_url || DEFAULT_SETTINGS.favicon_url,
+          primary_color: data.primary_color || DEFAULT_SETTINGS.primary_color,
+          secondary_color: data.secondary_color || DEFAULT_SETTINGS.secondary_color,
+          mercado_pago_public_key: data.mercado_pago_public_key || DEFAULT_SETTINGS.mercado_pago_public_key,
+          pix_key: data.pix_key || DEFAULT_SETTINGS.pix_key,
+          pix_name: data.pix_name || DEFAULT_SETTINGS.pix_name,
+          hero_display_mode: (data.hero_display_mode as any) || DEFAULT_SETTINGS.hero_display_mode,
+          theme_mode: (data.theme_mode as any) || DEFAULT_SETTINGS.theme_mode,
+          ga_id: data.ga_id || DEFAULT_SETTINGS.ga_id,
+          fb_pixel_id: data.fb_pixel_id || DEFAULT_SETTINGS.fb_pixel_id,
+          meta_title: data.meta_title || DEFAULT_SETTINGS.meta_title,
+          meta_description: data.meta_description || DEFAULT_SETTINGS.meta_description,
+          meta_keywords: data.meta_keywords || DEFAULT_SETTINGS.meta_keywords,
+          google_site_verification: data.google_site_verification || DEFAULT_SETTINGS.google_site_verification,
+          font_color_primary: data.font_color_primary || DEFAULT_SETTINGS.font_color_primary,
+          font_color_secondary: data.font_color_secondary || DEFAULT_SETTINGS.font_color_secondary,
+          card_background_color: data.card_background_color || DEFAULT_SETTINGS.card_background_color,
+          block_background_color: data.block_background_color || DEFAULT_SETTINGS.block_background_color,
+          page_background_color: data.page_background_color || DEFAULT_SETTINGS.page_background_color,
+          border_color: data.border_color || DEFAULT_SETTINGS.border_color,
+          logo_height: data.logo_height || DEFAULT_SETTINGS.logo_height,
+          logo_height_mobile: data.logo_height_mobile || DEFAULT_SETTINGS.logo_height_mobile,
+          logo_padding_x: data.logo_padding_x || DEFAULT_SETTINGS.logo_padding_x,
+          logo_padding_y: data.logo_padding_y || DEFAULT_SETTINGS.logo_padding_y,
+          google_reviews_widget: data.google_reviews_widget || DEFAULT_SETTINGS.google_reviews_widget,
+          support_whatsapp: data.support_whatsapp || DEFAULT_SETTINGS.support_whatsapp,
+          sound_enabled: data.sound_enabled ?? DEFAULT_SETTINGS.sound_enabled,
+          narration_enabled: data.narration_enabled ?? DEFAULT_SETTINGS.narration_enabled,
+          welcome_bids: data.welcome_bids || DEFAULT_SETTINGS.welcome_bids,
+          marquee_text: data.marquee_text || DEFAULT_SETTINGS.marquee_text,
+          marquee_enabled: data.marquee_enabled ?? DEFAULT_SETTINGS.marquee_enabled,
+          demo_auctions_enabled: data.demo_auctions_enabled ?? DEFAULT_SETTINGS.demo_auctions_enabled,
+          pwa_enabled: data.pwa_enabled ?? DEFAULT_SETTINGS.pwa_enabled,
+          android_app_url: data.android_app_url || DEFAULT_SETTINGS.android_app_url,
+          ios_app_url: data.ios_app_url || DEFAULT_SETTINGS.ios_app_url,
+          whatsapp_number: data.whatsapp_number || DEFAULT_SETTINGS.whatsapp_number,
+          whatsapp_float_enabled: data.whatsapp_float_enabled ?? DEFAULT_SETTINGS.whatsapp_float_enabled,
+          terms_of_use: data.terms_of_use || DEFAULT_SETTINGS.terms_of_use,
+          privacy_policy: data.privacy_policy || DEFAULT_SETTINGS.privacy_policy,
+          show_secondary_banner: data.show_secondary_banner ?? DEFAULT_SETTINGS.show_secondary_banner,
+          show_finished_auctions: data.show_finished_auctions ?? DEFAULT_SETTINGS.show_finished_auctions,
+          show_testimonials: data.show_testimonials ?? DEFAULT_SETTINGS.show_testimonials,
+          show_winners_ranking: data.show_winners_ranking ?? DEFAULT_SETTINGS.show_winners_ranking,
+          secondary_banner_title: data.secondary_banner_title || DEFAULT_SETTINGS.secondary_banner_title,
+          secondary_banner_subtitle: data.secondary_banner_subtitle || DEFAULT_SETTINGS.secondary_banner_subtitle,
+          secondary_banner_image: data.secondary_banner_image || DEFAULT_SETTINGS.secondary_banner_image,
+          secondary_banner_link: data.secondary_banner_link || DEFAULT_SETTINGS.secondary_banner_link,
+          sales_page_enabled: data.sales_page_enabled ?? DEFAULT_SETTINGS.sales_page_enabled,
+        };
+
+
+        setSettings(fetchedSettings);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('site_settings', JSON.stringify(fetchedSettings));
+        }
+        updateMetaTags(fetchedSettings);
+        if (fetchedSettings.ga_id) injectScripts(fetchedSettings.ga_id, fetchedSettings.fb_pixel_id);
+        applySettingsToDOM(fetchedSettings);
+      }
+    } catch (err) {
+      console.error("Error refreshing settings:", err);
+    }
+  };
+
 
   const applySettingsToDOM = (fetchedSettings: SiteSettings) => {
     if (typeof document === 'undefined') return;
@@ -336,10 +418,11 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <SettingsContext.Provider value={{ ...settings, updateSettings }}>
+    <SettingsContext.Provider value={{ ...settings, updateSettings, refreshSettings }}>
       {children}
     </SettingsContext.Provider>
   );
+
 }
 
 export const useSettings = () => {
@@ -348,7 +431,9 @@ export const useSettings = () => {
     return {
       ...DEFAULT_SETTINGS,
       updateSettings: async () => {},
+      refreshSettings: async () => {},
     };
+
   }
   return context;
 };
