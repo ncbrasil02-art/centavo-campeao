@@ -375,26 +375,19 @@ function AuctionPage() {
           {/* Left Column: Product Gallery & Description */}
           <div className="lg:col-span-7 space-y-8">
             <div className="space-y-6">
-              <div className="relative aspect-square rounded-[32px] overflow-hidden bg-muted/20 border border-border group shadow-2xl">
+              <div className="relative aspect-square rounded-[32px] overflow-hidden bg-muted/20 border border-border group shadow-2xl flex items-center justify-center">
                 <div className="absolute inset-0 z-0">
                   <img 
                     src={auction.product?.images?.[activeImage] || FALLBACK_PRODUCT_IMAGE} 
                     alt={auction.product?.name} 
-                    className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 blur-2xl opacity-20 scale-150"
+                    className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
                     onError={(e) => {
                       (e.target as HTMLImageElement).src = FALLBACK_PRODUCT_IMAGE;
                     }}
                   />
+                  <div className="absolute inset-0 bg-black/20" />
                 </div>
-                <img 
-                  key={activeImage}
-                  src={auction.product?.images?.[activeImage] || FALLBACK_PRODUCT_IMAGE} 
-                  alt={auction.product?.name} 
-                  className="relative z-10 w-full h-full object-contain p-8 transition-all duration-500 animate-in fade-in zoom-in-95"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = FALLBACK_PRODUCT_IMAGE;
-                  }}
-                />
+                {/* Removed floating foreground image to let background fill the area */}
                 <div className="absolute top-6 left-6 z-20 flex flex-col gap-3">
                   {auction.modality && MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG] && (
                     <TooltipProvider>
@@ -612,7 +605,7 @@ function AuctionPage() {
                   </div>
                   <div className={`text-7xl font-black text-primary transition-all duration-500 flex items-baseline ${isNewBid ? 'scale-110 drop-shadow-[0_0_50px_rgba(var(--color-primary),1)]' : 'scale-100 drop-shadow-[0_0_30px_rgba(var(--color-primary),0.6)]'}`}>
                     <span className="text-3xl align-top mt-2 inline-block mr-2 opacity-60">R$</span>
-                    {auction.current_price?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    {auction.status === 'scheduled' ? '0,00' : (auction.current_price?.toLocaleString('pt-BR', { minimumFractionDigits: 2 }))}
                   </div>
                 </div>
 
@@ -701,12 +694,18 @@ function AuctionPage() {
                         isNewBid ? 'border-primary scale-110' : 'border-primary/20'
                       }`}
                     >
-                      <img 
-                        src={auction.last_bidder?.avatar_url || getFallbackAvatarUrl(auction.last_bidder?.username)} 
-                        className="w-full h-full object-cover" 
-                        alt="Bidder"
-                        onError={(e) => (e.target as HTMLImageElement).src = getFallbackAvatarUrl(auction.last_bidder?.username)}
-                      />
+                      {auction.last_bidder ? (
+                        <img 
+                          src={auction.last_bidder?.avatar_url || getFallbackAvatarUrl(auction.last_bidder?.username)} 
+                          className="w-full h-full object-cover" 
+                          alt="Bidder"
+                          onError={(e) => (e.target as HTMLImageElement).src = getFallbackAvatarUrl(auction.last_bidder?.username)}
+                        />
+                      ) : (
+                        <div className="bg-primary/10 w-full h-full flex items-center justify-center">
+                          <User className="w-6 h-6 text-primary/40" />
+                        </div>
+                      )}
                     </div>
                     <div>
                       <span className={`block text-[10px] font-black uppercase tracking-[0.2em] mb-1 leading-none transition-colors ${isNewBid ? 'text-primary' : isFinished ? 'text-green-500' : 'text-muted-foreground'}`}>
