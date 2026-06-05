@@ -67,6 +67,7 @@ const TestimonialCard = ({ name, role, content, avatar }: { name: string, role: 
 );
 
 export const LandingPage = () => {
+  const navigate = useNavigate();
   const { site_name, primary_color, support_whatsapp } = useSettings();
   const assets = useAssets();
   const [currentSlide, setCurrentSlide] = useState(0);
