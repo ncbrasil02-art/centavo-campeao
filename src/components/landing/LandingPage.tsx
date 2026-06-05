@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from '@tanstack/react-router';
 import { useSettings } from "@/hooks/useSettings";
 import { useAssets } from "@/hooks/useAssets";
+import { supabase } from "@/integrations/supabase/client";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -99,7 +100,7 @@ export const LandingPage = () => {
           .limit(6);
         
         if (data && data.length > 0) {
-          const images = data.map(a => a.product?.images?.[0]).filter(Boolean);
+          const images = data.map((a: any) => a.product?.images?.[0]).filter(Boolean);
           if (images.length > 0) setDisplayImages(images);
         }
       } else if (hero_display_mode === 'banners') {
@@ -110,7 +111,7 @@ export const LandingPage = () => {
           .order('order_index', { ascending: true });
         
         if (data && data.length > 0) {
-          setDisplayImages(data.map(b => b.image_url));
+          setDisplayImages(data.map((b: any) => b.image_url));
         }
       }
     }
