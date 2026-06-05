@@ -598,6 +598,7 @@ function AdminAuctions() {
         auction_id: a.id,
         active: true,
         stop_after_minutes: bulkData.robotStopMinutes,
+        inner_dispute_enabled: (bulkData as any).robotInnerDispute ?? true,
         bid_chance: 0.95,
         min_delay: 1,
         max_delay: 5
