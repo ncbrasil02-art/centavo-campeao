@@ -138,7 +138,7 @@ export const LandingPage = () => {
             onClick={handleCTA}
             className="hidden md:flex bg-primary hover:bg-primary/90 text-black font-black italic uppercase tracking-tighter px-6 h-12 rounded-full"
           >
-            Quero minha plataforma
+            Ver demonstração
           </Button>
 
           <button className="md:hidden text-white" onClick={handleCTA}>
