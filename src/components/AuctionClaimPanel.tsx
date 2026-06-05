@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Send, MessageSquare, Upload, CheckCircle2, Video, Camera, Clock, CheckCircle } from "lucide-react";
+import { Send, MessageSquare, Upload, CheckCircle2, Video, Camera, Clock, CheckCircle, Zap } from "lucide-react";
 import { toast } from "sonner";
 import { getFallbackAvatarUrl } from "@/lib/constants";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -132,6 +132,31 @@ export function AuctionClaimPanel({ auctionId, winnerData }: { auctionId: string
       toast.success("Comprovante enviado com sucesso!");
     } catch (error: any) {
       toast.error("Erro ao enviar comprovante: " + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePayWithBids = async () => {
+    if (!user) return;
+    
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.rpc("pay_with_bid_balance", {
+        p_auction_id: auctionId
+      });
+
+      if (error) throw error;
+      
+      const result = data as any;
+      if (result.success) {
+        setPaymentStatus('approved');
+        toast.success(result.message);
+      } else {
+        toast.error(result.message);
+      }
+    } catch (error: any) {
+      toast.error("Erro ao processar pagamento com lances: " + error.message);
     } finally {
       setLoading(false);
     }
@@ -299,26 +324,42 @@ export function AuctionClaimPanel({ auctionId, winnerData }: { auctionId: string
                     </div>
                   </div>
 
-                  <div className="flex flex-col items-center justify-center border-2 border-dashed border-white/10 rounded-3xl p-8 bg-black/20 group hover:border-primary/50 transition-colors cursor-pointer relative">
-                    <input 
-                      type="file" 
-                      className="absolute inset-0 opacity-0 cursor-pointer" 
-                      accept="image/*,application/pdf"
-                      onChange={handleUploadReceipt}
-                      disabled={loading}
-                    />
-                    {receiptUrl ? (
-                      <div className="text-center">
-                        <img src={receiptUrl} className="max-h-40 rounded-xl mb-4 border border-white/10" alt="Comprovante" />
-                        <p className="text-xs text-primary font-bold uppercase italic">Trocar Comprovante</p>
-                      </div>
-                    ) : (
-                      <div className="text-center">
-                        <Upload className="w-12 h-12 text-white/20 mb-4 mx-auto group-hover:text-primary transition-colors" />
-                        <p className="text-sm font-bold">Clique para enviar</p>
-                        <p className="text-xs text-white/40">PNG, JPG ou PDF (Máx. 5MB)</p>
-                      </div>
-                    )}
+                  <div className="space-y-4">
+                    <div className="flex flex-col items-center justify-center border-2 border-dashed border-white/10 rounded-3xl p-6 bg-black/20 group hover:border-primary/50 transition-colors cursor-pointer relative h-32">
+                      <input 
+                        type="file" 
+                        className="absolute inset-0 opacity-0 cursor-pointer" 
+                        accept="image/*,application/pdf"
+                        onChange={handleUploadReceipt}
+                        disabled={loading}
+                      />
+                      {receiptUrl ? (
+                        <div className="text-center flex items-center gap-4">
+                          <img src={receiptUrl} className="h-16 w-16 object-cover rounded-xl border border-white/10" alt="Comprovante" />
+                          <p className="text-[10px] text-primary font-bold uppercase italic">Trocar Comprovante</p>
+                        </div>
+                      ) : (
+                        <div className="text-center">
+                          <Upload className="w-8 h-8 text-white/20 mb-2 mx-auto group-hover:text-primary transition-colors" />
+                          <p className="text-sm font-bold">Enviar Comprovante</p>
+                          <p className="text-[10px] text-white/40">PNG, JPG ou PDF (Máx. 5MB)</p>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="p-1 bg-gradient-to-r from-primary/20 to-amber-500/20 rounded-3xl border border-white/5">
+                      <Button 
+                        onClick={handlePayWithBids}
+                        disabled={loading || paymentStatus === 'pending'}
+                        className="w-full h-16 bg-black/40 hover:bg-black/60 text-white rounded-[22px] flex flex-col items-center justify-center gap-0 border-0 group"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Zap className="w-4 h-4 text-primary animate-pulse" />
+                          <span className="font-black uppercase italic tracking-tighter">Pagar com Lances</span>
+                        </div>
+                        <span className="text-[9px] text-white/40 uppercase font-bold">Usar saldo da conta (1 lance = R$ 1,00)</span>
+                      </Button>
+                    </div>
                   </div>
                 </div>
               )}
