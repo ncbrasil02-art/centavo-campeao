@@ -109,8 +109,8 @@ export function Hero() {
         }
       });
 
-  useEffect(() => {
     fetchHeroData();
+
     return () => {
       supabase.removeChannel(channel);
     };
