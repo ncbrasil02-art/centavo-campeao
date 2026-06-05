@@ -253,7 +253,7 @@ export function Hero() {
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
           className="absolute top-20 right-[15%] text-primary/10"
         >
-          <Gavel className="w-64 h-64 drop-shadow-[0_0_50px_rgba(var(--color-primary),0.5)] opacity-40" />
+          <Gavel className="w-64 h-64 drop-shadow-[0_0_50px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.5 * 100%))] opacity-40" />
         </motion.div>
 
         <motion.div 
@@ -261,7 +261,7 @@ export function Hero() {
           transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
           className="absolute bottom-40 left-[10%] text-primary/5"
         >
-          <Clock className="w-48 h-48 drop-shadow-[0_0_40px_rgba(var(--color-primary),0.3)] opacity-30" />
+          <Clock className="w-48 h-48 drop-shadow-[0_0_40px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.3 * 100%))] opacity-30" />
         </motion.div>
 
         <motion.div 
@@ -308,7 +308,7 @@ export function Hero() {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 mb-12">
-            <Button size="lg" className="h-14 px-8 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_20px_rgba(var(--color-primary),0.3)] group" asChild>
+            <Button size="lg" className="h-14 px-8 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_20px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.3 * 100%))] group" asChild>
               <Link to={user ? "/packages" : "/auth"}>
                 {user ? "Disputar Leilões" : "Começar agora"}
                 <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />

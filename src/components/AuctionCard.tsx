@@ -409,8 +409,8 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   const timePercentage = (timeLeft / timerDuration) * 100;
 
   return (
-    <Card className={`group relative flex flex-col h-full overflow-hidden rounded-[32px] border-glass-border bg-glass backdrop-blur-md transition-all duration-500 hover:border-primary/50 hover:shadow-[0_0_40px_rgba(var(--color-primary),0.3)] border-2 ${!isFinished && !isScheduled ? 'animate-float-slow bg-primary/5 border-primary/20 shadow-[inset_0_0_30px_rgba(var(--color-primary),0.05)]' : ''} ${auction.modality && MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG]?.effect || ''}`}>
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_rgba(var(--color-primary),0.05),_transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity"></div>
+    <Card className={`group relative flex flex-col h-full overflow-hidden rounded-[32px] border-glass-border bg-glass backdrop-blur-md transition-all duration-500 hover:border-primary/50 hover:shadow-[0_0_40px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.3 * 100%))] border-2 ${!isFinished && !isScheduled ? 'animate-float-slow bg-primary/5 border-primary/20 shadow-[inset_0_0_30px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.05 * 100%))]' : ''} ${auction.modality && MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG]?.effect || ''}`}>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_color-mix(in srgb, var(--primary), transparent calc(100% - 0.05 * 100%)),_transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity"></div>
       
       {/* Modality Icon */}
       {auction.modality && MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG] && (
@@ -570,7 +570,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
               <span className="mb-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/50">
                 {(isFinished || isConfirmed || isPendingAudit) ? "Valor do Arremate:" : "Você paga:"}
               </span>
-              <span className={`text-2xl font-black text-primary transition-all duration-300 ${isNewBid ? 'scale-110 drop-shadow-[0_0_10px_rgba(var(--color-primary),0.5)]' : 'scale-100'}`}>
+              <span className={`text-2xl font-black text-primary transition-all duration-300 ${isNewBid ? 'scale-110 drop-shadow-[0_0_10px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.5 * 100%))]' : 'scale-100'}`}>
                 R$ {auction.current_price?.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) || "0,01"}
               </span>
             </div>
@@ -645,7 +645,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         {/* Highlighted Last Bidder */}
         <div className={`flex items-center gap-3 p-3 rounded-2xl transition-all duration-500 border ${
           isNewBid 
-            ? 'bg-primary/30 border-primary shadow-[0_0_20px_rgba(var(--color-primary),0.5)] animate-pulse' 
+            ? 'bg-primary/30 border-primary shadow-[0_0_20px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.5 * 100%))] animate-pulse' 
             : 'bg-muted/30 border-border'
         }`}>
           <div className={`flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border transition-all duration-500 ${
@@ -711,14 +711,14 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             isFinished || isConfirmed
               ? 'cursor-default border border-green-500/20 bg-green-500/10 text-green-500' 
               : isPendingAudit
-              ? (isAdmin ? 'bg-primary text-primary-foreground shadow-[0_0_25px_rgba(var(--color-primary),0.5)] hover:scale-[1.02]' : 'cursor-default border border-red-500/20 bg-red-500/10 text-red-500 animate-pulse')
+              ? (isAdmin ? 'bg-primary text-primary-foreground shadow-[0_0_25px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.5 * 100%))] hover:scale-[1.02]' : 'cursor-default border border-red-500/20 bg-red-500/10 text-red-500 animate-pulse')
               : (isScheduled && !currentUserId)
-              ? 'bg-primary text-primary-foreground shadow-[0_0_20px_rgba(var(--color-primary),0.4)] hover:scale-[1.02] cursor-pointer'
+              ? 'bg-primary text-primary-foreground shadow-[0_0_20px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.4 * 100%))] hover:scale-[1.02] cursor-pointer'
               : isScheduled
               ? 'cursor-not-allowed border border-border bg-muted text-muted-foreground'
               : timeLeft <= 5
               ? 'bg-red-600 text-white shadow-[0_0_40px_rgba(220,38,38,1)] scale-[1.05] animate-pulse border-white/20 border-2'
-              : 'bg-primary text-primary-foreground shadow-[0_8px_25px_rgba(var(--color-primary),0.3)] hover:scale-[1.02] hover:bg-primary/90 active:scale-95'
+              : 'bg-primary text-primary-foreground shadow-[0_8px_25px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.3 * 100%))] hover:scale-[1.02] hover:bg-primary/90 active:scale-95'
           }`}
         >
           <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.2)_50%,transparent_75%)] bg-[length:250%_250%] animate-[shimmer_3s_infinite] group-hover/bidbtn:animate-[shimmer_1.5s_infinite]"></div>

@@ -346,7 +346,7 @@ function AuctionPage() {
 
   if (loading) return (
     <div className="min-h-screen bg-background flex items-center justify-center">
-      <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin shadow-[0_0_20px_rgba(var(--color-primary),0.5)]"></div>
+      <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin shadow-[0_0_20px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.5 * 100%))]"></div>
     </div>
   );
 
@@ -509,7 +509,7 @@ function AuctionPage() {
                     <button 
                       key={idx}
                       onClick={() => setActiveImage(idx)}
-                      className={`relative w-24 h-24 rounded-2xl overflow-hidden border-2 transition-all shrink-0 snap-start ${activeImage === idx ? 'border-primary shadow-[0_0_15px_rgba(var(--color-primary),0.3)]' : 'border-border opacity-50 hover:opacity-100 hover:border-border/60'}`}
+                      className={`relative w-24 h-24 rounded-2xl overflow-hidden border-2 transition-all shrink-0 snap-start ${activeImage === idx ? 'border-primary shadow-[0_0_15px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.3 * 100%))]' : 'border-border opacity-50 hover:opacity-100 hover:border-border/60'}`}
                     >
                       <img src={img} className="w-full h-full object-cover" onError={(e) => (e.target as HTMLImageElement).src = FALLBACK_PRODUCT_IMAGE} />
                       {activeImage === idx && (
@@ -570,15 +570,15 @@ function AuctionPage() {
 
           {/* Right Column: Bidding Controls & History */}
           <div className="lg:col-span-5 space-y-8">
-            <Card className="bg-card border-primary/40 p-8 md:p-10 rounded-[48px] relative overflow-hidden shadow-[0_0_50px_rgba(var(--color-primary),0.15)] backdrop-blur-3xl group/card border-2">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_rgba(var(--color-primary),0.15),_transparent_70%)]"></div>
-              <div className="absolute -inset-[100%] bg-[conic-gradient(from_0deg,transparent_0deg,transparent_150deg,rgba(var(--color-primary),0.1)_180deg,transparent_210deg)] animate-[spin_8s_linear_infinite]"></div>
+            <Card className="bg-card border-primary/40 p-8 md:p-10 rounded-[48px] relative overflow-hidden shadow-[0_0_50px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.15 * 100%))] backdrop-blur-3xl group/card border-2">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_color-mix(in srgb, var(--primary), transparent calc(100% - 0.15 * 100%)),_transparent_70%)]"></div>
+              <div className="absolute -inset-[100%] bg-[conic-gradient(from_0deg,transparent_0deg,transparent_150deg,color-mix(in srgb, var(--primary), transparent calc(100% - 0.1 * 100%))_180deg,transparent_210deg)] animate-[spin_8s_linear_infinite]"></div>
 
               {/* Animated Background Highlight */}
               <div className="absolute -top-20 -right-20 w-64 h-64 bg-primary/10 rounded-full blur-[100px] transition-all duration-1000 group-hover/card:bg-primary/20" />
               
               <div className="absolute top-0 right-0 p-10 text-primary/20 animate-float">
-                <Trophy className="w-56 h-56 rotate-12 drop-shadow-[0_0_40px_rgba(var(--color-primary),0.6)]" />
+                <Trophy className="w-56 h-56 rotate-12 drop-shadow-[0_0_40px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.6 * 100%))]" />
               </div>
               
               <div className="relative z-10 space-y-10">
@@ -598,7 +598,7 @@ function AuctionPage() {
                     </div>
                     <Badge variant="outline" className="border-green-500/30 text-green-500 bg-green-500/5 animate-pulse">LEILÃO DE CENTAVOS</Badge>
                   </div>
-                  <div className={`text-7xl font-black text-primary transition-all duration-500 flex items-baseline ${isNewBid ? 'scale-110 drop-shadow-[0_0_50px_rgba(var(--color-primary),1)]' : 'scale-100 drop-shadow-[0_0_30px_rgba(var(--color-primary),0.6)]'}`}>
+                  <div className={`text-7xl font-black text-primary transition-all duration-500 flex items-baseline ${isNewBid ? 'scale-110 drop-shadow-[0_0_50px_rgba(var(--color-primary),1)]' : 'scale-100 drop-shadow-[0_0_30px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.6 * 100%))]'}`}>
                     <span className="text-3xl align-top mt-2 inline-block mr-2 opacity-60">R$</span>
                     {auction.status === 'scheduled' ? '0,00' : (auction.current_price?.toLocaleString('pt-BR', { minimumFractionDigits: 2 }))}
                   </div>
@@ -670,7 +670,7 @@ function AuctionPage() {
                           timeLeft <= 5 ? 'bg-red-500/20' : ''
                         }`}
                         indicatorClassName={`${
-                          timeLeft <= 5 ? 'bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)]' : timeLeft <= 10 ? 'bg-orange-500' : 'bg-primary shadow-[0_0_15px_rgba(var(--color-primary),0.5)]'
+                          timeLeft <= 5 ? 'bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)]' : timeLeft <= 10 ? 'bg-orange-500' : 'bg-primary shadow-[0_0_15px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.5 * 100%))]'
                         }`}
                       />
                     </div>
@@ -679,7 +679,7 @@ function AuctionPage() {
 
                 <div className={`p-6 rounded-[28px] flex items-center justify-between group/bidder transition-all duration-500 border ${
                   isNewBid 
-                    ? 'bg-primary/30 border-primary shadow-[0_0_30px_rgba(var(--color-primary),0.6)] animate-pulse' 
+                    ? 'bg-primary/30 border-primary shadow-[0_0_30px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.6 * 100%))] animate-pulse' 
                     : 'bg-muted/30 border-border hover:bg-muted/50'
                 }`}>
                   <div className="flex items-center gap-4">
@@ -727,7 +727,7 @@ function AuctionPage() {
                         ? 'bg-green-500/10 text-green-500 border border-green-500/20 cursor-default' 
                         : timeLeft <= 5
                         ? 'bg-red-600 text-white shadow-[0_0_60px_rgba(220,38,38,1)] scale-[1.05] animate-pulse border-white/20 border-2'
-                        : 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_20px_50px_rgba(var(--color-primary),0.6)] hover:-translate-y-1 active:translate-y-1'
+                        : 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_20px_50px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.6 * 100%))] hover:-translate-y-1 active:translate-y-1'
                     }`}
                   >
                     {!isFinished && (
@@ -772,7 +772,7 @@ function AuctionPage() {
                 {bids.length > 0 ? (
                   <div className="space-y-2">
                     {(showAllBids ? bids : bids.slice(0, 10)).map((bid, idx) => (
-                      <div key={bid.id} className={`flex items-center justify-between p-3 rounded-xl transition-all duration-300 animate-in fade-in slide-in-from-right-2 ${idx === 0 ? 'bg-primary/20 border border-primary/30 shadow-[0_0_20px_rgba(var(--color-primary),0.1)]' : 'hover:bg-muted/50 border border-transparent'}`}>
+                      <div key={bid.id} className={`flex items-center justify-between p-3 rounded-xl transition-all duration-300 animate-in fade-in slide-in-from-right-2 ${idx === 0 ? 'bg-primary/20 border border-primary/30 shadow-[0_0_20px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.1 * 100%))]' : 'hover:bg-muted/50 border border-transparent'}`}>
                         <div className="flex items-center gap-3">
                           <div className="relative">
                             <Avatar className={`w-8 h-8 border-2 transition-all ${idx === 0 ? 'border-primary scale-110 shadow-lg' : 'border-border'}`}>

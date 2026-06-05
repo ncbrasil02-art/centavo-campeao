@@ -71,7 +71,7 @@ export function AdminSidebar() {
               className={cn(
                 "flex items-center justify-between group px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all",
                 isActive 
-                  ? "bg-primary text-primary-foreground shadow-[0_0_20px_rgba(var(--color-primary),0.2)]" 
+                  ? "bg-primary text-primary-foreground shadow-[0_0_20px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.2 * 100%))]" 
                   : "text-white/40 hover:text-white/70 hover:bg-white/5"
               )}
             >

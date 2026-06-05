@@ -100,7 +100,7 @@ function TestimonialCard({ name, content, avatarUrl, rating }: { name: string, c
 function WinnerCard({ name, product, price, saving, avatarUrl, productImage }: { name: string, product: string, price: string, saving: string, avatarUrl?: string, productImage?: string }) {
   return (
     <div className="group relative p-1 rounded-[32px] bg-gradient-to-br from-primary/20 via-muted/30 to-transparent border border-border transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-primary/20 overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_rgba(var(--color-primary),0.1),_transparent_70%)]"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_color-mix(in srgb, var(--primary), transparent calc(100% - 0.1 * 100%)),_transparent_70%)]"></div>
       
       <div className="relative bg-card rounded-[30px] p-6 flex flex-col gap-6 backdrop-blur-xl">
         <div className="flex items-center justify-between">
@@ -133,7 +133,7 @@ function WinnerCard({ name, product, price, saving, avatarUrl, productImage }: {
             <div className="flex items-center gap-3">
               <div className="flex flex-col">
                 <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Pagou apenas</span>
-                <span className="font-black text-xl text-primary drop-shadow-[0_0_10px_rgba(var(--color-primary),0.3)]">{price}</span>
+                <span className="font-black text-xl text-primary drop-shadow-[0_0_10px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.3 * 100%))]">{price}</span>
               </div>
               <Badge className="bg-green-500/20 text-green-500 border-green-500/20 font-black text-[10px] uppercase">{saving} OFF</Badge>
             </div>
@@ -473,7 +473,7 @@ function Index() {
                 </motion.div>
                 
                 <div className="mt-12 flex justify-center">
-                  <Button variant="outline" size="lg" className="border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary font-black uppercase tracking-[0.2em] text-xs h-14 px-10 rounded-2xl group shadow-[0_0_30px_rgba(var(--color-primary),0.1)] hover:shadow-[0_0_40px_rgba(var(--color-primary),0.2)] transition-all duration-500" asChild>
+                  <Button variant="outline" size="lg" className="border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary font-black uppercase tracking-[0.2em] text-xs h-14 px-10 rounded-2xl group shadow-[0_0_30px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.1 * 100%))] hover:shadow-[0_0_40px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.2 * 100%))] transition-all duration-500" asChild>
                     <Link to="/finished-auctions" className="flex items-center gap-3">
                       Ver todos os leilões arrematados
                       <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-2" />

@@ -139,7 +139,7 @@ function HowItWorks() {
           <div className="text-center">
             <h2 className="text-3xl font-black text-white uppercase italic tracking-tighter mb-8">Pronto para sua primeira vitória?</h2>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="h-16 px-10 text-xl font-black uppercase italic bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_30px_rgba(var(--color-primary),0.4)]" asChild>
+              <Button size="lg" className="h-16 px-10 text-xl font-black uppercase italic bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_30px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.4 * 100%))]" asChild>
                 <Link to="/auth">Criar minha conta agora</Link>
               </Button>
               <Button size="lg" variant="outline" className="h-16 px-10 text-xl font-black uppercase italic border-white/10 hover:bg-white/5" asChild>
