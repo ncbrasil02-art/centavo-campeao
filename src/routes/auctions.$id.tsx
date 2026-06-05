@@ -388,52 +388,80 @@ function AuctionPage() {
                   <div className="absolute inset-0 bg-black/20" />
                 </div>
                 {/* Removed floating foreground image to let background fill the area */}
-                <div className="absolute top-6 left-6 z-20 flex flex-col gap-3">
-                  {auction.modality && MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG] && (
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Badge className={`backdrop-blur-md border border-white/10 px-4 py-2 text-lg font-black italic flex items-center gap-2 ${MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG]!.bgColor} ${MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG]!.color}`}>
-                            {(() => {
-                              const Icon = MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG]!.icon;
-                              return <Icon className="w-5 h-5" />;
-                            })()}
-                            {MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG]!.label}
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-zinc-900 border-white/10 text-white p-3 max-w-[250px]">
-                          <div className="flex flex-col gap-1">
-                            <span className="font-bold text-xs uppercase text-primary">
-                              {MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG]!.label}
-                            </span>
-                            <p className="text-xs text-white/70 leading-relaxed">
-                              {MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG]!.description}
-                              {auction.modality === 'min_balance' && auction.min_balance_required > 0 && (
-                                <span className="block mt-1 font-bold text-white">
-                                  Saldo Mínimo: {auction.min_balance_required} lances
-                                </span>
-                              )}
-                            </p>
-                          </div>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  )}
-                  {auction.status === 'finished' ? (
-                    <Badge variant="outline" className="bg-background/60 backdrop-blur-md border-border px-4 py-2 text-lg font-black italic">ENCERRADO</Badge>
-                  ) : auction.status === 'scheduled' ? (
-                    <Badge className="bg-blue-500 border-none px-4 py-2 text-lg font-black italic shadow-[0_0_20px_rgba(59,130,246,0.5)]">AGENDADO</Badge>
-                  ) : auction.is_finalizing ? (
-                    <Badge className="bg-orange-500 border-none px-4 py-2 text-lg font-black italic shadow-[0_0_20px_rgba(249,115,22,0.5)]">FINALIZANDO</Badge>
-                  ) : (
-                    <Badge className="bg-red-500 hover:bg-red-600 animate-pulse border-none px-4 py-2 text-lg font-black italic shadow-[0_0_20px_rgba(239,68,68,0.5)]">AO VIVO</Badge>
-                  )}
-                  <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30 backdrop-blur-md px-4 py-2 text-lg font-black italic">
-                    {discount}% ECONOMIA
-                  </Badge>
+                  <div className="absolute inset-0 bg-black/20" />
                 </div>
+                
+                <div className="absolute inset-0 z-10 p-6 flex flex-col justify-between">
+                  <div className="flex flex-col gap-3 items-start">
+                    {auction.modality && MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG] && (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Badge className={`backdrop-blur-md border border-white/10 px-4 py-2 text-lg font-black italic flex items-center gap-2 ${MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG]!.bgColor} ${MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG]!.color}`}>
+                              {(() => {
+                                const Icon = MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG]!.icon;
+                                return <Icon className="w-5 h-5" />;
+                              })()}
+                              {MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG]!.label}
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent className="bg-zinc-900 border-white/10 text-white p-3 max-w-[250px]">
+                            <div className="flex flex-col gap-1">
+                              <span className="font-bold text-xs uppercase text-primary">
+                                {MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG]!.label}
+                              </span>
+                              <p className="text-xs text-white/70 leading-relaxed">
+                                {MODALITY_CONFIG[auction.modality as keyof typeof MODALITY_CONFIG]!.description}
+                                {auction.modality === 'min_balance' && auction.min_balance_required > 0 && (
+                                  <span className="block mt-1 font-bold text-white">
+                                    Saldo Mínimo: {auction.min_balance_required} lances
+                                  </span>
+                                )}
+                              </p>
+                            </div>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
+                    
+                    <div className="flex flex-wrap gap-2">
+                      {auction.status === 'finished' ? (
+                        <Badge variant="outline" className="bg-background/60 backdrop-blur-md border-border px-4 py-2 text-lg font-black italic">ENCERRADO</Badge>
+                      ) : auction.status === 'scheduled' ? (
+                        <Badge className="bg-blue-500 border-none px-4 py-2 text-lg font-black italic shadow-[0_0_20px_rgba(59,130,246,0.5)]">AGENDADO</Badge>
+                      ) : auction.is_finalizing ? (
+                        <Badge className="bg-orange-500 border-none px-4 py-2 text-lg font-black italic shadow-[0_0_20px_rgba(249,115,22,0.5)]">FINALIZANDO</Badge>
+                      ) : (
+                        <Badge className="bg-red-500 hover:bg-red-600 animate-pulse border-none px-4 py-2 text-lg font-black italic shadow-[0_0_20px_rgba(239,68,68,0.5)]">AO VIVO</Badge>
+                      )}
+                      <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30 backdrop-blur-md px-4 py-2 text-lg font-black italic">
+                        {discount}% ECONOMIA
+                      </Badge>
+                    </div>
+                  </div>
 
-                {auction.status === 'scheduled' && auction.start_time && (
+                  {auction.status === 'scheduled' && auction.start_time && (
+                    <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-2xl p-4 flex items-center justify-between group/schedule animate-in fade-in slide-in-from-bottom-4 duration-700">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-400 group-hover/schedule:scale-110 transition-transform">
+                          <Calendar className="w-6 h-6" />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-[10px] font-black uppercase tracking-widest text-blue-400">Início agendado</span>
+                          <span className="text-lg font-bold text-white">
+                            {format(new Date(auction.start_time), "dd 'de' MMMM", { locale: ptBR })}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex flex-col items-end">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-white/40 italic">Horário</span>
+                        <span className="text-2xl font-black italic text-primary drop-shadow-[0_0_10px_var(--primary)]">
+                          {format(new Date(auction.start_time), "HH:mm")}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
                   <div className="absolute inset-0 z-30 flex items-center justify-center p-4">
                     <div className="bg-orange-500/95 backdrop-blur-md w-full max-w-[450px] p-6 rounded-3xl flex flex-col items-center justify-center shadow-[0_0_50px_rgba(249,115,22,0.4)] border border-white/20 relative overflow-hidden">
                       <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none" />

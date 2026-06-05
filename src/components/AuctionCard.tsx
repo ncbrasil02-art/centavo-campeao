@@ -449,6 +449,29 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       )}
       {/* Product Image Section */}
       <div className="relative aspect-square overflow-hidden rounded-t-[32px]">
+        {/* Banner de Agendamento sobreposto à imagem */}
+        {isScheduled && auction.start_time && (
+          <div className="absolute inset-x-0 bottom-0 z-20 p-3">
+            <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-xl p-2.5 flex items-center justify-between group/schedule animate-in fade-in slide-in-from-bottom-2 duration-500">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400">
+                  <Calendar className="w-4 h-4" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[8px] font-black uppercase tracking-widest text-blue-400">Início em</span>
+                  <span className="text-[11px] font-bold text-white leading-tight">
+                    {format(new Date(auction.start_time), "dd/MM", { locale: ptBR })}
+                  </span>
+                </div>
+              </div>
+              <div className="flex flex-col items-end">
+                <span className="text-lg font-black italic text-primary drop-shadow-[0_0_8px_var(--primary)]">
+                  {format(new Date(auction.start_time), "HH:mm")}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
         <Link to="/auctions/$id" params={{ id: auction.slug || auction.id }} className="block h-full w-full cursor-pointer">
           <img 
             src={auction.product?.images?.[0] || FALLBACK_PRODUCT_IMAGE} 
