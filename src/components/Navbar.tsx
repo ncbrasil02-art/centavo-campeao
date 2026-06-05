@@ -176,7 +176,7 @@ export function Navbar() {
               {currentTimeStr}
             </span>
           </div>
-          <Link to="/" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Leilões</Link>
+          <Link to="/" search={isDemo ? { demo: true } : undefined} className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Leilões</Link>
           <Link to="/how-it-works" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Como Funciona</Link>
           <Link to="/ranking" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Ranking</Link>
           <Link to="/packages" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Comprar Lances</Link>
