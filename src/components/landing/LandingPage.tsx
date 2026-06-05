@@ -224,42 +224,40 @@ export const LandingPage = () => {
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="relative"
               >
-                {/* Mobile Slider / Desktop Static */}
-                <div className="md:hidden relative z-10 rounded-[32px] border border-white/10 overflow-hidden shadow-2xl bg-black aspect-[4/5]">
+                {/* Unified Slider for Mobile and Desktop */}
+                <div className="relative z-10 rounded-[32px] md:rounded-[40px] border border-white/10 overflow-hidden shadow-2xl bg-black aspect-[4/5] md:aspect-square group">
                   <AnimatePresence mode="wait">
                     <motion.img
                       key={currentSlide}
                       src={carouselImages[currentSlide] || "https://images.unsplash.com/photo-1551288049-bbbda5366392?q=80&w=1200&auto=format&fit=crop"}
-                      initial={{ opacity: 0, x: 50 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -50 }}
-                      transition={{ duration: 0.5 }}
-                      className="w-full h-full object-cover"
+                      initial={{ opacity: 0, scale: 1.1 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.8 }}
+                      className="w-full h-full object-cover md:object-top"
                     />
                   </AnimatePresence>
-                  <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
+                  
+                  {/* Progress dots */}
+                  <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-3 z-20">
                     {carouselImages.map((_, i) => (
-                      <div 
+                      <button 
                         key={i} 
-                        className={`w-2 h-2 rounded-full transition-colors ${i === currentSlide ? 'bg-primary' : 'bg-white/20'}`} 
+                        onClick={() => setCurrentSlide(i)}
+                        className={`w-3 h-3 rounded-full transition-all duration-300 ${i === currentSlide ? 'bg-primary w-8' : 'bg-white/20 hover:bg-white/40'}`} 
                       />
                     ))}
                   </div>
+
+                  {/* Glass overlay for info */}
+                  <div className="absolute top-6 left-6 right-6 p-6 rounded-3xl bg-black/40 backdrop-blur-md border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 hidden md:block">
+                    <p className="text-primary font-black italic uppercase tracking-widest text-sm mb-2">Visualização Real</p>
+                    <h4 className="text-xl font-black italic uppercase tracking-tighter">Interface Responsiva Premium</h4>
+                  </div>
                 </div>
 
-                <div className="hidden md:block relative z-10 rounded-[40px] border border-white/10 overflow-hidden shadow-2xl shadow-primary/20 bg-black p-2 backdrop-blur-sm">
-                  <div className="rounded-[32px] overflow-hidden border border-white/5 bg-zinc-900">
-                    <img 
-                      src={assets['header-settings.jpeg'] || assets['admin-panel.png'] || "https://images.unsplash.com/photo-1551288049-bbbda5366392?q=80&w=1200&auto=format&fit=crop"} 
-                      alt="Painel Administrativo" 
-                      className="w-full h-auto min-h-[600px] object-top object-cover"
-                    />
-                  </div>
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-primary rounded-full flex items-center justify-center cursor-pointer hover:scale-110 transition-transform shadow-[0_0_30px_rgba(var(--color-primary),0.5)]">
-                    <Rocket className="w-10 h-10 text-black" />
-                  </div>
-                </div>
-                <div className="absolute -inset-4 border border-primary/30 rounded-[48px] -z-10 animate-pulse hidden md:block"></div>
+                <div className="absolute -inset-4 border border-primary/20 rounded-[48px] -z-10 animate-pulse hidden md:block"></div>
+                <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/20 rounded-full blur-3xl -z-10 animate-bounce"></div>
               </motion.div>
             </div>
           </div>
