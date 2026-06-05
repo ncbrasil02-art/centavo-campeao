@@ -396,28 +396,28 @@ export const LandingPage = () => {
                 </motion.div>
               </div>
               
-              <div className="col-span-4">
+              <div className="col-span-5">
                 <Badge className="bg-primary/10 text-primary border-primary/20 mb-6 uppercase font-black italic">Gestão Total</Badge>
                 <h2 className="text-6xl font-black italic uppercase tracking-tighter mb-8 leading-[0.9]">
                   Controle <br /> <span className="text-primary">Absoluto</span>
                 </h2>
                 <p className="text-xl text-white/60 mb-10 leading-relaxed font-medium">
-                  Nosso template completo oferece todas as ferramentas necessárias para gerenciar seu leilão com maestria. Desde paletas de cores até integrações de pagamento avançadas.
+                  Nossa plataforma completa oferece todas as ferramentas necessárias para gerenciar seu leilão com maestria. Desde paletas de cores até integrações de pagamento avançadas.
                 </p>
                 
                 <ul className="space-y-6 mb-12">
                   {[
-                    { title: "Personalização Completa", desc: "Altere cores, logos e banners com um clique." },
-                    { title: "Relatórios em Real-Time", desc: "Acompanhe faturamento e lances ao vivo." },
-                    { title: "Segurança Bancária", desc: "Integração direta com os maiores gateways." }
+                    { title: "Personalização Completa", desc: "Altere cores, logos e banners com um clique no painel administrativo." },
+                    { title: "Relatórios em Real-Time", desc: "Acompanhe faturamento, lances e atividade dos usuários ao vivo." },
+                    { title: "Segurança de Elite", desc: "Proteção contra ataques e integração direta com Mercado Pago e PIX." }
                   ].map((item, idx) => (
                     <li key={idx} className="flex items-start gap-4">
                       <div className="mt-1 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
                         <CheckCircle2 className="w-4 h-4 text-primary" />
                       </div>
                       <div>
-                        <h4 className="font-black italic uppercase tracking-tighter">{item.title}</h4>
-                        <p className="text-white/40 text-sm">{item.desc}</p>
+                        <h4 className="font-black italic uppercase tracking-tighter text-lg">{item.title}</h4>
+                        <p className="text-white/40 text-base">{item.desc}</p>
                       </div>
                     </li>
                   ))}
@@ -427,7 +427,7 @@ export const LandingPage = () => {
                   onClick={handleCTA}
                   className="h-16 w-full bg-primary hover:bg-primary/90 text-black font-black italic uppercase text-xl rounded-full"
                 >
-                  Garantir Este Layout
+                  Ver Demonstração
                 </Button>
               </div>
             </div>
