@@ -419,17 +419,39 @@ export const LandingPage = () => {
                 </div>
 
                 <div className="p-8 rounded-[32px] bg-white/5 border border-white/10">
-                  <Badge variant="outline" className="mb-6 border-primary/30 text-primary uppercase font-black italic tracking-widest">Como funciona?</Badge>
-                  <div className="space-y-4 text-white/60 leading-relaxed">
-                    <p>
-                      O Sistema de Leilão de Centavos realiza essa distribuição dos pacotes e programa as salas para as disputas, com sua contagem até o último lance.
+                  <Badge variant="outline" className="mb-6 border-primary/30 text-primary uppercase font-black italic tracking-widest">Sobre o Faturamento</Badge>
+                  <div className="space-y-6 text-white/60 leading-relaxed">
+                    <p className="text-lg text-white/80 font-bold">
+                      O faturamento de um sistema de leilão de centavos é impulsionado por dois pilares principais: a venda de pacotes de lances pagos e o valor final pago pelo produto.
                     </p>
                     <p>
-                      O tempo de duração do leilão vai depender do número de usuários que estiverem disputando o produto. Cada lance dado aumenta o tempo em dez segundos (ou mais, varia com o desejo do cliente).
+                      Nesse modelo, o lucro da plataforma é altíssimo, pois todos os usuários pagam para dar lances, independentemente de ganharem ou não o produto.
                     </p>
-                    <p className="italic text-primary/80">
-                      Ou seja, quanto mais gente quiser arrematar a mercadoria, mais tempo o leilão fica aberto e menores são as chances de ganhar.
-                    </p>
+                    
+                    <div className="space-y-4 pt-4 border-t border-white/5">
+                      <h4 className="text-primary font-black italic uppercase tracking-tighter">Como Funciona a Mecânica</h4>
+                      <ul className="space-y-3">
+                        <li className="flex gap-3">
+                          <span className="text-primary font-bold">01.</span>
+                          <span><strong className="text-white">O Produto:</strong> Um item (ex: celular ou gift card) é colocado em leilão com um valor inicial baixo, geralmente R$ 0,00.</span>
+                        </li>
+                        <li className="flex gap-3">
+                          <span className="text-primary font-bold">02.</span>
+                          <span><strong className="text-white">Os Lances:</strong> Cada vez que um usuário dá um lance (ex: R$ 0,50), o preço do produto sobe apenas R$ 0,01 e o cronômetro é reiniciado (ex: +20 segundos).</span>
+                        </li>
+                        <li className="flex gap-3">
+                          <span className="text-primary font-bold">03.</span>
+                          <span><strong className="text-white">O Vencedor:</strong> Ganha o produto quem der o último lance antes de o cronômetro zerar.</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="space-y-4 pt-4 border-t border-white/5">
+                      <h4 className="text-primary font-black italic uppercase tracking-tighter">Como o Faturamento é Gerado</h4>
+                      <p>
+                        <strong className="text-white">Venda de Pacotes de Lances:</strong> É a principal fonte de renda. O usuário compra pacotes pré-pagos para conseguir dar os lances (ex: um pacote de 100 lances por R$ 50,00). Todo lance dado desconta uma unidade do pacote, ou seja, a plataforma lucra mesmo com quem perde o leilão.
+                      </p>
+                    </div>
                   </div>
                 </div>
 
