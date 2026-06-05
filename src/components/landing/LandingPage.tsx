@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useSettings } from "@/hooks/useSettings";
 import { useAssets } from "@/hooks/useAssets";
 
@@ -68,6 +68,22 @@ const TestimonialCard = ({ name, role, content, avatar }: { name: string, role: 
 export const LandingPage = () => {
   const { site_name, primary_color, support_whatsapp } = useSettings();
   const assets = useAssets();
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const carouselImages = [
+    assets['header-settings.jpeg'],
+    assets['landing-auctions.png'],
+    assets['landing-winners.png'],
+    assets['admin-panel.png']
+  ].filter(Boolean);
+
+  useEffect(() => {
+    if (carouselImages.length <= 1) return;
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % carouselImages.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, [carouselImages.length]);
 
 
   const scrollToSection = (id: string) => {
@@ -179,19 +195,42 @@ export const LandingPage = () => {
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="relative"
               >
-                <div className="relative z-10 rounded-[40px] border border-white/10 overflow-hidden shadow-2xl shadow-primary/20 bg-black p-2 backdrop-blur-sm">
+                {/* Mobile Slider / Desktop Static */}
+                <div className="md:hidden relative z-10 rounded-[32px] border border-white/10 overflow-hidden shadow-2xl bg-black aspect-[4/5]">
+                  <AnimatePresence mode="wait">
+                    <motion.img
+                      key={currentSlide}
+                      src={carouselImages[currentSlide] || "https://images.unsplash.com/photo-1551288049-bbbda5366392?q=80&w=1200&auto=format&fit=crop"}
+                      initial={{ opacity: 0, x: 50 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -50 }}
+                      transition={{ duration: 0.5 }}
+                      className="w-full h-full object-cover"
+                    />
+                  </AnimatePresence>
+                  <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
+                    {carouselImages.map((_, i) => (
+                      <div 
+                        key={i} 
+                        className={`w-2 h-2 rounded-full transition-colors ${i === currentSlide ? 'bg-primary' : 'bg-white/20'}`} 
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <div className="hidden md:block relative z-10 rounded-[40px] border border-white/10 overflow-hidden shadow-2xl shadow-primary/20 bg-black p-2 backdrop-blur-sm">
                   <div className="rounded-[32px] overflow-hidden border border-white/5 bg-zinc-900">
                     <img 
                       src={assets['header-settings.jpeg'] || assets['admin-panel.png'] || "https://images.unsplash.com/photo-1551288049-bbbda5366392?q=80&w=1200&auto=format&fit=crop"} 
                       alt="Painel Administrativo" 
-                      className="w-full h-auto min-h-[400px] md:min-h-[600px] object-top object-cover"
+                      className="w-full h-auto min-h-[600px] object-top object-cover"
                     />
                   </div>
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-primary rounded-full flex items-center justify-center cursor-pointer hover:scale-110 transition-transform shadow-[0_0_30px_rgba(var(--color-primary),0.5)]">
                     <Rocket className="w-10 h-10 text-black" />
                   </div>
                 </div>
-                <div className="absolute -inset-4 border border-primary/30 rounded-[48px] -z-10 animate-pulse"></div>
+                <div className="absolute -inset-4 border border-primary/30 rounded-[48px] -z-10 animate-pulse hidden md:block"></div>
               </motion.div>
             </div>
           </div>
