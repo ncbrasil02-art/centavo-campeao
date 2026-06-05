@@ -167,8 +167,20 @@ export const LandingPage = () => {
                   <Badge className="bg-primary/10 text-primary border-primary/20 mb-6 px-4 py-1 font-black italic uppercase tracking-widest">
                     Tecnologia NC BRASIL
                   </Badge>
-                  <h2 className="text-5xl md:text-8xl font-black italic uppercase tracking-tighter leading-[0.9] mb-8">
-                    Sua plataforma de <span className="text-primary">Leilão de Centavos</span>
+                  <h2 className="text-5xl md:text-8xl font-black italic uppercase tracking-tighter leading-[0.9] mb-8 min-h-[1.8em]">
+                    Sua plataforma de <br />
+                    <AnimatePresence mode="wait">
+                      <motion.span
+                        key={currentPhrase}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.5 }}
+                        className="text-primary inline-block"
+                      >
+                        {phrases[currentPhrase]}
+                      </motion.span>
+                    </AnimatePresence>
                   </h2>
                   <p className="text-xl md:text-2xl text-white/60 mb-10 max-w-xl font-medium leading-relaxed">
                     A solução mais completa do mercado para criar seu próprio negócio digital. Gestão total, automação de lances e visual premium.
@@ -179,7 +191,7 @@ export const LandingPage = () => {
                       onClick={handleCTA}
                       className="h-16 px-10 bg-primary hover:bg-primary/90 text-black font-black italic uppercase text-xl rounded-full group"
                     >
-                      Gostaria de ter um Sistema?
+                      Ver Demonstração
                       <ArrowRight className="ml-2 w-6 h-6 transition-transform group-hover:translate-x-2" />
                     </Button>
                     <Button 
