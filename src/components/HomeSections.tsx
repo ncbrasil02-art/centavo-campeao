@@ -150,13 +150,16 @@ export function Hero() {
 
         if (error) throw error;
 
-        const productBanners = (data || []).map(auction => ({
-          id: auction.id,
-          title: auction.products?.name,
-          subtitle: `Leilão começa em ${format(new Date(auction.start_time), "dd/MM 'às' HH:mm", { locale: ptBR })}`,
-          image_url: auction.products?.images?.[0],
-          link_url: `/auctions/${auction.id}`
-        }));
+        const productBanners = (data || []).map(auction => {
+          const startTime = auction.start_time ? new Date(auction.start_time) : new Date();
+          return {
+            id: auction.id,
+            title: auction.products?.name,
+            subtitle: `Leilão começa em ${format(startTime, "dd/MM 'às' HH:mm", { locale: ptBR })}`,
+            image_url: auction.products?.images?.[0] || '',
+            link_url: `/auctions/${auction.id}`
+          };
+        });
 
         setBanners(productBanners);
       }
