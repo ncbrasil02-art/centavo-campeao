@@ -7,7 +7,7 @@ export const useAssets = () => {
   useEffect(() => {
     const fetchAssets = async () => {
       try {
-        const { data, error } = await supabase.storage.from('assets-public').list();
+        const { data, error } = await supabase.storage.from('site-assets').list();
         if (error) {
           console.error('Error listing assets:', error);
           return;
@@ -15,7 +15,7 @@ export const useAssets = () => {
 
         const assetUrls: Record<string, string> = {};
         data.forEach(file => {
-          const { data: { publicUrl } } = supabase.storage.from('assets-public').getPublicUrl(file.name);
+          const { data: { publicUrl } } = supabase.storage.from('site-assets').getPublicUrl(file.name);
           assetUrls[file.name] = publicUrl;
         });
         setAssets(assetUrls);
