@@ -21,12 +21,18 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const Route = createFileRoute("/")({
   component: IndexWrapper,
+  validateSearch: (search: Record<string, unknown>) => {
+    return {
+      demo: search.demo === "true" || search.demo === true,
+    };
+  },
 });
 
 function IndexWrapper() {
   const { sales_page_enabled } = useSettings();
+  const { demo } = Route.useSearch();
   
-  if (sales_page_enabled) {
+  if (sales_page_enabled && !demo) {
     return <LandingPage />;
   }
   
