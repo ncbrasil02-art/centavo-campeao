@@ -705,6 +705,7 @@ export type Database = {
           primary_color: string | null
           privacy_policy: string | null
           pwa_enabled: boolean | null
+          sales_page_enabled: boolean | null
           secondary_banner_image: string | null
           secondary_banner_link: string | null
           secondary_banner_subtitle: string | null
@@ -758,6 +759,7 @@ export type Database = {
           primary_color?: string | null
           privacy_policy?: string | null
           pwa_enabled?: boolean | null
+          sales_page_enabled?: boolean | null
           secondary_banner_image?: string | null
           secondary_banner_link?: string | null
           secondary_banner_subtitle?: string | null
@@ -811,6 +813,7 @@ export type Database = {
           primary_color?: string | null
           privacy_policy?: string | null
           pwa_enabled?: boolean | null
+          sales_page_enabled?: boolean | null
           secondary_banner_image?: string | null
           secondary_banner_link?: string | null
           secondary_banner_subtitle?: string | null
