@@ -128,13 +128,13 @@ export const LandingPage = () => {
                   transition={{ duration: 0.6 }}
                 >
                   <Badge className="bg-primary/10 text-primary border-primary/20 mb-6 px-4 py-1 font-black italic uppercase tracking-widest">
-                    A Melhor Plataforma de Leilão de Centavos
+                    Tecnologia NC BRASIL
                   </Badge>
                   <h2 className="text-5xl md:text-8xl font-black italic uppercase tracking-tighter leading-[0.9] mb-8">
-                    Sua cidade em uma <span className="text-primary">Máquina de Vendas</span>
+                    Sua plataforma de <span className="text-primary">Leilão de Centavos</span>
                   </h2>
                   <p className="text-xl md:text-2xl text-white/60 mb-10 max-w-xl font-medium leading-relaxed">
-                    A tecnologia NC BRASIL é a solução definitiva para você lucrar com leilões online. Automação completa, segurança bancária e design premium.
+                    A solução mais completa do mercado para criar seu próprio negócio digital. Gestão total, automação de lances e visual premium.
                   </p>
                   
                   <div className="flex flex-col sm:flex-row gap-4">
@@ -142,7 +142,7 @@ export const LandingPage = () => {
                       onClick={handleCTA}
                       className="h-16 px-10 bg-primary hover:bg-primary/90 text-black font-black italic uppercase text-xl rounded-full group"
                     >
-                      Solicitar Orçamento
+                      Gostaria de ter um Sistema?
                       <ArrowRight className="ml-2 w-6 h-6 transition-transform group-hover:translate-x-2" />
                     </Button>
                     <Button 
@@ -150,7 +150,7 @@ export const LandingPage = () => {
                       onClick={() => scrollToSection('presentation')}
                       className="h-16 px-10 border-white/20 hover:bg-white/10 text-white font-black italic uppercase text-xl rounded-full"
                     >
-                      Ver Demonstração
+                      Ver Recursos
                     </Button>
                   </div>
 
@@ -158,12 +158,12 @@ export const LandingPage = () => {
                     <div className="flex -space-x-4">
                       {[1,2,3,4].map(i => (
                         <div key={i} className="w-12 h-12 rounded-full border-4 border-black overflow-hidden">
-                          <img src={`https://i.pravatar.cc/150?u=${i + 10}`} alt="user" className="w-full h-full object-cover" />
+                          <img src={`https://i.pravatar.cc/150?u=${i + 15}`} alt="user" className="w-full h-full object-cover" />
                         </div>
                       ))}
                     </div>
                     <p className="text-sm font-bold text-white/40 uppercase tracking-widest">
-                      <span className="text-white">+ de 150</span> plataformas ativas no Brasil
+                      <span className="text-white">Líder em</span> criação de sites de leilão
                     </p>
                   </div>
                 </motion.div>
