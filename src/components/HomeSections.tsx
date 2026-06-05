@@ -168,13 +168,11 @@ export function Hero() {
                           {banner.subtitle}
                         </p>
                       )}
-                      {banner.link_url && (
-                        <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase italic tracking-widest" asChild>
-                          <Link to={banner.link_url as any}>
-                            Participar Agora <ArrowRight className="ml-2 w-5 h-5" />
-                          </Link>
-                        </Button>
-                      )}
+                      <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase italic tracking-widest" asChild>
+                        <Link to={(banner.link_url || (user ? "/packages" : "/auth")) as any}>
+                          {user ? "Participar Agora" : "Começar Agora"} <ArrowRight className="ml-2 w-5 h-5" />
+                        </Link>
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -284,8 +282,8 @@ export function Hero() {
           
           <div className="flex flex-col sm:flex-row gap-4 mb-12">
             <Button size="lg" className="h-14 px-8 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_20px_rgba(var(--color-primary),0.3)] group" asChild>
-              <Link to="/auth">
-                Começar agora
+              <Link to={user ? "/packages" : "/auth"}>
+                {user ? "Disputar Leilões" : "Começar agora"}
                 <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
