@@ -60,7 +60,9 @@ interface SiteSettings {
 
 interface SettingsContextType extends SiteSettings {
   updateSettings: (data: Partial<SiteSettings>) => Promise<void>;
+  refreshSettings: () => Promise<void>;
 }
+
 
 const SettingsContext = createContext<SettingsContextType | null>(null);
 
@@ -136,6 +138,41 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     }
     return DEFAULT_SETTINGS;
   });
+
+  // Function to refresh settings manually
+  const refreshSettings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("site_settings")
+        .select("*")
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (data) {
+        const fetchedSettings: SiteSettings = {
+          ...DEFAULT_SETTINGS,
+          ...data,
+          // Ensure specific fields have correct defaults/types
+          primary_color: data.primary_color || DEFAULT_SETTINGS.primary_color,
+          secondary_color: data.secondary_color || DEFAULT_SETTINGS.secondary_color,
+          hero_display_mode: (data.hero_display_mode as any) || DEFAULT_SETTINGS.hero_display_mode,
+          theme_mode: (data.theme_mode as any) || DEFAULT_SETTINGS.theme_mode,
+        };
+
+        setSettings(fetchedSettings);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('site_settings', JSON.stringify(fetchedSettings));
+        }
+        updateMetaTags(fetchedSettings);
+        if (fetchedSettings.ga_id) injectScripts(fetchedSettings.ga_id, fetchedSettings.fb_pixel_id);
+        applySettingsToDOM(fetchedSettings);
+      }
+    } catch (err) {
+      console.error("Error refreshing settings:", err);
+    }
+  };
+
 
   const applySettingsToDOM = (fetchedSettings: SiteSettings) => {
     if (typeof document === 'undefined') return;
@@ -336,10 +373,11 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <SettingsContext.Provider value={{ ...settings, updateSettings }}>
+    <SettingsContext.Provider value={{ ...settings, updateSettings, refreshSettings }}>
       {children}
     </SettingsContext.Provider>
   );
+
 }
 
 export const useSettings = () => {
@@ -348,7 +386,9 @@ export const useSettings = () => {
     return {
       ...DEFAULT_SETTINGS,
       updateSettings: async () => {},
+      refreshSettings: async () => {},
     };
+
   }
   return context;
 };

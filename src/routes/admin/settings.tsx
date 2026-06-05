@@ -60,7 +60,9 @@ export const Route = createFileRoute("/admin/settings")({
 });
 
 function AdminSettings() {
+  const { refreshSettings } = useSettings();
   const [loading, setLoading] = useState(true);
+
   const [saving, setSaving] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingFavicon, setUploadingFavicon] = useState(false);
@@ -278,8 +280,9 @@ function AdminSettings() {
 
       if (publicError) throw publicError;
       
-      // Update the settings state locally so it persists in the session
-      setSettings(prev => ({ ...prev, ...publicSettings }));
+      // Force global settings refresh
+      await refreshSettings();
+
 
 
       // Update admin secrets
