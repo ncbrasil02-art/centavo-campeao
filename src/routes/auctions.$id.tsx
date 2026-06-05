@@ -20,6 +20,8 @@ import { Progress } from "@/components/ui/progress";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useRecentWinners } from "@/hooks/useRecentWinners";
+import { Footer } from "@/components/Footer";
+
 
 
 const BID_SOUND_URL = "https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3";
@@ -853,19 +855,9 @@ function AuctionPage() {
         </div>
       </main>
       
-      {/* Trust Badges */}
-      <section className="py-24 border-t border-border bg-muted/40 relative overflow-hidden">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[120px]" />
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 md:gap-8">
-            <TrustItem icon={<ShieldCheck className="w-10 h-10 text-primary" />} title="Compra Segura" desc="Certificação SSL & Pagamentos PIX" />
-            <TrustItem icon={<Zap className="w-10 h-10 text-primary" />} title="Real-Time" desc="Lances processados em 10ms" />
-            <TrustItem icon={<Info className="w-10 h-10 text-primary" />} title="Suporte VIP" desc="Atendimento especializado 24/7" />
-            <TrustItem icon={<History className="w-10 h-10 text-primary" />} title="Transparência" desc="Auditoria pública de cada lance" />
-          </div>
-        </div>
-      </section>
+      <Footer />
     </div>
+
   );
 }
 
