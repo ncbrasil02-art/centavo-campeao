@@ -380,12 +380,13 @@ export const LandingPage = () => {
 
         <section id="presentation" className="py-32 bg-black relative">
           <div className="container mx-auto px-6">
-            {/* Desktop: Full Width Image + Side Text */}
-            <div className="hidden lg:grid grid-cols-12 gap-20 items-center">
-              <div className="col-span-7">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+              {/* Desktop/Mobile Image */}
+              <div className="lg:col-span-7">
                 <motion.div 
-                  initial={{ opacity: 0, x: -30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.8 }}
                   className="relative rounded-[48px] overflow-hidden border border-white/10 shadow-2xl shadow-primary/10 bg-zinc-900 group"
                 >
                   <img 
@@ -397,79 +398,59 @@ export const LandingPage = () => {
                 </motion.div>
               </div>
               
-              <div className="col-span-5">
-                <Badge className="bg-primary/10 text-primary border-primary/20 mb-6 uppercase font-black italic">Gestão Total</Badge>
-                <h2 className="text-6xl font-black italic uppercase tracking-tighter mb-8 leading-[0.9]">
-                  Controle <br /> <span className="text-primary">Absoluto</span>
-                </h2>
-                <p className="text-xl text-white/60 mb-10 leading-relaxed font-medium">
-                  Nossa plataforma completa oferece todas as ferramentas necessárias para gerenciar seu leilão com maestria. Desde paletas de cores até integrações de pagamento avançadas.
-                </p>
-                
-                <ul className="space-y-6 mb-12">
-                  {[
-                    { title: "Personalização Completa", desc: "Altere cores, logos e banners com um clique no painel administrativo." },
-                    { title: "Relatórios em Real-Time", desc: "Acompanhe faturamento, lances e atividade dos usuários ao vivo." },
-                    { title: "Segurança de Elite", desc: "Proteção contra ataques e integração direta com Mercado Pago e PIX." }
-                  ].map((item, idx) => (
-                    <li key={idx} className="flex items-start gap-4">
-                      <div className="mt-1 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-                        <CheckCircle2 className="w-4 h-4 text-primary" />
-                      </div>
-                      <div>
-                        <h4 className="font-black italic uppercase tracking-tighter text-lg">{item.title}</h4>
-                        <p className="text-white/40 text-base">{item.desc}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-
-                <Button 
-                  onClick={handleCTA}
-                  className="h-16 w-full bg-primary hover:bg-primary/90 text-black font-black italic uppercase text-xl rounded-full"
-                >
-                  Ver Demonstração
-                </Button>
-              </div>
-            </div>
-
-            {/* Mobile/Tablet: Original Bento Layout */}
-            <div className="lg:hidden grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
-              <div className="md:col-span-7 relative">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-4 mt-8">
-                    <div className="relative rounded-[24px] overflow-hidden border border-white/10 aspect-[3/4]">
-                      <img src={assets['landing-auctions.png']} alt="Plataforma" className="w-full h-full object-cover" />
-                    </div>
-                    <div className="relative rounded-[24px] overflow-hidden border border-white/10 aspect-square">
-                      <img src={assets['landing-winners.png']} alt="Ganhadores" className="w-full h-full object-cover" />
-                    </div>
-                  </div>
-                  <div className="space-y-4">
-                    <div className="relative rounded-[24px] overflow-hidden border border-white/10 aspect-square">
-                      <img src={assets['header-settings.jpeg']} alt="Adm" className="w-full h-full object-cover" />
-                    </div>
-                    <div className="relative rounded-[24px] overflow-hidden border border-white/10 aspect-[3/4]">
-                      <img src={assets['admin-panel.png']} alt="Admin" className="w-full h-full object-cover" />
-                    </div>
+              {/* Educational Content */}
+              <div className="lg:col-span-5 space-y-12">
+                <div>
+                  <Badge className="bg-primary/10 text-primary border-primary/20 mb-6 uppercase font-black italic">O que é?</Badge>
+                  <h2 className="text-4xl md:text-5xl font-black italic uppercase tracking-tighter mb-8 leading-tight">
+                    Sistema de Leilão <br /> de <span className="text-primary">Centavos</span>
+                  </h2>
+                  <div className="space-y-4 text-lg text-white/60 leading-relaxed font-medium">
+                    <p>
+                      Imagina levar um produto mega caro, por alguns centavos? Essa é a proposta dos Sites de Leilão de Centavos.
+                    </p>
+                    <p>
+                      Você compra um "pacote" de centavos e disputa centavo à centavo com outros navegantes. Pois no Leilão de Centavos, o usuário que leva o produto não é aquele que dá o maior lance, mas sim o que dá o último.
+                    </p>
+                    <p>
+                      Para cada lance dado, o valor do produto é acrescido de um centavo, e uma unidade é descontada do seu pacote de lances.
+                    </p>
                   </div>
                 </div>
-              </div>
-              
-              <div className="md:col-span-5">
-                <Badge className="bg-primary/10 text-primary border-primary/20 mb-6 uppercase font-black italic">Premium</Badge>
-                <h2 className="text-4xl md:text-5xl font-black italic uppercase tracking-tighter mb-8 leading-tight">
-                  Interface <span className="text-primary">Inigualável</span>
-                </h2>
-                <p className="text-lg text-white/60 mb-10 leading-relaxed font-medium">
-                  Uma experiência fluída e moderna pensada exclusivamente para conversão mobile.
-                </p>
-                <Button 
-                  onClick={handleCTA}
-                  className="h-16 w-full bg-primary hover:bg-primary/90 text-black font-black italic uppercase text-xl rounded-full"
-                >
-                  Ver Demonstração
-                </Button>
+
+                <div className="p-8 rounded-[32px] bg-white/5 border border-white/10">
+                  <Badge variant="outline" className="mb-6 border-primary/30 text-primary uppercase font-black italic tracking-widest">Como funciona?</Badge>
+                  <div className="space-y-4 text-white/60 leading-relaxed">
+                    <p>
+                      O Sistema de Leilão de Centavos realiza essa distribuição dos pacotes e programa as salas para as disputas, com sua contagem até o último lance.
+                    </p>
+                    <p>
+                      O tempo de duração do leilão vai depender do número de usuários que estiverem disputando o produto. Cada lance dado aumenta o tempo em dez segundos (ou mais, varia com o desejo do cliente).
+                    </p>
+                    <p className="italic text-primary/80">
+                      Ou seja, quanto mais gente quiser arrematar a mercadoria, mais tempo o leilão fica aberto e menores são as chances de ganhar.
+                    </p>
+                  </div>
+                </div>
+
+                <div>
+                  <Badge className="bg-primary/10 text-primary border-primary/20 mb-6 uppercase font-black italic">Sobre os Pacotes</Badge>
+                  <div className="space-y-4 text-white/60 leading-relaxed">
+                    <p>
+                      O Pacote de Lance nada mais é do que comprar a quantidade de lances que você poderá dar no site. É necessário ter um pacote com lances para concorrer a uma mercadoria.
+                    </p>
+                    <p>
+                      O valor desse pacote varia de acordo com o site, bem como o número mínimo de lances que o usuário deve adquirir. É justamente na ideia do pacote de lances que mora o lucro dos sites.
+                    </p>
+                  </div>
+                  
+                  <Button 
+                    onClick={handleCTA}
+                    className="mt-10 h-16 w-full bg-primary hover:bg-primary/90 text-black font-black italic uppercase text-xl rounded-full"
+                  >
+                    Ver Demonstração
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
