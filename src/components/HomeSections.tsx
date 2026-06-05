@@ -109,41 +109,65 @@ export function Hero() {
         }
       });
 
-    fetchBanners();
+  useEffect(() => {
+    fetchHeroData();
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [hero_display_mode]);
 
-  async function fetchBanners() {
+  async function fetchHeroData() {
+    setLoading(true);
     try {
-      const { data, error } = await supabase
-        .from("banners")
-        .select("*")
-        .eq("active", true)
-        .order("order_index", { ascending: true });
-      
-      if (error) throw error;
-      
-      const now = new Date();
-      const filtered = (data || []).filter(banner => {
-        const start = banner.start_at ? new Date(banner.start_at) : null;
-        const end = banner.end_at ? new Date(banner.end_at) : null;
+      if (hero_display_mode === 'banners') {
+        const { data, error } = await supabase
+          .from("banners")
+          .select("*")
+          .eq("active", true)
+          .order("order_index", { ascending: true });
         
-        if (start && start > now) return false;
-        if (end && end < now) return false;
-        return true;
-      });
+        if (error) throw error;
+        
+        const now = new Date();
+        const filtered = (data || []).filter(banner => {
+          const start = banner.start_at ? new Date(banner.start_at) : null;
+          const end = banner.end_at ? new Date(banner.end_at) : null;
+          
+          if (start && start > now) return false;
+          if (end && end < now) return false;
+          return true;
+        });
 
-      setBanners(filtered);
+        setBanners(filtered);
+      } else if (hero_display_mode === 'products') {
+        // Fetch 6 last scheduled auctions
+        const { data, error } = await supabase
+          .from("auctions")
+          .select("*, products(*)")
+          .eq("status", "scheduled")
+          .order("start_at", { ascending: true })
+          .limit(6);
+
+        if (error) throw error;
+
+        const productBanners = (data || []).map(auction => ({
+          id: auction.id,
+          title: auction.products?.name,
+          subtitle: `Leilão começa em ${format(new Date(auction.start_at), "dd/MM 'às' HH:mm", { locale: ptBR })}`,
+          image_url: auction.products?.image_url,
+          link_url: `/auctions/${auction.id}`
+        }));
+
+        setBanners(productBanners);
+      }
     } catch (error) {
-      console.error("Error fetching banners:", error);
+      console.error("Error fetching hero data:", error);
     } finally {
       setLoading(false);
     }
   }
 
-  if (!loading && hero_display_mode === 'banners' && banners.length > 0) {
+  if (!loading && (hero_display_mode === 'banners' || hero_display_mode === 'products') && banners.length > 0) {
     return (
       <section className="relative w-full overflow-hidden bg-background">
         <div className="embla" ref={emblaRef}>
