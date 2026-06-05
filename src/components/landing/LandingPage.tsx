@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from '@tanstack/react-router';
 import { useSettings } from "@/hooks/useSettings";
 import { useAssets } from "@/hooks/useAssets";
 
@@ -66,6 +67,7 @@ const TestimonialCard = ({ name, role, content, avatar }: { name: string, role: 
 );
 
 export const LandingPage = () => {
+  const navigate = useNavigate();
   const { site_name, primary_color, support_whatsapp } = useSettings();
   const assets = useAssets();
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -111,8 +113,7 @@ export const LandingPage = () => {
   };
 
   const handleCTA = () => {
-    const message = encodeURIComponent("Olá! Gostaria de saber mais sobre a plataforma NC BRASIL.");
-    window.open(`https://wa.me/${support_whatsapp?.replace(/\D/g, '')}?text=${message}`, '_blank');
+    navigate({ to: '/', search: { demo: true } });
   };
 
   return (
