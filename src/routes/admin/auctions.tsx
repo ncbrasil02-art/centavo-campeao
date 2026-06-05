@@ -1410,7 +1410,7 @@ function AdminAuctions() {
                         <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-white/10 text-white" title="Ver Histórico de Lances" onClick={() => setViewingBidsAuction(auction)}>
                           <List className="w-4 h-4" />
                         </Button>
-                        <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-primary/20 text-primary" onClick={() => handleEdit(auction)}>
+                        <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-primary/20 text-primary" title="Editar Leilão" onClick={() => handleEdit(auction)}>
                           <Edit className="w-4 h-4" />
                         </Button>
                         <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-red-500/20 text-red-500" onClick={() => handleDelete(auction.id)}>
