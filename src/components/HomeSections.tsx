@@ -12,6 +12,7 @@ import { Users, Star, Trophy, ArrowRight, Play, Clock, Sparkles, ChevronLeft, Ch
 import { motion, AnimatePresence } from "framer-motion";
 import useEmblaCarousel from 'embla-carousel-react';
 // import Autoplay from 'embla-carousel-autoplay';
+import { Volume2, VolumeX } from "lucide-react";
 
 import { DemoAuctionBlock } from "./DemoAuctionBlock";
 
