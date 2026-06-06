@@ -300,7 +300,7 @@ export function Hero() {
                         </p>
                       )}
                       <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase italic tracking-widest" asChild>
-                        <Link to={(banner.link_url || (user ? "/packages" : "/auth")) as any}>
+                        <Link to={(banner.link_url || "/auth") as any}>
                           {user ? "Participar Agora" : "Começar Agora"} <ArrowRight className="ml-2 w-5 h-5" />
                         </Link>
                       </Button>
