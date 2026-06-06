@@ -208,6 +208,7 @@ export function Hero() {
       if (filtered.length > 0) {
         setBanners(filtered);
         localStorage.setItem('cached_banners', JSON.stringify(filtered));
+        setLoading(false);
       }
     } catch (error) {
       console.error("Error fetching fallback banners:", error);
