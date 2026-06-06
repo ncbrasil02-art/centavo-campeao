@@ -264,7 +264,11 @@ export function Hero() {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        setIsMuted(!isMuted);
+                        const video = e.currentTarget.parentElement?.querySelector('video');
+                        if (video) {
+                          video.muted = !video.muted;
+                          setIsMuted(video.muted);
+                        }
                       }}
                       className="absolute bottom-4 right-4 z-20 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all"
                     >
