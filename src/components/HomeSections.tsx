@@ -164,6 +164,13 @@ export function Hero() {
 
     fetchHeroData(true);
     fetchBannersFallback();
+    
+    // Fallback timer to ensure loading state is cleared if data fetch is slow
+    const loadingTimeout = setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+
+    return () => clearTimeout(loadingTimeout);
 
 
 
