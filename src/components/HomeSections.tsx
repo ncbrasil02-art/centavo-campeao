@@ -179,16 +179,21 @@ export function Hero() {
 
   }, [hero_display_mode]);
 
-  async function fetchBannersFallback() {
+  const fetchBannersFallback = useCallback(async () => {
     try {
+      console.log("Fetching fallback banners...");
       const { data, error } = await supabase
         .from("banners")
         .select("*")
         .eq("active", true)
         .order("order_index", { ascending: true });
       
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase error fetching fallback banners:", error);
+        throw error;
+      }
       
+      console.log("Fallback banners fetched:", data?.length);
       const now = new Date();
       const filtered = (data || []).filter(banner => {
         const start = banner.start_at ? new Date(banner.start_at) : null;
@@ -205,11 +210,13 @@ export function Hero() {
     } catch (error) {
       console.error("Error fetching fallback banners:", error);
     }
-  }
+  }, []);
 
-  async function fetchHeroData() {
+  const fetchHeroData = useCallback(async () => {
+    if (loading) return;
     setLoading(true);
     try {
+      console.log("Fetching hero data, mode:", hero_display_mode);
       if (hero_display_mode === 'banners' || !hero_display_mode) {
         const { data, error } = await supabase
           .from("banners")
@@ -229,6 +236,7 @@ export function Hero() {
           return true;
         });
 
+        console.log("Filtered banners:", filtered.length);
         setBanners(filtered);
       } else if (hero_display_mode === 'products') {
         // Fetch 6 last scheduled auctions
@@ -259,7 +267,7 @@ export function Hero() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [hero_display_mode]);
 
   if (!loading && (hero_display_mode === 'banners' || hero_display_mode === 'products' || !hero_display_mode) && banners.length > 0) {
     return (
