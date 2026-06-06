@@ -164,10 +164,11 @@ export function Hero() {
 
     fetchHeroData(true);
     fetchBannersFallback();
-
-
-
-
+    
+    // Fallback timer to ensure loading state is cleared
+    const loadingTimeout = setTimeout(() => {
+      setLoading(false);
+    }, 3000);
 
     // Subscribe to site_settings changes to update hero mode in real-time
     const settingsChannel = supabase
@@ -184,6 +185,7 @@ export function Hero() {
     return () => {
       supabase.removeChannel(channel);
       supabase.removeChannel(settingsChannel);
+      clearTimeout(loadingTimeout);
     };
 
   }, [hero_display_mode]);
@@ -208,6 +210,7 @@ export function Hero() {
       if (filtered.length > 0) {
         setBanners(filtered);
         localStorage.setItem('cached_banners', JSON.stringify(filtered));
+        setLoading(false);
       }
     } catch (error) {
       console.error("Error fetching fallback banners:", error);
@@ -265,7 +268,7 @@ export function Hero() {
     }
   }, [hero_display_mode]);
 
-  if ((!loading || banners.length > 0) && (hero_display_mode === 'banners' || hero_display_mode === 'products' || !hero_display_mode) && banners.length > 0) {
+  if (banners.length > 0 && (hero_display_mode === 'banners' || hero_display_mode === 'products' || !hero_display_mode)) {
     return (
       <section className="relative w-full overflow-hidden bg-background">
         <div className="embla" ref={emblaRef}>
