@@ -247,12 +247,26 @@ export function Hero() {
                 {banner.media_type === 'video' ? (
                   <div className="absolute inset-0 w-full h-full">
                     <video 
+                      key={`video-${banner.id}-${currentSlideIndex}`}
                       src={banner.image_url} 
                       className="w-full h-full object-cover"
                       autoPlay
                       muted={isMuted}
-                      loop
                       playsInline
+                      onEnded={(e) => {
+                        const video = e.currentTarget;
+                        const currentLoop = parseInt(video.getAttribute('data-loop') || '0');
+                        const maxLoops = banner.loop_count || 1;
+                        
+                        if (currentLoop + 1 < maxLoops) {
+                          video.setAttribute('data-loop', (currentLoop + 1).toString());
+                          video.play();
+                        } else {
+                          // When finished all loops, go to next slide
+                          if (emblaApi) emblaApi.scrollNext();
+                        }
+                      }}
+                      data-loop="0"
                     />
                     <button
                       onClick={(e) => {
