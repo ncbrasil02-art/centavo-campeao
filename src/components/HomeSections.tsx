@@ -245,7 +245,7 @@ export function Hero() {
                       src={banner.image_url} 
                       className="w-full h-full object-cover"
                       autoPlay
-                      muted={isMuted}
+                      muted={index === currentSlideIndex ? isMuted : true}
                       playsInline
                       onEnded={(e) => {
                         const video = e.currentTarget;
@@ -262,19 +262,22 @@ export function Hero() {
                       }}
                       data-loop="0"
                     />
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        const video = e.currentTarget.parentElement?.querySelector('video');
-                        if (video) {
-                          video.muted = !video.muted;
-                          setIsMuted(video.muted);
-                        }
-                      }}
-                      className="absolute bottom-4 right-4 z-20 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all"
-                    >
-                      {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
-                    </button>
+                    {index === currentSlideIndex && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const video = e.currentTarget.parentElement?.querySelector('video');
+                          if (video) {
+                            const newMuted = !video.muted;
+                            video.muted = newMuted;
+                            setIsMuted(newMuted);
+                          }
+                        }}
+                        className="absolute bottom-4 right-4 z-20 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all"
+                      >
+                        {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+                      </button>
+                    )}
                   </div>
                 ) : (
                   <img 
