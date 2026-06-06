@@ -280,7 +280,7 @@ export function Hero() {
     }
   }, [hero_display_mode]);
 
-  if (!loading && (hero_display_mode === 'banners' || hero_display_mode === 'products' || !hero_display_mode) && banners.length > 0) {
+  if ((!loading || banners.length > 0) && (hero_display_mode === 'banners' || hero_display_mode === 'products' || !hero_display_mode) && banners.length > 0) {
     return (
       <section className="relative w-full overflow-hidden bg-background">
         <div className="embla" ref={emblaRef}>
