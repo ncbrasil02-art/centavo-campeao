@@ -43,7 +43,13 @@ export function Hero() {
   }, [getAdjustedNow]);
 
   const [onlineUsers, setOnlineUsers] = useState(128);
-  const [banners, setBanners] = useState<any[]>([]);
+  const [banners, setBanners] = useState<any[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('cached_banners');
+      return saved ? JSON.parse(saved) : [];
+    }
+    return [];
+  });
   const [phrases, setPhrases] = useState<string[]>([
     "Arremate produtos incríveis por centavos!",
     "iPhones, Consoles e muito mais a partir de R$ 0,01",
@@ -157,7 +163,7 @@ export function Hero() {
       });
 
     fetchHeroData();
-    fetchBannersFallback();
+
 
 
     // Subscribe to site_settings changes to update hero mode in real-time
@@ -179,16 +185,21 @@ export function Hero() {
 
   }, [hero_display_mode]);
 
-  async function fetchBannersFallback() {
+  const fetchBannersFallback = useCallback(async () => {
     try {
+      console.log("Fetching fallback banners...");
       const { data, error } = await supabase
         .from("banners")
         .select("*")
         .eq("active", true)
         .order("order_index", { ascending: true });
       
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase error fetching fallback banners:", error);
+        throw error;
+      }
       
+      console.log("Fallback banners fetched:", data?.length);
       const now = new Date();
       const filtered = (data || []).filter(banner => {
         const start = banner.start_at ? new Date(banner.start_at) : null;
@@ -201,15 +212,18 @@ export function Hero() {
 
       if (filtered.length > 0) {
         setBanners(filtered);
+        localStorage.setItem('cached_banners', JSON.stringify(filtered));
       }
     } catch (error) {
       console.error("Error fetching fallback banners:", error);
     }
-  }
+  }, []);
 
-  async function fetchHeroData() {
+  const fetchHeroData = useCallback(async () => {
+    if (loading) return;
     setLoading(true);
     try {
+      console.log("Fetching hero data, mode:", hero_display_mode);
       if (hero_display_mode === 'banners' || !hero_display_mode) {
         const { data, error } = await supabase
           .from("banners")
@@ -229,7 +243,9 @@ export function Hero() {
           return true;
         });
 
+        console.log("Filtered banners:", filtered.length);
         setBanners(filtered);
+        localStorage.setItem('cached_banners', JSON.stringify(filtered));
       } else if (hero_display_mode === 'products') {
         // Fetch 6 last scheduled auctions
         const { data, error } = await supabase
@@ -253,13 +269,14 @@ export function Hero() {
         });
 
         setBanners(productBanners);
+        localStorage.setItem('cached_banners', JSON.stringify(productBanners));
       }
     } catch (error) {
       console.error("Error fetching hero data:", error);
     } finally {
       setLoading(false);
     }
-  }
+  }, [hero_display_mode]);
 
   if (!loading && (hero_display_mode === 'banners' || hero_display_mode === 'products' || !hero_display_mode) && banners.length > 0) {
     return (
