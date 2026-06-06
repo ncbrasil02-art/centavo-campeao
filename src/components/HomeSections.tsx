@@ -79,13 +79,25 @@ export function Hero() {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
 
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [
-    Autoplay({ 
-      delay: (banners[0]?.transition_duration || 5) * 1000,
-      stopOnInteraction: false,
-      stopOnMouseEnter: true
-    })
-  ]);
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+
+  useEffect(() => {
+    if (!emblaApi || banners.length === 0) return;
+
+    // Filter banners to get the current one
+    const currentBanner = banners[currentSlideIndex];
+    if (!currentBanner) return;
+
+    // If it's a video, we don't use Autoplay plugin timer, we use the video onEnded event
+    // If it's an image, we use a manual timeout based on transition_duration
+    if (currentBanner.media_type !== 'video') {
+      const timer = setTimeout(() => {
+        emblaApi.scrollNext();
+      }, (currentBanner.transition_duration || 5) * 1000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [emblaApi, currentSlideIndex, banners]);
 
   const updateAutoplayDelay = useCallback((index: number) => {
     if (!emblaApi) return;
