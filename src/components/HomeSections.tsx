@@ -268,7 +268,7 @@ export function Hero() {
     }
   }, [hero_display_mode]);
 
-  if ((!loading || banners.length > 0) && (hero_display_mode === 'banners' || hero_display_mode === 'products' || !hero_display_mode) && banners.length > 0) {
+  if (banners.length > 0 && (hero_display_mode === 'banners' || hero_display_mode === 'products' || !hero_display_mode)) {
     return (
       <section className="relative w-full overflow-hidden bg-background">
         <div className="embla" ref={emblaRef}>
