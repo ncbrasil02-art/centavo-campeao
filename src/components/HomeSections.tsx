@@ -99,20 +99,7 @@ export function Hero() {
     }
   }, [emblaApi, currentSlideIndex, banners]);
 
-  const updateAutoplayDelay = useCallback((index: number) => {
-    if (!emblaApi) return;
-    const autoplay = emblaApi.plugins().autoplay;
-    if (autoplay) {
-      const duration = (banners[index]?.transition_duration || 5) * 1000;
-      // embla-carousel-autoplay doesn't support dynamic delay changes easily without resetting
-      // We force a reset with the new duration by stopping and starting if possible, 
-      // but the most reliable way is to use the duration in the initial options.
-      // Since we can't easily change the options object, we'll try to trigger a re-init if needed
-      // or just accept that Embla Autoplay is limited here.
-      autoplay.stop();
-      autoplay.play();
-    }
-  }, [emblaApi, banners]);
+  // Helper removed as we switched to manual timer and video onEnded control
 
   useEffect(() => {
     if (!emblaApi) return;
