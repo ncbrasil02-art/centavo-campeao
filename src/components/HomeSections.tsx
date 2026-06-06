@@ -332,107 +332,129 @@ export function Hero() {
     );
   }
 
-  return (
-    <section className="relative overflow-hidden pt-20 pb-12 lg:pt-32 lg:pb-24 bg-background">
-      {/* Imagem de Fundo 3D Gaming */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-20 mix-blend-overlay"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background"></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-background"></div>
-        
-        {/* Luzes e Brilhos Neon */}
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[150px] animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-accent/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '1s' }}></div>
-        
-        {/* Feixes de Luz Estilizados */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1px] h-full bg-gradient-to-b from-primary/40 via-transparent to-transparent opacity-20"></div>
-        <div className="absolute top-0 left-[30%] w-[1px] h-full bg-gradient-to-b from-primary/20 via-transparent to-transparent opacity-10 rotate-12"></div>
-        <div className="absolute top-0 left-[70%] w-[1px] h-full bg-gradient-to-b from-primary/20 via-transparent to-transparent opacity-10 -rotate-12"></div>
-      </div>
+  if (loading) {
+    return (
+      <section className="relative h-[400px] md:h-[600px] flex items-center justify-center bg-background">
+        <Loader2 className="w-8 h-8 text-primary animate-spin" />
+      </section>
+    );
+  }
 
-      {/* Elementos 3D Flutuantes (Ícones) */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
-        <motion.div 
-          animate={{ y: [0, -20, 0], rotate: [12, 15, 12] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-20 right-[15%] text-primary/10"
-        >
-          <Gavel className="w-64 h-64 drop-shadow-[0_0_50px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.5 * 100%))] opacity-40" />
-        </motion.div>
+  if (hero_display_mode === 'phrases') {
+    return (
+      <section className="relative overflow-hidden pt-20 pb-12 lg:pt-32 lg:pb-24 bg-background">
+        {/* Imagem de Fundo 3D Gaming */}
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-20 mix-blend-overlay"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-background"></div>
+          
+          {/* Luzes e Brilhos Neon */}
+          <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[150px] animate-pulse"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-accent/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '1s' }}></div>
+          
+          {/* Feixes de Luz Estilizados */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1px] h-full bg-gradient-to-b from-primary/40 via-transparent to-transparent opacity-20"></div>
+          <div className="absolute top-0 left-[30%] w-[1px] h-full bg-gradient-to-b from-primary/20 via-transparent to-transparent opacity-10 rotate-12"></div>
+          <div className="absolute top-0 left-[70%] w-[1px] h-full bg-gradient-to-b from-primary/20 via-transparent to-transparent opacity-10 -rotate-12"></div>
+        </div>
 
-        <motion.div 
-          animate={{ y: [0, 20, 0], rotate: [-10, -5, -10] }}
-          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-40 left-[10%] text-primary/5"
-        >
-          <Clock className="w-48 h-48 drop-shadow-[0_0_40px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.3 * 100%))] opacity-30" />
-        </motion.div>
+        {/* Elementos 3D Flutuantes (Ícones) */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
+          <motion.div 
+            animate={{ y: [0, -20, 0], rotate: [12, 15, 12] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute top-20 right-[15%] text-primary/10"
+          >
+            <Gavel className="w-64 h-64 drop-shadow-[0_0_50px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.5 * 100%))] opacity-40" />
+          </motion.div>
 
-        <motion.div 
-          animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-1/2 left-[5%] w-2 h-2 bg-primary rounded-full shadow-[0_0_15px_var(--primary)]"
-        ></motion.div>
+          <motion.div 
+            animate={{ y: [0, 20, 0], rotate: [-10, -5, -10] }}
+            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute bottom-40 left-[10%] text-primary/5"
+          >
+            <Clock className="w-48 h-48 drop-shadow-[0_0_40px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.3 * 100%))] opacity-30" />
+          </motion.div>
+
+          <motion.div 
+            animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute top-1/2 left-[5%] w-2 h-2 bg-primary rounded-full shadow-[0_0_15px_var(--primary)]"
+          ></motion.div>
+          
+          <motion.div 
+            animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.4, 0.2] }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+            className="absolute bottom-1/4 right-[5%] w-3 h-3 bg-primary rounded-full shadow-[0_0_20px_var(--primary)]"
+          ></motion.div>
+        </div>
         
-        <motion.div 
-          animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.4, 0.2] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          className="absolute bottom-1/4 right-[5%] w-3 h-3 bg-primary rounded-full shadow-[0_0_20px_var(--primary)]"
-        ></motion.div>
-      </div>
-      
-      <div className="container mx-auto px-4 relative z-20">
-        <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
-          {/* Removido o relógio repetido aqui conforme solicitado pelo usuário */}
-          
-          <div className="min-h-[160px] md:min-h-[280px] flex items-center justify-center mb-6 overflow-hidden">
-            <motion.h1
-              key={textIndex}
-              initial={{ y: 40, opacity: 0, scale: 0.9 }}
-              animate={{ y: 0, opacity: 1, scale: 1 }}
-              transition={{ 
-                duration: 0.8, 
-                ease: [0.16, 1, 0.3, 1] // Custom quintic ease out for premium feel
-              }}
-              className="text-4xl md:text-8xl font-black tracking-tight text-foreground leading-tight drop-shadow-2xl"
-            >
-              {phrases[textIndex].includes("centavos!") ? (
-                <>
-                  Arremate produtos incríveis por <span className="text-primary italic relative">
-                    centavos!
-                    <span className="absolute -bottom-2 left-0 w-full h-2 bg-primary/20 blur-sm rounded-full"></span>
-                  </span>
-                </>
-              ) : phrases[textIndex]}
-            </motion.h1>
-          </div>
-          
-          <p className="text-xl text-muted-foreground mb-10 max-w-2xl leading-relaxed">
-            A plataforma de leilões de centavos mais confiável, rápida e divertida do Brasil. iPhones, Consoles, TVs e muito mais a partir de R$ 0,01.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 mb-12">
-            <Button size="lg" className="h-14 px-8 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_20px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.3 * 100%))] group" asChild>
-              <Link to={user ? "/packages" : "/auth"}>
-                {user ? "Disputar Leilões" : "Começar agora"}
-                <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </Button>
-            <Button size="lg" variant="outline" className="h-14 px-8 text-lg font-bold border-border hover:bg-muted/50 bg-muted/20" asChild>
-              <Link to="/how-it-works">
-                <Play className="mr-2 w-5 h-5 fill-current" />
-                Ver como funciona
-              </Link>
-            </Button>
-          </div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-3xl">
-            <StatsCard icon={<Users className="w-5 h-5" />} label="Online Agora" value={onlineUsers.toString()} />
-            <StatsCard icon={<Trophy className="w-5 h-5" />} label="Arremates Hoje" value="47" />
-            <StatsCard icon={<Star className="w-5 h-5" />} label="Economia Média" value="92%" />
-            <StatsCard icon={<Clock className="w-5 h-5" />} label="Tempo Real" value="10ms" />
+        <div className="container mx-auto px-4 relative z-20">
+          <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
+            {/* Removido o relógio repetido aqui conforme solicitado pelo usuário */}
+            
+            <div className="min-h-[160px] md:min-h-[280px] flex items-center justify-center mb-6 overflow-hidden">
+              <motion.h1
+                key={textIndex}
+                initial={{ y: 40, opacity: 0, scale: 0.9 }}
+                animate={{ y: 0, opacity: 1, scale: 1 }}
+                transition={{ 
+                  duration: 0.8, 
+                  ease: [0.16, 1, 0.3, 1] // Custom quintic ease out for premium feel
+                }}
+                className="text-4xl md:text-8xl font-black tracking-tight text-foreground leading-tight drop-shadow-2xl"
+              >
+                {phrases[textIndex].includes("centavos!") ? (
+                  <>
+                    Arremate produtos incríveis por <span className="text-primary italic relative">
+                      centavos!
+                      <span className="absolute -bottom-2 left-0 w-full h-2 bg-primary/20 blur-sm rounded-full"></span>
+                    </span>
+                  </>
+                ) : phrases[textIndex]}
+              </motion.h1>
+            </div>
+            
+            <p className="text-xl text-muted-foreground mb-10 max-w-2xl leading-relaxed">
+              A plataforma de leilões de centavos mais confiável, rápida e divertida do Brasil. iPhones, Consoles, TVs e muito mais a partir de R$ 0,01.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 mb-12">
+              <Button size="lg" className="h-14 px-8 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_20px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.3 * 100%))] group" asChild>
+                <Link to={user ? "/packages" : "/auth"}>
+                  {user ? "Disputar Leilões" : "Começar agora"}
+                  <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
+                </Link>
+              </Button>
+              <Button size="lg" variant="outline" className="h-14 px-8 text-lg font-bold border-border hover:bg-muted/50 bg-muted/20" asChild>
+                <Link to="/how-it-works">
+                  <Play className="mr-2 w-5 h-5 fill-current" />
+                  Ver como funciona
+                </Link>
+              </Button>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-3xl">
+              <StatsCard icon={<Users className="w-5 h-5" />} label="Online Agora" value={onlineUsers.toString()} />
+              <StatsCard icon={<Trophy className="w-5 h-5" />} label="Arremates Hoje" value="47" />
+              <StatsCard icon={<Star className="w-5 h-5" />} label="Economia Média" value="92%" />
+              <StatsCard icon={<Clock className="w-5 h-5" />} label="Tempo Real" value="10ms" />
+            </div>
           </div>
         </div>
+      </section>
+    );
+  }
+
+  // Fallback if mode is banners/products but no banners available
+  return (
+    <section className="relative h-[400px] md:h-[600px] flex items-center justify-center bg-background">
+      <div className="text-center">
+        <h2 className="text-2xl font-bold mb-4">Nenhum banner ativo no momento</h2>
+        <Button asChild>
+          <Link to={user ? "/packages" : "/auth"}>Começar Agora</Link>
+        </Button>
       </div>
     </section>
   );
@@ -447,6 +469,8 @@ function StatsCard({ icon, label, value }: { icon: React.ReactNode, label: strin
     </Card>
   );
 }
+
+
 
 export function SecondaryBanner({ title, subtitle, imageUrl, linkUrl, reverse = false }: { title: string, subtitle: string, imageUrl: string, linkUrl: string, reverse?: boolean }) {
   return (
