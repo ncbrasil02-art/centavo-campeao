@@ -203,15 +203,7 @@ export function Hero() {
       }
       
       console.log("Fallback banners fetched:", data?.length);
-      const now = new Date();
-      const filtered = (data || []).filter(banner => {
-        const start = banner.start_at ? new Date(banner.start_at) : null;
-        const end = banner.end_at ? new Date(banner.end_at) : null;
-        
-        if (start && start > now) return false;
-        if (end && end < now) return false;
-        return true;
-      });
+      const filtered = (data || []);
 
       if (filtered.length > 0) {
         setBanners(filtered);
