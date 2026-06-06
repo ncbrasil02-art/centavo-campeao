@@ -1,0 +1,2 @@
+ALTER TABLE public.banners ADD COLUMN IF NOT EXISTS loop_count INTEGER DEFAULT 1;
+COMMENT ON COLUMN public.banners.loop_count IS 'Number of times a video should loop before transitioning to the next slide (1 = play once, then transition).';

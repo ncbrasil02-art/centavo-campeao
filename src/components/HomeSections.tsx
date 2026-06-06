@@ -8,10 +8,11 @@ import { ptBR } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { Users, Star, Trophy, ArrowRight, Play, Clock, Sparkles, ChevronLeft, ChevronRight, Gavel, Loader2, Volume2, VolumeX } from "lucide-react";
+import { Users, Star, Trophy, ArrowRight, Play, Clock, Sparkles, ChevronLeft, ChevronRight, Gavel, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import useEmblaCarousel from 'embla-carousel-react';
-import Autoplay from 'embla-carousel-autoplay';
+// import Autoplay from 'embla-carousel-autoplay';
+import { Volume2, VolumeX } from "lucide-react";
 
 import { DemoAuctionBlock } from "./DemoAuctionBlock";
 
@@ -77,30 +78,29 @@ export function Hero() {
   }, [phrases]);
 
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
 
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [
-    Autoplay({ 
-      delay: (banners[0]?.transition_duration || 5) * 1000,
-      stopOnInteraction: false,
-      stopOnMouseEnter: true
-    })
-  ]);
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
 
-  const updateAutoplayDelay = useCallback((index: number) => {
-    if (!emblaApi) return;
-    const autoplay = emblaApi.plugins().autoplay;
-    if (autoplay) {
-      const duration = (banners[index]?.transition_duration || 5) * 1000;
-      // embla-carousel-autoplay doesn't support dynamic delay changes easily without resetting
-      // We force a reset with the new duration by stopping and starting if possible, 
-      // but the most reliable way is to use the duration in the initial options.
-      // Since we can't easily change the options object, we'll try to trigger a re-init if needed
-      // or just accept that Embla Autoplay is limited here.
-      autoplay.stop();
-      autoplay.play();
+  useEffect(() => {
+    if (!emblaApi || banners.length === 0) return;
+
+    // Filter banners to get the current one
+    const currentBanner = banners[currentSlideIndex];
+    if (!currentBanner) return;
+
+    // If it's a video, we don't use Autoplay plugin timer, we use the video onEnded event
+    // If it's an image, we use a manual timeout based on transition_duration
+    if (currentBanner.media_type !== 'video') {
+      const timer = setTimeout(() => {
+        emblaApi.scrollNext();
+      }, (currentBanner.transition_duration || 5) * 1000);
+      
+      return () => clearTimeout(timer);
     }
-  }, [emblaApi, banners]);
+  }, [emblaApi, currentSlideIndex, banners]);
+
+  // Helper removed as we switched to manual timer and video onEnded control
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -116,20 +116,14 @@ export function Hero() {
     };
   }, [emblaApi]);
 
-  // Re-initialize carousel when banners change to ensure correct autoplay
+  // Re-initialize carousel when banners change
   useEffect(() => {
     if (emblaApi && banners.length > 0) {
       emblaApi.reInit({ 
         loop: true 
-      }, [
-        Autoplay({ 
-          delay: (banners[currentSlideIndex]?.transition_duration || 5) * 1000,
-          stopOnInteraction: false,
-          stopOnMouseEnter: true
-        })
-      ]);
+      });
     }
-  }, [banners, emblaApi, currentSlideIndex]);
+  }, [banners, emblaApi]);
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
@@ -247,17 +241,35 @@ export function Hero() {
                 {banner.media_type === 'video' ? (
                   <div className="absolute inset-0 w-full h-full">
                     <video 
+                      key={`video-${banner.id}-${currentSlideIndex}`}
                       src={banner.image_url} 
                       className="w-full h-full object-cover"
                       autoPlay
                       muted={isMuted}
-                      loop
                       playsInline
+                      onEnded={(e) => {
+                        const video = e.currentTarget;
+                        const currentLoop = parseInt(video.getAttribute('data-loop') || '0');
+                        const maxLoops = banner.loop_count || 1;
+                        
+                        if (currentLoop + 1 < maxLoops) {
+                          video.setAttribute('data-loop', (currentLoop + 1).toString());
+                          video.play();
+                        } else {
+                          // When finished all loops, go to next slide
+                          if (emblaApi) emblaApi.scrollNext();
+                        }
+                      }}
+                      data-loop="0"
                     />
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        setIsMuted(!isMuted);
+                        const video = e.currentTarget.parentElement?.querySelector('video');
+                        if (video) {
+                          video.muted = !video.muted;
+                          setIsMuted(video.muted);
+                        }
                       }}
                       className="absolute bottom-4 right-4 z-20 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all"
                     >

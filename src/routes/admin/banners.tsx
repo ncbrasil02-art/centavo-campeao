@@ -47,7 +47,8 @@ function AdminBanners() {
     start_at: "",
     end_at: "",
     media_type: "image",
-    transition_duration: 5
+    transition_duration: 5,
+    loop_count: 1
   });
 
   useEffect(() => {
@@ -143,7 +144,8 @@ function AdminBanners() {
         start_at: "", 
         end_at: "",
         media_type: "image",
-        transition_duration: 5
+        transition_duration: 5,
+        loop_count: 1
       });
       fetchBanners();
     } catch (error) {
@@ -192,7 +194,8 @@ function AdminBanners() {
       start_at: banner.start_at ? format(new Date(banner.start_at), "yyyy-MM-dd'T'HH:mm") : "",
       end_at: banner.end_at ? format(new Date(banner.end_at), "yyyy-MM-dd'T'HH:mm") : "",
       media_type: banner.media_type || "image",
-      transition_duration: banner.transition_duration || 5
+      transition_duration: banner.transition_duration || 5,
+      loop_count: banner.loop_count || 1
     });
     setIsDialogOpen(true);
   }
@@ -223,7 +226,8 @@ function AdminBanners() {
                 start_at: "", 
                 end_at: "",
                 media_type: "image",
-                transition_duration: 5
+                transition_duration: 5,
+                loop_count: 1
               });
             }
           }}>
@@ -330,6 +334,21 @@ function AdminBanners() {
                       />
                     </div>
                   </div>
+                  {formData.media_type === 'video' && (
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Loops do Vídeo</Label>
+                        <Input 
+                          type="number"
+                          value={formData.loop_count}
+                          onChange={e => setFormData({...formData, loop_count: parseInt(e.target.value) || 1})}
+                          className="bg-white/5 border-white/10"
+                          min={1}
+                          placeholder="Vezes que repete"
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
