@@ -77,7 +77,7 @@ export function Hero() {
   }, [phrases]);
 
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
 
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
 
