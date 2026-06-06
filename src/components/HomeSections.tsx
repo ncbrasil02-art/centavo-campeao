@@ -115,20 +115,14 @@ export function Hero() {
     };
   }, [emblaApi]);
 
-  // Re-initialize carousel when banners change to ensure correct autoplay
+  // Re-initialize carousel when banners change
   useEffect(() => {
     if (emblaApi && banners.length > 0) {
       emblaApi.reInit({ 
         loop: true 
-      }, [
-        Autoplay({ 
-          delay: (banners[currentSlideIndex]?.transition_duration || 5) * 1000,
-          stopOnInteraction: false,
-          stopOnMouseEnter: true
-        })
-      ]);
+      });
     }
-  }, [banners, emblaApi, currentSlideIndex]);
+  }, [banners, emblaApi]);
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
