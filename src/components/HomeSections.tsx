@@ -43,7 +43,13 @@ export function Hero() {
   }, [getAdjustedNow]);
 
   const [onlineUsers, setOnlineUsers] = useState(128);
-  const [banners, setBanners] = useState<any[]>([]);
+  const [banners, setBanners] = useState<any[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('cached_banners');
+      return saved ? JSON.parse(saved) : [];
+    }
+    return [];
+  });
   const [phrases, setPhrases] = useState<string[]>([
     "Arremate produtos incríveis por centavos!",
     "iPhones, Consoles e muito mais a partir de R$ 0,01",
@@ -157,7 +163,7 @@ export function Hero() {
       });
 
     fetchHeroData();
-    fetchBannersFallback();
+
 
 
     // Subscribe to site_settings changes to update hero mode in real-time
@@ -206,6 +212,7 @@ export function Hero() {
 
       if (filtered.length > 0) {
         setBanners(filtered);
+        localStorage.setItem('cached_banners', JSON.stringify(filtered));
       }
     } catch (error) {
       console.error("Error fetching fallback banners:", error);
@@ -238,6 +245,7 @@ export function Hero() {
 
         console.log("Filtered banners:", filtered.length);
         setBanners(filtered);
+        localStorage.setItem('cached_banners', JSON.stringify(filtered));
       } else if (hero_display_mode === 'products') {
         // Fetch 6 last scheduled auctions
         const { data, error } = await supabase
@@ -261,6 +269,7 @@ export function Hero() {
         });
 
         setBanners(productBanners);
+        localStorage.setItem('cached_banners', JSON.stringify(productBanners));
       }
     } catch (error) {
       console.error("Error fetching hero data:", error);
