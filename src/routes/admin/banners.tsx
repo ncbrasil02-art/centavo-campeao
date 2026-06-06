@@ -45,7 +45,9 @@ function AdminBanners() {
     order_index: 0,
     active: true,
     start_at: "",
-    end_at: ""
+    end_at: "",
+    media_type: "image",
+    transition_duration: 5
   });
 
   useEffect(() => {
@@ -75,8 +77,9 @@ function AdminBanners() {
 
     setUploading(true);
     try {
+      const isVideo = file.type.startsWith('video/');
       const fileExt = file.name.split(".").pop();
-      const fileName = `banner-${Math.random()}.${fileExt}`;
+      const fileName = `${isVideo ? 'video' : 'banner'}-${Math.random()}.${fileExt}`;
       const filePath = `${fileName}`;
 
       const { error: uploadError } = await supabase.storage
@@ -89,11 +92,15 @@ function AdminBanners() {
         .from("site-assets")
         .getPublicUrl(filePath);
 
-      setFormData({ ...formData, image_url: publicUrl });
-      toast.success("Imagem carregada com sucesso!");
+      setFormData({ 
+        ...formData, 
+        image_url: publicUrl,
+        media_type: isVideo ? 'video' : 'image'
+      });
+      toast.success(`${isVideo ? 'Vídeo' : 'Imagem'} carregado com sucesso!`);
     } catch (error) {
       console.error("Error uploading banner:", error);
-      toast.error("Erro ao carregar imagem");
+      toast.error("Erro ao carregar arquivo");
     } finally {
       setUploading(false);
     }
@@ -126,7 +133,18 @@ function AdminBanners() {
 
       setIsDialogOpen(false);
       setEditingBanner(null);
-      setFormData({ title: "", subtitle: "", image_url: "", link_url: "", order_index: 0, active: true, start_at: "", end_at: "" });
+      setFormData({ 
+        title: "", 
+        subtitle: "", 
+        image_url: "", 
+        link_url: "", 
+        order_index: 0, 
+        active: true, 
+        start_at: "", 
+        end_at: "",
+        media_type: "image",
+        transition_duration: 5
+      });
       fetchBanners();
     } catch (error) {
       console.error("Error saving banner:", error);
@@ -172,7 +190,9 @@ function AdminBanners() {
       order_index: banner.order_index,
       active: banner.active,
       start_at: banner.start_at ? format(new Date(banner.start_at), "yyyy-MM-dd'T'HH:mm") : "",
-      end_at: banner.end_at ? format(new Date(banner.end_at), "yyyy-MM-dd'T'HH:mm") : ""
+      end_at: banner.end_at ? format(new Date(banner.end_at), "yyyy-MM-dd'T'HH:mm") : "",
+      media_type: banner.media_type || "image",
+      transition_duration: banner.transition_duration || 5
     });
     setIsDialogOpen(true);
   }
@@ -193,7 +213,18 @@ function AdminBanners() {
             setIsDialogOpen(open);
             if (!open) {
               setEditingBanner(null);
-              setFormData({ title: "", subtitle: "", image_url: "", link_url: "", order_index: 0, active: true, start_at: "", end_at: "" });
+              setFormData({ 
+                title: "", 
+                subtitle: "", 
+                image_url: "", 
+                link_url: "", 
+                order_index: 0, 
+                active: true, 
+                start_at: "", 
+                end_at: "",
+                media_type: "image",
+                transition_duration: 5
+              });
             }
           }}>
             <DialogTrigger asChild>
@@ -228,11 +259,18 @@ function AdminBanners() {
                 </div>
                 
                 <div className="space-y-4">
-                  <Label>Imagem do Banner</Label>
+                  <Label>Arquivo do Banner (Imagem ou Vídeo)</Label>
                   <div className="flex items-center gap-4">
                     <div className="w-24 h-12 rounded bg-white/5 border border-white/10 overflow-hidden flex items-center justify-center">
                       {formData.image_url ? (
-                        <img src={formData.image_url} alt="Preview" className="w-full h-full object-cover" />
+                        formData.media_type === 'video' ? (
+                          <div className="flex flex-col items-center justify-center">
+                            <Play className="w-4 h-4 text-primary" />
+                            <span className="text-[8px] text-white/40">MP4</span>
+                          </div>
+                        ) : (
+                          <img src={formData.image_url} alt="Preview" className="w-full h-full object-cover" />
+                        )
                       ) : (
                         <ImageIcon className="w-6 h-6 text-white/20" />
                       )}
@@ -242,7 +280,7 @@ function AdminBanners() {
                         type="file"
                         id="banner-upload"
                         className="hidden"
-                        accept="image/*"
+                        accept="image/*,video/mp4,video/webm,video/ogg"
                         onChange={handleFileUpload}
                         disabled={uploading}
                       />
@@ -256,19 +294,42 @@ function AdminBanners() {
                           {uploading ? (
                             <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Carregando...</>
                           ) : (
-                            <><Upload className="w-4 h-4 mr-2" /> Upload de Imagem</>
+                            <><Upload className="w-4 h-4 mr-2" /> Upload de Mídia</>
                           )}
                         </label>
                       </Button>
                     </div>
                   </div>
                   <Input 
-                    placeholder="Ou cole a URL da imagem aqui..."
+                    placeholder="Ou cole a URL do arquivo aqui..."
                     value={formData.image_url}
                     onChange={e => setFormData({...formData, image_url: e.target.value})}
                     className="bg-white/5 border-white/10"
                     required
                   />
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Tipo de Mídia</Label>
+                      <select 
+                        value={formData.media_type}
+                        onChange={e => setFormData({...formData, media_type: e.target.value})}
+                        className="flex h-10 w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        <option value="image" className="bg-zinc-900">Imagem</option>
+                        <option value="video" className="bg-zinc-900">Vídeo</option>
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Duração (segundos)</Label>
+                      <Input 
+                        type="number"
+                        value={formData.transition_duration}
+                        onChange={e => setFormData({...formData, transition_duration: parseInt(e.target.value) || 5})}
+                        className="bg-white/5 border-white/10"
+                        min={1}
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -364,12 +425,22 @@ function AdminBanners() {
                       <TableCell className="font-bold text-primary">#{banner.order_index}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-4">
-                          <div className="w-24 h-12 rounded bg-white/5 overflow-hidden border border-white/10">
-                            <img src={banner.image_url} alt="" className="w-full h-full object-cover" />
+                          <div className="w-24 h-12 rounded bg-white/5 overflow-hidden border border-white/10 flex items-center justify-center">
+                            {banner.media_type === 'video' ? (
+                              <div className="flex flex-col items-center justify-center">
+                                <Play className="w-3 h-3 text-primary" />
+                                <span className="text-[8px] text-white/40">VÍDEO</span>
+                              </div>
+                            ) : (
+                              <img src={banner.image_url} alt="" className="w-full h-full object-cover" />
+                            )}
                           </div>
                           <div className="flex flex-col">
                             <span className="font-bold">{banner.title || "Sem título"}</span>
                             <span className="text-[10px] text-white/40">{banner.subtitle}</span>
+                            <span className="text-[9px] text-white/30 font-bold uppercase tracking-widest mt-0.5">
+                              {banner.media_type === 'video' ? 'Vídeo' : 'Imagem'} • {banner.transition_duration || 5}s
+                            </span>
                             {isScheduled && (
                               <span className="text-[9px] text-primary flex items-center gap-1 mt-1 font-bold uppercase tracking-widest">
                                 <Calendar className="w-2 h-2" />

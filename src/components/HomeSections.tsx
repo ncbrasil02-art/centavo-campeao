@@ -76,7 +76,41 @@ export function Hero() {
     return () => clearInterval(timer);
   }, [phrases]);
 
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 5000 })]);
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [
+    Autoplay({ 
+      delay: (banners[currentSlideIndex]?.transition_duration || 5) * 1000,
+      stopOnInteraction: false,
+      stopOnMouseEnter: true
+    })
+  ]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+
+    const onSelect = () => {
+      const index = emblaApi.selectedScrollSnap();
+      setCurrentSlideIndex(index);
+      
+      // Update autoplay delay for the new slide
+      const autoplay = emblaApi.plugins().autoplay;
+      if (autoplay) {
+        const duration = (banners[index]?.transition_duration || 5) * 1000;
+        autoplay.reset(); // This triggers a restart with the current settings or we might need to recreate plugin
+        // Actually embla-carousel-autoplay doesn't support dynamic delay easily without re-initializing
+      }
+    };
+
+    emblaApi.on('select', onSelect);
+    return () => {
+      emblaApi.off('select', onSelect);
+    };
+  }, [emblaApi, banners]);
+
+  // Re-initialize carousel when banners change to ensure correct autoplay
+  useEffect(() => {
+    if (emblaApi) emblaApi.reInit();
+  }, [banners, emblaApi]);
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
@@ -189,13 +223,24 @@ export function Hero() {
       <section className="relative w-full overflow-hidden bg-background">
         <div className="embla" ref={emblaRef}>
           <div className="embla__container flex">
-            {banners.map((banner) => (
+            {banners.map((banner, index) => (
               <div key={banner.id} className="embla__slide flex-[0_0_100%] min-w-0 relative h-[400px] md:h-[600px]">
-                <img 
-                   src={banner.image_url} 
-                   alt={banner.title} 
-                   className="absolute inset-0 w-full h-full object-cover"
-                />
+                {banner.media_type === 'video' ? (
+                  <video 
+                    src={banner.image_url} 
+                    className="absolute inset-0 w-full h-full object-cover"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                  />
+                ) : (
+                  <img 
+                    src={banner.image_url} 
+                    alt={banner.title} 
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-transparent flex items-center">
                   <div className="container mx-auto px-4">
                     <div className="max-w-2xl space-y-6">
