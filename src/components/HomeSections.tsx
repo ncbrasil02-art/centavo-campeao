@@ -163,6 +163,8 @@ export function Hero() {
       });
 
     fetchHeroData();
+    fetchBannersFallback();
+
 
 
 
@@ -173,7 +175,7 @@ export function Hero() {
         'postgres_changes',
         { event: 'UPDATE', schema: 'public', table: 'site_settings' },
         () => {
-          fetchHeroData();
+          fetchHeroData(true);
         }
       )
       .subscribe();
@@ -219,8 +221,8 @@ export function Hero() {
     }
   }, []);
 
-  const fetchHeroData = useCallback(async () => {
-    if (loading) return;
+  const fetchHeroData = useCallback(async (isAuto = false) => {
+    if (loading && !isAuto) return;
     setLoading(true);
     try {
       console.log("Fetching hero data, mode:", hero_display_mode);
