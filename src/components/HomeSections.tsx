@@ -180,7 +180,7 @@ export function Hero() {
   async function fetchHeroData() {
     setLoading(true);
     try {
-      if (hero_display_mode === 'banners') {
+      if (hero_display_mode === 'banners' || !hero_display_mode) {
         const { data, error } = await supabase
           .from("banners")
           .select("*")
@@ -231,7 +231,7 @@ export function Hero() {
     }
   }
 
-  if (!loading && (hero_display_mode === 'banners' || hero_display_mode === 'products') && banners.length > 0) {
+  if (!loading && (hero_display_mode === 'banners' || hero_display_mode === 'products' || !hero_display_mode) && banners.length > 0) {
     return (
       <section className="relative w-full overflow-hidden bg-background">
         <div className="embla" ref={emblaRef}>
