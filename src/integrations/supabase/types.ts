@@ -191,6 +191,7 @@ export type Database = {
           id: string
           image_url: string
           link_url: string | null
+          loop_count: number | null
           media_type: string | null
           order_index: number | null
           start_at: string | null
@@ -205,6 +206,7 @@ export type Database = {
           id?: string
           image_url: string
           link_url?: string | null
+          loop_count?: number | null
           media_type?: string | null
           order_index?: number | null
           start_at?: string | null
@@ -219,6 +221,7 @@ export type Database = {
           id?: string
           image_url?: string
           link_url?: string | null
+          loop_count?: number | null
           media_type?: string | null
           order_index?: number | null
           start_at?: string | null
