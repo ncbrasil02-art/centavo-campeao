@@ -633,14 +633,14 @@ function AuctionPage() {
                 </div>
 
                 <div className="relative space-y-4">
-                  <div className="grid grid-cols-2 gap-6 relative z-10">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
                     <div className={`flex flex-col gap-3 p-6 rounded-[28px] bg-muted/30 border border-border transition-all duration-300 ${
                       timeLeft <= 8 && !isFinished ? 'bg-red-500/5 border-red-500/40 shadow-[0_0_30px_rgba(239,68,68,0.2)]' : ''
                     }`}>
                       <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest flex items-center gap-2">
                         <Clock className={`w-3 h-3 ${timeLeft <= 8 && !isFinished ? 'text-red-500 animate-spin' : 'text-primary'}`} /> Tempo Restante
                       </span>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <div className={`relative flex items-center justify-center min-w-[80px] py-3 px-4 rounded-2xl border border-border overflow-hidden transition-all duration-300 ${
                           timeLeft <= 8 && !isFinished 
                             ? 'bg-gradient-to-br from-red-600 to-red-900 border-red-500 shadow-[0_0_30px_rgba(239,68,68,0.6)]' 
@@ -750,7 +750,7 @@ function AuctionPage() {
                   <Button 
                     onClick={handleBid}
                     disabled={isFinished || bidLoading}
-                    className={`w-full h-24 text-xl font-black uppercase italic tracking-tighter transition-all rounded-[32px] group/btn relative overflow-hidden ${
+                    className={`w-full h-auto min-h-[96px] py-4 px-6 text-xl font-black uppercase italic tracking-tighter transition-all rounded-[32px] group/btn relative overflow-hidden ${
                       isFinished 
                         ? 'bg-green-500/10 text-green-500 border border-green-500/20 cursor-default' 
                         : timeLeft <= 5
@@ -771,13 +771,13 @@ function AuctionPage() {
                         </span>
                       </div>
                     ) : (
-                      <span className="flex items-center gap-4 relative z-10">
-                        {isPendingAudit ? "ARREMATADO" : (timeLeft <= 5 ? "VAI PERDER..." : "DAR LANCE")} <Zap className={`w-8 h-8 fill-current ${timeLeft <= 5 ? 'animate-bounce' : 'animate-pulse'}`} />
+                      <span className="flex items-center justify-center gap-4 relative z-10 whitespace-normal text-center">
+                        {isPendingAudit ? "ARREMATADO" : (timeLeft <= 5 ? "VAI PERDER..." : "DAR LANCE")} <Zap className={`w-8 h-8 fill-current shrink-0 ${timeLeft <= 5 ? 'animate-bounce' : 'animate-pulse'}`} />
                       </span>
                     )}
                   </Button>
                   
-                  <p className="text-center text-[10px] text-muted-foreground/30 uppercase tracking-[0.3em] font-black">
+                  <p className="text-center text-[10px] text-muted-foreground/30 uppercase tracking-[0.3em] font-black px-2">
                     CUSTO POR LANCE: 1 CRÉDITO
                   </p>
                 </div>
