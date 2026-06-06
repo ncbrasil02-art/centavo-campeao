@@ -244,7 +244,7 @@ export function Hero() {
                       src={banner.image_url} 
                       className="w-full h-full object-cover"
                       autoPlay
-                      muted={isMuted}
+                      muted={false}
                       playsInline
                       onEnded={(e) => {
                         const video = e.currentTarget;
