@@ -162,8 +162,9 @@ export function Hero() {
         }
       });
 
-    fetchHeroData();
+    fetchHeroData(true);
     fetchBannersFallback();
+
 
 
 
@@ -222,7 +223,7 @@ export function Hero() {
   }, []);
 
   const fetchHeroData = useCallback(async (isAuto = false) => {
-    if (loading && !isAuto) return;
+    if (loading && !isAuto && banners.length === 0) return;
     setLoading(true);
     try {
       console.log("Fetching hero data, mode:", hero_display_mode);
