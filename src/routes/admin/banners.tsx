@@ -194,7 +194,8 @@ function AdminBanners() {
       start_at: banner.start_at ? format(new Date(banner.start_at), "yyyy-MM-dd'T'HH:mm") : "",
       end_at: banner.end_at ? format(new Date(banner.end_at), "yyyy-MM-dd'T'HH:mm") : "",
       media_type: banner.media_type || "image",
-      transition_duration: banner.transition_duration || 5
+      transition_duration: banner.transition_duration || 5,
+      loop_count: banner.loop_count || 1
     });
     setIsDialogOpen(true);
   }
