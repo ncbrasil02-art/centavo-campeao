@@ -8,7 +8,7 @@ import { ptBR } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { Users, Star, Trophy, ArrowRight, Play, Clock, Sparkles, ChevronLeft, ChevronRight, Gavel, Loader2 } from "lucide-react";
+import { Users, Star, Trophy, ArrowRight, Play, Clock, Sparkles, ChevronLeft, ChevronRight, Gavel, Loader2, Volume2, VolumeX } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
@@ -77,13 +77,30 @@ export function Hero() {
   }, [phrases]);
 
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+  const [isMuted, setIsMuted] = useState(true);
+
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [
     Autoplay({ 
-      delay: (banners[currentSlideIndex]?.transition_duration || 5) * 1000,
+      delay: (banners[0]?.transition_duration || 5) * 1000,
       stopOnInteraction: false,
       stopOnMouseEnter: true
     })
   ]);
+
+  const updateAutoplayDelay = useCallback((index: number) => {
+    if (!emblaApi) return;
+    const autoplay = emblaApi.plugins().autoplay;
+    if (autoplay) {
+      const duration = (banners[index]?.transition_duration || 5) * 1000;
+      // embla-carousel-autoplay doesn't support dynamic delay changes easily without resetting
+      // We force a reset with the new duration by stopping and starting if possible, 
+      // but the most reliable way is to use the duration in the initial options.
+      // Since we can't easily change the options object, we'll try to trigger a re-init if needed
+      // or just accept that Embla Autoplay is limited here.
+      autoplay.stop();
+      autoplay.play();
+    }
+  }, [emblaApi, banners]);
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -91,26 +108,28 @@ export function Hero() {
     const onSelect = () => {
       const index = emblaApi.selectedScrollSnap();
       setCurrentSlideIndex(index);
-      
-      // Update autoplay delay for the new slide
-      const autoplay = emblaApi.plugins().autoplay;
-      if (autoplay) {
-        const duration = (banners[index]?.transition_duration || 5) * 1000;
-        autoplay.reset(); // This triggers a restart with the current settings or we might need to recreate plugin
-        // Actually embla-carousel-autoplay doesn't support dynamic delay easily without re-initializing
-      }
     };
 
     emblaApi.on('select', onSelect);
     return () => {
       emblaApi.off('select', onSelect);
     };
-  }, [emblaApi, banners]);
+  }, [emblaApi]);
 
   // Re-initialize carousel when banners change to ensure correct autoplay
   useEffect(() => {
-    if (emblaApi) emblaApi.reInit();
-  }, [banners, emblaApi]);
+    if (emblaApi && banners.length > 0) {
+      emblaApi.reInit({ 
+        loop: true 
+      }, [
+        Autoplay({ 
+          delay: (banners[currentSlideIndex]?.transition_duration || 5) * 1000,
+          stopOnInteraction: false,
+          stopOnMouseEnter: true
+        })
+      ]);
+    }
+  }, [banners, emblaApi, currentSlideIndex]);
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
@@ -226,14 +245,25 @@ export function Hero() {
             {banners.map((banner, index) => (
               <div key={banner.id} className="embla__slide flex-[0_0_100%] min-w-0 relative h-[400px] md:h-[600px]">
                 {banner.media_type === 'video' ? (
-                  <video 
-                    src={banner.image_url} 
-                    className="absolute inset-0 w-full h-full object-cover"
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                  />
+                  <div className="absolute inset-0 w-full h-full">
+                    <video 
+                      src={banner.image_url} 
+                      className="w-full h-full object-cover"
+                      autoPlay
+                      muted={isMuted}
+                      loop
+                      playsInline
+                    />
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsMuted(!isMuted);
+                      }}
+                      className="absolute bottom-4 right-4 z-20 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all"
+                    >
+                      {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+                    </button>
+                  </div>
                 ) : (
                   <img 
                     src={banner.image_url} 
