@@ -332,8 +332,9 @@ export function Hero() {
     );
   }
 
-  return (
-    <section className="relative overflow-hidden pt-20 pb-12 lg:pt-32 lg:pb-24 bg-background">
+  if (!loading && hero_display_mode === 'phrases') {
+    return (
+      <section className="relative overflow-hidden pt-20 pb-12 lg:pt-32 lg:pb-24 bg-background">
       {/* Imagem de Fundo 3D Gaming */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-20 mix-blend-overlay"></div>
