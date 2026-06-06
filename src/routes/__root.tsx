@@ -108,7 +108,7 @@ export const Route = createRootRouteWithContext<{
       },
       {
         rel: "apple-touch-icon",
-        href: "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/favicon-0.8740770155566795.png",
+        href: "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/logo-0.8516991638992043.png",
       },
     ],
 
