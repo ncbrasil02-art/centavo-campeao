@@ -332,6 +332,18 @@ function AdminBanners() {
                         className="bg-white/5 border-white/10"
                         min={1}
                       />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Loops do Vídeo</Label>
+                      <Input 
+                        type="number"
+                        value={formData.loop_count}
+                        onChange={e => setFormData({...formData, loop_count: parseInt(e.target.value) || 1})}
+                        className="bg-white/5 border-white/10"
+                        min={1}
+                        placeholder="Vezes que repete"
+                      />
                     </div>
                   </div>
                 </div>
