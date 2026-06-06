@@ -165,16 +165,10 @@ export function Hero() {
     fetchHeroData(true);
     fetchBannersFallback();
     
-    // Fallback timer to ensure loading state is cleared if data fetch is slow
+    // Fallback timer to ensure loading state is cleared
     const loadingTimeout = setTimeout(() => {
       setLoading(false);
     }, 3000);
-
-    return () => clearTimeout(loadingTimeout);
-
-
-
-
 
     // Subscribe to site_settings changes to update hero mode in real-time
     const settingsChannel = supabase
@@ -191,6 +185,7 @@ export function Hero() {
     return () => {
       supabase.removeChannel(channel);
       supabase.removeChannel(settingsChannel);
+      clearTimeout(loadingTimeout);
     };
 
   }, [hero_display_mode]);
