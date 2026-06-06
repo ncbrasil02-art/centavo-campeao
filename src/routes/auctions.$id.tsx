@@ -750,7 +750,7 @@ function AuctionPage() {
                   <Button 
                     onClick={handleBid}
                     disabled={isFinished || bidLoading}
-                    className={`w-full h-24 text-xl font-black uppercase italic tracking-tighter transition-all rounded-[32px] group/btn relative overflow-hidden ${
+                    className={`w-full h-auto min-h-[96px] py-4 px-6 text-xl font-black uppercase italic tracking-tighter transition-all rounded-[32px] group/btn relative overflow-hidden ${
                       isFinished 
                         ? 'bg-green-500/10 text-green-500 border border-green-500/20 cursor-default' 
                         : timeLeft <= 5
@@ -771,13 +771,13 @@ function AuctionPage() {
                         </span>
                       </div>
                     ) : (
-                      <span className="flex items-center gap-4 relative z-10">
-                        {isPendingAudit ? "ARREMATADO" : (timeLeft <= 5 ? "VAI PERDER..." : "DAR LANCE")} <Zap className={`w-8 h-8 fill-current ${timeLeft <= 5 ? 'animate-bounce' : 'animate-pulse'}`} />
+                      <span className="flex items-center justify-center gap-4 relative z-10 whitespace-normal text-center">
+                        {isPendingAudit ? "ARREMATADO" : (timeLeft <= 5 ? "VAI PERDER..." : "DAR LANCE")} <Zap className={`w-8 h-8 fill-current shrink-0 ${timeLeft <= 5 ? 'animate-bounce' : 'animate-pulse'}`} />
                       </span>
                     )}
                   </Button>
                   
-                  <p className="text-center text-[10px] text-muted-foreground/30 uppercase tracking-[0.3em] font-black">
+                  <p className="text-center text-[10px] text-muted-foreground/30 uppercase tracking-[0.3em] font-black px-2">
                     CUSTO POR LANCE: 1 CRÉDITO
                   </p>
                 </div>
