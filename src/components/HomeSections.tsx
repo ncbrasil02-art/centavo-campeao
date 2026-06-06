@@ -460,6 +460,17 @@ export function Hero() {
   );
 }
 
+function StatsCard({ icon, label, value }: { icon: React.ReactNode, label: string, value: string }) {
+  return (
+    <Card className="p-4 bg-muted/50 border-border flex flex-col items-center justify-center transition-all hover:bg-muted hover:border-primary/30 group">
+      <div className="text-primary mb-2 group-hover:scale-110 transition-transform">{icon}</div>
+      <div className="text-2xl font-bold text-foreground mb-0.5">{value}</div>
+      <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{label}</div>
+    </Card>
+  );
+}
+
+
 
 export function SecondaryBanner({ title, subtitle, imageUrl, linkUrl, reverse = false }: { title: string, subtitle: string, imageUrl: string, linkUrl: string, reverse?: boolean }) {
   return (
