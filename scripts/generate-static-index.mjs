@@ -11,7 +11,20 @@ if (!handler || typeof handler.fetch !== "function") {
   throw new Error("dist/server/index.js does not export a fetch handler");
 }
 
-const response = await handler.fetch(new Request(siteUrl), {}, {});
+let currentUrl = siteUrl;
+let response = await handler.fetch(new Request(currentUrl), {}, {});
+
+for (let redirects = 0; response.status >= 300 && response.status < 400 && redirects < 5; redirects++) {
+  const location = response.headers.get("location");
+
+  if (!location) {
+    break;
+  }
+
+  currentUrl = new URL(location, currentUrl).href;
+  response = await handler.fetch(new Request(currentUrl), {}, {});
+}
+
 const html = await response.text();
 
 if (!response.ok) {
@@ -25,4 +38,4 @@ if (!html.includes("/assets/")) {
 await mkdir("dist/client", { recursive: true });
 await writeFile("dist/client/index.html", html);
 
-console.log(`Generated dist/client/index.html from ${siteUrl}`);
+console.log(`Generated dist/client/index.html from ${currentUrl}`);
