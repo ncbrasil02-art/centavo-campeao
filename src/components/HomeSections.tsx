@@ -245,14 +245,25 @@ export function Hero() {
             {banners.map((banner, index) => (
               <div key={banner.id} className="embla__slide flex-[0_0_100%] min-w-0 relative h-[400px] md:h-[600px]">
                 {banner.media_type === 'video' ? (
-                  <video 
-                    src={banner.image_url} 
-                    className="absolute inset-0 w-full h-full object-cover"
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                  />
+                  <div className="absolute inset-0 w-full h-full">
+                    <video 
+                      src={banner.image_url} 
+                      className="w-full h-full object-cover"
+                      autoPlay
+                      muted={isMuted}
+                      loop
+                      playsInline
+                    />
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsMuted(!isMuted);
+                      }}
+                      className="absolute bottom-4 right-4 z-20 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all"
+                    >
+                      {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+                    </button>
+                  </div>
                 ) : (
                   <img 
                     src={banner.image_url} 
