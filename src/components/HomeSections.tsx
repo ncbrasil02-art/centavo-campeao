@@ -77,13 +77,30 @@ export function Hero() {
   }, [phrases]);
 
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+  const [isMuted, setIsMuted] = useState(true);
+
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [
     Autoplay({ 
-      delay: (banners[currentSlideIndex]?.transition_duration || 5) * 1000,
+      delay: (banners[0]?.transition_duration || 5) * 1000,
       stopOnInteraction: false,
       stopOnMouseEnter: true
     })
   ]);
+
+  const updateAutoplayDelay = useCallback((index: number) => {
+    if (!emblaApi) return;
+    const autoplay = emblaApi.plugins().autoplay;
+    if (autoplay) {
+      const duration = (banners[index]?.transition_duration || 5) * 1000;
+      // embla-carousel-autoplay doesn't support dynamic delay changes easily without resetting
+      // We force a reset with the new duration by stopping and starting if possible, 
+      // but the most reliable way is to use the duration in the initial options.
+      // Since we can't easily change the options object, we'll try to trigger a re-init if needed
+      // or just accept that Embla Autoplay is limited here.
+      autoplay.stop();
+      autoplay.play();
+    }
+  }, [emblaApi, banners]);
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -91,26 +108,28 @@ export function Hero() {
     const onSelect = () => {
       const index = emblaApi.selectedScrollSnap();
       setCurrentSlideIndex(index);
-      
-      // Update autoplay delay for the new slide
-      const autoplay = emblaApi.plugins().autoplay;
-      if (autoplay) {
-        const duration = (banners[index]?.transition_duration || 5) * 1000;
-        autoplay.reset(); // This triggers a restart with the current settings or we might need to recreate plugin
-        // Actually embla-carousel-autoplay doesn't support dynamic delay easily without re-initializing
-      }
     };
 
     emblaApi.on('select', onSelect);
     return () => {
       emblaApi.off('select', onSelect);
     };
-  }, [emblaApi, banners]);
+  }, [emblaApi]);
 
   // Re-initialize carousel when banners change to ensure correct autoplay
   useEffect(() => {
-    if (emblaApi) emblaApi.reInit();
-  }, [banners, emblaApi]);
+    if (emblaApi && banners.length > 0) {
+      emblaApi.reInit({ 
+        loop: true 
+      }, [
+        Autoplay({ 
+          delay: (banners[currentSlideIndex]?.transition_duration || 5) * 1000,
+          stopOnInteraction: false,
+          stopOnMouseEnter: true
+        })
+      ]);
+    }
+  }, [banners, emblaApi, currentSlideIndex]);
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
