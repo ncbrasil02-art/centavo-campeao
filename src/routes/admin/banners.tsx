@@ -226,7 +226,8 @@ function AdminBanners() {
                 start_at: "", 
                 end_at: "",
                 media_type: "image",
-                transition_duration: 5
+                transition_duration: 5,
+                loop_count: 1
               });
             }
           }}>
