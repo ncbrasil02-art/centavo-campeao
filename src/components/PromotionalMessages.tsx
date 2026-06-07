@@ -11,11 +11,7 @@ export function PromotionalMessages() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
 
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("bid_balance")
-        .eq("id", session.user.id)
-        .single();
+      const { data: profile } = await supabase.rpc("get_my_profile").maybeSingle() as any;
 
       if (profile && (profile.bid_balance || 0) <= 5) {
         const now = Date.now();
