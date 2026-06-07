@@ -81,13 +81,8 @@ function AdminDashboard() {
   }
 
   async function fetchOnlineProfiles() {
-    const { data } = await supabase
-      .from('profiles')
-      .select('*')
-      .gt('last_seen_at', new Date(Date.now() - 5 * 60 * 1000).toISOString())
-      .order('last_seen_at', { ascending: false });
-    
-    if (data) setOnlineProfiles(data);
+    const { data } = await supabase.rpc('admin_list_online_profiles');
+    if (data) setOnlineProfiles(data as any);
   }
 
 
