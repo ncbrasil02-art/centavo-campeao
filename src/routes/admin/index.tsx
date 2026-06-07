@@ -59,7 +59,7 @@ function AdminDashboard() {
     const statsInterval = setInterval(fetchStats, 30000); // Refresh stats every 30s
 
     return () => {
-      supabase.removeChannel(channel);
+      clearInterval(presenceInterval);
       clearInterval(statsInterval);
     };
   }, []);
