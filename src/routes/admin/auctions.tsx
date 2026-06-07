@@ -117,22 +117,36 @@ function AdminAuctions() {
         event: '*', 
         schema: 'public', 
         table: 'auctions' 
-      }, () => {
-        // Refresh auctions list on any change
-        fetchAuctions();
+      }, (payload) => {
+        // Log event for debugging
+        console.log('Realtime auction update:', payload);
+        
+        // Se for um UPDATE, podemos tentar atualizar apenas o item específico na lista
+        // para evitar o estado de loading e o refetch pesado
+        if (payload.eventType === 'UPDATE') {
+          setAuctions(current => 
+            current.map(auction => 
+              auction.id === (payload.new as any).id 
+                ? { ...auction, ...(payload.new as any) } 
+                : auction
+            )
+          );
+        } else {
+          // Para INSERT ou DELETE, fazemos o fetch completo para manter a ordenação e paginação
+          fetchAuctions(true);
+        }
       })
       .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [page, statusFilter, searchTerm, dateFilter]);
 
+  // Remover o useEffect de polling/debounce que forçava fetchAuctions a cada mudança
+  // Já que o fetch inicial e as mudanças de filtros já chamam fetchAuctions manualmente
   useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchAuctions();
-    }, 300); // Optimized debounce
-    return () => clearTimeout(timer);
+    fetchAuctions();
   }, [page, statusFilter, searchTerm, dateFilter]);
 
   async function fetchInitialData() {
@@ -145,8 +159,8 @@ function AdminAuctions() {
     }
   }
 
-  async function fetchAuctions() {
-    setLoading(true);
+  async function fetchAuctions(silent = false) {
+    if (!silent) setLoading(true);
     setSelectedAuctions([]);
 
     try {
@@ -395,7 +409,7 @@ function AdminAuctions() {
       setIsDialogOpen(false);
       setEditingAuction(null);
       setFormData(initialFormData);
-      fetchAuctions();
+      fetchAuctions(true);
     } catch (error: any) {
       console.error("Error saving auction:", error);
       toast.dismiss(loadingToast);
@@ -409,7 +423,7 @@ function AdminAuctions() {
       const { error } = await supabase.from("auctions").delete().eq("id", id);
       if (error) throw error;
       toast.success("Leilão excluído");
-      fetchAuctions();
+      fetchAuctions(true);
     } catch (error) {
       console.error("Error deleting auction:", error);
       toast.error("Erro ao excluir leilão");
@@ -464,7 +478,7 @@ function AdminAuctions() {
       const result = data as any;
       if (result.success) {
         toast.success(result.message);
-        fetchAuctions();
+        fetchAuctions(true);
       } else {
         toast.error(result.message);
       }
@@ -485,7 +499,7 @@ function AdminAuctions() {
       
       if (error) throw error;
       toast.success("Leilão finalizado com sucesso!");
-      fetchAuctions();
+      fetchAuctions(true);
     } catch (err: any) {
       toast.error(err.message || "Erro ao finalizar leilão");
     } finally {
