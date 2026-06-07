@@ -161,8 +161,7 @@ function AdminAuctions() {
           ),
           last_bidder:profiles (
             id,
-            username,
-            phone
+            username
           )
         `, { count: 'exact' });
 
