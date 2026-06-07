@@ -91,9 +91,10 @@ export const LandingPage = () => {
         setLoadProgress(prev => {
           if (prev >= 100) {
             clearInterval(interval);
+            setIsPlaying(true); // Auto-start
             return 100;
           }
-          return prev + (Math.random() * 8);
+          return prev + (Math.random() * 15);
         });
       }, 100);
     }
@@ -327,15 +328,9 @@ export const LandingPage = () => {
                             </div>
                           </div>
                           
-                          <Button 
-                            size="lg" 
-                            disabled={loadProgress < 100}
-                            onClick={() => setIsPlaying(true)}
-                            className="bg-primary hover:bg-primary/90 text-black font-black uppercase italic tracking-widest px-8 py-6 h-auto rounded-full group transition-all hover:scale-105"
-                          >
-                            <Play className="mr-2 w-6 h-6 fill-current" />
-                            Assistir
-                          </Button>
+                         <div className="text-primary font-black italic uppercase tracking-widest text-lg mb-4 animate-pulse">
+                            Iniciando...
+                         </div>
                       </motion.div>
                     ) : (
                       <motion.img
