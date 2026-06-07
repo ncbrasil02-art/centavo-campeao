@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "@tanstack/react-router";
 import { useTimeSync } from "@/hooks/useTimeSync";
 import { useSettings } from "@/hooks/useSettings";
@@ -8,11 +8,11 @@ import { ptBR } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { Users, Star, Trophy, ArrowRight, Play, Clock, Sparkles, ChevronLeft, ChevronRight, Gavel, Loader2 } from "lucide-react";
+import { Users, Star, Trophy, ArrowRight, Play, Clock, Sparkles, ChevronLeft, ChevronRight, Gavel, Loader2, Volume2, VolumeX } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import useEmblaCarousel from 'embla-carousel-react';
 // import Autoplay from 'embla-carousel-autoplay';
-import { Volume2, VolumeX } from "lucide-react";
+
 
 import { DemoAuctionBlock } from "./DemoAuctionBlock";
 
@@ -85,11 +85,36 @@ export function Hero() {
 
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [loadProgress, setLoadProgress] = useState(0);
+  const loadingIntervalRef = useRef<any>(null);
 
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, watchDrag: isPlaying });
 
   useEffect(() => {
-    if (!emblaApi || banners.length === 0) return;
+    if (isPlaying) {
+      if (loadingIntervalRef.current) clearInterval(loadingIntervalRef.current);
+      setLoadProgress(0);
+    } else {
+      // Start fake loading progress
+      setLoadProgress(0);
+      loadingIntervalRef.current = setInterval(() => {
+        setLoadProgress(prev => {
+          if (prev >= 100) {
+            clearInterval(loadingIntervalRef.current);
+            return 100;
+          }
+          return prev + (Math.random() * 5);
+        });
+      }, 100);
+    }
+    return () => {
+      if (loadingIntervalRef.current) clearInterval(loadingIntervalRef.current);
+    };
+  }, [isPlaying]);
+
+  useEffect(() => {
+    if (!emblaApi || banners.length === 0 || !isPlaying) return;
 
     // Filter banners to get the current one
     const currentBanner = banners[currentSlideIndex];
@@ -104,7 +129,7 @@ export function Hero() {
       
       return () => clearTimeout(timer);
     }
-  }, [emblaApi, currentSlideIndex, banners]);
+  }, [emblaApi, currentSlideIndex, banners, isPlaying]);
 
   // Helper removed as we switched to manual timer and video onEnded control
 

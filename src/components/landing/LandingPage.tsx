@@ -27,7 +27,8 @@ import {
   Globe,
   Headphones,
   Gamepad2,
-  Rocket
+  Rocket,
+  Play
 } from 'lucide-react';
 import {
   Accordion,
@@ -73,12 +74,31 @@ export const LandingPage = () => {
   const assets = useAssets();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentPhrase, setCurrentPhrase] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [loadProgress, setLoadProgress] = useState(0);
   const [displayImages, setDisplayImages] = useState<string[]>([
     "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/header-settings.jpeg?t=1",
     "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/landing-auctions.png?t=1",
     "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/landing-winners.png?t=1",
     "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/admin-panel.png?t=1"
   ]);
+
+  useEffect(() => {
+    let interval: any;
+    if (!isPlaying) {
+      setLoadProgress(0);
+      interval = setInterval(() => {
+        setLoadProgress(prev => {
+          if (prev >= 100) {
+            clearInterval(interval);
+            return 100;
+          }
+          return prev + (Math.random() * 8);
+        });
+      }, 100);
+    }
+    return () => clearInterval(interval);
+  }, [isPlaying]);
 
   const phrases = [
     "Leilão de Centavos",
@@ -132,12 +152,12 @@ export const LandingPage = () => {
   }, [hero_display_mode]);
 
   useEffect(() => {
-    if (displayImages.length <= 1) return;
+    if (displayImages.length <= 1 || !isPlaying) return;
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % displayImages.length);
     }, 3000);
     return () => clearInterval(timer);
-  }, [displayImages.length]);
+  }, [displayImages.length, isPlaying]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -270,15 +290,64 @@ export const LandingPage = () => {
                 {/* Unified Slider for Mobile and Desktop */}
                 <div className="relative z-10 rounded-[32px] md:rounded-[40px] border border-white/10 overflow-hidden shadow-2xl bg-black aspect-[4/5] md:aspect-square group">
                   <AnimatePresence mode="wait">
-                    <motion.img
-                      key={currentSlide}
-                      src={displayImages[currentSlide] || "https://images.unsplash.com/photo-1551288049-bbbda5366392?q=80&w=1200&auto=format&fit=crop"}
-                      initial={{ opacity: 0, scale: 1.1 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{ duration: 0.8 }}
-                      className="w-full h-full object-cover md:object-top"
-                    />
+                    {!isPlaying ? (
+                      <motion.div 
+                        key="pre-play"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="absolute inset-0 z-[100] bg-black/90 flex flex-col items-center justify-center p-6"
+                      >
+                         <div className="relative w-24 h-24 flex items-center justify-center mb-8">
+                            <svg className="w-full h-full transform -rotate-90">
+                              <circle
+                                cx="48"
+                                cy="48"
+                                r="44"
+                                stroke="currentColor"
+                                strokeWidth="6"
+                                fill="transparent"
+                                className="text-white/10"
+                              />
+                              <motion.circle
+                                cx="48"
+                                cy="48"
+                                r="44"
+                                stroke="currentColor"
+                                strokeWidth="6"
+                                fill="transparent"
+                                strokeDasharray={276}
+                                strokeDashoffset={276 - (276 * loadProgress) / 100}
+                                className="text-primary"
+                                transition={{ duration: 0.1 }}
+                              />
+                            </svg>
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <span className="text-white font-black italic text-sm">{Math.floor(loadProgress)}%</span>
+                            </div>
+                          </div>
+                          
+                          <Button 
+                            size="lg" 
+                            disabled={loadProgress < 100}
+                            onClick={() => setIsPlaying(true)}
+                            className="bg-primary hover:bg-primary/90 text-black font-black uppercase italic tracking-widest px-8 py-6 h-auto rounded-full group transition-all hover:scale-105"
+                          >
+                            <Play className="mr-2 w-6 h-6 fill-current" />
+                            Assistir
+                          </Button>
+                      </motion.div>
+                    ) : (
+                      <motion.img
+                        key={currentSlide}
+                        src={displayImages[currentSlide] || "https://images.unsplash.com/photo-1551288049-bbbda5366392?q=80&w=1200&auto=format&fit=crop"}
+                        initial={{ opacity: 0, scale: 1.1 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        transition={{ duration: 0.8 }}
+                        className="w-full h-full object-cover md:object-top"
+                      />
+                    )}
                   </AnimatePresence>
                   
                   {/* Progress dots */}
