@@ -76,23 +76,23 @@ function AdminUsersPage() {
 
   async function fetchUsers() {
     setLoading(true);
-    let query = supabase
-      .from("profiles")
-      .select("*", { count: 'exact' });
-
-    if (searchTerm) {
-      query = query.or(`username.ilike.%${searchTerm}%,full_name.ilike.%${searchTerm}%`);
-    }
-
-    const { data, count, error } = await query
-      .order("created_at", { ascending: false })
-      .range((page - 1) * usersPerPage, page * usersPerPage - 1);
+    const { data, error } = await supabase.rpc("admin_list_profiles", {
+      p_search: searchTerm || null,
+      p_limit: usersPerPage,
+      p_offset: (page - 1) * usersPerPage,
+    });
 
     if (error) {
       toast.error("Erro ao carregar usuários");
-    } else {
-      setUsers(data || []);
+      setLoading(false);
+      return;
     }
+
+    const rows = (data as any[]) || [];
+    setUsers(rows.map((r) => r.data));
+    // total_count is the same in every row
+    const total = rows[0]?.total_count ?? 0;
+    (setUsers as any).totalCount = total;
     setLoading(false);
   }
 
