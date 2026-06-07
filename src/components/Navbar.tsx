@@ -63,26 +63,11 @@ export function Navbar() {
 
   useEffect(() => {
     if (!user?.id) return;
-
-    const channel = supabase
-      .channel(`profile_changes_${user.id}`)
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'profiles',
-          filter: `id=eq.${user.id}`
-        },
-        (payload) => {
-          setProfile(payload.new);
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    // Realtime on profiles foi desativado por segurança; usamos polling do próprio perfil
+    const interval = setInterval(() => {
+      fetchProfile(user.id);
+    }, 10000);
+    return () => clearInterval(interval);
   }, [user?.id]);
 
   async function fetchProfile(_userId: string) {
