@@ -51,14 +51,10 @@ function AdminDashboard() {
     fetchStats();
     fetchOnlineProfiles();
     
-    // Subscribe to profile changes to update online list
-    const channel = supabase
-      .channel('admin_presence_tracking')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => {
-        fetchOnlineProfiles();
-        fetchStats();
-      })
-      .subscribe();
+    // Realtime de profiles desativado por segurança; usamos polling
+    const presenceInterval = setInterval(() => {
+      fetchOnlineProfiles();
+    }, 10000);
 
     const statsInterval = setInterval(fetchStats, 30000); // Refresh stats every 30s
 
