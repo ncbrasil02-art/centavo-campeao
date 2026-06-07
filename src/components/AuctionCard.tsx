@@ -218,8 +218,6 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           // e só buscamos o perfil completo se o last_bidder_id mudou.
           const newData = payload.new as any;
           
-          const newData = payload.new as any;
-          
           setAuction((prev: any) => ({
             ...prev,
             ...newData,
