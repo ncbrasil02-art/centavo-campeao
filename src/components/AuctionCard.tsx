@@ -307,11 +307,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
     }
 
     // Verificar saldo antes de tentar dar o lance
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("bid_balance")
-      .eq("id", session.user.id)
-      .single();
+    const { data: profile } = await supabase.rpc("get_my_profile").maybeSingle() as any;
 
     if (!profile || (profile.bid_balance || 0) <= 0) {
       toast.info("Você não tem lances suficientes!", {
