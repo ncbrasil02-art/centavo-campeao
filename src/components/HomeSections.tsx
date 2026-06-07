@@ -84,7 +84,7 @@ export function Hero() {
   }, [phrases]);
 
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true); // Default to muted for auto-play support
   const [isPlaying, setIsPlaying] = useState(false);
   const [loadProgress, setLoadProgress] = useState(0);
   const loadingIntervalRef = useRef<any>(null);
@@ -94,17 +94,17 @@ export function Hero() {
   useEffect(() => {
     if (isPlaying) {
       if (loadingIntervalRef.current) clearInterval(loadingIntervalRef.current);
-      setLoadProgress(0);
+      setLoadProgress(100);
     } else {
-      // Start fake loading progress
       setLoadProgress(0);
       loadingIntervalRef.current = setInterval(() => {
         setLoadProgress(prev => {
           if (prev >= 100) {
             clearInterval(loadingIntervalRef.current);
+            setIsPlaying(true); // Auto-start when finished
             return 100;
           }
-          return prev + (Math.random() * 5);
+          return prev + (Math.random() * 15); // Faster loading for auto-play
         });
       }, 100);
     }
@@ -333,17 +333,11 @@ export function Hero() {
               </div>
               
               <div className="mt-8 flex flex-col items-center">
-                <Button 
-                  size="lg" 
-                  disabled={loadProgress < 100}
-                  onClick={() => setIsPlaying(true)}
-                  className="bg-primary hover:bg-primary/90 text-black font-black uppercase italic tracking-widest px-12 py-8 text-2xl h-auto rounded-full group transition-all hover:scale-105 active:scale-95 disabled:opacity-50 disabled:grayscale"
-                >
-                  <Play className="mr-3 w-8 h-8 fill-current" />
-                  Assistir Agora
-                </Button>
-                <p className="mt-4 text-white/40 font-bold uppercase tracking-widest text-sm animate-pulse">
-                  {loadProgress < 100 ? "Otimizando experiência..." : "Tudo pronto!"}
+                <p className="mt-4 text-white font-black italic uppercase tracking-widest text-xl animate-pulse">
+                  Carregando Experiência...
+                </p>
+                <p className="text-white/40 font-bold uppercase tracking-widest text-xs mt-2">
+                  Otimizando mídia e animações
                 </p>
               </div>
             </motion.div>
