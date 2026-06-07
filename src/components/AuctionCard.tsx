@@ -258,7 +258,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       
       setTimeLeft(diff);
 
-      // Transition check
+      // Transition check - force tick if reaching zero locally
       if ((isScheduled || currentStatus === 'scheduled') && diff <= 0 && !isRefreshing) {
         isRefreshing = true;
         console.log("Scheduled auction reached zero, initiating server tick...");
@@ -270,7 +270,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             .from("auctions")
             .select("*, product:products(*), last_bidder:profiles(id,username,avatar_url,city,state)")
             .eq("id", auction.id)
-            .single();
+            .maybeSingle();
           
           if (data && data.status !== 'scheduled') {
             setAuction(data);
@@ -285,6 +285,27 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         } finally {
           isRefreshing = false;
         }
+      }
+
+      // If live auction reaches zero locally, it might have finished or waiting for a bid from server
+      if (currentStatus === 'live' && diff <= 0 && !isRefreshing) {
+        // We wait a tiny bit to allow server to process/sync
+        setTimeout(async () => {
+          const { data } = await supabase
+            .from("auctions")
+            .select("status, end_time")
+            .eq("id", auction.id)
+            .single();
+          
+          if (data && data.status === 'live') {
+            // Still live? Server probably updated end_time but we missed it
+            const newEnd = new Date(data.end_time).getTime();
+            const newNow = Date.now() + offset;
+            setTimeLeft(Math.max(0, (newEnd - newNow) / 1000));
+          } else if (data && data.status === 'finished') {
+            setAuction(prev => ({ ...prev, status: 'finished' }));
+          }
+        }, 500);
       }
 
       // Otimização: Removido o tick agressivo que pesava a interface
