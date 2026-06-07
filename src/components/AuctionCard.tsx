@@ -76,11 +76,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
         setCurrentUserId(session.user.id);
-        const { data } = await supabase
-          .from("profiles")
-          .select("is_admin")
-          .eq("id", session.user.id)
-          .single();
+        const { data } = await supabase.rpc("get_my_profile").maybeSingle() as any;
         setIsAdmin(!!data?.is_admin);
       }
     }
