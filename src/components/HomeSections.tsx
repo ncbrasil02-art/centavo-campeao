@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "@tanstack/react-router";
 import { useTimeSync } from "@/hooks/useTimeSync";
 import { useSettings } from "@/hooks/useSettings";
@@ -8,11 +8,11 @@ import { ptBR } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { Users, Star, Trophy, ArrowRight, Play, Clock, Sparkles, ChevronLeft, ChevronRight, Gavel, Loader2 } from "lucide-react";
+import { Users, Star, Trophy, ArrowRight, Play, Clock, Sparkles, ChevronLeft, ChevronRight, Gavel, Loader2, Volume2, VolumeX } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import useEmblaCarousel from 'embla-carousel-react';
 // import Autoplay from 'embla-carousel-autoplay';
-import { Volume2, VolumeX } from "lucide-react";
+
 
 import { DemoAuctionBlock } from "./DemoAuctionBlock";
 
@@ -85,11 +85,36 @@ export function Hero() {
 
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [loadProgress, setLoadProgress] = useState(0);
+  const loadingIntervalRef = useRef<any>(null);
 
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, watchDrag: isPlaying });
 
   useEffect(() => {
-    if (!emblaApi || banners.length === 0) return;
+    if (isPlaying) {
+      if (loadingIntervalRef.current) clearInterval(loadingIntervalRef.current);
+      setLoadProgress(0);
+    } else {
+      // Start fake loading progress
+      setLoadProgress(0);
+      loadingIntervalRef.current = setInterval(() => {
+        setLoadProgress(prev => {
+          if (prev >= 100) {
+            clearInterval(loadingIntervalRef.current);
+            return 100;
+          }
+          return prev + (Math.random() * 5);
+        });
+      }, 100);
+    }
+    return () => {
+      if (loadingIntervalRef.current) clearInterval(loadingIntervalRef.current);
+    };
+  }, [isPlaying]);
+
+  useEffect(() => {
+    if (!emblaApi || banners.length === 0 || !isPlaying) return;
 
     // Filter banners to get the current one
     const currentBanner = banners[currentSlideIndex];
@@ -104,7 +129,7 @@ export function Hero() {
       
       return () => clearTimeout(timer);
     }
-  }, [emblaApi, currentSlideIndex, banners]);
+  }, [emblaApi, currentSlideIndex, banners, isPlaying]);
 
   // Helper removed as we switched to manual timer and video onEnded control
 
@@ -271,34 +296,96 @@ export function Hero() {
   if (banners.length > 0 && (hero_display_mode === 'banners' || hero_display_mode === 'products' || !hero_display_mode)) {
     return (
       <section className="relative w-full overflow-hidden bg-background">
+        <AnimatePresence>
+          {!isPlaying && (
+            <motion.div 
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 z-[100] bg-black/90 flex flex-col items-center justify-center backdrop-blur-sm"
+            >
+              <div className="relative w-32 h-32 flex items-center justify-center">
+                <svg className="w-full h-full transform -rotate-90">
+                  <circle
+                    cx="64"
+                    cy="64"
+                    r="60"
+                    stroke="currentColor"
+                    strokeWidth="8"
+                    fill="transparent"
+                    className="text-white/10"
+                  />
+                  <motion.circle
+                    cx="64"
+                    cy="64"
+                    r="60"
+                    stroke="currentColor"
+                    strokeWidth="8"
+                    fill="transparent"
+                    strokeDasharray={377}
+                    strokeDashoffset={377 - (377 * loadProgress) / 100}
+                    className="text-primary"
+                    transition={{ duration: 0.1 }}
+                  />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="text-white font-black italic text-xl">{Math.floor(loadProgress)}%</span>
+                </div>
+              </div>
+              
+              <div className="mt-8 flex flex-col items-center">
+                <Button 
+                  size="lg" 
+                  disabled={loadProgress < 100}
+                  onClick={() => setIsPlaying(true)}
+                  className="bg-primary hover:bg-primary/90 text-black font-black uppercase italic tracking-widest px-12 py-8 text-2xl h-auto rounded-full group transition-all hover:scale-105 active:scale-95 disabled:opacity-50 disabled:grayscale"
+                >
+                  <Play className="mr-3 w-8 h-8 fill-current" />
+                  Assistir Agora
+                </Button>
+                <p className="mt-4 text-white/40 font-bold uppercase tracking-widest text-sm animate-pulse">
+                  {loadProgress < 100 ? "Otimizando experiência..." : "Tudo pronto!"}
+                </p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <div className="embla" ref={emblaRef}>
           <div className="embla__container flex">
             {banners.map((banner, index) => (
               <div key={banner.id} className="embla__slide flex-[0_0_100%] min-w-0 relative h-[400px] md:h-[600px]">
                 {banner.media_type === 'video' ? (
                   <div className="absolute inset-0 w-full h-full">
-                    <video 
-                      key={`video-${banner.id}-${currentSlideIndex}`}
-                      src={banner.image_url} 
-                      className="w-full h-full object-cover"
-                      autoPlay
-                      muted={index === currentSlideIndex ? isMuted : true}
-                      playsInline
-                      onEnded={(e) => {
-                        const video = e.currentTarget;
-                        const currentLoop = parseInt(video.getAttribute('data-loop') || '0');
-                        const maxLoops = banner.loop_count || 1;
-                        
-                        if (currentLoop + 1 < maxLoops) {
-                          video.setAttribute('data-loop', (currentLoop + 1).toString());
-                          video.play();
-                        } else {
-                          // When finished all loops, go to next slide
-                          if (emblaApi) emblaApi.scrollNext();
-                        }
-                      }}
-                      data-loop="0"
-                    />
+                    {isPlaying && (
+                      <video 
+                        key={`video-${banner.id}-${currentSlideIndex}`}
+                        src={banner.image_url} 
+                        className="w-full h-full object-cover"
+                        autoPlay
+                        muted={index === currentSlideIndex ? isMuted : true}
+                        playsInline
+                        onEnded={(e) => {
+                          const video = e.currentTarget;
+                          const currentLoop = parseInt(video.getAttribute('data-loop') || '0');
+                          const maxLoops = banner.loop_count || 1;
+                          
+                          if (currentLoop + 1 < maxLoops) {
+                            video.setAttribute('data-loop', (currentLoop + 1).toString());
+                            video.play();
+                          } else {
+                            // When finished all loops, go to next slide
+                            if (emblaApi) emblaApi.scrollNext();
+                          }
+                        }}
+                        data-loop="0"
+                      />
+                    )}
+                    {!isPlaying && (
+                      <div 
+                        className="w-full h-full bg-cover bg-center"
+                        style={{ backgroundImage: `url(${banner.thumbnail_url || banner.image_url})` }}
+                      />
+                    )}
                     {index === currentSlideIndex && (
                       <button
                         onClick={(e) => {
