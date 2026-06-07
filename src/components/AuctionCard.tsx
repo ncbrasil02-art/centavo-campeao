@@ -216,7 +216,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           // Fetch full data to get nested relations (last_bidder)
           const { data, error } = await supabase
             .from("auctions")
-            .select("*, product:products(*), last_bidder:profiles(*)")
+            .select("*, product:products(*), last_bidder:profiles(id,username,avatar_url,city,state)")
             .eq("id", auction.id)
             .maybeSingle();
           
@@ -259,7 +259,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           
           const { data, error } = await supabase
             .from("auctions")
-            .select("*, product:products(*), last_bidder:profiles(*)")
+            .select("*, product:products(*), last_bidder:profiles(id,username,avatar_url,city,state)")
             .eq("id", auction.id)
             .single();
           
