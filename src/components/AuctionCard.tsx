@@ -218,24 +218,30 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           // e só buscamos o perfil completo se o last_bidder_id mudou.
           const newData = payload.new as any;
           
+          const newData = payload.new as any;
+          
           setAuction((prev: any) => ({
             ...prev,
             ...newData,
-            // Mantemos o last_bidder anterior enquanto carregamos o novo se mudou
           }));
           
           setIsNewBid(true);
           setTimeout(() => setIsNewBid(false), 800);
 
-          // Buscar dados completos apenas para atualizar o last_bidder (username/avatar)
-          const { data } = await supabase
-            .from("auctions")
-            .select("*, product:products(*), last_bidder:profiles(id,username,avatar_url,city,state)")
-            .eq("id", auction.id)
-            .maybeSingle();
-          
-          if (data) {
-            setAuction(data);
+          // Buscar dados completos do novo licitante apenas se mudou
+          if (newData.last_bidder_id) {
+            const { data } = await supabase
+              .from("profiles")
+              .select("id,username,avatar_url,city,state")
+              .eq("id", newData.last_bidder_id)
+              .maybeSingle();
+            
+            if (data) {
+              setAuction((prev: any) => ({
+                ...prev,
+                last_bidder: data
+              }));
+            }
           }
         }
       )
@@ -289,7 +295,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       if (!isScheduled && diff <= 0 && !confettiFired.current && auction.status === 'live') {
         // ... confetti logic if needed
       }
-    }, 100); // 100ms is enough and less intensive than 10ms
+    }, 50); // 50ms for smoother timer (Real-time Ajax feel)
 
     return () => {
       supabase.removeChannel(channel);
