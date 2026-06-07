@@ -77,10 +77,10 @@ function AdminUsersPage() {
   async function fetchUsers() {
     setLoading(true);
     const { data, error } = await supabase.rpc("admin_list_profiles", {
-      p_search: searchTerm || null,
+      p_search: searchTerm || undefined,
       p_limit: usersPerPage,
       p_offset: (page - 1) * usersPerPage,
-    });
+    } as any);
 
     if (error) {
       toast.error("Erro ao carregar usuários");
