@@ -31,11 +31,8 @@ function AdminRobotsPage() {
   }, []);
 
   async function fetchRobotUsers() {
-    const { data } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("is_bot", true);
-    if (data) setRobots(data);
+    const { data } = await supabase.rpc("admin_list_robots");
+    if (data) setRobots(data as any);
   }
 
   async function fetchAuctionsWithRobots() {

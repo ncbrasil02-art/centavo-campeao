@@ -76,11 +76,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
         setCurrentUserId(session.user.id);
-        const { data } = await supabase
-          .from("profiles")
-          .select("is_admin")
-          .eq("id", session.user.id)
-          .single();
+        const { data } = await supabase.rpc("get_my_profile").maybeSingle() as any;
         setIsAdmin(!!data?.is_admin);
       }
     }
@@ -220,7 +216,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           // Fetch full data to get nested relations (last_bidder)
           const { data, error } = await supabase
             .from("auctions")
-            .select("*, product:products(*), last_bidder:profiles(*)")
+            .select("*, product:products(*), last_bidder:profiles(id,username,avatar_url,city,state)")
             .eq("id", auction.id)
             .maybeSingle();
           
@@ -263,7 +259,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           
           const { data, error } = await supabase
             .from("auctions")
-            .select("*, product:products(*), last_bidder:profiles(*)")
+            .select("*, product:products(*), last_bidder:profiles(id,username,avatar_url,city,state)")
             .eq("id", auction.id)
             .single();
           
@@ -311,11 +307,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
     }
 
     // Verificar saldo antes de tentar dar o lance
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("bid_balance")
-      .eq("id", session.user.id)
-      .single();
+    const { data: profile } = await supabase.rpc("get_my_profile").maybeSingle() as any;
 
     if (!profile || (profile.bid_balance || 0) <= 0) {
       toast.info("Você não tem lances suficientes!", {

@@ -70,11 +70,7 @@ function ProfilePage() {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) return;
 
-    const { data: profileData } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", session.user.id)
-      .single();
+    const { data: profileData } = await supabase.rpc("get_my_profile").maybeSingle() as any;
     
     const { data: secretData } = await supabase
       .from("profile_secrets")

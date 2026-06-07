@@ -51,19 +51,15 @@ function AdminDashboard() {
     fetchStats();
     fetchOnlineProfiles();
     
-    // Subscribe to profile changes to update online list
-    const channel = supabase
-      .channel('admin_presence_tracking')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => {
-        fetchOnlineProfiles();
-        fetchStats();
-      })
-      .subscribe();
+    // Realtime de profiles desativado por segurança; usamos polling
+    const presenceInterval = setInterval(() => {
+      fetchOnlineProfiles();
+    }, 10000);
 
     const statsInterval = setInterval(fetchStats, 30000); // Refresh stats every 30s
 
     return () => {
-      supabase.removeChannel(channel);
+      clearInterval(presenceInterval);
       clearInterval(statsInterval);
     };
   }, []);
@@ -81,13 +77,8 @@ function AdminDashboard() {
   }
 
   async function fetchOnlineProfiles() {
-    const { data } = await supabase
-      .from('profiles')
-      .select('*')
-      .gt('last_seen_at', new Date(Date.now() - 5 * 60 * 1000).toISOString())
-      .order('last_seen_at', { ascending: false });
-    
-    if (data) setOnlineProfiles(data);
+    const { data } = await supabase.rpc('admin_list_online_profiles');
+    if (data) setOnlineProfiles(data as any);
   }
 
 

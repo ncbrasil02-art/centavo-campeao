@@ -19,11 +19,7 @@ export const Route = createFileRoute("/admin")({
     }
 
     // Check if user is admin
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("is_admin")
-      .eq("id", session.user.id)
-      .single();
+    const { data: profile } = await supabase.rpc("get_my_profile").maybeSingle() as any;
 
     console.log("User profile admin status:", profile?.is_admin, "User ID:", session.user.id);
 

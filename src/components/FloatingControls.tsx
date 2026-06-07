@@ -71,34 +71,16 @@ export function FloatingControls() {
 
   useEffect(() => {
     if (!profile?.id) return;
-
-    const channel = supabase
-      .channel(`floating_profile_${profile.id}`)
-      .on(
-        'postgres_changes',
-        { event: 'UPDATE', schema: 'public', table: 'profiles', filter: `id=eq.${profile.id}` },
-        (payload) => setProfile(payload.new)
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    const interval = setInterval(() => fetchProfile(), 10000);
+    return () => clearInterval(interval);
   }, [profile?.id]);
 
-  async function fetchProfile(userId?: string) {
-    const targetId = userId || profile?.id;
-    if (targetId) {
-      const { data } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", targetId)
-        .single();
-      if (data) {
-        setProfile(data);
-        setEditingUsername(data.username || "");
-        setEditingAvatar(data.avatar_url || "");
-      }
+  async function fetchProfile(_userId?: string) {
+    const { data } = await supabase.rpc("get_my_profile").maybeSingle() as any;
+    if (data) {
+      setProfile(data);
+      setEditingUsername(data.username || "");
+      setEditingAvatar(data.avatar_url || "");
     }
   }
 

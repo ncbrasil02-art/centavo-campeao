@@ -1130,6 +1130,41 @@ export type Database = {
         Args: { p_amount: number; p_user_id: string }
         Returns: undefined
       }
+      admin_get_profile: {
+        Args: { p_id: string }
+        Returns: {
+          avatar_url: string | null
+          bid_balance: number | null
+          city: string | null
+          created_at: string
+          current_page: string | null
+          full_name: string | null
+          gender: string | null
+          id: string
+          is_admin: boolean | null
+          is_bot: boolean | null
+          is_online: boolean | null
+          last_seen_at: string | null
+          phone: string | null
+          state: string | null
+          username: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "profiles"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      admin_list_online_profiles: { Args: never; Returns: Json[] }
+      admin_list_profiles: {
+        Args: { p_limit?: number; p_offset?: number; p_search?: string }
+        Returns: {
+          data: Json
+          total_count: number
+        }[]
+      }
+      admin_list_robots: { Args: never; Returns: Json[] }
       buy_credits: { Args: { p_package_id: string }; Returns: Json }
       can_manage_banners: { Args: never; Returns: boolean }
       check_is_admin: { Args: never; Returns: boolean }
@@ -1147,6 +1182,32 @@ export type Database = {
       ensure_live_auctions_robot_settings: { Args: never; Returns: undefined }
       get_admin_stats: { Args: never; Returns: Json }
       get_admin_stats_v2: { Args: never; Returns: Json }
+      get_my_profile: {
+        Args: never
+        Returns: {
+          avatar_url: string | null
+          bid_balance: number | null
+          city: string | null
+          created_at: string
+          current_page: string | null
+          full_name: string | null
+          gender: string | null
+          id: string
+          is_admin: boolean | null
+          is_bot: boolean | null
+          is_online: boolean | null
+          last_seen_at: string | null
+          phone: string | null
+          state: string | null
+          username: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "profiles"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       get_server_time: { Args: never; Returns: string }
       increment_bid_balance: {
         Args: { p_amount: number; p_user_id: string }
