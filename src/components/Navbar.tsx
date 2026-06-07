@@ -85,12 +85,8 @@ export function Navbar() {
     };
   }, [user?.id]);
 
-  async function fetchProfile(userId: string) {
-    const { data } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", userId)
-      .single();
+  async function fetchProfile(_userId: string) {
+    const { data } = await supabase.rpc("get_my_profile").maybeSingle() as any;
     if (data) setProfile(data);
     setLoading(false);
   }
