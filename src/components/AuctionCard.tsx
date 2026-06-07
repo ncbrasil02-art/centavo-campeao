@@ -299,11 +299,11 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           
           if (data && data.status === 'live') {
             // Still live? Server probably updated end_time but we missed it
-            const newEnd = new Date(data.end_time).getTime();
+            const newEnd = new Date(data.end_time || "").getTime();
             const newNow = Date.now() + offset;
             setTimeLeft(Math.max(0, (newEnd - newNow) / 1000));
           } else if (data && data.status === 'finished') {
-            setAuction(prev => ({ ...prev, status: 'finished' }));
+            setAuction((prev: any) => ({ ...prev, status: 'finished' }));
           }
         }, 500);
       }
