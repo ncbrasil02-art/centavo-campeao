@@ -51,16 +51,33 @@ function AdminDashboard() {
     fetchStats();
     fetchOnlineProfiles();
     
-    // Realtime de profiles desativado por segurança; usamos polling
+    // Realtime subscription for stats (via auctions table as a proxy for activity)
+    const statsChannel = supabase
+      .channel('admin-stats-realtime')
+      .on('postgres_changes', { 
+        event: '*', 
+        schema: 'public', 
+        table: 'auctions' 
+      }, () => {
+        fetchStats();
+      })
+      .on('postgres_changes', { 
+        event: '*', 
+        schema: 'public', 
+        table: 'bids' 
+      }, () => {
+        fetchStats();
+      })
+      .subscribe();
+
+    // Presence/Online profiles
     const presenceInterval = setInterval(() => {
       fetchOnlineProfiles();
-    }, 10000);
-
-    const statsInterval = setInterval(fetchStats, 30000); // Refresh stats every 30s
+    }, 15000);
 
     return () => {
+      supabase.removeChannel(statsChannel);
       clearInterval(presenceInterval);
-      clearInterval(statsInterval);
     };
   }, []);
 
