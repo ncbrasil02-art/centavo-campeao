@@ -212,25 +212,30 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           filter: `id=eq.${auction.id}`
         },
         async (payload) => {
-          console.log('Auction update:', payload);
-          // Fetch full data to get nested relations (last_bidder)
-          const { data, error } = await supabase
+          console.log('Auction update received:', payload.new.current_price);
+          
+          // Otimização: Se já temos os dados básicos no payload, atualizamos o estado local IMEDIATAMENTE
+          // e só buscamos o perfil completo se o last_bidder_id mudou.
+          const newData = payload.new as any;
+          
+          setAuction(prev => ({
+            ...prev,
+            ...newData,
+            // Mantemos o last_bidder anterior enquanto carregamos o novo se mudou
+          }));
+          
+          setIsNewBid(true);
+          setTimeout(() => setIsNewBid(false), 800);
+
+          // Buscar dados completos apenas para atualizar o last_bidder (username/avatar)
+          const { data } = await supabase
             .from("auctions")
             .select("*, product:products(*), last_bidder:profiles(id,username,avatar_url,city,state)")
             .eq("id", auction.id)
             .maybeSingle();
           
           if (data) {
-            setIsNewBid(true);
             setAuction(data);
-            // Calculate remaining time from server time
-            if (data.end_time) {
-              const end = new Date(data.end_time).getTime();
-              const now = getAdjustedNow();
-              setTimeLeft(Math.max(0, (end - now) / 1000));
-            }
-            
-            setTimeout(() => setIsNewBid(false), 800);
           }
         }
       )
@@ -278,12 +283,8 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
         }
       }
 
-      // NOVO: Tick constante para robôs se o leilão estiver LIVE e o tempo estiver baixo
-      // Isso ajuda a manter a disputa ativa mesmo se o cron externo demorar
-      if (!isScheduled && currentStatus === 'live' && diff <= 2 && diff > 0 && !isRefreshing) {
-        // Chamada silenciosa para processar robôs se estiver nos últimos segundos
-        void supabase.rpc('tick_auctions');
-      }
+      // Otimização: Removido o tick agressivo que pesava a interface
+      // O cron do servidor e os ticks de outros usuários já garantem a fluidez.
 
       if (!isScheduled && diff <= 0 && !confettiFired.current && auction.status === 'live') {
         // ... confetti logic if needed
@@ -323,6 +324,10 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
 
     setLoading(true);
     
+    // Feedback imediato (Otimista)
+    setIsNewBid(true);
+    playBidSound();
+    
     try {
       const { data, error } = await supabase.rpc('place_bid', {
         p_auction_id: auction.id
@@ -332,6 +337,8 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
 
       const result = data as any;
       if (!result.success) {
+        // Reverter feedback otimista se falhar
+        setIsNewBid(false);
         if (result.message.includes("lances") || result.message.includes("balance")) {
           toast.info("Lances esgotados!", {
             description: "Garanta agora um pacote com 50% de desconto para continuar na disputa!",
@@ -344,14 +351,13 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           toast.error(result.message);
         }
       } else {
-        toast.success("Lance realizado com sucesso!");
-        playBidSound();
-        setIsNewBid(true);
+        // Sucesso
         setShowBonus(true);
         setTimeout(() => setShowBonus(false), 1000);
         setTimeout(() => setIsNewBid(false), 800);
       }
     } catch (err: any) {
+      setIsNewBid(false);
       console.error("Error bidding:", err);
       toast.error(err.message || "Erro ao realizar lance.");
     } finally {
