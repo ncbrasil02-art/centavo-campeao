@@ -34,8 +34,8 @@ Deno.serve(async (req) => {
         }
       }
 
-      // Wait 2 seconds between ticks
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      // Wait 1 second between ticks for better precision in final seconds
+      await new Promise(resolve => setTimeout(resolve, 1000))
     }
 
     console.log(`Auction worker finished after ${ticks} ticks`)
