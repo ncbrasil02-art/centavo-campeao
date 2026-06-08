@@ -428,8 +428,8 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
   };
 
   const timeParts = formatTimeParts(
-    (!isFinished && !isConfirmed && !isPendingAudit && auction.status === 'live' && timeLeft < 0.1) 
-      ? 0.1 
+    (!isFinished && !isConfirmed && !isPendingAudit && auction.status === 'live' && timeLeft < 0.05) 
+      ? 0.05 
       : timeLeft
   );
 
