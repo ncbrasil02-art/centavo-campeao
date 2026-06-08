@@ -757,7 +757,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
             isFinished || isConfirmed
               ? 'cursor-default border border-green-500/20 bg-green-500/10 text-green-500' 
               : isPendingAudit
-              ? (isAdmin ? 'bg-primary text-primary-foreground shadow-[0_0_25px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.5 * 100%))] hover:scale-[1.02]' : 'cursor-default border border-red-500/20 bg-red-500/10 text-red-500 animate-pulse')
+              ? (isAdmin ? 'bg-primary text-primary-foreground shadow-[0_0_25px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.5 * 100%))] hover:scale-[1.02]' : 'cursor-default border-2 border-red-600 bg-red-600/20 text-red-600 shadow-[0_0_20px_rgba(220,38,38,0.5)] animate-[pulse_0.8s_ease-in-out_infinite]')
               : (isScheduled && !currentUserId)
               ? 'bg-primary text-primary-foreground shadow-[0_0_20px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.4 * 100%))] hover:scale-[1.02] cursor-pointer'
               : isScheduled
@@ -782,7 +782,9 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
               <span className="flex items-center gap-2">
                 <ShieldCheck className="h-5 w-5" /> ARREMATAR AGORA
               </span>
-            ) : "ARREMATADO"
+            ) : (
+              <span className="animate-pulse">ARREMATADO</span>
+            )
           ) : isScheduled ? (
             currentUserId ? "AGUARDANDO INÍCIO" : (
               <span className="flex items-center gap-2">
