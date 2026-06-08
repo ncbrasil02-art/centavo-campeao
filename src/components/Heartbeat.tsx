@@ -12,7 +12,7 @@ export function Heartbeat() {
       if (isRunning) return;
       isRunning = true;
       
-      console.log("Heartbeat ticking at", new Date().toISOString());
+      // console.log("Heartbeat ticking at", new Date().toISOString());
       try {
         // O tick_auctions agora processa internamente os robôs e as transições de status
         const { error: tickError } = await supabase.rpc('tick_auctions');
