@@ -1,0 +1,1 @@
+ALTER TABLE public.banners ADD COLUMN show_button BOOLEAN DEFAULT true;

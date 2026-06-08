@@ -194,6 +194,7 @@ export type Database = {
           loop_count: number | null
           media_type: string | null
           order_index: number | null
+          show_button: boolean | null
           start_at: string | null
           subtitle: string | null
           title: string | null
@@ -209,6 +210,7 @@ export type Database = {
           loop_count?: number | null
           media_type?: string | null
           order_index?: number | null
+          show_button?: boolean | null
           start_at?: string | null
           subtitle?: string | null
           title?: string | null
@@ -224,6 +226,7 @@ export type Database = {
           loop_count?: number | null
           media_type?: string | null
           order_index?: number | null
+          show_button?: boolean | null
           start_at?: string | null
           subtitle?: string | null
           title?: string | null
