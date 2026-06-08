@@ -37,7 +37,7 @@ export function Heartbeat() {
     // Run immediately on mount or path change
     runHeartbeat();
 
-    const interval = setInterval(runHeartbeat, 5000);
+    const interval = setInterval(runHeartbeat, 1000);
 
     return () => clearInterval(interval);
   }, [location.pathname]);
