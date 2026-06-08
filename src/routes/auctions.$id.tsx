@@ -46,6 +46,7 @@ function AuctionPage() {
   const [mounted, setMounted] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const surpassedAudioRef = useRef<HTMLAudioElement | null>(null);
   const confettiFired = useRef(false);
   const navigate = useNavigate();
   const { getAdjustedNow } = useTimeSync();
@@ -97,9 +98,13 @@ function AuctionPage() {
       "alert-3": "https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3"
     };
 
-    const audio = new Audio(soundUrls[soundId]);
-    audio.play().catch(err => console.error("Error playing surpassed sound:", err));
-  }, []);
+    const url = soundUrls[soundId];
+    if (!surpassedAudioRef.current || surpassedAudioRef.current.src !== url) {
+      surpassedAudioRef.current = new Audio(url);
+    }
+    surpassedAudioRef.current.currentTime = 0;
+    surpassedAudioRef.current.play().catch(err => console.error("Error playing surpassed sound:", err));
+  }, [sound_enabled]);
 
   useEffect(() => {
     if (auction?.current_price) {
@@ -132,16 +137,12 @@ function AuctionPage() {
 
     fetchBids();
 
-    console.log('Subscribing to real-time for auction:', auction.id);
-
-    // Optimized Real-time: Throttle re-fetching and use local updates where possible
     const auctionChannel = supabase
       .channel(`auction_detail_${auction.id}`)
       .on(
         'postgres_changes',
         { event: 'UPDATE', schema: 'public', table: 'auctions', filter: `id=eq.${auction.id}` },
         async (payload) => {
-          console.log('Auction real-time update:', payload.new);
           
           const newData = payload.new as any;
           
@@ -171,6 +172,7 @@ function AuctionPage() {
       )
       .subscribe();
 
+    // bids INSERT is already handled by the auction UPDATE above (fetchBids called there)
     const bidsChannel = supabase
       .channel(`bids_detail_${auction.id}`)
       .on(
@@ -249,7 +251,7 @@ function AuctionPage() {
     };
 
     calculateTimeLeft();
-    const timer = setInterval(calculateTimeLeft, 50);
+    const timer = setInterval(calculateTimeLeft, 100);
 
     return () => clearInterval(timer);
   }, [auction?.end_time, auction?.status, getAdjustedNow, isFinished]);
