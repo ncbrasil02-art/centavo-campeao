@@ -226,8 +226,9 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           setIsNewBid(true);
           setTimeout(() => setIsNewBid(false), 800);
 
-          // Buscar dados completos do novo licitante apenas se mudou
-          if (newData.last_bidder_id) {
+          // Buscar dados completos do novo licitante apenas se mudou e não é robot
+          // Otimização: Se tivermos muitos usuários, limitamos a frequência de buscas
+          if (newData.last_bidder_id && newData.last_bidder_id !== lastBidderIdRef.current) {
             const { data } = await supabase
               .from("profiles")
               .select("id,username,avatar_url,city,state")

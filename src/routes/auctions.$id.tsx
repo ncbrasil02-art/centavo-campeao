@@ -115,8 +115,9 @@ function AuctionPage() {
     }
   }, [auction?.current_price, auction?.last_bidder_id, playBidSound, playSurpassedSound, mounted, currentUserId]);
 
-  const channelRef = useRef<string>(`auction_detail_${id}_${Math.random().toString(36).substring(7)}`);
-  const bidsChannelRef = useRef<string>(`bids_detail_${id}_${Math.random().toString(36).substring(7)}`);
+  const lastFetchBidsRef = useRef<number>(0);
+  const auctionChannelRef = useRef<any>(null);
+  const bidsChannelRef = useRef<any>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -133,6 +134,7 @@ function AuctionPage() {
 
     console.log('Subscribing to real-time for auction:', auction.id);
 
+    // Optimized Real-time: Throttle re-fetching and use local updates where possible
     const auctionChannel = supabase
       .channel(`auction_detail_${auction.id}`)
       .on(
@@ -141,29 +143,30 @@ function AuctionPage() {
         async (payload) => {
           console.log('Auction real-time update:', payload.new);
           
-          // Fetch the latest profile data for the leader UI
-          const { data: profileData } = await supabase
-            .from('profiles')
-            .select('username, avatar_url')
-            .eq('id', payload.new.last_bidder_id)
-            .maybeSingle();
+          const newData = payload.new as any;
           
+          // Update local state immediately with what we have
           setAuction((prev: any) => ({ 
             ...prev, 
-            ...payload.new,
-            last_bidder: profileData || prev?.last_bidder
+            ...newData
           }));
 
           // Recalculate time remaining instantly
-          if (payload.new.end_time) {
-            const end = new Date(payload.new.end_time).getTime();
+          if (newData.end_time) {
+            const end = new Date(newData.end_time).getTime();
             const now = getAdjustedNow();
             setTimeLeft(Math.max(0, (end - now) / 1000));
           }
 
           setIsNewBid(true);
           setTimeout(() => setIsNewBid(false), 500);
-          fetchBids(); // Refresh history
+          
+          // Throttle bid list refresh to every 2 seconds to avoid DB hammer with 1000+ users
+          const now = Date.now();
+          if (now - lastFetchBidsRef.current > 2000) {
+            lastFetchBidsRef.current = now;
+            fetchBids();
+          }
         }
       )
       .subscribe();
@@ -174,11 +177,17 @@ function AuctionPage() {
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'bids', filter: `auction_id=eq.${auction.id}` },
         () => {
-          console.log('New bid detected via real-time');
-          fetchBids();
+          const now = Date.now();
+          if (now - lastFetchBidsRef.current > 2000) {
+            lastFetchBidsRef.current = now;
+            fetchBids();
+          }
         }
       )
       .subscribe();
+
+    auctionChannelRef.current = auctionChannel;
+    bidsChannelRef.current = bidsChannel;
 
     return () => {
       supabase.removeChannel(auctionChannel);
@@ -240,7 +249,7 @@ function AuctionPage() {
     };
 
     calculateTimeLeft();
-    const timer = setInterval(calculateTimeLeft, 10);
+    const timer = setInterval(calculateTimeLeft, 50);
 
     return () => clearInterval(timer);
   }, [auction?.end_time, auction?.status, getAdjustedNow, isFinished]);
@@ -301,6 +310,14 @@ function AuctionPage() {
     
     if (data && data.length > 0) {
       setBids(data);
+      // Sync auction leader with the latest bid data to avoid redundant profile fetches
+      if (data[0].profile) {
+        setAuction((prev: any) => prev ? ({ 
+          ...prev, 
+          last_bidder: data[0].profile,
+          last_bidder_id: data[0].user_id 
+        }) : prev);
+      }
     } else {
       setBids([]);
     }

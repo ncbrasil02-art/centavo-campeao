@@ -14,18 +14,21 @@ export function Heartbeat() {
       
       // console.log("Heartbeat ticking at", new Date().toISOString());
       try {
-        // O tick_auctions agora processa internamente os robôs e as transições de status
-        const { error: tickError } = await supabase.rpc('tick_auctions');
-        if (tickError) console.error("Tick auctions error:", tickError);
-
-        // Track user presence
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session?.user) {
-          const { error: presenceError } = await supabase.rpc('track_user_presence', {
-            p_user_id: session.user.id,
-            p_page: location.pathname
-          });
-          if (presenceError) console.error("Track presence error:", presenceError);
+        // Track user presence less frequently (e.g., every 30 seconds)
+        // We'll use a timestamp check to avoid calling too often
+        const lastPresence = localStorage.getItem('last_presence_track');
+        const now = Date.now();
+        
+        if (!lastPresence || now - parseInt(lastPresence) > 30000) {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session?.user) {
+            const { error: presenceError } = await supabase.rpc('track_user_presence', {
+              p_user_id: session.user.id,
+              p_page: location.pathname
+            });
+            if (presenceError) console.error("Track presence error:", presenceError);
+            localStorage.setItem('last_presence_track', now.toString());
+          }
         }
       } catch (err) {
         console.error("Heartbeat fatal error:", err);

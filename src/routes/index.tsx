@@ -186,11 +186,16 @@ function Index() {
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'auctions' },
-        () => {
-          // We only need to re-fetch when a NEW auction starts or one ends (status change)
-          // Since individual bids are handled inside AuctionCard, we don't need to re-fetch the list
-          // But to keep the order correct if status changes, we fetch.
-          fetchData(); 
+        (payload) => {
+          // Optimized: Only re-fetch the list if status changed or a new auction was added/removed
+          // Individual bids are handled by the real-time subscriptions inside each AuctionCard
+          const isStatusChange = payload.eventType === 'UPDATE' && payload.old?.status !== payload.new?.status;
+          const isStructureChange = payload.eventType === 'INSERT' || payload.eventType === 'DELETE';
+          
+          if (isStatusChange || isStructureChange) {
+            console.log('Auction list change detected, refreshing...', payload.eventType);
+            fetchData(); 
+          }
         }
       )
       .subscribe();
