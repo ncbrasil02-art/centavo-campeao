@@ -747,10 +747,15 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
               window.location.assign("/auth?register=true&offer=welcome_bids");
               return;
             }
+            if (isPendingAudit && isAdmin) {
+              handleConfirmWinner();
+              return;
+            }
             if (!isFinished && !isScheduled && !isPendingAudit && !isConfirmed) {
               handleBid();
             }
           }} 
+
 
           disabled={loading || (isFinished || (isScheduled && !!currentUserId) || isConfirmed || (isPendingAudit && !isAdmin))}
           className={`h-14 w-full rounded-2xl text-base font-black uppercase italic tracking-tighter transition-all relative overflow-hidden group/bidbtn ${
@@ -780,7 +785,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           ) : isPendingAudit ? (
             isAdmin ? (
               <span className="flex items-center gap-2">
-                <ShieldCheck className="h-5 w-5" /> ARREMATAR AGORA
+                <ShieldCheck className="h-5 w-5" /> CONFIRMAR VENCEDOR
               </span>
             ) : (
               <span className="animate-pulse">ARREMATADO</span>
