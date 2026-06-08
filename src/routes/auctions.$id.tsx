@@ -310,6 +310,14 @@ function AuctionPage() {
     
     if (data && data.length > 0) {
       setBids(data);
+      // Sync auction leader with the latest bid data to avoid redundant profile fetches
+      if (data[0].profile) {
+        setAuction((prev: any) => prev ? ({ 
+          ...prev, 
+          last_bidder: data[0].profile,
+          last_bidder_id: data[0].user_id 
+        }) : prev);
+      }
     } else {
       setBids([]);
     }
