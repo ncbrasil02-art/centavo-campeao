@@ -752,7 +752,7 @@ function AuctionPage() {
                         {isFinished || isConfirmed || isPendingAudit ? "Grande Arrematador" : "Liderando Agora"}
                       </span>
                       <span className={`text-xl font-black transition-all italic uppercase ${isNewBid ? 'text-primary scale-105 origin-left' : isFinished ? 'text-green-500' : 'text-foreground group-hover/bidder:text-primary'}`}>
-                        {auction.last_bidder?.username || (isFinished ? "Encerrado" : "Nenhum lance")}
+                        {auction.last_bidder?.username || (isFinished || isPendingAudit || isConfirmed ? "Verificando ganhador" : "Nenhum lance")}
                       </span>
                     </div>
                   </div>

@@ -732,9 +732,9 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
               {isScheduled ? (
                 <span className="italic text-muted-foreground/50">Prepare seus lances!</span>
               ) : isPendingAudit ? (
-                <span className="italic text-muted-foreground/50">Nenhum lance ainda</span>
+                <span className="italic text-muted-foreground/50">Verificando ganhador</span>
               ) : (
-                auction.last_bidder?.username || <span className="italic text-muted-foreground/50">Nenhum lance ainda</span>
+                auction.last_bidder?.username || <span className="italic text-muted-foreground/50">Verificando ganhador</span>
               )}
             </span>
           </div>
