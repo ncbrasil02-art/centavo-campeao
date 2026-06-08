@@ -40,7 +40,9 @@ export function AuctionChat({ auctionId, isFinished }: { auctionId: string, isFi
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'chat_messages', filter: `auction_id=eq.${auctionId}` },
         (payload) => {
-          fetchMessageDetail(payload.new.id);
+          // Optimized: Only fetch if we really need to, otherwise throttle
+          // Actually, we'll wait for the next periodic refresh or fetch individually with a small delay
+          setTimeout(() => fetchMessageDetail(payload.new.id), Math.random() * 1000); 
         }
       )
       .subscribe();
