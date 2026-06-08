@@ -257,8 +257,8 @@ function Index() {
       // Ordenação personalizada: Ativos > Agendados > Em Auditoria > Confirmados
       const statusOrder: Record<string, number> = {
         'live': 0,
-        'scheduled': 1,
-        'pending_audit': 2,
+        'pending_audit': 1,
+        'scheduled': 2,
         'confirmed': 3
       };
       
