@@ -427,7 +427,11 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
     };
   };
 
-  const timeParts = formatTimeParts(timeLeft);
+  const timeParts = formatTimeParts(
+    (!isFinished && !isConfirmed && !isPendingAudit && auction.status === 'live' && timeLeft < 0.05) 
+      ? 0.05 
+      : timeLeft
+  );
 
   const timePercentage = (timeLeft / timerDuration) * 100;
 
