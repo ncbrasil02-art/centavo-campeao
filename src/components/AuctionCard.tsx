@@ -747,10 +747,15 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
               window.location.assign("/auth?register=true&offer=welcome_bids");
               return;
             }
+            if (isPendingAudit && isAdmin) {
+              handleConfirmWinner();
+              return;
+            }
             if (!isFinished && !isScheduled && !isPendingAudit && !isConfirmed) {
               handleBid();
             }
           }} 
+
 
           disabled={loading || (isFinished || (isScheduled && !!currentUserId) || isConfirmed || (isPendingAudit && !isAdmin))}
           className={`h-14 w-full rounded-2xl text-base font-black uppercase italic tracking-tighter transition-all relative overflow-hidden group/bidbtn ${
