@@ -44,6 +44,7 @@ function AdminBanners() {
     link_url: "",
     order_index: 0,
     active: true,
+    show_button: true,
     start_at: "",
     end_at: "",
     media_type: "image",
