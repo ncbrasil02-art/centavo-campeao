@@ -108,6 +108,8 @@ export function Footer() {
             <span>© {new Date().getFullYear()} {site_name}</span>
             <span className="hidden md:inline">•</span>
             <span>Todos os direitos reservados</span>
+            <span className="hidden md:inline">•</span>
+            <span className="text-primary/40">v1.0</span>
           </div>
           <div className="flex flex-col items-center md:items-end gap-1.5">
             <div className="flex items-center gap-1.5">
