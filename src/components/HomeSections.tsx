@@ -195,12 +195,19 @@ export function Hero() {
       setLoading(false);
     }, 3000);
 
-    // Subscribe to site_settings changes to update hero mode in real-time
+    // Subscribe to site_settings and banners changes to update hero data in real-time
     const settingsChannel = supabase
-      .channel('hero-settings-changes')
+      .channel('hero-data-changes')
       .on(
         'postgres_changes',
-        { event: 'UPDATE', schema: 'public', table: 'site_settings' },
+        { event: '*', schema: 'public', table: 'site_settings' },
+        () => {
+          fetchHeroData(true);
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'banners' },
         () => {
           fetchHeroData(true);
         }
