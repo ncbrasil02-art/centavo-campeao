@@ -780,7 +780,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           ) : isPendingAudit ? (
             isAdmin ? (
               <span className="flex items-center gap-2">
-                <ShieldCheck className="h-5 w-5" /> ARREMATAR AGORA
+                <ShieldCheck className="h-5 w-5" /> CONFIRMAR VENCEDOR
               </span>
             ) : (
               <span className="animate-pulse">ARREMATADO</span>
