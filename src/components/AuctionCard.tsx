@@ -328,7 +328,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
     if (!session) {
       toast.error("Você precisa estar logado para dar lances!");
       // Redireciona para o cadastro rápido conforme solicitado
-      window.location.href = "/auth?register=true&offer=welcome_bids";
+      window.location.assign("/auth?register=true&offer=welcome_bids");
       return;
     }
 
