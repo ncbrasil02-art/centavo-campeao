@@ -744,7 +744,7 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           onClick={(e) => {
             e.stopPropagation();
             if (isScheduled && !currentUserId) {
-              window.location.href = "/auth?register=true&offer=welcome_bids";
+              window.location.assign("/auth?register=true&offer=welcome_bids");
               return;
             }
             if (!isFinished && !isScheduled && !isPendingAudit && !isConfirmed) {
