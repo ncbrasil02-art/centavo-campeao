@@ -195,12 +195,19 @@ export function Hero() {
       setLoading(false);
     }, 3000);
 
-    // Subscribe to site_settings changes to update hero mode in real-time
+    // Subscribe to site_settings and banners changes to update hero data in real-time
     const settingsChannel = supabase
-      .channel('hero-settings-changes')
+      .channel('hero-data-changes')
       .on(
         'postgres_changes',
-        { event: 'UPDATE', schema: 'public', table: 'site_settings' },
+        { event: '*', schema: 'public', table: 'site_settings' },
+        () => {
+          fetchHeroData(true);
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'banners' },
         () => {
           fetchHeroData(true);
         }
@@ -417,11 +424,13 @@ export function Hero() {
                           {banner.subtitle}
                         </p>
                       )}
-                      <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase italic tracking-widest" asChild>
-                        <Link to={(banner.link_url || "/auth") as any}>
-                          {user ? "Participar Agora" : "Começar Agora"} <ArrowRight className="ml-2 w-5 h-5" />
-                        </Link>
-                      </Button>
+                      {banner.show_button !== false && (
+                        <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase italic tracking-widest" asChild>
+                          <Link to={(banner.link_url || "/auth") as any}>
+                            {user ? "Participar Agora" : "Começar Agora"} <ArrowRight className="ml-2 w-5 h-5" />
+                          </Link>
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </div>

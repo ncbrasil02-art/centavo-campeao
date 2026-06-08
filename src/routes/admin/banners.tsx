@@ -44,6 +44,7 @@ function AdminBanners() {
     link_url: "",
     order_index: 0,
     active: true,
+    show_button: true,
     start_at: "",
     end_at: "",
     media_type: "image",
@@ -141,6 +142,7 @@ function AdminBanners() {
         link_url: "", 
         order_index: 0, 
         active: true, 
+        show_button: true,
         start_at: "", 
         end_at: "",
         media_type: "image",
@@ -191,6 +193,7 @@ function AdminBanners() {
       link_url: banner.link_url || "",
       order_index: banner.order_index,
       active: banner.active,
+      show_button: banner.show_button ?? true,
       start_at: banner.start_at ? format(new Date(banner.start_at), "yyyy-MM-dd'T'HH:mm") : "",
       end_at: banner.end_at ? format(new Date(banner.end_at), "yyyy-MM-dd'T'HH:mm") : "",
       media_type: banner.media_type || "image",
@@ -223,6 +226,7 @@ function AdminBanners() {
                 link_url: "", 
                 order_index: 0, 
                 active: true, 
+                show_button: true,
                 start_at: "", 
                 end_at: "",
                 media_type: "image",
@@ -397,12 +401,22 @@ function AdminBanners() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Switch 
-                    checked={formData.active} 
-                    onCheckedChange={v => setFormData({...formData, active: v})}
-                  />
-                  <Label>Banner Ativo</Label>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex items-center gap-2">
+                    <Switch 
+                      checked={formData.active} 
+                      onCheckedChange={v => setFormData({...formData, active: v})}
+                    />
+                    <Label>Banner Ativo</Label>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Switch 
+                      checked={formData.show_button} 
+                      onCheckedChange={v => setFormData({...formData, show_button: v})}
+                    />
+                    <Label>Exibir Botão</Label>
+                  </div>
                 </div>
 
                 <DialogFooter className="pt-4">
