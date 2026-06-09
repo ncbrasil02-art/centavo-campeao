@@ -82,13 +82,16 @@ function AdminRobotsPage() {
   };
 
   const toggleInnerDispute = async (settingsId: string, currentStatus: boolean, minutes: number = 50) => {
-    const endAt = !currentStatus ? new Date(Date.now() + minutes * 60 * 1000).toISOString() : null;
-    
+    // NOTE: we intentionally do NOT set inner_dispute_end_at here. Anchoring it to
+    // the toggle-click time made the dispute window expire before the auction even
+    // started (robots stopped after ~1 bid). The server (process_robot_bids) now
+    // derives the window from the auction's start_time + dispute_duration_minutes,
+    // so we just clear the legacy column to avoid stale values.
     const { error } = await supabase
       .from("robot_settings")
-      .update({ 
+      .update({
         inner_dispute_enabled: !currentStatus,
-        inner_dispute_end_at: endAt
+        inner_dispute_end_at: null
       })
       .eq("id", settingsId);
     
