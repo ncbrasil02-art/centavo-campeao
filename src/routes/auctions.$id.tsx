@@ -65,6 +65,11 @@ function AuctionPage() {
   const isPendingAudit = auction?.status === 'pending_audit';
   const isConfirmed = auction?.status === 'confirmed';
   const isTimeUp = timeLeft <= 0 && !isFinished && !isPendingAudit;
+  // While the auction is still live, never let the displayed clock sit at a dead
+  // 00:00,00 between robot bids — clamp to a tiny value (matches AuctionCard) so it
+  // always looks like it's still ticking, never "ended".
+  const isLiveCountdown = !isFinished && !isPendingAudit && !isConfirmed && auction?.status === 'live';
+  const displayTimeLeft = (isLiveCountdown && timeLeft < 0.05) ? 0.05 : timeLeft;
   const discount = auction?.product?.market_value 
     ? Math.round((1 - (auction.current_price / auction.product.market_value)) * 100)
     : 0;
@@ -222,32 +227,12 @@ function AuctionPage() {
         fetchAuction();
       }
 
-      if (!isScheduled && diff <= 0 && auction.status === 'live') {
-        // Auction just finished
-        if (!confettiFired.current) {
-          import("canvas-confetti").then((m) => {
-            const confetti = m.default || m;
-            const duration = 5 * 1000;
-            const animationEnd = Date.now() + duration;
-            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0, colors: ['#00F2FF', '#9D00FF', '#FF00E5'] };
-
-            const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
-
-            const interval: any = setInterval(function() {
-              const timeLeft = animationEnd - Date.now();
-
-              if (timeLeft <= 0) {
-                return clearInterval(interval);
-              }
-
-              const particleCount = 50 * (timeLeft / duration);
-              confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
-              confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
-            }, 250);
-          });
-          confettiFired.current = true;
-        }
-      }
+      // IMPORTANT: a local countdown reaching zero does NOT mean the auction ended.
+      // While status is 'live' the server keeps placing robot bids; the clock merely
+      // touches zero between bids. We must NOT fire any "ended" celebration/confetti
+      // here, otherwise a 2-hour auction would flash "finished" + confetti every time
+      // the timer briefly hit zero. Real finalization arrives via realtime as a status
+      // change to 'finished'/'pending_audit', handled by the confetti effect below.
     };
 
     calculateTimeLeft();
@@ -255,6 +240,30 @@ function AuctionPage() {
 
     return () => clearInterval(timer);
   }, [auction?.end_time, auction?.status, getAdjustedNow, isFinished]);
+
+  // Celebration confetti: fires ONLY when an auction the viewer was watching live
+  // actually transitions to a terminal state — never on a transient local-timer zero.
+  const wasLiveRef = useRef(false);
+  useEffect(() => {
+    if (auction?.status === 'live') wasLiveRef.current = true;
+    if ((isFinished || isPendingAudit) && wasLiveRef.current && !confettiFired.current) {
+      confettiFired.current = true;
+      import("canvas-confetti").then((m) => {
+        const confetti = m.default || m;
+        const duration = 5 * 1000;
+        const animationEnd = Date.now() + duration;
+        const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0, colors: ['#00F2FF', '#9D00FF', '#FF00E5'] };
+        const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
+        const interval: any = setInterval(function () {
+          const left = animationEnd - Date.now();
+          if (left <= 0) return clearInterval(interval);
+          const particleCount = 50 * (left / duration);
+          confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+          confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+        }, 250);
+      });
+    }
+  }, [auction?.status, isFinished, isPendingAudit]);
 
   // Removed fictitiousBidInterval as we now use real DB robot bidding via process_robot_bids RPC 
   // and real-time updates from Supabase.
@@ -670,13 +679,13 @@ function AuctionPage() {
                           }`}>
                             {isFinished ? "00:00" : (
                               <>
-                                {timeLeft >= 3600 && (
+                                {displayTimeLeft >= 3600 && (
                                   <span className="text-2xl mr-1">
-                                    {Math.floor(timeLeft / 3600).toString().padStart(2, '0')}:
+                                    {Math.floor(displayTimeLeft / 3600).toString().padStart(2, '0')}:
                                   </span>
                                 )}
-                                {Math.floor((timeLeft % 3600) / 60).toString().padStart(2, '0')}:
-                                {Math.floor(timeLeft % 60).toString().padStart(2, '0')}
+                                {Math.floor((displayTimeLeft % 3600) / 60).toString().padStart(2, '0')}:
+                                {Math.floor(displayTimeLeft % 60).toString().padStart(2, '0')}
                               </>
                             )}
                           </span>
@@ -690,7 +699,7 @@ function AuctionPage() {
                           <span className={`text-xl font-black tabular-nums ${
                             timeLeft <= 8 && !isFinished ? 'text-red-400' : 'text-muted-foreground'
                           }`}>
-                            ,{isFinished ? "00" : Math.floor((timeLeft % 1) * 100).toString().padStart(2, '0')}
+                            ,{isFinished ? "00" : Math.floor((displayTimeLeft % 1) * 100).toString().padStart(2, '0')}
                           </span>
                         </div>
                       </div>
