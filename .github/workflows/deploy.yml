@@ -1,93 +1,34 @@
-name: Deploy para Clientes (FTP Hostinger)
+name: Deploy to Hostinger
 
 on:
   push:
-    branches:
-      - main
-  workflow_dispatch:
+    branches: [main]
 
 jobs:
-  build:
-    name: Build Hostinger estatico
+  deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Instalar Node.js 20
-        uses: actions/setup-node@v4
+      - uses: oven-sh/setup-bun@v2
         with:
-          node-version: 20
+          bun-version: latest
 
-      - name: Instalar dependencias
-        run: npm install
+      - name: Install dependencies
+        run: bun install
 
-      - name: Build Hostinger
-        run: npm run build:hostinger
+      - name: Build
+        run: bun run build:hostinger
+        env:
+          SITE_URL: https://centavodomilhao.online/
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
 
-      - name: Criar htaccess compatível com Hostinger
-        run: |
-          cat > dist/client/.htaccess <<'EOF'
-          DirectoryIndex index.html
-          RewriteEngine On
-          RewriteCond %{REQUEST_FILENAME} !-f
-          RewriteCond %{REQUEST_FILENAME} !-d
-          RewriteRule . /index.html [L]
-          EOF
-
-      - name: Verificar arquivos publicados
-        run: |
-          test -f dist/client/index.html
-          test -d dist/client/assets
-
-      - name: Salvar site estatico
-        uses: actions/upload-artifact@v4
-        with:
-          name: static-site
-          include-hidden-files: true
-          path: dist/client/
-
-  deploy-centavodomilhao:
-    name: Deploy centavodomilhao.online
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Baixar site estatico
-        uses: actions/download-artifact@v4
-        with:
-          name: static-site
-          path: site/
-
-      - name: Upload FTP
+      - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ${{ secrets.FTP_HOST_CENTAVODOMILHAO }}
-          username: ${{ secrets.FTP_USER_CENTAVODOMILHAO }}
-          password: ${{ secrets.FTP_PASS_CENTAVODOMILHAO }}
-          local-dir: site/
-          server-dir: ./
-          dangerous-clean-slate: true
-
-  deploy-lancecerto:
-    name: Deploy lancecerto.site
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Baixar site estatico
-        uses: actions/download-artifact@v4
-        with:
-          name: static-site
-          path: site/
-
-      - name: Upload FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_HOST_LANCECERTO }}
-          username: ${{ secrets.FTP_USER_LANCECERTO }}
-          password: ${{ secrets.FTP_PASS_LANCECERTO }}
-          local-dir: site/
-          server-dir: ./
-          dangerous-clean-slate: true
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/client/
+          server-dir: /public_html/
