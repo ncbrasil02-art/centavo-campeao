@@ -75,7 +75,7 @@ export function UniqueBidsBlock() {
                   <div className="flex items-center justify-between text-xs">
                     <span className="flex items-center gap-1 text-muted-foreground">
                       <Target className="w-3 h-3" />
-                      Palpite de R$ {brl(c.min_bid_value)} a R$ {brl(c.max_bid_value)}
+                      Palpite de R$ 0,01 a R$ 100,00
                     </span>
                     <ArrowRight className="w-4 h-4 text-primary" />
                   </div>
