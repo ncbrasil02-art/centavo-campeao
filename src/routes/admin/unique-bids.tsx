@@ -213,6 +213,15 @@ function AdminUniqueBids() {
                   </SelectContent>
                 </Select>
               </div>
+              <div>
+                <Label>Encerramento (opcional)</Label>
+                <Input
+                  type="datetime-local"
+                  value={form.ends_at}
+                  onChange={(e) => setForm({ ...form, ends_at: e.target.value })}
+                />
+                <p className="text-xs text-muted-foreground mt-1">Se vazio, encerra apenas manualmente.</p>
+              </div>
             </div>
             <DialogFooter>
               <Button onClick={save}>{editing ? "Salvar" : "Criar"}</Button>
