@@ -47,17 +47,24 @@ export function UniqueBidsBlock() {
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row items-end justify-between mb-8 gap-4">
           <div>
-            <Badge variant="outline" className="mb-3 border-primary/30 bg-primary/10 text-primary uppercase">
-              <Sparkles className="w-3 h-3 mr-1" /> Novo modo
+            <Badge variant="outline" className="mb-3 border-primary/30 bg-primary/10 text-primary uppercase tracking-widest">
+              <Sparkles className="w-3 h-3 mr-1" /> Exclusivo • Edição limitada
             </Badge>
-            <h2 className="text-4xl font-black tracking-tight italic">
-              Menor <span className="text-primary">Lance Único</span>
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight italic leading-[1.05]">
+              Pague o <span className="text-primary">menor lance único</span>
+              <br className="hidden md:block" /> e leve para casa.
             </h2>
-            <p className="text-muted-foreground max-w-xl mt-2">
-              Dê o menor valor que ninguém mais escolheu e leve o produto. Quanto mais estratégico, maior a chance.
+            <p className="text-muted-foreground max-w-xl mt-3 text-base md:text-lg">
+              Não é sorte — é estratégia. Escolha um valor que <span className="text-foreground font-semibold">ninguém mais pensou</span> e arremate produtos premium por uma fração do preço.
             </p>
+            <div className="flex flex-wrap gap-4 mt-4 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1"><Sparkles className="w-3 h-3 text-primary" /> Sem leilão, sem disputa</span>
+              <span className="flex items-center gap-1"><Target className="w-3 h-3 text-primary" /> Você escolhe quanto pagar</span>
+              <span className="flex items-center gap-1"><ArrowRight className="w-3 h-3 text-primary" /> Resultado em horas</span>
+            </div>
           </div>
         </div>
+
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {campaigns.map((c) => (
