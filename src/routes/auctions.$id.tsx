@@ -558,24 +558,7 @@ function AuctionPage() {
                 </div>
               </div>
 
-              {auction.product?.images && auction.product.images.length > 1 && (
-                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
-                  {auction.product.images.map((img: string, idx: number) => (
-                    <button 
-                      key={idx}
-                      onClick={() => setActiveImage(idx)}
-                      className={`relative w-24 h-24 rounded-2xl overflow-hidden border-2 transition-all shrink-0 snap-start ${activeImage === idx ? 'border-primary shadow-[0_0_15px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.3 * 100%))]' : 'border-border opacity-50 hover:opacity-100 hover:border-border/60'}`}
-                    >
-                      <img src={img} className="w-full h-full object-cover" onError={(e) => (e.target as HTMLImageElement).src = FALLBACK_PRODUCT_IMAGE} />
-                      {activeImage === idx && (
-                        <div className="absolute inset-0 bg-primary/10 flex items-center justify-center">
-                          <div className="w-1 h-1 bg-primary rounded-full animate-ping" />
-                        </div>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              )}
+              {/* Thumbnails removed — main image auto-slides when multiple photos */}
             </div>
 
             <Card className="bg-card border-border overflow-hidden rounded-3xl">
