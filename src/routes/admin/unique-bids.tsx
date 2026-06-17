@@ -97,6 +97,7 @@ function AdminUniqueBids() {
       max_bid_value: Number(c.max_bid_value),
       bid_step: Number(c.bid_step),
       status: c.status,
+      ends_at: (c as any).ends_at ? new Date((c as any).ends_at).toISOString().slice(0, 16) : "",
     });
     setOpen(true);
   }
