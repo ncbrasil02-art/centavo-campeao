@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Sparkles, ArrowRight, Target } from "lucide-react";
 
 const sb = supabase as any;
+const brl = (n: number) =>
+  Number(n).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 function Countdown({ to }: { to: string }) {
   const [now, setNow] = useState(Date.now());
@@ -77,7 +79,7 @@ export function UniqueBidsBlock() {
                   <div className="flex items-center justify-between text-xs">
                     <span className="flex items-center gap-1 text-muted-foreground">
                       <Target className="w-3 h-3" />
-                      Palpite R$ {Number(c.min_bid_value).toFixed(2)} a R$ {Number(c.max_bid_value).toFixed(2)}
+                      Palpite R$ {brl(c.min_bid_value)} a R$ {brl(c.max_bid_value)}
                     </span>
                     <ArrowRight className="w-4 h-4 text-primary" />
                   </div>
@@ -88,7 +90,7 @@ export function UniqueBidsBlock() {
                   )}
                   {c.status === "finished" && c.winner_value != null && (
                     <p className="text-xs text-amber-400 mt-2">
-                      Vencedor: R$ {Number(c.winner_value).toFixed(2)}
+                      Vencedor: R$ {brl(c.winner_value)}
                     </p>
                   )}
                 </div>
