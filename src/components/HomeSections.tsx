@@ -99,12 +99,13 @@ export function Hero() {
       setLoadProgress(0);
       loadingIntervalRef.current = setInterval(() => {
         setLoadProgress(prev => {
-          if (prev >= 100) {
+          const next = prev + Math.random() * 15;
+          if (next >= 100) {
             clearInterval(loadingIntervalRef.current);
             setIsPlaying(true); // Auto-start when finished
             return 100;
           }
-          return prev + (Math.random() * 15); // Faster loading for auto-play
+          return next;
         });
       }, 100);
     }
