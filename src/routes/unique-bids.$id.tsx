@@ -22,6 +22,7 @@ function UniqueBidPage() {
   const [product, setProduct] = useState<any>(null);
   const [status, setStatus] = useState<any>(null);
   const [user, setUser] = useState<any>(null);
+  const [balance, setBalance] = useState<number | null>(null);
   const [value, setValue] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
