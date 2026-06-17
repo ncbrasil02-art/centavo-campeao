@@ -186,6 +186,7 @@ function AdminSettings() {
           sound_enabled: publicData.sound_enabled ?? true,
           narration_enabled: publicData.narration_enabled ?? true,
           welcome_bids: publicData.welcome_bids || 0,
+          welcome_bids_expiry_days: (publicData as any).welcome_bids_expiry_days || 0,
           marquee_text: publicData.marquee_text || "",
           marquee_enabled: publicData.marquee_enabled ?? true,
           demo_auctions_enabled: publicData.demo_auctions_enabled ?? false,
