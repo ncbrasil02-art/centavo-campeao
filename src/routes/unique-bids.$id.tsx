@@ -167,6 +167,20 @@ function UniqueBidPage() {
 
           {/* Painel */}
           <div className="space-y-6">
+            {isLive && campaign.ends_at && (
+              <Card className="p-5 border-primary/30 bg-gradient-to-br from-primary/10 to-transparent text-center">
+                <div className="text-[11px] uppercase tracking-widest text-primary mb-1 flex items-center justify-center gap-1">
+                  <Timer className="w-3.5 h-3.5" /> Resultado em
+                </div>
+                <div className="text-4xl md:text-5xl font-black text-primary tabular-nums">
+                  <Countdown to={campaign.ends_at} />
+                </div>
+                <p className="text-[11px] text-muted-foreground mt-1">
+                  Apuração automática ao fim da contagem
+                </p>
+              </Card>
+            )}
+
             <Card className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-bold">Status</h2>
@@ -292,51 +306,63 @@ function UniqueBidPage() {
               </Card>
             )}
 
-            {isLive && campaign.ends_at && (
-              <Card className="p-6 text-center">
-                <div className="text-xs uppercase tracking-wider text-muted-foreground mb-1">Encerra em</div>
-                <div className="text-3xl font-black text-primary">
-                  <Countdown to={campaign.ends_at} />
-                </div>
-              </Card>
-            )}
-
-            <Card className="p-6">
-              <h2 className="text-lg font-bold mb-3">Como funciona</h2>
-              <ol className="space-y-2 text-sm text-muted-foreground list-decimal list-inside">
-                <li>Escolha um valor dentro da faixa permitida, respeitando o incremento.</li>
-                <li>Cada palpite custa 1 lance do seu saldo (você precisa ter comprado um pacote).</li>
-                <li>Vence quem deu o <span className="text-foreground font-semibold">menor valor que ninguém mais escolheu</span>.</li>
-                <li>Quando o cronômetro zerar (ou a equipe encerrar manualmente), o vencedor é apurado.</li>
-              </ol>
-            </Card>
-
-            <Card className="p-6">
-              <h2 className="text-lg font-bold mb-3">Perguntas frequentes</h2>
-              <div className="space-y-4 text-sm">
-                <div>
-                  <p className="font-semibold">Posso dar vários palpites?</p>
-                  <p className="text-muted-foreground">Sim. Cada palpite custa 1 lance e aumenta suas chances de ter um valor único.</p>
-                </div>
-                <div>
-                  <p className="font-semibold">Os lances de boas-vindas valem aqui?</p>
-                  <p className="text-muted-foreground">Não. No Menor Lance Único só valem lances comprados em pacotes.</p>
-                </div>
-                <div>
-                  <p className="font-semibold">E se ninguém der um lance único?</p>
-                  <p className="text-muted-foreground">A campanha encerra sem vencedor e os lances não são reembolsados.</p>
-                </div>
-                <div>
-                  <p className="font-semibold">Como pago o prêmio se ganhar?</p>
-                  <p className="text-muted-foreground">Você paga apenas o valor do seu lance vencedor, via PIX ou cartão.</p>
-                </div>
+            {/* Selos compactos */}
+            <div className="grid grid-cols-2 gap-2">
+              <div className="flex items-center gap-2 rounded-lg border border-border bg-muted/40 p-3">
+                <ShieldCheck className="w-4 h-4 text-primary shrink-0" />
+                <span className="text-xs font-semibold">Pagamento seguro</span>
               </div>
-            </Card>
+              <div className="flex items-center gap-2 rounded-lg border border-border bg-muted/40 p-3">
+                <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
+                <span className="text-xs font-semibold">Apuração auditável</span>
+              </div>
+              <div className="flex items-center gap-2 rounded-lg border border-border bg-muted/40 p-3">
+                <Truck className="w-4 h-4 text-primary shrink-0" />
+                <span className="text-xs font-semibold">Entrega para todo Brasil</span>
+              </div>
+              <div className="flex items-center gap-2 rounded-lg border border-border bg-muted/40 p-3">
+                <MessageCircle className="w-4 h-4 text-primary shrink-0" />
+                <span className="text-xs font-semibold">Suporte via WhatsApp</span>
+              </div>
+            </div>
 
-            <p className="text-xs text-muted-foreground text-center">
-              Vence o menor valor escolhido por um único participante.
-            </p>
+            {/* Info compacta em accordion */}
+            <Card className="p-2">
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="como" className="border-b-0">
+                  <AccordionTrigger className="px-4 text-sm font-bold">Como funciona</AccordionTrigger>
+                  <AccordionContent className="px-4 text-sm text-muted-foreground">
+                    Escolha um valor dentro da faixa, respeitando o incremento. Cada palpite custa 1 lance. Vence o <span className="text-foreground font-semibold">menor valor que ninguém mais escolheu</span>. Ao encerrar a contagem, o vencedor é apurado automaticamente.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="varios">
+                  <AccordionTrigger className="px-4 text-sm font-bold">Posso dar vários palpites?</AccordionTrigger>
+                  <AccordionContent className="px-4 text-sm text-muted-foreground">
+                    Sim. Cada palpite custa 1 lance e aumenta suas chances de ter um valor único.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="boas">
+                  <AccordionTrigger className="px-4 text-sm font-bold">Lances de boas-vindas valem?</AccordionTrigger>
+                  <AccordionContent className="px-4 text-sm text-muted-foreground">
+                    Não. Aqui só valem lances comprados em pacotes.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="semvenc">
+                  <AccordionTrigger className="px-4 text-sm font-bold">E se ninguém der um valor único?</AccordionTrigger>
+                  <AccordionContent className="px-4 text-sm text-muted-foreground">
+                    A campanha encerra sem vencedor e os lances não são reembolsados.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="pago" className="border-b-0">
+                  <AccordionTrigger className="px-4 text-sm font-bold">Quanto pago se ganhar?</AccordionTrigger>
+                  <AccordionContent className="px-4 text-sm text-muted-foreground">
+                    Apenas o valor exato do seu lance vencedor, via PIX ou cartão.
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </Card>
           </div>
+
         </div>
       </div>
       <Footer />
