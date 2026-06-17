@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Target, Users, Sparkles, ArrowLeft, Loader2, CheckCircle2, XCircle } from "lucide-react";
 import { toast } from "sonner";
+import { useTimeSync } from "@/hooks/useTimeSync";
 
 export const Route = createFileRoute("/unique-bids/$id")({
   component: UniqueBidPage,
@@ -18,12 +19,14 @@ const sb = supabase as any;
 const brl = (n: number) =>
   Number(n).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
+
 function Countdown({ to }: { to: string }) {
-  const [now, setNow] = useState(Date.now());
+  const { getAdjustedNow } = useTimeSync();
+  const [now, setNow] = useState(() => getAdjustedNow());
   useEffect(() => {
-    const i = setInterval(() => setNow(Date.now()), 1000);
+    const i = setInterval(() => setNow(getAdjustedNow()), 1000);
     return () => clearInterval(i);
-  }, []);
+  }, [getAdjustedNow]);
   const diff = new Date(to).getTime() - now;
   if (diff <= 0) return <span>Encerrado</span>;
   const d = Math.floor(diff / 86400000);

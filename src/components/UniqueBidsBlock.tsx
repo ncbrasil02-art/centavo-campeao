@@ -5,17 +5,19 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Sparkles, ArrowRight, Target } from "lucide-react";
+import { useTimeSync } from "@/hooks/useTimeSync";
 
 const sb = supabase as any;
 const brl = (n: number) =>
   Number(n).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 function Countdown({ to }: { to: string }) {
-  const [now, setNow] = useState(Date.now());
+  const { getAdjustedNow } = useTimeSync();
+  const [now, setNow] = useState(() => getAdjustedNow());
   useEffect(() => {
-    const i = setInterval(() => setNow(Date.now()), 1000);
+    const i = setInterval(() => setNow(getAdjustedNow()), 1000);
     return () => clearInterval(i);
-  }, []);
+  }, [getAdjustedNow]);
   const diff = new Date(to).getTime() - now;
   if (diff <= 0) return <>Encerrado</>;
   const d = Math.floor(diff / 86400000);
