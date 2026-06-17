@@ -48,19 +48,23 @@ export function UniqueBidsBlock() {
         <div className="flex flex-col md:flex-row items-end justify-between mb-8 gap-4">
           <div>
             <Badge variant="outline" className="mb-3 border-primary/30 bg-primary/10 text-primary uppercase tracking-widest">
-              <Sparkles className="w-3 h-3 mr-1" /> Exclusivo • Edição limitada
+              <Sparkles className="w-3 h-3 mr-1" /> Exclusivo • Edição limitada • Poucos lugares
             </Badge>
             <h2 className="text-4xl md:text-5xl font-black tracking-tight italic leading-[1.05]">
               Pague o <span className="text-primary">menor lance único</span>
-              <br className="hidden md:block" /> e leve para casa.
+              <br className="hidden md:block" /> e leve para casa por <span className="text-primary">centavos</span>.
             </h2>
-            <p className="text-muted-foreground max-w-xl mt-3 text-base md:text-lg">
-              Não é sorte — é estratégia. Escolha um valor que <span className="text-foreground font-semibold">ninguém mais pensou</span> e arremate produtos premium por uma fração do preço.
+            <p className="text-muted-foreground max-w-2xl mt-4 text-base md:text-lg leading-relaxed">
+              Esqueça leilão tradicional. Aqui <span className="text-foreground font-semibold">não existe disputa de quem dá mais</span> — vence quem teve a coragem de escolher <span className="text-foreground font-semibold">o valor que ninguém mais pensou</span>. Um iPhone por R$ 3,47? Um PlayStation por R$ 1,12? Já aconteceu. Pode ser sua vez.
             </p>
-            <div className="flex flex-wrap gap-4 mt-4 text-xs text-muted-foreground">
-              <span className="flex items-center gap-1"><Sparkles className="w-3 h-3 text-primary" /> Sem leilão, sem disputa</span>
-              <span className="flex items-center gap-1"><Target className="w-3 h-3 text-primary" /> Você escolhe quanto pagar</span>
-              <span className="flex items-center gap-1"><ArrowRight className="w-3 h-3 text-primary" /> Resultado em horas</span>
+            <p className="text-sm md:text-base mt-3 text-foreground/80 max-w-2xl">
+              💡 <span className="font-semibold">A lógica é simples:</span> entre todos os palpites, ganha o <span className="text-primary font-semibold">menor valor que apareceu uma única vez</span>. Pense como ninguém pensaria — e leve produtos premium por uma fração do preço de mercado.
+            </p>
+            <div className="flex flex-wrap gap-x-5 gap-y-2 mt-5 text-xs md:text-sm text-muted-foreground">
+              <span className="flex items-center gap-1.5"><Sparkles className="w-3.5 h-3.5 text-primary" /> Sem disputa, sem stress</span>
+              <span className="flex items-center gap-1.5"><Target className="w-3.5 h-3.5 text-primary" /> Você define quanto pagar</span>
+              <span className="flex items-center gap-1.5"><ArrowRight className="w-3.5 h-3.5 text-primary" /> Resultado garantido em horas</span>
+              <span className="flex items-center gap-1.5">🔒 100% transparente e auditável</span>
             </div>
           </div>
         </div>
