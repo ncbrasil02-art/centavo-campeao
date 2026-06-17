@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Sparkles, ArrowRight, Target } from "lucide-react";
 
 const sb = supabase as any;
+const brl = (n: number) =>
+  Number(n).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 function Countdown({ to }: { to: string }) {
   const [now, setNow] = useState(Date.now());
