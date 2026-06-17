@@ -123,7 +123,30 @@ export function UniqueBidsBlock() {
             </ul>
           </Card>
         </div>
+
+        <Card className="mt-6 p-6">
+          <h3 className="font-bold mb-4">Perguntas frequentes</h3>
+          <div className="grid md:grid-cols-2 gap-4 text-sm">
+            <div>
+              <p className="font-semibold">Posso dar vários palpites?</p>
+              <p className="text-muted-foreground">Sim. Cada palpite custa 1 lance e aumenta suas chances de ter um valor único.</p>
+            </div>
+            <div>
+              <p className="font-semibold">Os lances de boas-vindas valem aqui?</p>
+              <p className="text-muted-foreground">Não. No Menor Lance Único só valem lances comprados em pacotes.</p>
+            </div>
+            <div>
+              <p className="font-semibold">E se ninguém der um lance único?</p>
+              <p className="text-muted-foreground">A campanha encerra sem vencedor e os lances não são reembolsados.</p>
+            </div>
+            <div>
+              <p className="font-semibold">Como pago o prêmio se ganhar?</p>
+              <p className="text-muted-foreground">Você paga apenas o valor do seu lance vencedor, via PIX ou cartão.</p>
+            </div>
+          </div>
+        </Card>
       </div>
+
 
     </section>
   );
