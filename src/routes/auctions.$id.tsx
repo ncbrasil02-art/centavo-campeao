@@ -16,6 +16,7 @@ import { useTimeSync } from "@/hooks/useTimeSync";
 import { toast } from "sonner";
 import { FALLBACK_PRODUCT_IMAGE, getFallbackAvatarUrl, FICTITIOUS_PARTICIPANTS, MODALITY_CONFIG } from "@/lib/constants";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { ProductImageSlideshow } from "@/components/ProductImageSlideshow";
 import { Progress } from "@/components/ui/progress";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -407,15 +408,13 @@ function AuctionPage() {
             <div className="space-y-6">
               <div className="relative aspect-square rounded-[32px] overflow-hidden bg-muted/20 border border-border group shadow-2xl flex items-center justify-center">
                 <div className="absolute inset-0 z-0">
-                  <img 
-                    src={auction.product?.images?.[activeImage] || FALLBACK_PRODUCT_IMAGE} 
-                    alt={auction.product?.name} 
+                  <ProductImageSlideshow
+                    images={auction.product?.images}
+                    alt={auction.product?.name}
                     className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = FALLBACK_PRODUCT_IMAGE;
-                    }}
+                    showDots
                   />
-                  <div className="absolute inset-0 bg-black/20" />
+                  <div className="absolute inset-0 bg-black/20 pointer-events-none" />
                 </div>
                 
                 <div className="absolute inset-0 z-10 p-6 flex flex-col justify-between">
@@ -559,24 +558,7 @@ function AuctionPage() {
                 </div>
               </div>
 
-              {auction.product?.images && auction.product.images.length > 1 && (
-                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
-                  {auction.product.images.map((img: string, idx: number) => (
-                    <button 
-                      key={idx}
-                      onClick={() => setActiveImage(idx)}
-                      className={`relative w-24 h-24 rounded-2xl overflow-hidden border-2 transition-all shrink-0 snap-start ${activeImage === idx ? 'border-primary shadow-[0_0_15px_color-mix(in srgb, var(--primary), transparent calc(100% - 0.3 * 100%))]' : 'border-border opacity-50 hover:opacity-100 hover:border-border/60'}`}
-                    >
-                      <img src={img} className="w-full h-full object-cover" onError={(e) => (e.target as HTMLImageElement).src = FALLBACK_PRODUCT_IMAGE} />
-                      {activeImage === idx && (
-                        <div className="absolute inset-0 bg-primary/10 flex items-center justify-center">
-                          <div className="w-1 h-1 bg-primary rounded-full animate-ping" />
-                        </div>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              )}
+              {/* Thumbnails removed — main image auto-slides when multiple photos */}
             </div>
 
             <Card className="bg-card border-border overflow-hidden rounded-3xl">

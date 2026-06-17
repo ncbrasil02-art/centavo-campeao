@@ -12,6 +12,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { AuctionChat } from "./AuctionChat";
 import { toast } from "sonner";
 import { FALLBACK_PRODUCT_IMAGE, getFallbackAvatarUrl, FICTITIOUS_PARTICIPANTS, MODALITY_CONFIG } from "@/lib/constants";
+import { ProductImageSlideshow } from "@/components/ProductImageSlideshow";
 import { Progress } from "@/components/ui/progress";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -501,13 +502,10 @@ export function AuctionCard({ auction: initialAuction }: AuctionCardProps) {
           </div>
         )}
         <Link to="/auctions/$id" params={{ id: auction.slug || auction.id }} className="block h-full w-full cursor-pointer">
-          <img 
-            src={auction.product?.images?.[0] || FALLBACK_PRODUCT_IMAGE} 
-            alt={auction.product?.name} 
+          <ProductImageSlideshow
+            images={auction.product?.images}
+            alt={auction.product?.name}
             className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = FALLBACK_PRODUCT_IMAGE;
-            }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent opacity-60"></div>
           

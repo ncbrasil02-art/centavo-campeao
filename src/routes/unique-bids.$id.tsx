@@ -11,6 +11,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Trophy, Target, Users, Sparkles, ArrowLeft, Loader2, CheckCircle2, XCircle, Timer, ShieldCheck, Truck, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useTimeSync } from "@/hooks/useTimeSync";
+import { ProductImageSlideshow } from "@/components/ProductImageSlideshow";
 
 export const Route = createFileRoute("/unique-bids/$id")({
   component: UniqueBidPage,
@@ -146,9 +147,12 @@ function UniqueBidPage() {
           {/* Produto */}
           <Card className="overflow-hidden">
             <div className="aspect-square bg-muted">
-              {product?.images?.[0] && (
-                <img src={product.images[0]} alt={product?.name} className="w-full h-full object-cover" />
-              )}
+              <ProductImageSlideshow
+                images={product?.images}
+                alt={product?.name}
+                className="w-full h-full object-cover"
+                showDots
+              />
             </div>
             <div className="p-4 sm:p-6 space-y-2">
               <Badge variant="outline" className="border-primary/40 text-primary">
