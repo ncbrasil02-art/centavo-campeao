@@ -15,6 +15,8 @@ export const Route = createFileRoute("/unique-bids/$id")({
 });
 
 const sb = supabase as any;
+const brl = (n: number) =>
+  Number(n).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 function Countdown({ to }: { to: string }) {
   const [now, setNow] = useState(Date.now());
