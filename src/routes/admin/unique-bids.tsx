@@ -174,9 +174,31 @@ function AdminUniqueBids() {
                 <Select value={form.product_id} onValueChange={(v) => setForm({ ...form, product_id: v })}>
                   <SelectTrigger><SelectValue placeholder="Selecionar produto" /></SelectTrigger>
                   <SelectContent>
-                    {products.map((p) => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
+                    {products.map((p) => (
+                      <SelectItem key={p.id} value={p.id}>
+                        <div className="flex items-center gap-2">
+                          {p.images?.[0] && (
+                            <img src={p.images[0]} alt="" className="w-6 h-6 rounded object-cover" />
+                          )}
+                          <span>{p.name}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
+                {selectedProduct?.images?.[0] && (
+                  <div className="mt-2 flex items-center gap-3 rounded-md border p-2">
+                    <img
+                      src={selectedProduct.images[0]}
+                      alt={selectedProduct.name}
+                      className="w-16 h-16 rounded object-cover"
+                    />
+                    <div className="text-sm">
+                      <p className="font-semibold">{selectedProduct.name}</p>
+                      <p className="text-xs text-muted-foreground">Imagem que aparecerá no site</p>
+                    </div>
+                  </div>
+                )}
               </div>
               <div>
                 <Label>Título</Label>
