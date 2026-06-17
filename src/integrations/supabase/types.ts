@@ -1160,6 +1160,7 @@ export type Database = {
         }
       }
       admin_get_winner_full: { Args: { p_auction_id: string }; Returns: Json[] }
+      admin_list_claims: { Args: { p_search?: string }; Returns: Json[] }
       admin_list_online_profiles: { Args: never; Returns: Json[] }
       admin_list_profiles: {
         Args: { p_limit?: number; p_offset?: number; p_search?: string }
@@ -1216,6 +1217,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      get_my_winners: { Args: never; Returns: Json[] }
       get_server_time: { Args: never; Returns: string }
       get_winner_payment: {
         Args: { p_auction_id: string }
