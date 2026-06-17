@@ -102,6 +102,7 @@ function AdminSettings() {
     sound_enabled: true,
     narration_enabled: true,
     welcome_bids: 0,
+    welcome_bids_expiry_days: 0,
     marquee_text: "",
     marquee_enabled: true,
     demo_auctions_enabled: false,
