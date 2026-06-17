@@ -82,6 +82,7 @@ function AdminUniqueBids() {
       max_bid_value: 100,
       bid_step: 0.01,
       status: "draft",
+      ends_at: "",
     });
     setOpen(true);
   }
