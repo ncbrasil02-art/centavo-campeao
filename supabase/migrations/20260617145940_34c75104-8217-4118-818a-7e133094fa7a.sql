@@ -1,0 +1,1 @@
+ALTER TABLE public.unique_bid_campaigns ADD COLUMN IF NOT EXISTS ends_at timestamptz;
