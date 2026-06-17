@@ -182,25 +182,25 @@ function UniqueBidPage() {
             )}
 
 
-            <Card className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-bold">Status</h2>
-                <Badge variant={isLive ? "default" : "secondary"}>
+            <Card className="p-4 sm:p-6">
+              <div className="flex items-center justify-between mb-4 gap-2">
+                <h2 className="text-base sm:text-lg font-bold">Status</h2>
+                <Badge variant={isLive ? "default" : "secondary"} className="shrink-0">
                   {isLive ? "Aberta" : campaign.status === "finished" ? "Finalizada" : "Fechada"}
                 </Badge>
               </div>
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div className="rounded-lg bg-muted p-3">
-                  <div className="text-xs text-muted-foreground flex items-center gap-1"><Users className="w-3 h-3" /> Participantes</div>
-                  <div className="text-xl font-bold">{status?.total_participants ?? 0}</div>
+              <div className="grid grid-cols-2 gap-2 sm:gap-4 text-sm">
+                <div className="rounded-lg bg-muted p-2.5 sm:p-3 min-w-0">
+                  <div className="text-[11px] sm:text-xs text-muted-foreground flex items-center gap-1"><Users className="w-3 h-3 shrink-0" /> <span className="truncate">Participantes</span></div>
+                  <div className="text-lg sm:text-xl font-bold">{status?.total_participants ?? 0}</div>
                 </div>
-                <div className="rounded-lg bg-muted p-3">
-                  <div className="text-xs text-muted-foreground flex items-center gap-1"><Target className="w-3 h-3" /> Total de palpites</div>
-                  <div className="text-xl font-bold">{status?.total_bids ?? 0}</div>
+                <div className="rounded-lg bg-muted p-2.5 sm:p-3 min-w-0">
+                  <div className="text-[11px] sm:text-xs text-muted-foreground flex items-center gap-1"><Target className="w-3 h-3 shrink-0" /> <span className="truncate">Total de palpites</span></div>
+                  <div className="text-lg sm:text-xl font-bold">{status?.total_bids ?? 0}</div>
                 </div>
               </div>
 
-              <div className="mt-4 text-sm">
+              <div className="mt-4 text-xs sm:text-sm">
                 Faixa permitida: <span className="font-semibold">R$ {brl(campaign.min_bid_value)}</span> a{" "}
                 <span className="font-semibold">R$ {brl(campaign.max_bid_value)}</span>
                 <span className="text-muted-foreground"> (incremento R$ {brl(campaign.bid_step)})</span>
@@ -208,10 +208,10 @@ function UniqueBidPage() {
 
               {isLive && status?.has_unique && (
                 <div className="mt-4 p-3 rounded-lg border border-primary/30 bg-primary/5">
-                  <div className="text-xs uppercase tracking-wider text-primary mb-1 flex items-center gap-1">
+                  <div className="text-[11px] sm:text-xs uppercase tracking-wider text-primary mb-1 flex items-center gap-1">
                     <Sparkles className="w-3 h-3" /> Dica
                   </div>
-                  <p className="text-sm">
+                  <p className="text-xs sm:text-sm">
                     O menor lance único agora está entre{" "}
                     <span className="font-bold text-primary">R$ {Number(status.hint_min).toFixed(2)}</span> e{" "}
                     <span className="font-bold text-primary">R$ {Number(status.hint_max).toFixed(2)}</span>.
@@ -225,7 +225,7 @@ function UniqueBidPage() {
                   {campaign.winner_value != null ? (
                     <>
                       <p className="text-sm text-muted-foreground">Lance vencedor</p>
-                      <p className="text-3xl font-black text-amber-400">R$ {Number(campaign.winner_value).toFixed(2)}</p>
+                      <p className="text-2xl sm:text-3xl font-black text-amber-400">R$ {Number(campaign.winner_value).toFixed(2)}</p>
                     </>
                   ) : (
                     <p className="text-sm">Nenhum lance único — sem vencedor.</p>
@@ -235,16 +235,16 @@ function UniqueBidPage() {
             </Card>
 
             {isLive && (
-              <Card className="p-6">
-                <h2 className="text-lg font-bold mb-2">Enviar palpite</h2>
-                <div className="flex items-center justify-between mb-3 p-3 rounded-lg bg-muted/60 border border-border">
-                  <div>
-                    <div className="text-xs text-muted-foreground">Seu saldo</div>
-                    <div className="text-xl font-black">{balance ?? 0} <span className="text-xs font-normal text-muted-foreground">lances</span></div>
+              <Card className="p-4 sm:p-6">
+                <h2 className="text-base sm:text-lg font-bold mb-2">Enviar palpite</h2>
+                <div className="flex items-center justify-between mb-3 p-3 rounded-lg bg-muted/60 border border-border gap-2">
+                  <div className="min-w-0">
+                    <div className="text-[11px] sm:text-xs text-muted-foreground">Seu saldo</div>
+                    <div className="text-lg sm:text-xl font-black">{balance ?? 0} <span className="text-xs font-normal text-muted-foreground">lances</span></div>
                   </div>
-                  <div className="text-right">
-                    <div className="text-xs text-muted-foreground">Custo por palpite</div>
-                    <div className="text-xl font-black text-primary">1 <span className="text-xs font-normal text-muted-foreground">lance</span></div>
+                  <div className="text-right min-w-0">
+                    <div className="text-[11px] sm:text-xs text-muted-foreground">Custo</div>
+                    <div className="text-lg sm:text-xl font-black text-primary">1 <span className="text-xs font-normal text-muted-foreground">lance</span></div>
                   </div>
                 </div>
                 <div className="mb-3">
@@ -262,6 +262,7 @@ function UniqueBidPage() {
                 <div className="flex gap-2">
                   <Input
                     type="number"
+                    inputMode="decimal"
                     step={campaign.bid_step}
                     min={campaign.min_bid_value}
                     max={campaign.max_bid_value}
@@ -269,8 +270,9 @@ function UniqueBidPage() {
                     onChange={(e) => setValue(e.target.value)}
                     placeholder={`R$ ${Number(campaign.min_bid_value).toFixed(2)}`}
                     disabled={submitting || !user}
+                    className="min-w-0 flex-1"
                   />
-                  <Button onClick={placeBid} disabled={submitting || !user}>
+                  <Button onClick={placeBid} disabled={submitting || !user} className="shrink-0">
                     {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Palpitar"}
                   </Button>
                 </div>
@@ -281,6 +283,7 @@ function UniqueBidPage() {
                 )}
               </Card>
             )}
+
 
             {user && status?.my_bids?.length > 0 && (
               <Card className="p-6">
