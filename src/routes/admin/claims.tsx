@@ -65,19 +65,11 @@ function AdminClaims() {
   async function fetchClaims() {
     setLoading(true);
     try {
-      let query = supabase
-        .from("winners")
-        .select("*, profile:profiles(username, full_name), auction:auctions(slug, product:products(name, images))");
-
-
-      if (searchTerm) {
-        query = query.or(`profile.username.ilike.%${searchTerm}%,profile.full_name.ilike.%${searchTerm}%`);
-      }
-
-      const { data, error } = await query.order("created_at", { ascending: false });
-
+      const { data, error } = await supabase.rpc("admin_list_claims", {
+        p_search: searchTerm || undefined,
+      });
       if (error) throw error;
-      setClaims(data || []);
+      setClaims((data as any[]) || []);
     } catch (error) {
       console.error("Error fetching claims:", error);
       toast.error("Erro ao carregar reivindicações");
@@ -98,11 +90,13 @@ function AdminClaims() {
 
   async function updateStatus(winnerId: string, status: string) {
     try {
-      const { error } = await supabase
-        .from("winners")
-        .update({ payment_status: status })
-        .eq("id", winnerId);
-
+      const auctionId = (selectedClaim as any)?.auction_id ??
+        (claims.find((c: any) => c.id === winnerId) as any)?.auction_id;
+      if (!auctionId) throw new Error("Leilão não encontrado");
+      const { error } = await supabase.rpc("admin_update_winner_payment", {
+        p_auction_id: auctionId,
+        p_status: status,
+      });
       if (error) throw error;
       toast.success(`Status atualizado para ${status}`);
       fetchClaims();

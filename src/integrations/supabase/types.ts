@@ -1159,6 +1159,8 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      admin_get_winner_full: { Args: { p_auction_id: string }; Returns: Json[] }
+      admin_list_claims: { Args: { p_search?: string }; Returns: Json[] }
       admin_list_online_profiles: { Args: never; Returns: Json[] }
       admin_list_profiles: {
         Args: { p_limit?: number; p_offset?: number; p_search?: string }
@@ -1168,6 +1170,10 @@ export type Database = {
         }[]
       }
       admin_list_robots: { Args: never; Returns: Json[] }
+      admin_update_winner_payment: {
+        Args: { p_auction_id: string; p_status: string }
+        Returns: Json
+      }
       buy_credits: { Args: { p_package_id: string }; Returns: Json }
       can_manage_banners: { Args: never; Returns: boolean }
       check_is_admin: { Args: never; Returns: boolean }
@@ -1211,7 +1217,15 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      get_my_winners: { Args: never; Returns: Json[] }
       get_server_time: { Args: never; Returns: string }
+      get_winner_payment: {
+        Args: { p_auction_id: string }
+        Returns: {
+          payment_receipt_url: string
+          payment_status: string
+        }[]
+      }
       increment_bid_balance: {
         Args: { p_amount: number; p_user_id: string }
         Returns: Json
@@ -1228,6 +1242,10 @@ export type Database = {
       process_robot_bids: { Args: never; Returns: Json }
       process_robot_bids_admin: { Args: never; Returns: Json }
       slugify: { Args: { v_text: string }; Returns: string }
+      submit_winner_receipt: {
+        Args: { p_auction_id: string; p_url: string }
+        Returns: Json
+      }
       tick_auctions: { Args: never; Returns: Json }
       track_user_presence: {
         Args: { p_page: string; p_user_id: string }

@@ -120,10 +120,10 @@ export function AuctionClaimPanel({ auctionId, winnerData }: { auctionId: string
         .from('auction-claims')
         .getPublicUrl(filePath);
 
-      const { error: updateError } = await supabase
-        .from('winners')
-        .update({ payment_receipt_url: publicUrl, payment_status: 'pending' })
-        .eq('auction_id', auctionId);
+      const { error: updateError } = await supabase.rpc('submit_winner_receipt', {
+        p_auction_id: auctionId,
+        p_url: publicUrl,
+      });
 
       if (updateError) throw updateError;
 

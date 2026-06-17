@@ -50,18 +50,14 @@ function ProfilePage() {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) return;
 
-    // Buscar leilões onde o usuário é o ganhador na tabela winners
-    const { data, error } = await supabase
-      .from("winners")
-      .select("*, auction:auctions(*, product:products(*))")
-      .eq("user_id", session.user.id)
-      .order("created_at", { ascending: false });
-    
+    // Buscar leilões onde o usuário é o ganhador via RPC seguro
+    const { data, error } = await supabase.rpc("get_my_winners");
+
     if (error) {
       console.error("Error fetching winners:", error);
       return;
     }
-    setAuctionsToPay(data || []);
+    setAuctionsToPay((data as any[]) || []);
   }
 
 
