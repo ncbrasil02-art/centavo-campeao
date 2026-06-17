@@ -182,9 +182,9 @@ function UniqueBidPage() {
               </div>
 
               <div className="mt-4 text-sm">
-                Faixa permitida: <span className="font-semibold">R$ {Number(campaign.min_bid_value).toFixed(2)}</span> a{" "}
-                <span className="font-semibold">R$ {Number(campaign.max_bid_value).toFixed(2)}</span>
-                <span className="text-muted-foreground"> (incremento R$ {Number(campaign.bid_step).toFixed(2)})</span>
+                Faixa permitida: <span className="font-semibold">R$ {brl(campaign.min_bid_value)}</span> a{" "}
+                <span className="font-semibold">R$ {brl(campaign.max_bid_value)}</span>
+                <span className="text-muted-foreground"> (incremento R$ {brl(campaign.bid_step)})</span>
               </div>
 
               {isLive && status?.has_unique && (
