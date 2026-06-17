@@ -1,5 +1,5 @@
 // src/integrations/supabase/client.ts
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 import { TENANT_ID } from '@/lib/tenant';
 
@@ -38,15 +38,5 @@ export const supabase = new Proxy({} as ReturnType<typeof createSupabaseClient>,
     return Reflect.get(_supabase, prop, receiver);
   },
 });
-
-export function tenantQuery<
-  T extends keyof Database['public']['Tables']
->(table: T) {
-  if (!_supabase) _supabase = createSupabaseClient();
-  // @ts-expect-error
-  return (_supabase as SupabaseClient<Database>)
-    .from(table)
-    .eq('tenant_id', TENANT_ID);
-}
 
 export { TENANT_ID as CURRENT_TENANT };
