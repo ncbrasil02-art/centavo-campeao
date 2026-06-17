@@ -196,9 +196,21 @@ function UniqueBidPage() {
             {isLive && (
               <Card className="p-6">
                 <h2 className="text-lg font-bold mb-2">Enviar palpite</h2>
-                <p className="text-xs text-muted-foreground mb-3">
-                  Custo: <span className="font-semibold">1 lance</span> da sua carteira.
-                </p>
+                <div className="flex items-center justify-between mb-3 p-3 rounded-lg bg-muted/60 border border-border">
+                  <div>
+                    <div className="text-xs text-muted-foreground">Seu saldo</div>
+                    <div className="text-xl font-black">{balance ?? 0} <span className="text-xs font-normal text-muted-foreground">lances</span></div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xs text-muted-foreground">Custo por palpite</div>
+                    <div className="text-xl font-black text-primary">1 <span className="text-xs font-normal text-muted-foreground">lance</span></div>
+                  </div>
+                </div>
+                {user && balance !== null && balance < 1 && (
+                  <p className="text-xs text-amber-400 mb-2">
+                    Saldo insuficiente. <Link to="/packages" className="underline">Comprar pacote</Link>.
+                  </p>
+                )}
                 <div className="flex gap-2">
                   <Input
                     type="number"
