@@ -135,6 +135,29 @@ export function UniqueBidsBlock() {
           </Card>
         </div>
 
+        <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 text-center">
+            <div className="text-2xl mb-1">🔒</div>
+            <p className="text-xs font-bold">Pagamento seguro</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">PIX e cartão com criptografia</p>
+          </div>
+          <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 text-center">
+            <div className="text-2xl mb-1">✅</div>
+            <p className="text-xs font-bold">Apuração auditável</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Resultado público e verificável</p>
+          </div>
+          <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 text-center">
+            <div className="text-2xl mb-1">🚚</div>
+            <p className="text-xs font-bold">Entrega garantida</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Enviamos para todo o Brasil</p>
+          </div>
+          <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 text-center">
+            <div className="text-2xl mb-1">💬</div>
+            <p className="text-xs font-bold">Suporte humano</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Atendimento via WhatsApp</p>
+          </div>
+        </div>
+
         <Card className="mt-6 p-6">
           <h3 className="font-bold mb-4">Perguntas frequentes</h3>
           <div className="grid md:grid-cols-2 gap-4 text-sm">
