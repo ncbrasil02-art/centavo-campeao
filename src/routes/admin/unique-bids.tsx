@@ -61,8 +61,10 @@ function AdminUniqueBids() {
 
   useEffect(() => {
     load();
-    sb.from("products").select("id,name").order("name").then((r: any) => setProducts(r.data || []));
+    sb.from("products").select("id,name,images").order("name").then((r: any) => setProducts(r.data || []));
   }, []);
+
+  const selectedProduct = products.find((p) => p.id === form.product_id);
 
   async function load() {
     setLoading(true);
