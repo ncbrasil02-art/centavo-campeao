@@ -1,13 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { createFileRoute, useNavigate, Link, redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { toast } from "sonner";
-import { User, Mail, Phone, MapPin, Hash, ShieldCheck, Wallet, LogOut, Camera, Zap } from "lucide-react";
+import {
+  User, Phone, Hash, Wallet, LogOut, Camera, Zap, Gavel, Trophy, Package,
+  LifeBuoy, LayoutDashboard, Tag, Copy, ChevronDown, MessageSquare, Send, CheckCircle2, Clock,
+} from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getFallbackAvatarUrl } from "@/lib/constants";
@@ -15,114 +22,74 @@ import { Badge } from "@/components/ui/badge";
 import { AuctionClaimPanel } from "@/components/AuctionClaimPanel";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
-
 export const Route = createFileRoute("/profile")({
   beforeLoad: async () => {
     const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      throw redirect({
-        to: "/auth",
-      });
-    }
+    if (!session) throw redirect({ to: "/auth" });
   },
   component: ProfilePage,
 });
 
+const fmtBRL = (n: number | null | undefined) =>
+  (Number(n) || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+const fmtDate = (s: string | null | undefined) =>
+  s ? new Date(s).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }) : "—";
+
 function ProfilePage() {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>(null);
-  const [auctionsToPay, setAuctionsToPay] = useState<any[]>([]);
+  const [stats, setStats] = useState<any>(null);
+  const [winners, setWinners] = useState<any[]>([]);
   const [selectedAuctionForClaim, setSelectedAuctionForClaim] = useState<any>(null);
+
+  // Account form
   const [username, setUsername] = useState("");
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [cpf, setCpf] = useState("");
-
   const [gender, setGender] = useState("");
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchProfile();
-    fetchAuctionsToPay();
-  }, []);
-
-  async function fetchAuctionsToPay() {
+  const refreshAll = useCallback(async () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) return;
-
-    // Buscar leilões onde o usuário é o ganhador via RPC seguro
-    const { data, error } = await supabase.rpc("get_my_winners");
-
-    if (error) {
-      console.error("Error fetching winners:", error);
-      return;
-    }
-    setAuctionsToPay((data as any[]) || []);
-  }
-
-
-
-  async function fetchProfile() {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) return;
-
-    const { data: profileData } = await supabase.rpc("get_my_profile").maybeSingle() as any;
-    
-    const { data: secretData } = await supabase
-      .from("profile_secrets")
-      .select("cpf, phone")
-      .eq("id", session.user.id)
-      .single();
-    
+    const [{ data: profileData }, { data: secret }, { data: statsData }, { data: winnersData }] =
+      await Promise.all([
+        supabase.rpc("get_my_profile").maybeSingle() as any,
+        supabase.from("profile_secrets").select("cpf, phone").eq("id", session.user.id).maybeSingle(),
+        supabase.rpc("get_my_dashboard_stats"),
+        supabase.rpc("get_my_winners"),
+      ]);
     if (profileData) {
       setProfile(profileData);
       setUsername(profileData.username || "");
       setFullName(profileData.full_name || "");
       setGender(profileData.gender || "not_specified");
     }
-
-    if (secretData) {
-      setPhone(secretData.phone || "");
-      setCpf(secretData.cpf || "");
-    }
+    if (secret) { setPhone(secret.phone || ""); setCpf(secret.cpf || ""); }
+    setStats(statsData || null);
+    setWinners((winnersData as any[]) || []);
     setLoading(false);
-  }
+  }, []);
+
+  useEffect(() => { refreshAll(); }, [refreshAll]);
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
-
-      const { error: profileError } = await supabase
-        .from("profiles")
-        .update({
-          username,
-          full_name: fullName,
-          gender,
-          phone,
-        })
-        .eq("id", session.user.id);
-
-      if (profileError) throw profileError;
-
-      const { error: secretError } = await supabase
-        .from("profile_secrets")
-        .update({
-          phone,
-          cpf,
-        })
-        .eq("id", session.user.id);
-
-      if (secretError) throw secretError;
-      toast.success("Perfil atualizado com sucesso!");
-    } catch (error: any) {
-      toast.error(error.message);
-    } finally {
-      setLoading(false);
-    }
+      const { error: pErr } = await supabase.from("profiles")
+        .update({ username, full_name: fullName, gender, phone }).eq("id", session.user.id);
+      if (pErr) throw pErr;
+      const { error: sErr } = await supabase.from("profile_secrets")
+        .update({ phone, cpf }).eq("id", session.user.id);
+      if (sErr) throw sErr;
+      toast.success("Perfil atualizado!");
+    } catch (err: any) {
+      toast.error(err.message || "Erro ao salvar.");
+    } finally { setLoading(false); }
   };
 
   const handleLogout = async () => {
@@ -135,207 +102,654 @@ function ProfilePage() {
       <div className="min-h-screen bg-background">
         <Navbar />
         <div className="container mx-auto px-4 py-20 flex justify-center">
-          <div className="animate-pulse text-primary font-black uppercase tracking-[0.3em]">Carregando seu universo...</div>
+          <div className="animate-pulse text-primary font-black uppercase tracking-[0.3em]">Carregando…</div>
         </div>
       </div>
     );
   }
 
+  const pendingCount = stats?.pending_payment_count || 0;
+  const purchasesCount = stats?.purchases_count || 0;
+  const couponCode = purchasesCount > 0 ? "VOLTOU10" : "PRIMEIRACOMPRA15";
+  const couponPct = purchasesCount > 0 ? 10 : 15;
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      
-      <main className="container mx-auto px-4 py-12">
-        <div className="max-w-4xl mx-auto space-y-8">
-          <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-muted/30 p-8 rounded-[32px] border border-border">
-            <div className="flex items-center gap-6">
+      <main className="container mx-auto px-4 py-10">
+        <div className="max-w-6xl mx-auto space-y-6">
+          {/* Header */}
+          <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-muted/30 p-6 rounded-3xl border border-border">
+            <div className="flex items-center gap-5">
               <div className="relative group">
-                <Avatar className="w-24 h-24 border-4 border-primary/20 shadow-2xl">
+                <Avatar className="w-20 h-20 border-4 border-primary/20 shadow-xl">
                   <AvatarImage src={profile?.avatar_url || getFallbackAvatarUrl(profile?.username)} />
-                  <AvatarFallback className="bg-primary/20 text-primary text-2xl font-black">
+                  <AvatarFallback className="bg-primary/20 text-primary text-xl font-black">
                     {profile?.username?.substring(0, 2).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <button className="absolute inset-0 flex items-center justify-center bg-black/60 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Camera className="w-6 h-6 text-white" />
+                  <Camera className="w-5 h-5 text-white" />
                 </button>
               </div>
               <div>
-                <h1 className="text-3xl font-black text-foreground italic uppercase tracking-tighter">
+                <h1 className="text-2xl md:text-3xl font-black uppercase tracking-tight">
                   {profile?.username || "Usuário"}
                 </h1>
-                <div className="flex items-center gap-2 mt-2">
-                  <Wallet className="w-4 h-4 text-primary" />
-                  <span className="font-bold text-primary">{profile?.bid_balance || 0} Lances Disponíveis</span>
+                <div className="flex flex-wrap items-center gap-3 mt-2">
+                  <Badge className="bg-primary/15 text-primary border border-primary/20 font-bold">
+                    <Wallet className="w-3.5 h-3.5 mr-1" /> {profile?.bid_balance || 0} lances
+                  </Badge>
+                  {pendingCount > 0 && (
+                    <Badge className="bg-amber-500 text-black font-black">
+                      {pendingCount} pagamento(s) pendente(s)
+                    </Badge>
+                  )}
                 </div>
               </div>
             </div>
-            
-            <div className="flex items-center gap-3">
-              <Button variant="outline" className="border-red-500/30 text-red-500 hover:bg-red-500/10 rounded-2xl" onClick={handleLogout}>
+            <div className="flex items-center gap-2">
+              <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90">
+                <Link to="/packages"><Package className="w-4 h-4 mr-2" /> Comprar lances</Link>
+              </Button>
+              <Button variant="outline" className="border-red-500/30 text-red-500 hover:bg-red-500/10" onClick={handleLogout}>
                 <LogOut className="w-4 h-4 mr-2" /> Sair
               </Button>
             </div>
           </header>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2">
-              <Card className="bg-white/5 border-white/10 rounded-[32px] overflow-hidden">
-                <CardHeader>
-                  <CardTitle className="text-xl font-black uppercase italic tracking-tight">Editar <span className="text-primary">Perfil</span></CardTitle>
-                  <CardDescription>Mantenha seus dados atualizados para garantir seus arremates.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <form onSubmit={handleUpdateProfile} className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <Label htmlFor="username">Nickname</Label>
-                        <div className="relative">
-                          <Hash className="absolute left-3 top-3 h-4 w-4 text-white/40" />
-                          <Input id="username" className="pl-10 bg-white/5 border-white/10" value={username} onChange={e => setUsername(e.target.value)} />
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="full_name">Nome Completo</Label>
-                        <div className="relative">
-                          <User className="absolute left-3 top-3 h-4 w-4 text-white/40" />
-                          <Input id="full_name" className="pl-10 bg-white/5 border-white/10" value={fullName} onChange={e => setFullName(e.target.value)} />
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="phone">Telefone</Label>
-                        <div className="relative">
-                          <Phone className="absolute left-3 top-3 h-4 w-4 text-white/40" />
-                          <Input id="phone" className="pl-10 bg-white/5 border-white/10" value={phone} onChange={e => setPhone(e.target.value)} />
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="cpf">CPF</Label>
-                        <div className="relative">
-                          <Hash className="absolute left-3 top-3 h-4 w-4 text-white/40" />
-                          <Input id="cpf" className="pl-10 bg-white/5 border-white/10" value={cpf} onChange={e => setCpf(e.target.value)} placeholder="000.000.000-00" />
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="gender">Gênero</Label>
-                        <Select value={gender} onValueChange={setGender}>
-                          <SelectTrigger className="bg-white/5 border-white/10">
-                            <SelectValue placeholder="Selecione seu gênero" />
-                          </SelectTrigger>
-                          <SelectContent className="bg-zinc-800 border-white/10 text-white">
-                            <SelectItem value="male">Masculino</SelectItem>
-                            <SelectItem value="female">Feminino</SelectItem>
-                            <SelectItem value="other">Outro</SelectItem>
-                            <SelectItem value="not_specified">Prefiro não informar</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                    
-                    <Button type="submit" className="w-full md:w-auto px-8 bg-primary text-primary-foreground hover:bg-primary/90" disabled={loading}>
-                      {loading ? "Salvando..." : "Salvar Alterações"}
-                    </Button>
-                  </form>
-                </CardContent>
-              </Card>
-            </div>
+          {/* Discount banner */}
+          <DiscountBanner code={couponCode} pct={couponPct} firstPurchase={purchasesCount === 0} />
 
-            <div className="space-y-6">
-              {auctionsToPay.length > 0 && (
-                <Card className="bg-amber-500/10 border-amber-500/20 rounded-[32px] overflow-hidden">
-                  <CardHeader className="bg-amber-500/20 border-b border-amber-500/10">
-                    <CardTitle className="text-lg font-black uppercase italic text-amber-500 flex items-center gap-2">
-                      <Zap className="w-5 h-5 fill-current" /> Pendências de Arremate
-                    </CardTitle>
-                    <CardDescription className="text-amber-500/60 font-bold">Você possui produtos aguardando pagamento do resíduo.</CardDescription>
-                  </CardHeader>
-                  <CardContent className="p-6 space-y-4">
-                    {auctionsToPay.map(winner => (
-                      <div key={winner.id} className="flex flex-col gap-4 p-4 rounded-2xl bg-black/40 border border-white/5 group">
-                        <div className="flex items-center gap-4">
-                          <img src={winner.auction?.product?.images?.[0]} className="w-16 h-16 rounded-xl object-cover border border-white/10" alt="" />
-                          <div className="flex-1">
-                            <h4 className="font-black text-sm uppercase italic truncate">{winner.auction?.product?.name}</h4>
-                            <div className="flex flex-col">
-                              <p className="text-xs text-white/40">Valor Final: <span className="text-primary font-bold">R$ {winner.final_price?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span></p>
-                              <div className="flex items-center gap-2 mt-1">
-                                <span className="text-[10px] text-white/40 uppercase">Status:</span>
-                                {winner.payment_status === 'approved' ? (
-                                  <Badge className="bg-green-500 text-white text-[8px] uppercase">Pago</Badge>
-                                ) : (
-                                  <Badge className="bg-amber-500 text-black text-[8px] uppercase">Pendente</Badge>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <Button 
-                          className="w-full bg-amber-500 hover:bg-amber-600 text-black font-black uppercase italic" 
-                          onClick={() => setSelectedAuctionForClaim(winner)}
-                        >
-                           REIVINDICAR / SUPORTE
-                        </Button>
-                      </div>
-                    ))}
-                  </CardContent>
+          {/* Tabs */}
+          <Tabs defaultValue="overview" className="w-full">
+            <TabsList className="flex flex-wrap h-auto justify-start gap-1 bg-muted/30 p-1 rounded-2xl">
+              <TabsTrigger value="overview"><LayoutDashboard className="w-4 h-4 mr-1.5" /> Visão geral</TabsTrigger>
+              <TabsTrigger value="pending">
+                <Zap className="w-4 h-4 mr-1.5" /> A pagar
+                {pendingCount > 0 && <span className="ml-1.5 bg-amber-500 text-black rounded-full px-1.5 text-[10px] font-black">{pendingCount}</span>}
+              </TabsTrigger>
+              <TabsTrigger value="bids"><Gavel className="w-4 h-4 mr-1.5" /> Meus lances</TabsTrigger>
+              <TabsTrigger value="unique"><Trophy className="w-4 h-4 mr-1.5" /> Menor lance único</TabsTrigger>
+              <TabsTrigger value="purchases"><Package className="w-4 h-4 mr-1.5" /> Pacotes</TabsTrigger>
+              <TabsTrigger value="support"><LifeBuoy className="w-4 h-4 mr-1.5" /> Suporte</TabsTrigger>
+              <TabsTrigger value="account"><User className="w-4 h-4 mr-1.5" /> Conta</TabsTrigger>
+            </TabsList>
 
-                </Card>
-              )}
+            <TabsContent value="overview" className="mt-6">
+              <OverviewTab stats={stats} balance={profile?.bid_balance || 0} pendingCount={pendingCount} />
+            </TabsContent>
 
-              <Card className="bg-primary/10 border-primary/20 rounded-[32px]">
-                <CardHeader>
-                  <CardTitle className="text-lg font-black uppercase italic text-primary">Status da Conta</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between p-3 bg-white/5 rounded-2xl border border-white/5">
-                    <span className="text-sm font-medium text-white/60">Verificação</span>
-                    <Badge className="bg-green-500 text-white font-black text-[10px] uppercase">Verificado</Badge>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-white/5 rounded-2xl border border-white/5">
-                    <span className="text-sm font-medium text-white/60">Tipo</span>
-                    <span className="text-sm font-black text-primary italic uppercase tracking-widest">Premium</span>
-                  </div>
-                </CardContent>
-              </Card>
+            <TabsContent value="pending" className="mt-6">
+              <PendingPaymentsTab winners={winners} onSelect={setSelectedAuctionForClaim} />
+            </TabsContent>
 
-              <Card className="bg-white/5 border-white/10 rounded-[32px]">
-                <CardHeader>
-                  <CardTitle className="text-lg font-black uppercase italic">Meus <span className="text-primary">Estatísticas</span></CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-white/5 p-4 rounded-2xl border border-white/5 text-center">
-                      <div className="text-2xl font-black text-primary italic">0</div>
-                      <div className="text-[10px] font-black text-white/40 uppercase tracking-widest">Arremates</div>
-                    </div>
-                    <div className="bg-white/5 p-4 rounded-2xl border border-white/5 text-center">
-                      <div className="text-2xl font-black text-primary italic">0</div>
-                      <div className="text-[10px] font-black text-white/40 uppercase tracking-widest">Lances Dados</div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
+            <TabsContent value="bids" className="mt-6">
+              <BidsHistoryTab />
+            </TabsContent>
+
+            <TabsContent value="unique" className="mt-6">
+              <UniqueBidsTab />
+            </TabsContent>
+
+            <TabsContent value="purchases" className="mt-6">
+              <PurchasesTab couponCode={couponCode} couponPct={couponPct} />
+            </TabsContent>
+
+            <TabsContent value="support" className="mt-6">
+              <SupportTab />
+            </TabsContent>
+
+            <TabsContent value="account" className="mt-6">
+              <AccountTab
+                username={username} setUsername={setUsername}
+                fullName={fullName} setFullName={setFullName}
+                phone={phone} setPhone={setPhone}
+                cpf={cpf} setCpf={setCpf}
+                gender={gender} setGender={setGender}
+                loading={loading} onSubmit={handleUpdateProfile}
+              />
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
 
       <Dialog open={!!selectedAuctionForClaim} onOpenChange={() => setSelectedAuctionForClaim(null)}>
         <DialogContent className="max-w-4xl bg-zinc-900 border-white/10 text-white max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-black uppercase italic italic">
-              Reivindicar <span className="text-primary">Prêmio</span>
+            <DialogTitle className="text-2xl font-black uppercase italic">
+              Reivindicar <span className="text-primary">prêmio</span>
             </DialogTitle>
           </DialogHeader>
           {selectedAuctionForClaim && (
-            <AuctionClaimPanel 
-              auctionId={selectedAuctionForClaim.auction_id} 
-              winnerData={selectedAuctionForClaim} 
+            <AuctionClaimPanel
+              auctionId={selectedAuctionForClaim.auction_id}
+              winnerData={selectedAuctionForClaim}
             />
           )}
         </DialogContent>
       </Dialog>
     </div>
+  );
+}
 
+/* ---------- Banner de desconto ---------- */
+function DiscountBanner({ code, pct, firstPurchase }: { code: string; pct: number; firstPurchase: boolean }) {
+  const copy = () => {
+    navigator.clipboard?.writeText(code);
+    toast.success(`Cupom ${code} copiado!`);
+  };
+  return (
+    <Card className="bg-gradient-to-r from-primary/15 via-primary/10 to-amber-500/15 border-primary/30 rounded-3xl">
+      <CardContent className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-5">
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center">
+            <Tag className="w-6 h-6 text-primary" />
+          </div>
+          <div>
+            <div className="font-black text-lg uppercase">
+              {firstPurchase ? "Bônus de primeira compra" : "Bônus de volta"}: {pct}% OFF
+            </div>
+            <div className="text-sm text-muted-foreground">
+              Use o cupom <span className="font-mono font-bold text-primary">{code}</span> ao finalizar a compra de qualquer pacote de lances.
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={copy}><Copy className="w-4 h-4 mr-2" /> Copiar</Button>
+          <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90">
+            <Link to="/packages">Ver pacotes</Link>
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+/* ---------- Visão geral ---------- */
+function OverviewTab({ stats, balance, pendingCount }: { stats: any; balance: number; pendingCount: number }) {
+  const items = [
+    { label: "Saldo de lances", value: balance, icon: Wallet, accent: "text-primary" },
+    { label: "Lances dados", value: stats?.bids_count ?? 0, icon: Gavel, accent: "text-foreground" },
+    { label: "Leilões ganhos", value: stats?.wins_count ?? 0, icon: Trophy, accent: "text-amber-500" },
+    { label: "Palpites únicos", value: stats?.unique_bids_count ?? 0, icon: Trophy, accent: "text-foreground" },
+    { label: "Pacotes comprados", value: stats?.purchases_count ?? 0, icon: Package, accent: "text-foreground" },
+    { label: "Total investido", value: fmtBRL(stats?.total_spent), icon: Wallet, accent: "text-primary" },
+  ];
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+      {items.map((it) => (
+        <Card key={it.label} className="bg-muted/30 border-border rounded-2xl">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-background flex items-center justify-center border border-border">
+                <it.icon className={`w-5 h-5 ${it.accent}`} />
+              </div>
+              <div>
+                <div className="text-xs uppercase tracking-widest text-muted-foreground font-bold">{it.label}</div>
+                <div className={`text-2xl font-black ${it.accent}`}>{it.value}</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+      {pendingCount > 0 && (
+        <Card className="col-span-2 md:col-span-3 bg-amber-500/10 border-amber-500/30 rounded-2xl">
+          <CardContent className="p-5 flex items-center justify-between gap-4">
+            <div>
+              <div className="font-black uppercase text-amber-500">Você tem {pendingCount} arremate(s) aguardando pagamento</div>
+              <div className="text-sm text-muted-foreground">Vá até a aba "A pagar" para finalizar e receber seu produto.</div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}
+
+/* ---------- A pagar ---------- */
+function PendingPaymentsTab({ winners, onSelect }: { winners: any[]; onSelect: (w: any) => void }) {
+  if (!winners.length) {
+    return <EmptyState icon={Trophy} title="Nenhum arremate ainda" subtitle="Quando você ganhar um leilão, ele aparece aqui com o valor exato a pagar." />;
+  }
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {winners.map((w) => {
+        const paid = w.payment_status === "approved" || w.payment_status === "paid";
+        return (
+          <Card key={w.id} className="bg-muted/30 border-border rounded-2xl overflow-hidden">
+            <CardContent className="p-5 space-y-4">
+              <div className="flex gap-4">
+                <img
+                  src={w.auction?.product?.images?.[0]}
+                  alt=""
+                  className="w-20 h-20 rounded-xl object-cover border border-border"
+                />
+                <div className="flex-1 min-w-0">
+                  <div className="font-black uppercase truncate">{w.auction?.product?.name}</div>
+                  <div className="text-xs text-muted-foreground mt-1">Arrematado em {fmtDate(w.created_at)}</div>
+                  <div className="mt-2 flex items-center gap-2">
+                    {paid
+                      ? <Badge className="bg-green-500 text-white"><CheckCircle2 className="w-3 h-3 mr-1" /> Pago</Badge>
+                      : <Badge className="bg-amber-500 text-black"><Clock className="w-3 h-3 mr-1" /> Aguardando pagamento</Badge>}
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-end justify-between border-t border-border pt-3">
+                <div>
+                  <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Valor a pagar</div>
+                  <div className="text-2xl font-black text-primary">{fmtBRL(w.final_price)}</div>
+                  {w.savings_percentage != null && (
+                    <div className="text-xs text-green-500 font-bold">Você economizou {Number(w.savings_percentage).toFixed(0)}%</div>
+                  )}
+                </div>
+                <Button onClick={() => onSelect(w)} className="bg-primary text-primary-foreground hover:bg-primary/90">
+                  {paid ? "Ver detalhes" : "Pagar agora"}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ---------- Histórico de lances ---------- */
+function BidsHistoryTab() {
+  const [rows, setRows] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    supabase.rpc("get_my_bids_history", { p_limit: 100, p_offset: 0 }).then(({ data }) => {
+      setRows((data as any[]) || []); setLoading(false);
+    });
+  }, []);
+  if (loading) return <div className="text-muted-foreground p-6">Carregando…</div>;
+  if (!rows.length) return <EmptyState icon={Gavel} title="Sem lances ainda" subtitle="Seus lances em leilões de centavos aparecerão aqui." />;
+  return (
+    <Card className="bg-muted/30 border-border rounded-2xl">
+      <CardContent className="p-0 overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Produto</TableHead>
+              <TableHead>Valor do lance</TableHead>
+              <TableHead>Data</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {rows.map((r) => (
+              <TableRow key={r.id}>
+                <TableCell>
+                  <div className="flex items-center gap-3">
+                    {r.product_image && <img src={r.product_image} className="w-10 h-10 rounded-lg object-cover border border-border" alt="" />}
+                    <span className="font-bold truncate max-w-[200px]">{r.product_name || "—"}</span>
+                  </div>
+                </TableCell>
+                <TableCell className="font-mono">{fmtBRL(r.price_at_bid)}</TableCell>
+                <TableCell className="text-sm text-muted-foreground">{fmtDate(r.created_at)}</TableCell>
+                <TableCell>
+                  {r.is_winner
+                    ? <Badge className="bg-green-500 text-white">Você ganhou</Badge>
+                    : r.auction_status === "live"
+                      ? <Badge className="bg-primary text-primary-foreground">Ao vivo</Badge>
+                      : <Badge variant="secondary">{r.auction_status}</Badge>}
+                </TableCell>
+                <TableCell>
+                  {r.auction_slug && (
+                    <Button asChild size="sm" variant="ghost">
+                      <Link to="/auctions/$id" params={{ id: r.auction_slug }}>Ver</Link>
+                    </Button>
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
+  );
+}
+
+/* ---------- Menor lance único ---------- */
+function UniqueBidsTab() {
+  const [rows, setRows] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    supabase.rpc("get_my_unique_bids").then(({ data }) => { setRows((data as any[]) || []); setLoading(false); });
+  }, []);
+  if (loading) return <div className="text-muted-foreground p-6">Carregando…</div>;
+  if (!rows.length) return <EmptyState icon={Trophy} title="Nenhum palpite enviado" subtitle="Participe de uma campanha de Menor Lance Único para ver seus palpites aqui." />;
+
+  // group by campaign
+  const groups = new Map<string, any[]>();
+  rows.forEach((r) => {
+    const k = r.campaign_id;
+    if (!groups.has(k)) groups.set(k, []);
+    groups.get(k)!.push(r);
+  });
+
+  return (
+    <div className="space-y-4">
+      {[...groups.entries()].map(([cid, items]) => {
+        const head = items[0];
+        return (
+          <Card key={cid} className="bg-muted/30 border-border rounded-2xl">
+            <CardHeader className="flex flex-row items-center gap-4">
+              {head.product_image && <img src={head.product_image} className="w-14 h-14 rounded-xl object-cover border border-border" alt="" />}
+              <div className="flex-1">
+                <CardTitle className="text-lg">{head.product_name}</CardTitle>
+                <CardDescription>
+                  Campanha {head.campaign_status === "finished" ? "encerrada" : "em andamento"} · {items.length} palpite(s)
+                </CardDescription>
+              </div>
+              {head.campaign_status === "finished" && head.campaign_winner_value != null && (
+                <Badge className="bg-amber-500 text-black">Ganhador: {fmtBRL(head.campaign_winner_value)}</Badge>
+              )}
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {items.map((b) => (
+                <div key={b.id} className="flex items-center justify-between border border-border rounded-xl p-3">
+                  <div className="flex items-center gap-3">
+                    <span className="font-mono text-lg font-black text-primary">{fmtBRL(b.value)}</span>
+                    {b.is_winner
+                      ? <Badge className="bg-amber-500 text-black"><Trophy className="w-3 h-3 mr-1" /> Vencedor</Badge>
+                      : b.is_unique
+                        ? <Badge className="bg-green-500 text-white">Único</Badge>
+                        : <Badge variant="secondary">Repetido</Badge>}
+                  </div>
+                  <span className="text-xs text-muted-foreground">{fmtDate(b.created_at)}</span>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ---------- Pacotes / compras ---------- */
+function PurchasesTab({ couponCode, couponPct }: { couponCode: string; couponPct: number }) {
+  const [rows, setRows] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    supabase.rpc("get_my_purchases").then(({ data }) => { setRows((data as any[]) || []); setLoading(false); });
+  }, []);
+  return (
+    <div className="space-y-4">
+      <Card className="bg-primary/10 border-primary/30 rounded-2xl">
+        <CardContent className="flex items-center justify-between p-5 gap-4">
+          <div>
+            <div className="font-black uppercase">Próxima compra com {couponPct}% OFF</div>
+            <div className="text-sm text-muted-foreground">Cupom: <span className="font-mono font-bold text-primary">{couponCode}</span></div>
+          </div>
+          <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90">
+            <Link to="/packages">Ver pacotes</Link>
+          </Button>
+        </CardContent>
+      </Card>
+
+      {loading ? (
+        <div className="text-muted-foreground p-6">Carregando…</div>
+      ) : !rows.length ? (
+        <EmptyState icon={Package} title="Você ainda não comprou pacotes" subtitle="Compre seu primeiro pacote e use o cupom acima para ganhar desconto." />
+      ) : (
+        <Card className="bg-muted/30 border-border rounded-2xl">
+          <CardContent className="p-0 overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Pacote</TableHead>
+                  <TableHead>Lances</TableHead>
+                  <TableHead>Valor</TableHead>
+                  <TableHead>Método</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Data</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {rows.map((r) => (
+                  <TableRow key={r.id}>
+                    <TableCell className="font-bold">{r.package_name || r.description}</TableCell>
+                    <TableCell>{r.bid_amount ?? "—"}</TableCell>
+                    <TableCell className="font-mono">{fmtBRL(r.amount)}</TableCell>
+                    <TableCell className="capitalize">{r.payment_method || "—"}</TableCell>
+                    <TableCell>
+                      {r.status === "completed"
+                        ? <Badge className="bg-green-500 text-white">Pago</Badge>
+                        : r.status === "pending"
+                          ? <Badge className="bg-amber-500 text-black">Pendente</Badge>
+                          : <Badge variant="secondary">{r.status}</Badge>}
+                    </TableCell>
+                    <TableCell className="text-sm text-muted-foreground">{fmtDate(r.created_at)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}
+
+/* ---------- Suporte ---------- */
+function SupportTab() {
+  const [tickets, setTickets] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [subject, setSubject] = useState("");
+  const [body, setBody] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [openId, setOpenId] = useState<string | null>(null);
+
+  const load = useCallback(() => {
+    setLoading(true);
+    supabase.rpc("get_my_tickets").then(({ data }) => { setTickets((data as any[]) || []); setLoading(false); });
+  }, []);
+  useEffect(() => { load(); }, [load]);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (subject.trim().length < 3 || body.trim().length < 3) {
+      toast.error("Preencha o assunto e a mensagem.");
+      return;
+    }
+    setSubmitting(true);
+    const { data, error } = await supabase.rpc("open_support_ticket", { p_subject: subject, p_body: body });
+    setSubmitting(false);
+    if (error || !(data as any)?.success) {
+      toast.error((data as any)?.message || error?.message || "Erro ao abrir ticket.");
+      return;
+    }
+    toast.success("Ticket aberto! Em breve responderemos.");
+    setSubject(""); setBody(""); load();
+  };
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <Card className="bg-muted/30 border-border rounded-2xl">
+        <CardHeader>
+          <CardTitle>Abrir novo ticket</CardTitle>
+          <CardDescription>Fale com nossa equipe — pagamentos, dúvidas ou suporte técnico.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={submit} className="space-y-4">
+            <div className="space-y-2">
+              <Label>Assunto</Label>
+              <Input value={subject} onChange={(e) => setSubject(e.target.value)} maxLength={200} placeholder="Ex: Dúvida sobre pagamento" />
+            </div>
+            <div className="space-y-2">
+              <Label>Mensagem</Label>
+              <Textarea value={body} onChange={(e) => setBody(e.target.value)} maxLength={4000} rows={6} placeholder="Descreva sua dúvida com detalhes…" />
+            </div>
+            <Button type="submit" disabled={submitting} className="bg-primary text-primary-foreground hover:bg-primary/90">
+              <Send className="w-4 h-4 mr-2" /> {submitting ? "Enviando…" : "Enviar ticket"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+
+      <Card className="bg-muted/30 border-border rounded-2xl">
+        <CardHeader>
+          <CardTitle>Meus tickets</CardTitle>
+          <CardDescription>Acompanhe as respostas da equipe.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {loading ? <div className="text-muted-foreground">Carregando…</div>
+            : !tickets.length ? <div className="text-muted-foreground text-sm">Você ainda não tem tickets.</div>
+            : tickets.map((t) => (
+              <Collapsible key={t.id} open={openId === t.id} onOpenChange={(o) => setOpenId(o ? t.id : null)}>
+                <CollapsibleTrigger className="w-full">
+                  <div className="flex items-center justify-between border border-border rounded-xl p-3 hover:bg-background/50 transition-colors">
+                    <div className="text-left">
+                      <div className="font-bold truncate">{t.subject}</div>
+                      <div className="text-xs text-muted-foreground">{t.messages_count} mensagem(ns) · atualizado {fmtDate(t.updated_at)}</div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge className={
+                        t.status === "answered" ? "bg-green-500 text-white" :
+                        t.status === "closed" ? "bg-muted text-muted-foreground" : "bg-amber-500 text-black"
+                      }>{t.status === "answered" ? "Respondido" : t.status === "closed" ? "Fechado" : "Aberto"}</Badge>
+                      <ChevronDown className="w-4 h-4" />
+                    </div>
+                  </div>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <TicketThread ticketId={t.id} onChanged={load} />
+                </CollapsibleContent>
+              </Collapsible>
+            ))}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+function TicketThread({ ticketId, onChanged }: { ticketId: string; onChanged: () => void }) {
+  const [msgs, setMsgs] = useState<any[]>([]);
+  const [body, setBody] = useState("");
+  const [sending, setSending] = useState(false);
+
+  const load = useCallback(() => {
+    supabase.rpc("get_ticket_messages", { p_ticket_id: ticketId }).then(({ data }) => setMsgs((data as any[]) || []));
+  }, [ticketId]);
+
+  useEffect(() => {
+    load();
+    const ch = supabase
+      .channel(`ticket-${ticketId}`)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "support_messages", filter: `ticket_id=eq.${ticketId}` }, load)
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [ticketId, load]);
+
+  const reply = async () => {
+    if (!body.trim()) return;
+    setSending(true);
+    const { data, error } = await supabase.rpc("reply_support_ticket", { p_ticket_id: ticketId, p_body: body });
+    setSending(false);
+    if (error || !(data as any)?.success) {
+      toast.error((data as any)?.message || error?.message || "Erro ao responder.");
+      return;
+    }
+    setBody(""); load(); onChanged();
+  };
+
+  return (
+    <div className="border border-border rounded-xl p-3 mt-2 space-y-3 bg-background/50">
+      <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
+        {msgs.map((m) => (
+          <div key={m.id} className={`flex ${m.is_admin_reply ? "justify-start" : "justify-end"}`}>
+            <div className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm ${
+              m.is_admin_reply ? "bg-primary/15 border border-primary/30" : "bg-muted border border-border"
+            }`}>
+              <div className="whitespace-pre-wrap break-words">{m.body}</div>
+              <div className="text-[10px] text-muted-foreground mt-1 flex items-center gap-1">
+                <MessageSquare className="w-3 h-3" /> {m.is_admin_reply ? "Suporte" : "Você"} · {fmtDate(m.created_at)}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="flex gap-2">
+        <Input value={body} onChange={(e) => setBody(e.target.value)} placeholder="Escreva uma resposta…" onKeyDown={(e) => e.key === "Enter" && reply()} />
+        <Button onClick={reply} disabled={sending}><Send className="w-4 h-4" /></Button>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Conta ---------- */
+function AccountTab(props: {
+  username: string; setUsername: (v: string) => void;
+  fullName: string; setFullName: (v: string) => void;
+  phone: string; setPhone: (v: string) => void;
+  cpf: string; setCpf: (v: string) => void;
+  gender: string; setGender: (v: string) => void;
+  loading: boolean; onSubmit: (e: React.FormEvent) => void;
+}) {
+  const { username, setUsername, fullName, setFullName, phone, setPhone, cpf, setCpf, gender, setGender, loading, onSubmit } = props;
+  return (
+    <Card className="bg-muted/30 border-border rounded-2xl">
+      <CardHeader>
+        <CardTitle>Dados da conta</CardTitle>
+        <CardDescription>Mantenha seus dados atualizados para garantir seus arremates.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={onSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Field label="Nickname" icon={Hash}><Input value={username} onChange={(e) => setUsername(e.target.value)} className="pl-10" /></Field>
+            <Field label="Nome completo" icon={User}><Input value={fullName} onChange={(e) => setFullName(e.target.value)} className="pl-10" /></Field>
+            <Field label="Telefone" icon={Phone}><Input value={phone} onChange={(e) => setPhone(e.target.value)} className="pl-10" /></Field>
+            <Field label="CPF" icon={Hash}><Input value={cpf} onChange={(e) => setCpf(e.target.value)} className="pl-10" placeholder="000.000.000-00" /></Field>
+            <div className="space-y-2">
+              <Label>Gênero</Label>
+              <Select value={gender} onValueChange={setGender}>
+                <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="male">Masculino</SelectItem>
+                  <SelectItem value="female">Feminino</SelectItem>
+                  <SelectItem value="other">Outro</SelectItem>
+                  <SelectItem value="not_specified">Prefiro não informar</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <Button type="submit" disabled={loading} className="bg-primary text-primary-foreground hover:bg-primary/90">
+            {loading ? "Salvando…" : "Salvar alterações"}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
+  );
+}
+
+function Field({ label, icon: Icon, children }: { label: string; icon: any; children: React.ReactNode }) {
+  return (
+    <div className="space-y-2">
+      <Label>{label}</Label>
+      <div className="relative">
+        <Icon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+        {children}
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Empty state ---------- */
+function EmptyState({ icon: Icon, title, subtitle }: { icon: any; title: string; subtitle: string }) {
+  return (
+    <Card className="bg-muted/30 border-border rounded-2xl">
+      <CardContent className="p-10 flex flex-col items-center text-center gap-3">
+        <div className="w-14 h-14 rounded-2xl bg-background border border-border flex items-center justify-center">
+          <Icon className="w-7 h-7 text-muted-foreground" />
+        </div>
+        <div className="font-black uppercase">{title}</div>
+        <div className="text-sm text-muted-foreground max-w-sm">{subtitle}</div>
+      </CardContent>
+    </Card>
   );
 }
