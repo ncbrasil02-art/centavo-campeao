@@ -70,13 +70,27 @@ function AdminProducts() {
 
     setUploading(true);
     try {
-      const fileExt = file.name.split(".").pop();
-      const fileName = `product-${Math.random()}.${fileExt}`;
-      const filePath = `${fileName}`;
+      if (!file.type.startsWith("image/")) {
+        throw new Error("Selecione um arquivo de imagem válido.");
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        throw new Error("Imagem muito grande (máx. 5MB).");
+      }
+
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Faça login como administrador.");
+
+      const ext = (file.name.split(".").pop() || "png").toLowerCase().replace(/[^a-z0-9]/g, "") || "png";
+      const rand = (crypto as any).randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.floor(Math.random() * 1e9)}`;
+      const filePath = `products/${rand}.${ext}`;
 
       const { error: uploadError } = await supabase.storage
         .from("site-assets")
-        .upload(filePath, file);
+        .upload(filePath, file, {
+          cacheControl: "3600",
+          upsert: true,
+          contentType: file.type,
+        });
 
       if (uploadError) throw uploadError;
 
@@ -84,13 +98,14 @@ function AdminProducts() {
         .from("site-assets")
         .getPublicUrl(filePath);
 
-      setFormData({ ...formData, images: [...formData.images, publicUrl] });
+      setFormData((prev) => ({ ...prev, images: [...prev.images, publicUrl] }));
       toast.success("Imagem carregada com sucesso!");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error uploading product image:", error);
-      toast.error("Erro ao carregar imagem");
+      toast.error(`Erro ao carregar imagem: ${error?.message || "Erro desconhecido"}`);
     } finally {
       setUploading(false);
+      if (event.target) event.target.value = "";
     }
   };
 
