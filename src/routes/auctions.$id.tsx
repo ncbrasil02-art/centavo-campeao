@@ -407,15 +407,13 @@ function AuctionPage() {
             <div className="space-y-6">
               <div className="relative aspect-square rounded-[32px] overflow-hidden bg-muted/20 border border-border group shadow-2xl flex items-center justify-center">
                 <div className="absolute inset-0 z-0">
-                  <img 
-                    src={auction.product?.images?.[activeImage] || FALLBACK_PRODUCT_IMAGE} 
-                    alt={auction.product?.name} 
+                  <ProductImageSlideshow
+                    images={auction.product?.images}
+                    alt={auction.product?.name}
                     className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = FALLBACK_PRODUCT_IMAGE;
-                    }}
+                    showDots
                   />
-                  <div className="absolute inset-0 bg-black/20" />
+                  <div className="absolute inset-0 bg-black/20 pointer-events-none" />
                 </div>
                 
                 <div className="absolute inset-0 z-10 p-6 flex flex-col justify-between">
