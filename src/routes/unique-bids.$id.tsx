@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Target, Users, Sparkles, ArrowLeft, Loader2, CheckCircle2, XCircle } from "lucide-react";
 import { toast } from "sonner";
+import { useTimeSync } from "@/hooks/useTimeSync";
 
 export const Route = createFileRoute("/unique-bids/$id")({
   component: UniqueBidPage,
@@ -18,7 +19,6 @@ const sb = supabase as any;
 const brl = (n: number) =>
   Number(n).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-import { useTimeSync } from "@/hooks/useTimeSync";
 
 function Countdown({ to }: { to: string }) {
   const { getAdjustedNow } = useTimeSync();
