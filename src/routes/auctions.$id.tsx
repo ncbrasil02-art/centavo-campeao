@@ -16,6 +16,7 @@ import { useTimeSync } from "@/hooks/useTimeSync";
 import { toast } from "sonner";
 import { FALLBACK_PRODUCT_IMAGE, getFallbackAvatarUrl, FICTITIOUS_PARTICIPANTS, MODALITY_CONFIG } from "@/lib/constants";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { ProductImageSlideshow } from "@/components/ProductImageSlideshow";
 import { Progress } from "@/components/ui/progress";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
