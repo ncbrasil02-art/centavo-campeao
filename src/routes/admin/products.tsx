@@ -70,13 +70,27 @@ function AdminProducts() {
 
     setUploading(true);
     try {
-      const fileExt = file.name.split(".").pop();
-      const fileName = `product-${Math.random()}.${fileExt}`;
-      const filePath = `${fileName}`;
+      if (!file.type.startsWith("image/")) {
+        throw new Error("Selecione um arquivo de imagem válido.");
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        throw new Error("Imagem muito grande (máx. 5MB).");
+      }
+
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Faça login como administrador.");
+
+      const ext = (file.name.split(".").pop() || "png").toLowerCase().replace(/[^a-z0-9]/g, "") || "png";
+      const rand = (crypto as any).randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.floor(Math.random() * 1e9)}`;
+      const filePath = `products/${rand}.${ext}`;
 
       const { error: uploadError } = await supabase.storage
         .from("site-assets")
-        .upload(filePath, file);
+        .upload(filePath, file, {
+          cacheControl: "3600",
+          upsert: true,
+          contentType: file.type,
+        });
 
       if (uploadError) throw uploadError;
 
@@ -84,13 +98,14 @@ function AdminProducts() {
         .from("site-assets")
         .getPublicUrl(filePath);
 
-      setFormData({ ...formData, images: [...formData.images, publicUrl] });
+      setFormData((prev) => ({ ...prev, images: [...prev.images, publicUrl] }));
       toast.success("Imagem carregada com sucesso!");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error uploading product image:", error);
-      toast.error("Erro ao carregar imagem");
+      toast.error(`Erro ao carregar imagem: ${error?.message || "Erro desconhecido"}`);
     } finally {
       setUploading(false);
+      if (event.target) event.target.value = "";
     }
   };
 
@@ -300,7 +315,24 @@ function AdminProducts() {
                       <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-lg bg-white/5 border border-white/10 overflow-hidden flex-shrink-0">
                           {product.images?.[0] ? (
-                            <img src={product.images[0]} alt="" className="w-full h-full object-cover" />
+                            <img
+                              src={product.images[0]}
+                              alt={product.name}
+                              className="w-full h-full object-cover"
+                              loading="lazy"
+                              onError={(e) => {
+                                const img = e.currentTarget;
+                                img.style.display = "none";
+                                const parent = img.parentElement;
+                                if (parent && !parent.querySelector("[data-fallback]")) {
+                                  const div = document.createElement("div");
+                                  div.setAttribute("data-fallback", "true");
+                                  div.className = "w-full h-full flex items-center justify-center text-white/10";
+                                  div.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>';
+                                  parent.appendChild(div);
+                                }
+                              }}
+                            />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center text-white/10">
                               <ImageIcon className="w-6 h-6" />
