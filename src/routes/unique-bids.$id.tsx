@@ -137,12 +137,12 @@ function UniqueBidPage() {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <Navbar />
-      <div className="container mx-auto px-4 py-8 flex-1">
-        <Link to="/" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6">
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 flex-1">
+        <Link to="/" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4 sm:mb-6">
           <ArrowLeft className="w-4 h-4 mr-1" /> Voltar
         </Link>
 
-        <div className="grid lg:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-2 gap-4 sm:gap-8">
           {/* Produto */}
           <Card className="overflow-hidden">
             <div className="aspect-square bg-muted">
@@ -150,12 +150,12 @@ function UniqueBidPage() {
                 <img src={product.images[0]} alt={product?.name} className="w-full h-full object-cover" />
               )}
             </div>
-            <div className="p-6 space-y-2">
+            <div className="p-4 sm:p-6 space-y-2">
               <Badge variant="outline" className="border-primary/40 text-primary">
                 <Sparkles className="w-3 h-3 mr-1" /> Menor Lance Único
               </Badge>
-              <h1 className="text-3xl font-black tracking-tight">{campaign.title}</h1>
-              {product?.name && <p className="text-muted-foreground">{product.name}</p>}
+              <h1 className="text-2xl sm:text-3xl font-black tracking-tight break-words">{campaign.title}</h1>
+              {product?.name && <p className="text-sm text-muted-foreground">{product.name}</p>}
               {campaign.description && <p className="text-sm mt-2">{campaign.description}</p>}
               {product?.market_value && (
                 <p className="text-sm text-muted-foreground">
@@ -166,20 +166,21 @@ function UniqueBidPage() {
           </Card>
 
           {/* Painel */}
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {isLive && campaign.ends_at && (
-              <Card className="p-5 border-primary/30 bg-gradient-to-br from-primary/10 to-transparent text-center">
-                <div className="text-[11px] uppercase tracking-widest text-primary mb-1 flex items-center justify-center gap-1">
+              <Card className="p-4 sm:p-5 border-primary/30 bg-gradient-to-br from-primary/10 to-transparent text-center">
+                <div className="text-[10px] sm:text-[11px] uppercase tracking-widest text-primary mb-1 flex items-center justify-center gap-1">
                   <Timer className="w-3.5 h-3.5" /> Resultado em
                 </div>
-                <div className="text-4xl md:text-5xl font-black text-primary tabular-nums">
+                <div className="text-3xl sm:text-5xl font-black text-primary tabular-nums">
                   <Countdown to={campaign.ends_at} />
                 </div>
-                <p className="text-[11px] text-muted-foreground mt-1">
+                <p className="text-[10px] sm:text-[11px] text-muted-foreground mt-1">
                   Apuração automática ao fim da contagem
                 </p>
               </Card>
             )}
+
 
             <Card className="p-6">
               <div className="flex items-center justify-between mb-4">
