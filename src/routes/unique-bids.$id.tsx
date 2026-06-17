@@ -43,11 +43,19 @@ function UniqueBidPage() {
     setStatus(data);
   }, [id]);
 
+  const loadBalance = useCallback(async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) { setBalance(null); return; }
+    const { data } = await sb.from("profiles").select("bid_balance").eq("id", session.user.id).maybeSingle();
+    setBalance(data?.bid_balance ?? 0);
+  }, []);
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => setUser(session?.user ?? null));
     loadCampaign();
     loadStatus();
-  }, [loadCampaign, loadStatus]);
+    loadBalance();
+  }, [loadCampaign, loadStatus, loadBalance]);
 
   useEffect(() => {
     const ch = supabase
