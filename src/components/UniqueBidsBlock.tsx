@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Sparkles, ArrowRight, Target } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useTimeSync } from "@/hooks/useTimeSync";
 
 const sb = supabase as any;
@@ -161,26 +162,58 @@ export function UniqueBidsBlock() {
           </div>
         </div>
 
-        <Card className="mt-6 p-6">
-          <h3 className="font-bold mb-4">Perguntas frequentes</h3>
-          <div className="grid md:grid-cols-2 gap-4 text-sm">
-            <div>
-              <p className="font-semibold">Posso dar vários palpites?</p>
-              <p className="text-muted-foreground">Sim. Cada palpite custa 1 lance e aumenta suas chances de ter um valor único.</p>
-            </div>
-            <div>
-              <p className="font-semibold">Os lances de boas-vindas valem aqui?</p>
-              <p className="text-muted-foreground">Não. No Menor Lance Único só valem lances comprados em pacotes.</p>
-            </div>
-            <div>
-              <p className="font-semibold">E se ninguém der um lance único?</p>
-              <p className="text-muted-foreground">A campanha encerra sem vencedor e os lances não são reembolsados.</p>
-            </div>
-            <div>
-              <p className="font-semibold">Como pago o prêmio se ganhar?</p>
-              <p className="text-muted-foreground">Você paga apenas o valor do seu lance vencedor, via PIX ou cartão.</p>
-            </div>
+        <Card className="mt-6 p-6 md:p-8 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
+          <div className="flex items-center gap-2 mb-1">
+            <Badge variant="outline" className="border-primary/30 bg-primary/10 text-primary uppercase tracking-widest text-[10px]">
+              <Sparkles className="w-3 h-3 mr-1" /> FAQ
+            </Badge>
           </div>
+          <h3 className="text-2xl md:text-3xl font-black tracking-tight mb-1">Tudo o que você precisa saber</h3>
+          <p className="text-sm text-muted-foreground mb-6">Respostas diretas para você palpitar com confiança.</p>
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="q1">
+              <AccordionTrigger className="text-left font-semibold">O que é o Menor Lance Único?</AccordionTrigger>
+              <AccordionContent className="text-muted-foreground">
+                É uma modalidade exclusiva onde vence quem escolher o <span className="text-foreground font-semibold">menor valor que apareceu uma única vez</span> entre todos os palpites. Sem disputa, sem leilão — pura estratégia.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="q2">
+              <AccordionTrigger className="text-left font-semibold">Posso dar quantos palpites quiser?</AccordionTrigger>
+              <AccordionContent className="text-muted-foreground">
+                Sim. Cada palpite consome <span className="text-foreground font-semibold">1 lance</span> do seu saldo e aumenta suas chances de cobrir um valor único dentro da faixa permitida.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="q3">
+              <AccordionTrigger className="text-left font-semibold">Os lances de boas-vindas valem aqui?</AccordionTrigger>
+              <AccordionContent className="text-muted-foreground">
+                Não. No Menor Lance Único só são aceitos <span className="text-foreground font-semibold">lances comprados em pacotes</span>. Isso garante a integridade da apuração.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="q4">
+              <AccordionTrigger className="text-left font-semibold">E se ninguém der um valor único?</AccordionTrigger>
+              <AccordionContent className="text-muted-foreground">
+                Caso nenhum palpite seja único, a campanha encerra <span className="text-foreground font-semibold">sem vencedor</span>. Os lances utilizados não são reembolsados, mas você pode tentar em campanhas futuras.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="q5">
+              <AccordionTrigger className="text-left font-semibold">Quanto vou pagar se eu ganhar?</AccordionTrigger>
+              <AccordionContent className="text-muted-foreground">
+                Apenas o <span className="text-foreground font-semibold">valor exato do seu lance vencedor</span> — pode ser centavos ou poucos reais. Pagamento por PIX ou cartão, e enviamos para todo o Brasil.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="q6">
+              <AccordionTrigger className="text-left font-semibold">A apuração é transparente?</AccordionTrigger>
+              <AccordionContent className="text-muted-foreground">
+                Totalmente. Quando o cronômetro encerra, todos os palpites ficam <span className="text-foreground font-semibold">públicos e auditáveis</span>. Você consegue verificar exatamente por que aquele valor foi o vencedor.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="q7">
+              <AccordionTrigger className="text-left font-semibold">Quando recebo meu prêmio?</AccordionTrigger>
+              <AccordionContent className="text-muted-foreground">
+                Após confirmação do pagamento, despachamos em até <span className="text-foreground font-semibold">3 dias úteis</span>, com código de rastreio. O suporte humano acompanha você por WhatsApp até a entrega.
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </Card>
       </div>
 
