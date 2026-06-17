@@ -96,6 +96,9 @@ export function UniqueBidsBlock() {
                     </span>
                     <ArrowRight className="w-4 h-4 text-primary" />
                   </div>
+                  <p className="text-[11px] text-muted-foreground mt-1">
+                    Cada palpite custa <span className="text-foreground font-semibold">1 lance</span> • Palpite quantas vezes quiser
+                  </p>
                   {c.status === "live" && c.ends_at && (
                     <p className="text-xs text-primary mt-2 font-semibold tabular-nums">
                       ⏳ <Countdown to={c.ends_at} />
@@ -103,7 +106,7 @@ export function UniqueBidsBlock() {
                   )}
                   {c.status === "finished" && c.winner_value != null && (
                     <p className="text-xs text-amber-400 mt-2">
-                      Vencedor: R$ {brl(c.winner_value)}
+                      Vencedor pagou apenas <span className="font-bold">R$ {brl(c.winner_value)}</span>
                     </p>
                   )}
                 </div>
