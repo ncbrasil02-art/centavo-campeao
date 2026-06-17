@@ -54,6 +54,7 @@ function AdminUniqueBids() {
     max_bid_value: 100,
     bid_step: 0.01,
     status: "draft" as Campaign["status"],
+    ends_at: "",
   });
   const [bidsCampaign, setBidsCampaign] = useState<any | null>(null);
   const [bids, setBids] = useState<any[]>([]);
