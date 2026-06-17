@@ -107,10 +107,11 @@ function AdminUniqueBids() {
     if (form.min_bid_value >= form.max_bid_value) return toast.error("Mín. deve ser menor que máx.");
     if (form.bid_step <= 0) return toast.error("Incremento inválido.");
 
-    const payload = {
+    const payload: any = {
       ...form,
       product_id: form.product_id || null,
       tenant_id: TENANT_ID,
+      ends_at: form.ends_at ? new Date(form.ends_at).toISOString() : null,
     };
 
     const { error } = editing
