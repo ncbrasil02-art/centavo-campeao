@@ -82,6 +82,7 @@ function UniqueBidPage() {
     toast.success(`Palpite de R$ ${v.toFixed(2)} registrado!`);
     setValue("");
     loadStatus();
+    loadBalance();
   }
 
   if (loading) {
