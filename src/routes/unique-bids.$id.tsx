@@ -16,6 +16,26 @@ export const Route = createFileRoute("/unique-bids/$id")({
 
 const sb = supabase as any;
 
+function Countdown({ to }: { to: string }) {
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    const i = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(i);
+  }, []);
+  const diff = new Date(to).getTime() - now;
+  if (diff <= 0) return <span>Encerrado</span>;
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  const pad = (n: number) => n.toString().padStart(2, "0");
+  return (
+    <span className="tabular-nums">
+      {d > 0 && <>{d}d </>}{pad(h)}:{pad(m)}:{pad(s)}
+    </span>
+  );
+}
+
 function UniqueBidPage() {
   const { id } = Route.useParams();
   const [campaign, setCampaign] = useState<any>(null);
