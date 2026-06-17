@@ -734,6 +734,7 @@ export type Database = {
           theme_mode: string | null
           updated_at: string | null
           welcome_bids: number | null
+          welcome_bids_expiry_days: number
           whatsapp_float_enabled: boolean | null
           whatsapp_number: string | null
         }
@@ -788,6 +789,7 @@ export type Database = {
           theme_mode?: string | null
           updated_at?: string | null
           welcome_bids?: number | null
+          welcome_bids_expiry_days?: number
           whatsapp_float_enabled?: boolean | null
           whatsapp_number?: string | null
         }
@@ -842,6 +844,7 @@ export type Database = {
           theme_mode?: string | null
           updated_at?: string | null
           welcome_bids?: number | null
+          welcome_bids_expiry_days?: number
           whatsapp_float_enabled?: boolean | null
           whatsapp_number?: string | null
         }
@@ -1320,6 +1323,7 @@ export type Database = {
             Returns: Json
           }
       ensure_live_auctions_robot_settings: { Args: never; Returns: undefined }
+      expire_welcome_bids: { Args: never; Returns: Json }
       get_admin_stats: { Args: never; Returns: Json }
       get_admin_stats_v2: { Args: never; Returns: Json }
       get_my_profile: {
