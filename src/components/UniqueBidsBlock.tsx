@@ -90,7 +90,7 @@ export function UniqueBidsBlock() {
                   )}
                   {c.status === "finished" && c.winner_value != null && (
                     <p className="text-xs text-amber-400 mt-2">
-                      Vencedor: R$ {Number(c.winner_value).toFixed(2)}
+                      Vencedor: R$ {brl(c.winner_value)}
                     </p>
                   )}
                 </div>
