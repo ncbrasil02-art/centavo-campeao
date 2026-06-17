@@ -55,45 +55,74 @@ export function UniqueBidsBlock() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {campaigns.map((c) => (
-            <Card key={c.id} className="overflow-hidden group hover:border-primary/40 transition-colors">
+            <Card
+              key={c.id}
+              className="overflow-hidden group relative border-border/60 hover:border-primary/50 hover:shadow-[0_10px_40px_-10px_hsl(var(--primary)/0.35)] transition-all duration-300"
+            >
               <Link to="/unique-bids/$id" params={{ id: c.id }} className="block">
                 <div className="aspect-square bg-muted relative overflow-hidden">
                   {c.product?.images?.[0] && (
                     <img
                       src={c.product.images[0]}
                       alt={c.title}
-                      className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                   )}
-                  <Badge className="absolute top-2 left-2 bg-primary text-primary-foreground">
-                    {c.status === "finished" ? "Finalizada" : "Aberta"}
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
+
+                  <Badge
+                    className={`absolute top-2 left-2 shadow-lg ${
+                      c.status === "finished"
+                        ? "bg-muted text-muted-foreground"
+                        : "bg-primary text-primary-foreground animate-pulse"
+                    }`}
+                  >
+                    {c.status === "finished" ? "Finalizada" : "● Aberta"}
                   </Badge>
-                </div>
-                <div className="p-4">
-                  <h3 className="font-bold line-clamp-1">{c.title}</h3>
-                  <p className="text-xs text-muted-foreground line-clamp-1 mb-3">{c.product?.name}</p>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="flex items-center gap-1 text-muted-foreground">
-                      <Target className="w-3 h-3" />
-                      Palpite de R$ 0,01 a R$ 100,00
-                    </span>
-                    <ArrowRight className="w-4 h-4 text-primary" />
-                  </div>
+
                   {c.status === "live" && c.ends_at && (
-                    <p className="text-xs text-primary mt-2 font-semibold tabular-nums">
-                      ⏳ <Countdown to={c.ends_at} />
-                    </p>
+                    <div className="absolute top-2 right-2 bg-background/80 backdrop-blur-sm rounded-md px-2 py-1 border border-primary/30">
+                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground leading-none">Encerra</p>
+                      <p className="text-xs font-bold text-primary tabular-nums leading-tight">
+                        <Countdown to={c.ends_at} />
+                      </p>
+                    </div>
                   )}
-                  {c.status === "finished" && c.winner_value != null && (
-                    <p className="text-xs text-amber-400 mt-2">
-                      Vencedor pagou <span className="font-bold">R$ {brl(c.winner_value)}</span>
+
+                  <div className="absolute bottom-0 left-0 right-0 p-3">
+                    <h3 className="font-black text-base text-foreground line-clamp-1 drop-shadow">{c.title}</h3>
+                    {c.product?.name && (
+                      <p className="text-[11px] text-muted-foreground line-clamp-1">{c.product.name}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="p-4 space-y-3">
+                  <div className="rounded-lg bg-primary/5 border border-primary/20 p-2.5 text-center">
+                    <p className="text-[10px] uppercase tracking-widest text-primary font-bold flex items-center justify-center gap-1">
+                      <Target className="w-3 h-3" /> Palpite de
                     </p>
+                    <p className="text-sm font-black text-foreground tabular-nums">
+                      R$ 0,01 <span className="text-muted-foreground font-normal">a</span> R$ 100,00
+                    </p>
+                  </div>
+
+                  {c.status === "finished" && c.winner_value != null ? (
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground">Vencedor pagou</span>
+                      <span className="font-black text-amber-400 tabular-nums">R$ {brl(c.winner_value)}</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center gap-1 text-xs font-bold text-primary group-hover:gap-2 transition-all">
+                      Dar meu palpite <ArrowRight className="w-3.5 h-3.5" />
+                    </div>
                   )}
                 </div>
               </Link>
             </Card>
           ))}
         </div>
+
       </div>
     </section>
   );
