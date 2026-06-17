@@ -20,9 +20,11 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as UniqueBidsIdRouteImport } from './routes/unique-bids.$id'
 import { Route as SitemapXmlRouteImport } from './routes/sitemap.xml'
 import { Route as AuctionsIdRouteImport } from './routes/auctions.$id'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
+import { Route as AdminUniqueBidsRouteImport } from './routes/admin/unique-bids'
 import { Route as AdminTestimonialsRouteImport } from './routes/admin/testimonials'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as AdminSalesRouteImport } from './routes/admin/sales'
@@ -89,6 +91,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const UniqueBidsIdRoute = UniqueBidsIdRouteImport.update({
+  id: '/unique-bids/$id',
+  path: '/unique-bids/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapXmlRoute = SitemapXmlRouteImport.update({
   id: '/sitemap/xml',
   path: '/sitemap/xml',
@@ -102,6 +109,11 @@ const AuctionsIdRoute = AuctionsIdRouteImport.update({
 const AdminUsersRoute = AdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUniqueBidsRoute = AdminUniqueBidsRouteImport.update({
+  id: '/unique-bids',
+  path: '/unique-bids',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminTestimonialsRoute = AdminTestimonialsRouteImport.update({
@@ -176,9 +188,11 @@ export interface FileRoutesByFullPath {
   '/admin/sales': typeof AdminSalesRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
+  '/admin/unique-bids': typeof AdminUniqueBidsRoute
   '/admin/users': typeof AdminUsersRoute
   '/auctions/$id': typeof AuctionsIdRoute
   '/sitemap/xml': typeof SitemapXmlRoute
+  '/unique-bids/$id': typeof UniqueBidsIdRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
@@ -201,9 +215,11 @@ export interface FileRoutesByTo {
   '/admin/sales': typeof AdminSalesRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
+  '/admin/unique-bids': typeof AdminUniqueBidsRoute
   '/admin/users': typeof AdminUsersRoute
   '/auctions/$id': typeof AuctionsIdRoute
   '/sitemap/xml': typeof SitemapXmlRoute
+  '/unique-bids/$id': typeof UniqueBidsIdRoute
   '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
@@ -228,9 +244,11 @@ export interface FileRoutesById {
   '/admin/sales': typeof AdminSalesRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
+  '/admin/unique-bids': typeof AdminUniqueBidsRoute
   '/admin/users': typeof AdminUsersRoute
   '/auctions/$id': typeof AuctionsIdRoute
   '/sitemap/xml': typeof SitemapXmlRoute
+  '/unique-bids/$id': typeof UniqueBidsIdRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
@@ -256,9 +274,11 @@ export interface FileRouteTypes {
     | '/admin/sales'
     | '/admin/settings'
     | '/admin/testimonials'
+    | '/admin/unique-bids'
     | '/admin/users'
     | '/auctions/$id'
     | '/sitemap/xml'
+    | '/unique-bids/$id'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -281,9 +301,11 @@ export interface FileRouteTypes {
     | '/admin/sales'
     | '/admin/settings'
     | '/admin/testimonials'
+    | '/admin/unique-bids'
     | '/admin/users'
     | '/auctions/$id'
     | '/sitemap/xml'
+    | '/unique-bids/$id'
     | '/admin'
   id:
     | '__root__'
@@ -307,9 +329,11 @@ export interface FileRouteTypes {
     | '/admin/sales'
     | '/admin/settings'
     | '/admin/testimonials'
+    | '/admin/unique-bids'
     | '/admin/users'
     | '/auctions/$id'
     | '/sitemap/xml'
+    | '/unique-bids/$id'
     | '/admin/'
   fileRoutesById: FileRoutesById
 }
@@ -326,6 +350,7 @@ export interface RootRouteChildren {
   TermsOfUseRoute: typeof TermsOfUseRoute
   AuctionsIdRoute: typeof AuctionsIdRoute
   SitemapXmlRoute: typeof SitemapXmlRoute
+  UniqueBidsIdRoute: typeof UniqueBidsIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -407,6 +432,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/unique-bids/$id': {
+      id: '/unique-bids/$id'
+      path: '/unique-bids/$id'
+      fullPath: '/unique-bids/$id'
+      preLoaderRoute: typeof UniqueBidsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap/xml': {
       id: '/sitemap/xml'
       path: '/sitemap/xml'
@@ -426,6 +458,13 @@ declare module '@tanstack/react-router' {
       path: '/users'
       fullPath: '/admin/users'
       preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/unique-bids': {
+      id: '/admin/unique-bids'
+      path: '/unique-bids'
+      fullPath: '/admin/unique-bids'
+      preLoaderRoute: typeof AdminUniqueBidsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/testimonials': {
@@ -512,6 +551,7 @@ interface AdminRouteChildren {
   AdminSalesRoute: typeof AdminSalesRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminTestimonialsRoute: typeof AdminTestimonialsRoute
+  AdminUniqueBidsRoute: typeof AdminUniqueBidsRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
@@ -527,6 +567,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminSalesRoute: AdminSalesRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminTestimonialsRoute: AdminTestimonialsRoute,
+  AdminUniqueBidsRoute: AdminUniqueBidsRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
@@ -546,6 +587,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsOfUseRoute: TermsOfUseRoute,
   AuctionsIdRoute: AuctionsIdRoute,
   SitemapXmlRoute: SitemapXmlRoute,
+  UniqueBidsIdRoute: UniqueBidsIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

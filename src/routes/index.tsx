@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Navbar } from "@/components/Navbar";
 import { Hero, SecondaryBanner } from "@/components/HomeSections";
+import { UniqueBidsBlock } from "@/components/UniqueBidsBlock";
 import { DemoAuctionBlock } from "@/components/DemoAuctionBlock";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
 import { LandingPage } from "@/components/landing/LandingPage";
@@ -316,6 +317,8 @@ function Index() {
               <DemoAuctionBlock auctions={demoAuctions} />
             </div>
           )}
+
+          <UniqueBidsBlock />
 
           {/* Featured Auctions Header */}
           <div className="container mx-auto px-4 mt-8">

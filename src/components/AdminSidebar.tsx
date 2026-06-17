@@ -11,7 +11,8 @@ import {
   Image as ImageIcon,
   LogOut,
   ChevronRight,
-  ClipboardCheck
+  ClipboardCheck,
+  Target,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -28,6 +29,7 @@ export function AdminSidebar() {
     { label: "Usuários", href: "/admin/users", icon: Users },
     { label: "Lotes / Produtos", href: "/admin/products", icon: Package },
     { label: "Leilões", href: "/admin/auctions", icon: Gavel },
+    { label: "Menor Lance Único", href: "/admin/unique-bids", icon: Target },
     { label: "Robôs", href: "/admin/robots", icon: Bot },
     { label: "Pacotes", href: "/admin/packages", icon: History },
     { label: "Frases", href: "/admin/phrases", icon: MessageSquare },
