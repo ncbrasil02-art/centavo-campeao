@@ -850,6 +850,71 @@ export type Database = {
         }
         Relationships: []
       }
+      support_messages: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          is_admin_reply: boolean
+          ticket_id: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          is_admin_reply?: boolean
+          ticket_id: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          is_admin_reply?: boolean
+          ticket_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_messages_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "support_tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      support_tickets: {
+        Row: {
+          created_at: string
+          id: string
+          priority: string
+          status: string
+          subject: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          priority?: string
+          status?: string
+          subject: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          priority?: string
+          status?: string
+          subject?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       testimonials: {
         Row: {
           active: boolean | null
@@ -1329,6 +1394,11 @@ export type Database = {
       expire_welcome_bids: { Args: never; Returns: Json }
       get_admin_stats: { Args: never; Returns: Json }
       get_admin_stats_v2: { Args: never; Returns: Json }
+      get_my_bids_history: {
+        Args: { p_limit?: number; p_offset?: number }
+        Returns: Json[]
+      }
+      get_my_dashboard_stats: { Args: never; Returns: Json }
       get_my_profile: {
         Args: never
         Returns: {
@@ -1355,12 +1425,16 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      get_my_purchases: { Args: never; Returns: Json[] }
+      get_my_tickets: { Args: never; Returns: Json[] }
       get_my_unique_bid_status: {
         Args: { p_campaign_id: string }
         Returns: Json
       }
+      get_my_unique_bids: { Args: never; Returns: Json[] }
       get_my_winners: { Args: never; Returns: Json[] }
       get_server_time: { Args: never; Returns: string }
+      get_ticket_messages: { Args: { p_ticket_id: string }; Returns: Json[] }
       get_winner_payment: {
         Args: { p_auction_id: string }
         Returns: {
@@ -1373,6 +1447,10 @@ export type Database = {
         Returns: Json
       }
       is_admin: { Args: never; Returns: boolean }
+      open_support_ticket: {
+        Args: { p_body: string; p_subject: string }
+        Returns: Json
+      }
       pay_with_bid_balance: { Args: { p_auction_id: string }; Returns: Json }
       place_bid:
         | { Args: { p_auction_id: string }; Returns: Json }
@@ -1387,6 +1465,10 @@ export type Database = {
       }
       process_robot_bids: { Args: never; Returns: Json }
       process_robot_bids_admin: { Args: never; Returns: Json }
+      reply_support_ticket: {
+        Args: { p_body: string; p_ticket_id: string }
+        Returns: Json
+      }
       slugify: { Args: { v_text: string }; Returns: string }
       submit_winner_receipt: {
         Args: { p_auction_id: string; p_url: string }
