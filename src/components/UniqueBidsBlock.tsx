@@ -100,7 +100,31 @@ export function UniqueBidsBlock() {
             </Card>
           ))}
         </div>
+
+        <div className="mt-10 grid md:grid-cols-2 gap-6">
+          <Card className="p-6 border-primary/20 bg-primary/5">
+            <h3 className="font-bold mb-3 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-primary" /> Como funciona
+            </h3>
+            <ol className="space-y-2 text-sm text-muted-foreground list-decimal list-inside">
+              <li>Escolha um valor dentro da faixa permitida.</li>
+              <li>Cada palpite custa 1 lance do seu saldo.</li>
+              <li>Vence quem deu o <span className="text-foreground font-semibold">menor valor que ninguém mais escolheu</span>.</li>
+              <li>Quando o cronômetro encerra, o vencedor é apurado e paga apenas o valor do lance.</li>
+            </ol>
+          </Card>
+          <Card className="p-6">
+            <h3 className="font-bold mb-3">Regras rápidas</h3>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li>• Você pode dar quantos palpites quiser (1 lance cada).</li>
+              <li>• Lances de boas-vindas <span className="text-foreground font-semibold">não valem</span> aqui — só lances comprados.</li>
+              <li>• Sem vencedor único, a campanha encerra sem premiação.</li>
+              <li>• Pagamento do prêmio via PIX ou cartão.</li>
+            </ul>
+          </Card>
+        </div>
       </div>
+
     </section>
   );
 }
