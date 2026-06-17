@@ -7,7 +7,8 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Target, Users, Sparkles, ArrowLeft, Loader2, CheckCircle2, XCircle } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Trophy, Target, Users, Sparkles, ArrowLeft, Loader2, CheckCircle2, XCircle, Timer, ShieldCheck, Truck, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useTimeSync } from "@/hooks/useTimeSync";
 
