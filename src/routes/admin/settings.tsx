@@ -1025,9 +1025,22 @@ function AdminSettings() {
                     id="welcome_bids" 
                     type="number"
                     value={settings.welcome_bids} 
-                    onChange={(e) => setSettings({...settings, welcome_bids: parseInt(e.target.value)})}
+                    onChange={(e) => setSettings({...settings, welcome_bids: parseInt(e.target.value) || 0})}
                     className="bg-white/5 border-white/10 h-12"
                   />
+                  <p className="text-xs text-white/40">Quantos lances cada novo usuário recebe ao se cadastrar. Válidos apenas para leilões de centavos.</p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="welcome_bids_expiry_days">Expiração dos Lances Grátis (dias)</Label>
+                  <Input
+                    id="welcome_bids_expiry_days"
+                    type="number"
+                    min={0}
+                    value={settings.welcome_bids_expiry_days}
+                    onChange={(e) => setSettings({...settings, welcome_bids_expiry_days: parseInt(e.target.value) || 0})}
+                    className="bg-white/5 border-white/10 h-12"
+                  />
+                  <p className="text-xs text-white/40">Após este número de dias, usuários que ainda não compraram nenhum pacote terão o saldo zerado automaticamente. Use <strong>0</strong> para nunca expirar.</p>
                 </div>
               </CardContent>
             </Card>
