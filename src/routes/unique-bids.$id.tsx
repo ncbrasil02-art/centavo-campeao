@@ -16,6 +16,26 @@ export const Route = createFileRoute("/unique-bids/$id")({
 
 const sb = supabase as any;
 
+function Countdown({ to }: { to: string }) {
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    const i = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(i);
+  }, []);
+  const diff = new Date(to).getTime() - now;
+  if (diff <= 0) return <span>Encerrado</span>;
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  const pad = (n: number) => n.toString().padStart(2, "0");
+  return (
+    <span className="tabular-nums">
+      {d > 0 && <>{d}d </>}{pad(h)}:{pad(m)}:{pad(s)}
+    </span>
+  );
+}
+
 function UniqueBidPage() {
   const { id } = Route.useParams();
   const [campaign, setCampaign] = useState<any>(null);
@@ -266,8 +286,49 @@ function UniqueBidPage() {
               </Card>
             )}
 
+            {isLive && campaign.ends_at && (
+              <Card className="p-6 text-center">
+                <div className="text-xs uppercase tracking-wider text-muted-foreground mb-1">Encerra em</div>
+                <div className="text-3xl font-black text-primary">
+                  <Countdown to={campaign.ends_at} />
+                </div>
+              </Card>
+            )}
+
+            <Card className="p-6">
+              <h2 className="text-lg font-bold mb-3">Como funciona</h2>
+              <ol className="space-y-2 text-sm text-muted-foreground list-decimal list-inside">
+                <li>Escolha um valor dentro da faixa permitida, respeitando o incremento.</li>
+                <li>Cada palpite custa 1 lance do seu saldo (você precisa ter comprado um pacote).</li>
+                <li>Vence quem deu o <span className="text-foreground font-semibold">menor valor que ninguém mais escolheu</span>.</li>
+                <li>Quando o cronômetro zerar (ou a equipe encerrar manualmente), o vencedor é apurado.</li>
+              </ol>
+            </Card>
+
+            <Card className="p-6">
+              <h2 className="text-lg font-bold mb-3">Perguntas frequentes</h2>
+              <div className="space-y-4 text-sm">
+                <div>
+                  <p className="font-semibold">Posso dar vários palpites?</p>
+                  <p className="text-muted-foreground">Sim. Cada palpite custa 1 lance e aumenta suas chances de ter um valor único.</p>
+                </div>
+                <div>
+                  <p className="font-semibold">Os lances de boas-vindas valem aqui?</p>
+                  <p className="text-muted-foreground">Não. No Menor Lance Único só valem lances comprados em pacotes.</p>
+                </div>
+                <div>
+                  <p className="font-semibold">E se ninguém der um lance único?</p>
+                  <p className="text-muted-foreground">A campanha encerra sem vencedor e os lances não são reembolsados.</p>
+                </div>
+                <div>
+                  <p className="font-semibold">Como pago o prêmio se ganhar?</p>
+                  <p className="text-muted-foreground">Você paga apenas o valor do seu lance vencedor, via PIX ou cartão.</p>
+                </div>
+              </div>
+            </Card>
+
             <p className="text-xs text-muted-foreground text-center">
-              A campanha é encerrada manualmente pela equipe. Vence o menor valor escolhido por um único participante.
+              Vence o menor valor escolhido por um único participante.
             </p>
           </div>
         </div>

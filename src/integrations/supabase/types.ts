@@ -983,6 +983,7 @@ export type Database = {
           closed_at: string | null
           created_at: string
           description: string | null
+          ends_at: string | null
           id: string
           max_bid_value: number
           min_bid_value: number
@@ -999,6 +1000,7 @@ export type Database = {
           closed_at?: string | null
           created_at?: string
           description?: string | null
+          ends_at?: string | null
           id?: string
           max_bid_value?: number
           min_bid_value?: number
@@ -1015,6 +1017,7 @@ export type Database = {
           closed_at?: string | null
           created_at?: string
           description?: string | null
+          ends_at?: string | null
           id?: string
           max_bid_value?: number
           min_bid_value?: number

@@ -8,6 +8,22 @@ import { Sparkles, ArrowRight, Target } from "lucide-react";
 
 const sb = supabase as any;
 
+function Countdown({ to }: { to: string }) {
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    const i = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(i);
+  }, []);
+  const diff = new Date(to).getTime() - now;
+  if (diff <= 0) return <>Encerrado</>;
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  if (d > 0) return <>Encerra em {d}d {h}h {m}m</>;
+  return <>Encerra em {h.toString().padStart(2,"0")}:{m.toString().padStart(2,"0")}:{s.toString().padStart(2,"0")}</>;
+}
+
 export function UniqueBidsBlock() {
   const [campaigns, setCampaigns] = useState<any[]>([]);
 
@@ -61,10 +77,15 @@ export function UniqueBidsBlock() {
                   <div className="flex items-center justify-between text-xs">
                     <span className="flex items-center gap-1 text-muted-foreground">
                       <Target className="w-3 h-3" />
-                      R$ {Number(c.min_bid_value).toFixed(2)} – {Number(c.max_bid_value).toFixed(2)}
+                      Palpite R$ {Number(c.min_bid_value).toFixed(2)} a R$ {Number(c.max_bid_value).toFixed(2)}
                     </span>
                     <ArrowRight className="w-4 h-4 text-primary" />
                   </div>
+                  {c.status === "live" && c.ends_at && (
+                    <p className="text-xs text-primary mt-2 font-semibold tabular-nums">
+                      ⏳ <Countdown to={c.ends_at} />
+                    </p>
+                  )}
                   {c.status === "finished" && c.winner_value != null && (
                     <p className="text-xs text-amber-400 mt-2">
                       Vencedor: R$ {Number(c.winner_value).toFixed(2)}

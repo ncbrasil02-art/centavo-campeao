@@ -54,6 +54,7 @@ function AdminUniqueBids() {
     max_bid_value: 100,
     bid_step: 0.01,
     status: "draft" as Campaign["status"],
+    ends_at: "",
   });
   const [bidsCampaign, setBidsCampaign] = useState<any | null>(null);
   const [bids, setBids] = useState<any[]>([]);
@@ -81,6 +82,7 @@ function AdminUniqueBids() {
       max_bid_value: 100,
       bid_step: 0.01,
       status: "draft",
+      ends_at: "",
     });
     setOpen(true);
   }
@@ -95,6 +97,7 @@ function AdminUniqueBids() {
       max_bid_value: Number(c.max_bid_value),
       bid_step: Number(c.bid_step),
       status: c.status,
+      ends_at: (c as any).ends_at ? new Date((c as any).ends_at).toISOString().slice(0, 16) : "",
     });
     setOpen(true);
   }
@@ -104,10 +107,11 @@ function AdminUniqueBids() {
     if (form.min_bid_value >= form.max_bid_value) return toast.error("Mín. deve ser menor que máx.");
     if (form.bid_step <= 0) return toast.error("Incremento inválido.");
 
-    const payload = {
+    const payload: any = {
       ...form,
       product_id: form.product_id || null,
       tenant_id: TENANT_ID,
+      ends_at: form.ends_at ? new Date(form.ends_at).toISOString() : null,
     };
 
     const { error } = editing
@@ -208,6 +212,15 @@ function AdminUniqueBids() {
                     <SelectItem value="finished">Finalizada</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+              <div>
+                <Label>Encerramento (opcional)</Label>
+                <Input
+                  type="datetime-local"
+                  value={form.ends_at}
+                  onChange={(e) => setForm({ ...form, ends_at: e.target.value })}
+                />
+                <p className="text-xs text-muted-foreground mt-1">Se vazio, encerra apenas manualmente.</p>
               </div>
             </div>
             <DialogFooter>
