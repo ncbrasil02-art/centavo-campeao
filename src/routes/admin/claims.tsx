@@ -66,7 +66,7 @@ function AdminClaims() {
     setLoading(true);
     try {
       const { data, error } = await supabase.rpc("admin_list_claims", {
-        p_search: searchTerm || null,
+        p_search: searchTerm || undefined,
       });
       if (error) throw error;
       setClaims((data as any[]) || []);
