@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, ArrowRight, Target } from "lucide-react";
 import { useTimeSync } from "@/hooks/useTimeSync";
+import { ProductImageSlideshow } from "@/components/ProductImageSlideshow";
 
 const sb = supabase as any;
 const brl = (n: number) =>
