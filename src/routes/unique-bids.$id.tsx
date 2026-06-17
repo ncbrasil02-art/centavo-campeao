@@ -11,6 +11,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Trophy, Target, Users, Sparkles, ArrowLeft, Loader2, CheckCircle2, XCircle, Timer, ShieldCheck, Truck, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useTimeSync } from "@/hooks/useTimeSync";
+import { ProductImageSlideshow } from "@/components/ProductImageSlideshow";
 
 export const Route = createFileRoute("/unique-bids/$id")({
   component: UniqueBidPage,
