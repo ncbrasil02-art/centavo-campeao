@@ -15,13 +15,13 @@ jobs:
         run: bun install
       - name: Build
         run: bun run build:hostinger
-            - name: Deploy via SFTP
-            uses: appleboy/scp-action@v0.1.7
-            with:
-            host: ${{ secrets.FTP_HOST }}
-            username: ${{ secrets.FTP_USER }}
-            password: ${{ secrets.FTP_PASSWORD }}
-            port: 65002
-            source: dist/client/
-            target: /home/u386043061/domains/centavodomilhao.online/public_html
-            rm: true
+      - name: Deploy via SFTP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 65002
+          source: dist/client/
+          target: /home/u386043061/domains/centavodomilhao.online/public_html
+          rm: true
