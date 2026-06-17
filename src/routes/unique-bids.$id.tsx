@@ -206,11 +206,18 @@ function UniqueBidPage() {
                     <div className="text-xl font-black text-primary">1 <span className="text-xs font-normal text-muted-foreground">lance</span></div>
                   </div>
                 </div>
-                {user && balance !== null && balance < 1 && (
-                  <p className="text-xs text-amber-400 mb-2">
-                    Saldo insuficiente. <Link to="/packages" className="underline">Comprar pacote</Link>.
-                  </p>
-                )}
+                <div className="mb-3">
+                  <Link to="/packages">
+                    <Button variant="outline" size="sm" className="w-full">
+                      <Sparkles className="w-3 h-3 mr-1" /> Comprar lances
+                    </Button>
+                  </Link>
+                  {user && balance !== null && balance < 1 && (
+                    <p className="text-xs text-amber-400 mt-2 text-center">
+                      Saldo insuficiente para palpitar.
+                    </p>
+                  )}
+                </div>
                 <div className="flex gap-2">
                   <Input
                     type="number"
