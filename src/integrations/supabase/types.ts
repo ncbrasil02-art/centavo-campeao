@@ -974,6 +974,128 @@ export type Database = {
           },
         ]
       }
+      unique_bid_campaigns: {
+        Row: {
+          bid_step: number
+          closed_at: string | null
+          created_at: string
+          description: string | null
+          id: string
+          max_bid_value: number
+          min_bid_value: number
+          product_id: string | null
+          status: string
+          tenant_id: string
+          title: string
+          updated_at: string
+          winner_user_id: string | null
+          winner_value: number | null
+        }
+        Insert: {
+          bid_step?: number
+          closed_at?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          max_bid_value?: number
+          min_bid_value?: number
+          product_id?: string | null
+          status?: string
+          tenant_id: string
+          title: string
+          updated_at?: string
+          winner_user_id?: string | null
+          winner_value?: number | null
+        }
+        Update: {
+          bid_step?: number
+          closed_at?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          max_bid_value?: number
+          min_bid_value?: number
+          product_id?: string | null
+          status?: string
+          tenant_id?: string
+          title?: string
+          updated_at?: string
+          winner_user_id?: string | null
+          winner_value?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "unique_bid_campaigns_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "unique_bid_campaigns_winner_user_id_fkey"
+            columns: ["winner_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "unique_bid_campaigns_winner_user_id_fkey"
+            columns: ["winner_user_id"]
+            isOneToOne: false
+            referencedRelation: "v_user_ranking"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      unique_bids: {
+        Row: {
+          campaign_id: string
+          created_at: string
+          id: string
+          tenant_id: string
+          user_id: string
+          value: number
+        }
+        Insert: {
+          campaign_id: string
+          created_at?: string
+          id?: string
+          tenant_id: string
+          user_id: string
+          value: number
+        }
+        Update: {
+          campaign_id?: string
+          created_at?: string
+          id?: string
+          tenant_id?: string
+          user_id?: string
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "unique_bids_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "unique_bid_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "unique_bids_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "unique_bids_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_user_ranking"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       visitor_sessions: {
         Row: {
           city: string | null
@@ -1133,6 +1255,10 @@ export type Database = {
         Args: { p_amount: number; p_user_id: string }
         Returns: undefined
       }
+      admin_close_unique_campaign: {
+        Args: { p_campaign_id: string }
+        Returns: Json
+      }
       admin_get_profile: {
         Args: { p_id: string }
         Returns: {
@@ -1159,6 +1285,10 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      admin_get_unique_campaign_bids: {
+        Args: { p_campaign_id: string }
+        Returns: Json[]
+      }
       admin_get_winner_full: { Args: { p_auction_id: string }; Returns: Json[] }
       admin_list_claims: { Args: { p_search?: string }; Returns: Json[] }
       admin_list_online_profiles: { Args: never; Returns: Json[] }
@@ -1170,6 +1300,7 @@ export type Database = {
         }[]
       }
       admin_list_robots: { Args: never; Returns: Json[] }
+      admin_list_unique_campaigns: { Args: never; Returns: Json[] }
       admin_update_winner_payment: {
         Args: { p_auction_id: string; p_status: string }
         Returns: Json
@@ -1217,6 +1348,10 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      get_my_unique_bid_status: {
+        Args: { p_campaign_id: string }
+        Returns: Json
+      }
       get_my_winners: { Args: never; Returns: Json[] }
       get_server_time: { Args: never; Returns: string }
       get_winner_payment: {
@@ -1237,6 +1372,10 @@ export type Database = {
         | { Args: { p_auction_id: string; p_user_id: string }; Returns: Json }
       place_robot_bid: {
         Args: { p_auction_id: string; p_robot_id: string }
+        Returns: Json
+      }
+      place_unique_bid: {
+        Args: { p_campaign_id: string; p_value: number }
         Returns: Json
       }
       process_robot_bids: { Args: never; Returns: Json }
