@@ -15,13 +15,24 @@ jobs:
         run: bun install
       - name: Build
         run: bun run build:hostinger
-      - name: Deploy via SFTP
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.FTP_HOST }}
-          username: ${{ secrets.FTP_USER }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          port: 65002
-          source: dist/client/
-          target: /home/u386043061/domains/centavodomilhao.online/public_html
-          rm: true
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
+      - name: Deploy com retry automatico
+        env:
+          SSHPASS: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          MAX=5
+          DELAY=30
+          for i in $(seq 1 $MAX); do
+            echo ">>> Tentativa $i de $MAX..."
+            if sshpass -e rsync -avz --delete \
+              -e "ssh -p 65002 -o StrictHostKeyChecking=no -o ConnectTimeout=30" \
+              dist/client/ \
+              "${{ secrets.FTP_USER }}@${{ secrets.FTP_HOST }}:/home/u386043061/domains/centavodomilhao.online/public_html/"; then
+              echo "Deploy OK na tentativa $i"
+              exit 0
+            fi
+            [ $i -lt $MAX ] && echo "Aguardando $DELAY segundos..." && sleep $DELAY
+          done
+          echo "ERRO: todas as $MAX tentativas falharam"
+          exit 1
