@@ -565,7 +565,10 @@ function SupportTab() {
 
   const load = useCallback(() => {
     setLoading(true);
-    supabase.rpc("get_my_tickets").then(({ data }) => { setTickets((data as any[]) || []); setLoading(false); });
+    supabase.rpc("get_my_tickets").then(({ data, error }) => {
+      if (error) { console.error(error); toast.error("Erro ao carregar tickets."); }
+      setTickets((data as any[]) || []); setLoading(false);
+    });
   }, []);
   useEffect(() => { load(); }, [load]);
 
