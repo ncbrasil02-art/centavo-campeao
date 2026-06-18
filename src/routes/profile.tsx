@@ -51,25 +51,36 @@ function ProfilePage() {
   const [gender, setGender] = useState("");
 
   const refreshAll = useCallback(async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) return;
-    const [{ data: profileData }, { data: secret }, { data: statsData }, { data: winnersData }] =
-      await Promise.all([
-        supabase.rpc("get_my_profile").maybeSingle() as any,
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+      const [pRes, sRes, stRes, wRes] = await Promise.all([
+        (supabase.rpc("get_my_profile") as any).maybeSingle(),
         supabase.from("profile_secrets").select("cpf, phone").eq("id", session.user.id).maybeSingle(),
         supabase.rpc("get_my_dashboard_stats"),
         supabase.rpc("get_my_winners"),
       ]);
-    if (profileData) {
-      setProfile(profileData);
-      setUsername(profileData.username || "");
-      setFullName(profileData.full_name || "");
-      setGender(profileData.gender || "not_specified");
+      const firstErr = pRes.error || sRes.error || stRes.error || wRes.error;
+      if (firstErr) {
+        console.error("[profile] refreshAll error:", firstErr);
+        toast.error("Não foi possível carregar todas as informações do painel.");
+      }
+      const profileData: any = pRes.data;
+      if (profileData) {
+        setProfile(profileData);
+        setUsername(profileData.username || "");
+        setFullName(profileData.full_name || "");
+        setGender(profileData.gender || "not_specified");
+      }
+      if (sRes.data) { setPhone((sRes.data as any).phone || ""); setCpf((sRes.data as any).cpf || ""); }
+      setStats(stRes.data || null);
+      setWinners((wRes.data as any[]) || []);
+    } catch (err: any) {
+      console.error("[profile] refreshAll exception:", err);
+      toast.error(err?.message || "Erro ao carregar o painel.");
+    } finally {
+      setLoading(false);
     }
-    if (secret) { setPhone(secret.phone || ""); setCpf(secret.cpf || ""); }
-    setStats(statsData || null);
-    setWinners((winnersData as any[]) || []);
-    setLoading(false);
   }, []);
 
   useEffect(() => { refreshAll(); }, [refreshAll]);
@@ -360,7 +371,8 @@ function BidsHistoryTab() {
   const [rows, setRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    supabase.rpc("get_my_bids_history", { p_limit: 100, p_offset: 0 }).then(({ data }) => {
+    supabase.rpc("get_my_bids_history", { p_limit: 100, p_offset: 0 }).then(({ data, error }) => {
+      if (error) { console.error(error); toast.error("Erro ao carregar histórico de lances."); }
       setRows((data as any[]) || []); setLoading(false);
     });
   }, []);
@@ -418,7 +430,10 @@ function UniqueBidsTab() {
   const [rows, setRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    supabase.rpc("get_my_unique_bids").then(({ data }) => { setRows((data as any[]) || []); setLoading(false); });
+    supabase.rpc("get_my_unique_bids").then(({ data, error }) => {
+      if (error) { console.error(error); toast.error("Erro ao carregar palpites."); }
+      setRows((data as any[]) || []); setLoading(false);
+    });
   }, []);
   if (loading) return <div className="text-muted-foreground p-6">Carregando…</div>;
   if (!rows.length) return <EmptyState icon={Trophy} title="Nenhum palpite enviado" subtitle="Participe de uma campanha de Menor Lance Único para ver seus palpites aqui." />;
@@ -476,7 +491,10 @@ function PurchasesTab({ couponCode, couponPct }: { couponCode: string; couponPct
   const [rows, setRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    supabase.rpc("get_my_purchases").then(({ data }) => { setRows((data as any[]) || []); setLoading(false); });
+    supabase.rpc("get_my_purchases").then(({ data, error }) => {
+      if (error) { console.error(error); toast.error("Erro ao carregar compras."); }
+      setRows((data as any[]) || []); setLoading(false);
+    });
   }, []);
   return (
     <div className="space-y-4">
@@ -547,7 +565,10 @@ function SupportTab() {
 
   const load = useCallback(() => {
     setLoading(true);
-    supabase.rpc("get_my_tickets").then(({ data }) => { setTickets((data as any[]) || []); setLoading(false); });
+    supabase.rpc("get_my_tickets").then(({ data, error }) => {
+      if (error) { console.error(error); toast.error("Erro ao carregar tickets."); }
+      setTickets((data as any[]) || []); setLoading(false);
+    });
   }, []);
   useEffect(() => { load(); }, [load]);
 
@@ -634,7 +655,10 @@ function TicketThread({ ticketId, onChanged }: { ticketId: string; onChanged: ()
   const [sending, setSending] = useState(false);
 
   const load = useCallback(() => {
-    supabase.rpc("get_ticket_messages", { p_ticket_id: ticketId }).then(({ data }) => setMsgs((data as any[]) || []));
+    supabase.rpc("get_ticket_messages", { p_ticket_id: ticketId }).then(({ data, error }) => {
+      if (error) { console.error(error); toast.error("Erro ao carregar mensagens."); return; }
+      setMsgs((data as any[]) || []);
+    });
   }, [ticketId]);
 
   useEffect(() => {
