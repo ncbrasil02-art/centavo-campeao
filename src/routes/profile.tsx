@@ -430,8 +430,8 @@ function UniqueBidsTab() {
   const [rows, setRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    supabase.rpc("get_my_unique_bids").then(({ data, error }) => {
-      if (error) { console.error(error); toast.error("Erro ao carregar palpites."); }
+    (supabase.rpc as any)("get_my_unique_bids").then(({ data, error }: any) => {
+      if (error) { console.error("[unique_bids]", error); toast.error(`Menor lance único: ${error.message || error.code || "erro desconhecido"}`); }
       setRows((data as any[]) || []); setLoading(false);
     });
   }, []);
