@@ -491,7 +491,10 @@ function PurchasesTab({ couponCode, couponPct }: { couponCode: string; couponPct
   const [rows, setRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    supabase.rpc("get_my_purchases").then(({ data }) => { setRows((data as any[]) || []); setLoading(false); });
+    supabase.rpc("get_my_purchases").then(({ data, error }) => {
+      if (error) { console.error(error); toast.error("Erro ao carregar compras."); }
+      setRows((data as any[]) || []); setLoading(false);
+    });
   }, []);
   return (
     <div className="space-y-4">
