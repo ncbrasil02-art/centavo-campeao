@@ -15,18 +15,19 @@ jobs:
         run: bun install
       - name: Build
         run: bun run build:hostinger
-      - name: Install sshpass
-        run: sudo apt-get install -y sshpass
-      - name: Deploy com retry automatico
+      - name: Deploy com SSH key + retry
         env:
-          SSHPASS: ${{ secrets.FTP_PASSWORD }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
           MAX=5
           DELAY=30
           for i in $(seq 1 $MAX); do
             echo ">>> Tentativa $i de $MAX..."
-            if sshpass -e rsync -avz --delete \
-              -e "ssh -p 65002 -o StrictHostKeyChecking=no -o ConnectTimeout=30" \
+            if rsync -avz --delete \
+              -e "ssh -p 65002 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o ConnectTimeout=30" \
               dist/client/ \
               "${{ secrets.FTP_USER }}@${{ secrets.FTP_HOST }}:/home/u386043061/domains/centavodomilhao.online/public_html/"; then
               echo "Deploy OK na tentativa $i"
