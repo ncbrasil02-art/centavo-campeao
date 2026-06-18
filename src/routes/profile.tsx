@@ -430,7 +430,10 @@ function UniqueBidsTab() {
   const [rows, setRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    supabase.rpc("get_my_unique_bids").then(({ data }) => { setRows((data as any[]) || []); setLoading(false); });
+    supabase.rpc("get_my_unique_bids").then(({ data, error }) => {
+      if (error) { console.error(error); toast.error("Erro ao carregar palpites."); }
+      setRows((data as any[]) || []); setLoading(false);
+    });
   }, []);
   if (loading) return <div className="text-muted-foreground p-6">Carregando…</div>;
   if (!rows.length) return <EmptyState icon={Trophy} title="Nenhum palpite enviado" subtitle="Participe de uma campanha de Menor Lance Único para ver seus palpites aqui." />;
