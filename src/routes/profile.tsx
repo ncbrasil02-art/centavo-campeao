@@ -371,8 +371,8 @@ function BidsHistoryTab() {
   const [rows, setRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    supabase.rpc("get_my_bids_history", { p_limit: 100, p_offset: 0 }).then(({ data, error }) => {
-      if (error) { console.error(error); toast.error("Erro ao carregar histórico de lances."); }
+    (supabase.rpc as any)("get_my_bids_history", { p_limit: 100, p_offset: 0 }).then(({ data, error }: any) => {
+      if (error) { console.error("[bids_history]", error); toast.error(`Lances: ${error.message || error.code || "erro desconhecido"}`); }
       setRows((data as any[]) || []); setLoading(false);
     });
   }, []);
