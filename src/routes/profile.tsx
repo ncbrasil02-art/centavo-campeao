@@ -655,7 +655,10 @@ function TicketThread({ ticketId, onChanged }: { ticketId: string; onChanged: ()
   const [sending, setSending] = useState(false);
 
   const load = useCallback(() => {
-    supabase.rpc("get_ticket_messages", { p_ticket_id: ticketId }).then(({ data }) => setMsgs((data as any[]) || []));
+    supabase.rpc("get_ticket_messages", { p_ticket_id: ticketId }).then(({ data, error }) => {
+      if (error) { console.error(error); toast.error("Erro ao carregar mensagens."); return; }
+      setMsgs((data as any[]) || []);
+    });
   }, [ticketId]);
 
   useEffect(() => {
