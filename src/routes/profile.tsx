@@ -51,25 +51,36 @@ function ProfilePage() {
   const [gender, setGender] = useState("");
 
   const refreshAll = useCallback(async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) return;
-    const [{ data: profileData }, { data: secret }, { data: statsData }, { data: winnersData }] =
-      await Promise.all([
-        supabase.rpc("get_my_profile").maybeSingle() as any,
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+      const [pRes, sRes, stRes, wRes] = await Promise.all([
+        (supabase.rpc("get_my_profile") as any).maybeSingle(),
         supabase.from("profile_secrets").select("cpf, phone").eq("id", session.user.id).maybeSingle(),
         supabase.rpc("get_my_dashboard_stats"),
         supabase.rpc("get_my_winners"),
       ]);
-    if (profileData) {
-      setProfile(profileData);
-      setUsername(profileData.username || "");
-      setFullName(profileData.full_name || "");
-      setGender(profileData.gender || "not_specified");
+      const firstErr = pRes.error || sRes.error || stRes.error || wRes.error;
+      if (firstErr) {
+        console.error("[profile] refreshAll error:", firstErr);
+        toast.error("Não foi possível carregar todas as informações do painel.");
+      }
+      const profileData: any = pRes.data;
+      if (profileData) {
+        setProfile(profileData);
+        setUsername(profileData.username || "");
+        setFullName(profileData.full_name || "");
+        setGender(profileData.gender || "not_specified");
+      }
+      if (sRes.data) { setPhone((sRes.data as any).phone || ""); setCpf((sRes.data as any).cpf || ""); }
+      setStats(stRes.data || null);
+      setWinners((wRes.data as any[]) || []);
+    } catch (err: any) {
+      console.error("[profile] refreshAll exception:", err);
+      toast.error(err?.message || "Erro ao carregar o painel.");
+    } finally {
+      setLoading(false);
     }
-    if (secret) { setPhone(secret.phone || ""); setCpf(secret.cpf || ""); }
-    setStats(statsData || null);
-    setWinners((winnersData as any[]) || []);
-    setLoading(false);
   }, []);
 
   useEffect(() => { refreshAll(); }, [refreshAll]);
