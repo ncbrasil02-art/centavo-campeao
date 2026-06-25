@@ -241,7 +241,7 @@ export function Navbar() {
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              {welcome_bids > 0 && (
+              {(welcome_bids ?? 0) > 0 && (
                 <motion.div 
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}

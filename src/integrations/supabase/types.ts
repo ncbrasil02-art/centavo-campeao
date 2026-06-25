@@ -730,6 +730,7 @@ export type Database = {
           site_name: string | null
           sound_enabled: boolean | null
           support_whatsapp: string | null
+          tenant_id: string
           terms_of_use: string | null
           theme_mode: string | null
           updated_at: string | null
@@ -785,6 +786,7 @@ export type Database = {
           site_name?: string | null
           sound_enabled?: boolean | null
           support_whatsapp?: string | null
+          tenant_id: string
           terms_of_use?: string | null
           theme_mode?: string | null
           updated_at?: string | null
@@ -840,6 +842,7 @@ export type Database = {
           site_name?: string | null
           sound_enabled?: boolean | null
           support_whatsapp?: string | null
+          tenant_id?: string
           terms_of_use?: string | null
           theme_mode?: string | null
           updated_at?: string | null

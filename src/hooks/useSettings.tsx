@@ -11,7 +11,7 @@ interface SiteSettings {
   mercado_pago_public_key: string;
   pix_key: string;
   pix_name: string;
-  hero_display_mode: 'phrases' | 'banners';
+  hero_display_mode: 'phrases' | 'banners' | 'products';
   theme_mode: 'light' | 'dark';
   ga_id: string;
   fb_pixel_id: string;
@@ -31,6 +31,32 @@ interface SiteSettings {
   logo_padding_y: number;
   google_reviews_widget: string;
   support_whatsapp: string;
+  // hero_display_mode declared above
+  // Optional/legacy fields used across the app
+  sound_enabled?: boolean;
+  narration_enabled?: boolean;
+  marquee_text?: string;
+  marquee_enabled?: boolean;
+  welcome_bids?: number;
+  pwa_enabled?: boolean;
+  android_app_url?: string;
+  ios_app_url?: string;
+  whatsapp_number?: string;
+  whatsapp_float_enabled?: boolean;
+  sales_page_enabled?: boolean;
+  demo_auctions_enabled?: boolean;
+  show_secondary_banner?: boolean;
+  show_finished_auctions?: boolean;
+  show_testimonials?: boolean;
+  show_winners_ranking?: boolean;
+  secondary_banner_title?: string;
+  secondary_banner_subtitle?: string;
+  secondary_banner_image?: string;
+  secondary_banner_link?: string;
+  privacy_policy?: string;
+  terms_of_use?: string;
+  updateSettings?: (s: Partial<SiteSettings>) => void;
+  refreshSettings?: () => void;
 }
 
 // Cache localStorage isolado por tenant (evita settings de um tenant
