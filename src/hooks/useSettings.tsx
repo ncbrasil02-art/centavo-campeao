@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { TENANT_ID } from "@/lib/tenant";
 
 interface SiteSettings {
   site_name: string;
@@ -10,7 +11,7 @@ interface SiteSettings {
   mercado_pago_public_key: string;
   pix_key: string;
   pix_name: string;
-  hero_display_mode: 'phrases' | 'banners' | 'products';
+  hero_display_mode: 'phrases' | 'banners';
   theme_mode: 'light' | 'dark';
   ga_id: string;
   fb_pixel_id: string;
@@ -30,48 +31,18 @@ interface SiteSettings {
   logo_padding_y: number;
   google_reviews_widget: string;
   support_whatsapp: string;
-  sound_enabled: boolean;
-  narration_enabled: boolean;
-  welcome_bids: number;
-  marquee_text: string;
-  marquee_enabled: boolean;
-  demo_auctions_enabled: boolean;
-  pwa_enabled: boolean;
-  android_app_url: string;
-  ios_app_url: string;
-  whatsapp_number: string;
-  whatsapp_float_enabled: boolean;
-  terms_of_use: string;
-  privacy_policy: string;
-  show_secondary_banner: boolean;
-  show_finished_auctions: boolean;
-  show_testimonials: boolean;
-  show_winners_ranking: boolean;
-  secondary_banner_title: string;
-  secondary_banner_subtitle: string;
-  secondary_banner_image: string;
-  secondary_banner_link: string;
-  sales_page_enabled: boolean;
 }
 
-
-
-
-
-interface SettingsContextType extends SiteSettings {
-  updateSettings: (data: Partial<SiteSettings>) => Promise<void>;
-  refreshSettings: () => Promise<void>;
-}
-
-
-const SettingsContext = createContext<SettingsContextType | null>(null);
+// Cache localStorage isolado por tenant (evita settings de um tenant
+// vazarem para outro no mesmo browser)
+const SETTINGS_CACHE_KEY = `site_settings_${TENANT_ID}`;
 
 const DEFAULT_SETTINGS: SiteSettings = {
   site_name: "Leilão de Centavos",
   logo_url: "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/logo-0.8516991638992043.png",
-  favicon_url: "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/favicon-0.8740770155566795.png",
-  primary_color: "#f58c14",
-  secondary_color: "#1d5bd7",
+  favicon_url: "",
+  primary_color: "#8B5CF6",
+  secondary_color: "#7C3AED",
   mercado_pago_public_key: "",
   pix_key: "",
   pix_name: "",
@@ -95,214 +66,98 @@ const DEFAULT_SETTINGS: SiteSettings = {
   logo_padding_y: 0,
   google_reviews_widget: "",
   support_whatsapp: "",
-  sound_enabled: true,
-  narration_enabled: true,
-  welcome_bids: 0,
-  marquee_text: "Ganhe 5 lances grátis ao se cadastrar! 🚀 Participe dos leilões e arremate produtos incríveis com descontos de até 99%!",
-  marquee_enabled: true,
-  demo_auctions_enabled: false,
-  pwa_enabled: true,
-  android_app_url: "",
-  ios_app_url: "",
-  whatsapp_number: "",
-  whatsapp_float_enabled: true,
-  terms_of_use: "",
-  privacy_policy: "",
-  show_secondary_banner: true,
-  show_finished_auctions: true,
-  show_testimonials: true,
-  show_winners_ranking: true,
-  secondary_banner_title: "Pacote de Lances com 50% de Desconto",
-  secondary_banner_subtitle: "Comece com o pé direito! Adquira seu primeiro pacote de lances agora e ganhe o dobro para disputar seus produtos favoritos.",
-  secondary_banner_image: "https://images.unsplash.com/photo-1553729459-efe14ef6055d?q=80&w=2000&auto=format&fit=crop",
-  secondary_banner_link: "/packages",
-  sales_page_enabled: false,
 };
 
-
-
-
+const SettingsContext = createContext<SiteSettings | null>(null);
 
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [settings, setSettings] = useState<SiteSettings>(() => {
+    // Carrega cache do tenant atual para evitar FOUC
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('site_settings');
+      const saved = localStorage.getItem(SETTINGS_CACHE_KEY);
       if (saved) {
         try {
-          const parsed = JSON.parse(saved);
-          return { ...DEFAULT_SETTINGS, ...parsed };
+          return JSON.parse(saved);
         } catch (e) {
-          console.error("Error parsing saved settings", e);
+          console.error("[settings] Erro ao parsear cache:", e);
         }
       }
     }
     return DEFAULT_SETTINGS;
   });
 
-  // Function to refresh settings manually
-  const refreshSettings = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("site_settings")
-        .select("*")
-        .maybeSingle();
-
-      if (error) throw error;
-
-      if (data) {
-        const fetchedSettings: SiteSettings = {
-          ...DEFAULT_SETTINGS,
-          site_name: data.site_name || DEFAULT_SETTINGS.site_name,
-          logo_url: data.logo_url || DEFAULT_SETTINGS.logo_url,
-          favicon_url: data.favicon_url || DEFAULT_SETTINGS.favicon_url,
-          primary_color: data.primary_color || DEFAULT_SETTINGS.primary_color,
-          secondary_color: data.secondary_color || DEFAULT_SETTINGS.secondary_color,
-          mercado_pago_public_key: data.mercado_pago_public_key || DEFAULT_SETTINGS.mercado_pago_public_key,
-          pix_key: data.pix_key || DEFAULT_SETTINGS.pix_key,
-          pix_name: data.pix_name || DEFAULT_SETTINGS.pix_name,
-          hero_display_mode: (data.hero_display_mode as any) || DEFAULT_SETTINGS.hero_display_mode,
-          theme_mode: (data.theme_mode as any) || DEFAULT_SETTINGS.theme_mode,
-          ga_id: data.ga_id || DEFAULT_SETTINGS.ga_id,
-          fb_pixel_id: data.fb_pixel_id || DEFAULT_SETTINGS.fb_pixel_id,
-          meta_title: data.meta_title || DEFAULT_SETTINGS.meta_title,
-          meta_description: data.meta_description || DEFAULT_SETTINGS.meta_description,
-          meta_keywords: data.meta_keywords || DEFAULT_SETTINGS.meta_keywords,
-          google_site_verification: data.google_site_verification || DEFAULT_SETTINGS.google_site_verification,
-          font_color_primary: data.font_color_primary || DEFAULT_SETTINGS.font_color_primary,
-          font_color_secondary: data.font_color_secondary || DEFAULT_SETTINGS.font_color_secondary,
-          card_background_color: data.card_background_color || DEFAULT_SETTINGS.card_background_color,
-          block_background_color: data.block_background_color || DEFAULT_SETTINGS.block_background_color,
-          page_background_color: data.page_background_color || DEFAULT_SETTINGS.page_background_color,
-          border_color: data.border_color || DEFAULT_SETTINGS.border_color,
-          logo_height: data.logo_height || DEFAULT_SETTINGS.logo_height,
-          logo_height_mobile: data.logo_height_mobile || DEFAULT_SETTINGS.logo_height_mobile,
-          logo_padding_x: data.logo_padding_x || DEFAULT_SETTINGS.logo_padding_x,
-          logo_padding_y: data.logo_padding_y || DEFAULT_SETTINGS.logo_padding_y,
-          google_reviews_widget: data.google_reviews_widget || DEFAULT_SETTINGS.google_reviews_widget,
-          support_whatsapp: data.support_whatsapp || DEFAULT_SETTINGS.support_whatsapp,
-          sound_enabled: data.sound_enabled ?? DEFAULT_SETTINGS.sound_enabled,
-          narration_enabled: data.narration_enabled ?? DEFAULT_SETTINGS.narration_enabled,
-          welcome_bids: data.welcome_bids || DEFAULT_SETTINGS.welcome_bids,
-          marquee_text: data.marquee_text || DEFAULT_SETTINGS.marquee_text,
-          marquee_enabled: data.marquee_enabled ?? DEFAULT_SETTINGS.marquee_enabled,
-          demo_auctions_enabled: data.demo_auctions_enabled ?? DEFAULT_SETTINGS.demo_auctions_enabled,
-          pwa_enabled: data.pwa_enabled ?? DEFAULT_SETTINGS.pwa_enabled,
-          android_app_url: data.android_app_url || DEFAULT_SETTINGS.android_app_url,
-          ios_app_url: data.ios_app_url || DEFAULT_SETTINGS.ios_app_url,
-          whatsapp_number: data.whatsapp_number || DEFAULT_SETTINGS.whatsapp_number,
-          whatsapp_float_enabled: data.whatsapp_float_enabled ?? DEFAULT_SETTINGS.whatsapp_float_enabled,
-          terms_of_use: data.terms_of_use || DEFAULT_SETTINGS.terms_of_use,
-          privacy_policy: data.privacy_policy || DEFAULT_SETTINGS.privacy_policy,
-          show_secondary_banner: data.show_secondary_banner ?? DEFAULT_SETTINGS.show_secondary_banner,
-          show_finished_auctions: data.show_finished_auctions ?? DEFAULT_SETTINGS.show_finished_auctions,
-          show_testimonials: data.show_testimonials ?? DEFAULT_SETTINGS.show_testimonials,
-          show_winners_ranking: data.show_winners_ranking ?? DEFAULT_SETTINGS.show_winners_ranking,
-          secondary_banner_title: data.secondary_banner_title || DEFAULT_SETTINGS.secondary_banner_title,
-          secondary_banner_subtitle: data.secondary_banner_subtitle || DEFAULT_SETTINGS.secondary_banner_subtitle,
-          secondary_banner_image: data.secondary_banner_image || DEFAULT_SETTINGS.secondary_banner_image,
-          secondary_banner_link: data.secondary_banner_link || DEFAULT_SETTINGS.secondary_banner_link,
-          sales_page_enabled: data.sales_page_enabled ?? DEFAULT_SETTINGS.sales_page_enabled,
-        };
-
-
-        setSettings(fetchedSettings);
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('site_settings', JSON.stringify(fetchedSettings));
-        }
-        updateMetaTags(fetchedSettings);
-        if (fetchedSettings.ga_id) injectScripts(fetchedSettings.ga_id, fetchedSettings.fb_pixel_id);
-        applySettingsToDOM(fetchedSettings);
-      }
-    } catch (err) {
-      console.error("Error refreshing settings:", err);
-    }
-  };
-
-
-  const applySettingsToDOM = (fetchedSettings: SiteSettings) => {
+  const applySettingsToDOM = (s: SiteSettings) => {
     if (typeof document === 'undefined') return;
 
-    if (fetchedSettings.theme_mode === 'dark') {
+    if (s.theme_mode === 'dark') {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
     }
 
-    const root = document.documentElement.style;
-    root.setProperty("--primary", fetchedSettings.primary_color);
-    root.setProperty("--secondary", fetchedSettings.secondary_color);
-    root.setProperty("--foreground", fetchedSettings.font_color_primary);
-    root.setProperty("--muted-foreground", fetchedSettings.font_color_secondary);
-    root.setProperty("--card", fetchedSettings.card_background_color);
-    root.setProperty("--muted", fetchedSettings.block_background_color);
-    root.setProperty("--background", fetchedSettings.page_background_color);
-    root.setProperty("--border", fetchedSettings.border_color);
-    
-    const glassColor = fetchedSettings.card_background_color;
-    root.setProperty("--glass", glassColor + "66");
-    root.setProperty("--glass-border", fetchedSettings.border_color + "33");
-    root.setProperty("--glass-foreground", fetchedSettings.font_color_primary);
-
-    // Update title immediately if possible
-    if (fetchedSettings.meta_title || fetchedSettings.site_name) {
-      document.title = fetchedSettings.meta_title || fetchedSettings.site_name;
-    }
+    document.documentElement.style.setProperty("--primary", s.primary_color);
+    document.documentElement.style.setProperty("--secondary", s.secondary_color);
+    document.documentElement.style.setProperty("--foreground", s.font_color_primary);
+    document.documentElement.style.setProperty("--muted-foreground", s.font_color_secondary);
+    document.documentElement.style.setProperty("--card", s.card_background_color);
+    document.documentElement.style.setProperty("--muted", s.block_background_color);
+    document.documentElement.style.setProperty("--background", s.page_background_color);
+    document.documentElement.style.setProperty("--border", s.border_color);
+    document.documentElement.style.setProperty("--glass", s.card_background_color + "66");
+    document.documentElement.style.setProperty("--glass-border", s.border_color + "33");
+    document.documentElement.style.setProperty("--glass-foreground", s.font_color_primary);
   };
 
-  // Run on first render to avoid flicker
-  if (typeof window !== 'undefined') {
-    applySettingsToDOM(settings);
-  }
-
+  // Aplica defaults/cache imediatamente
   useEffect(() => {
     applySettingsToDOM(settings);
-  }, [settings]);
+  }, []);
 
   const updateMetaTags = (data: Partial<SiteSettings>) => {
-    const title = data.meta_title || data.site_name || "Leilão de Centavos";
-    document.title = title;
+    document.title = data.meta_title || data.site_name || "Leilão de Centavos";
 
     if (data.favicon_url) {
       let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
       if (!link) {
         link = document.createElement('link');
         link.rel = 'icon';
-        document.getElementsByTagName('head')[0].appendChild(link);
+        document.head.appendChild(link);
       }
       link.href = data.favicon_url;
     }
+
+    const setMeta = (name: string, content?: string) => {
+      if (!content) return;
+      let el = document.querySelector(`meta[name='${name}']`) as HTMLMetaElement;
+      if (!el) { el = document.createElement('meta'); el.name = name; document.head.appendChild(el); }
+      el.content = content;
+    };
+
+    setMeta('description', data.meta_description);
+    setMeta('keywords', data.meta_keywords);
+    setMeta('google-site-verification', data.google_site_verification);
   };
 
   const injectScripts = (ga_id?: string, fb_pixel_id?: string) => {
     if (ga_id && !document.getElementById('ga-script-1')) {
-      const script1 = document.createElement('script');
-      script1.id = 'ga-script-1';
-      script1.async = true;
-      script1.src = `https://www.googletagmanager.com/gtag/js?id=${ga_id}`;
-      document.head.appendChild(script1);
+      const s1 = document.createElement('script');
+      s1.id = 'ga-script-1';
+      s1.async = true;
+      s1.src = `https://www.googletagmanager.com/gtag/js?id=${ga_id}`;
+      document.head.appendChild(s1);
 
-      const script2 = document.createElement('script');
-      script2.id = 'ga-script-2';
-      script2.innerHTML = `
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', '${ga_id}');
-      `;
-      document.head.appendChild(script2);
+      const s2 = document.createElement('script');
+      s2.id = 'ga-script-2';
+      s2.innerHTML = `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${ga_id}');`;
+      document.head.appendChild(s2);
     }
-  };
 
-  const updateSettings = async (data: Partial<SiteSettings>) => {
-    const { data: currentSettings } = await supabase.from("site_settings").select("id").limit(1).maybeSingle();
-    if (!currentSettings) return;
-
-    const { error } = await supabase
-      .from("site_settings")
-      .update(data)
-      .eq("id", currentSettings.id);
-
-    if (error) throw error;
+    if (fb_pixel_id && !document.getElementById('fb-pixel-script')) {
+      const s = document.createElement('script');
+      s.id = 'fb-pixel-script';
+      s.innerHTML = `!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${fb_pixel_id}');fbq('track','PageView');`;
+      document.head.appendChild(s);
+    }
   };
 
   useEffect(() => {
@@ -311,101 +166,111 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
         const { data, error } = await supabase
           .from("site_settings")
           .select("*")
+          .eq("tenant_id", TENANT_ID)   // filtra pelo tenant do domínio atual
           .maybeSingle();
 
         if (error) {
-          console.error("Error fetching site settings:", error);
+          console.error(`[settings] Erro ao buscar settings para tenant "${TENANT_ID}":`, error);
           return;
         }
 
-        if (data) {
-          const fetchedSettings: SiteSettings = {
-            site_name: data.site_name || DEFAULT_SETTINGS.site_name,
-            logo_url: data.logo_url || DEFAULT_SETTINGS.logo_url,
-            favicon_url: data.favicon_url || DEFAULT_SETTINGS.favicon_url,
-            primary_color: data.primary_color || DEFAULT_SETTINGS.primary_color,
-            secondary_color: data.secondary_color || DEFAULT_SETTINGS.secondary_color,
-            mercado_pago_public_key: data.mercado_pago_public_key || DEFAULT_SETTINGS.mercado_pago_public_key,
-            pix_key: data.pix_key || DEFAULT_SETTINGS.pix_key,
-            pix_name: data.pix_name || DEFAULT_SETTINGS.pix_name,
-            hero_display_mode: (data.hero_display_mode as any) || DEFAULT_SETTINGS.hero_display_mode,
-            theme_mode: (data.theme_mode as any) || DEFAULT_SETTINGS.theme_mode,
-            ga_id: data.ga_id || DEFAULT_SETTINGS.ga_id,
-            fb_pixel_id: data.fb_pixel_id || DEFAULT_SETTINGS.fb_pixel_id,
-            meta_title: data.meta_title || DEFAULT_SETTINGS.meta_title,
-            meta_description: data.meta_description || DEFAULT_SETTINGS.meta_description,
-            meta_keywords: data.meta_keywords || DEFAULT_SETTINGS.meta_keywords,
-            google_site_verification: data.google_site_verification || DEFAULT_SETTINGS.google_site_verification,
-            font_color_primary: data.font_color_primary || DEFAULT_SETTINGS.font_color_primary,
-            font_color_secondary: data.font_color_secondary || DEFAULT_SETTINGS.font_color_secondary,
-            card_background_color: data.card_background_color || DEFAULT_SETTINGS.card_background_color,
-            block_background_color: data.block_background_color || DEFAULT_SETTINGS.block_background_color,
-            page_background_color: data.page_background_color || DEFAULT_SETTINGS.page_background_color,
-            border_color: data.border_color || DEFAULT_SETTINGS.border_color,
-            logo_height: data.logo_height || DEFAULT_SETTINGS.logo_height,
-            logo_height_mobile: data.logo_height_mobile || DEFAULT_SETTINGS.logo_height_mobile,
-            logo_padding_x: data.logo_padding_x || DEFAULT_SETTINGS.logo_padding_x,
-            logo_padding_y: data.logo_padding_y || DEFAULT_SETTINGS.logo_padding_y,
-            google_reviews_widget: data.google_reviews_widget || DEFAULT_SETTINGS.google_reviews_widget,
-            support_whatsapp: data.support_whatsapp || DEFAULT_SETTINGS.support_whatsapp,
-            sound_enabled: data.sound_enabled ?? DEFAULT_SETTINGS.sound_enabled,
-            narration_enabled: data.narration_enabled ?? DEFAULT_SETTINGS.narration_enabled,
-            welcome_bids: data.welcome_bids || DEFAULT_SETTINGS.welcome_bids,
-            marquee_text: data.marquee_text || DEFAULT_SETTINGS.marquee_text,
-            marquee_enabled: data.marquee_enabled ?? DEFAULT_SETTINGS.marquee_enabled,
-            demo_auctions_enabled: data.demo_auctions_enabled ?? DEFAULT_SETTINGS.demo_auctions_enabled,
-            pwa_enabled: data.pwa_enabled ?? DEFAULT_SETTINGS.pwa_enabled,
-            android_app_url: data.android_app_url || DEFAULT_SETTINGS.android_app_url,
-            ios_app_url: data.ios_app_url || DEFAULT_SETTINGS.ios_app_url,
-            whatsapp_number: data.whatsapp_number || DEFAULT_SETTINGS.whatsapp_number,
-            whatsapp_float_enabled: data.whatsapp_float_enabled ?? DEFAULT_SETTINGS.whatsapp_float_enabled,
-            terms_of_use: data.terms_of_use || DEFAULT_SETTINGS.terms_of_use,
-            privacy_policy: data.privacy_policy || DEFAULT_SETTINGS.privacy_policy,
-            show_secondary_banner: data.show_secondary_banner ?? DEFAULT_SETTINGS.show_secondary_banner,
-            show_finished_auctions: data.show_finished_auctions ?? DEFAULT_SETTINGS.show_finished_auctions,
-            show_testimonials: data.show_testimonials ?? DEFAULT_SETTINGS.show_testimonials,
-            show_winners_ranking: data.show_winners_ranking ?? DEFAULT_SETTINGS.show_winners_ranking,
-            secondary_banner_title: data.secondary_banner_title || DEFAULT_SETTINGS.secondary_banner_title,
-            secondary_banner_subtitle: data.secondary_banner_subtitle || DEFAULT_SETTINGS.secondary_banner_subtitle,
-            secondary_banner_image: data.secondary_banner_image || DEFAULT_SETTINGS.secondary_banner_image,
-            secondary_banner_link: data.secondary_banner_link || DEFAULT_SETTINGS.secondary_banner_link,
-            sales_page_enabled: data.sales_page_enabled ?? DEFAULT_SETTINGS.sales_page_enabled,
-          };
-
-
-
-
-          
-          setSettings(fetchedSettings);
-          if (typeof window !== 'undefined') {
-            localStorage.setItem('site_settings', JSON.stringify(fetchedSettings));
-          }
-          updateMetaTags(fetchedSettings);
-          if (fetchedSettings.ga_id) injectScripts(fetchedSettings.ga_id, fetchedSettings.fb_pixel_id);
-          applySettingsToDOM(fetchedSettings);
+        if (!data) {
+          console.warn(`[settings] Nenhuma configuração encontrada para tenant "${TENANT_ID}". Usando defaults.`);
+          return;
         }
+
+        const fetched: SiteSettings = {
+          site_name:                data.site_name || DEFAULT_SETTINGS.site_name,
+          logo_url:                 data.logo_url || DEFAULT_SETTINGS.logo_url,
+          favicon_url:              data.favicon_url || "",
+          primary_color:            data.primary_color || DEFAULT_SETTINGS.primary_color,
+          secondary_color:          data.secondary_color || DEFAULT_SETTINGS.secondary_color,
+          mercado_pago_public_key:  data.mercado_pago_public_key || "",
+          pix_key:                  data.pix_key || "",
+          pix_name:                 data.pix_name || "",
+          hero_display_mode:        (data.hero_display_mode as any) || 'phrases',
+          theme_mode:               (data.theme_mode as any) || 'dark',
+          ga_id:                    data.ga_id || "",
+          fb_pixel_id:              data.fb_pixel_id || "",
+          meta_title:               data.meta_title || "",
+          meta_description:         data.meta_description || "",
+          meta_keywords:            data.meta_keywords || "",
+          google_site_verification: data.google_site_verification || "",
+          font_color_primary:       data.font_color_primary || (data.theme_mode === 'dark' ? "#ffffff" : "#000000"),
+          font_color_secondary:     data.font_color_secondary || (data.theme_mode === 'dark' ? "#a1a1aa" : "#666666"),
+          card_background_color:    data.card_background_color || (data.theme_mode === 'dark' ? "#18181b" : "#ffffff"),
+          block_background_color:   data.block_background_color || (data.theme_mode === 'dark' ? "#27272a" : "#f3f4f6"),
+          page_background_color:    data.page_background_color || (data.theme_mode === 'dark' ? "#09090b" : "#ffffff"),
+          border_color:             data.border_color || (data.theme_mode === 'dark' ? "#3f3f46" : "#e5e7eb"),
+          logo_height:              data.logo_height || 40,
+          logo_height_mobile:       data.logo_height_mobile || 32,
+          logo_padding_x:           data.logo_padding_x ?? 0,
+          logo_padding_y:           data.logo_padding_y ?? 0,
+          google_reviews_widget:    data.google_reviews_widget || "",
+          support_whatsapp:         data.support_whatsapp || "",
+        };
+
+        setSettings(fetched);
+        localStorage.setItem(SETTINGS_CACHE_KEY, JSON.stringify(fetched));
+        updateMetaTags(fetched);
+        injectScripts(fetched.ga_id, fetched.fb_pixel_id);
+        applySettingsToDOM(fetched);
       } catch (err) {
-        console.error("Critical error in fetchSettings:", err);
+        console.error("[settings] Erro crítico em fetchSettings:", err);
       }
     }
 
     fetchSettings();
 
+    // Realtime: escuta mudanças apenas do tenant atual
     const channel = supabase
-      .channel("site_settings_changes")
+      .channel(`site_settings_changes_${TENANT_ID}`)
       .on(
         "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "site_settings" },
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "site_settings",
+          filter: `tenant_id=eq.${TENANT_ID}`,
+        },
         (payload) => {
-          const newData = payload.new as any;
+          const d = payload.new as any;
           setSettings(prev => {
-            const updated = { ...prev, ...newData };
+            const updated: SiteSettings = {
+              ...prev,
+              site_name:                d.site_name || prev.site_name,
+              logo_url:                 d.logo_url || prev.logo_url,
+              favicon_url:              d.favicon_url || prev.favicon_url,
+              primary_color:            d.primary_color || prev.primary_color,
+              secondary_color:          d.secondary_color || prev.secondary_color,
+              mercado_pago_public_key:  d.mercado_pago_public_key ?? prev.mercado_pago_public_key,
+              pix_key:                  d.pix_key ?? prev.pix_key,
+              pix_name:                 d.pix_name ?? prev.pix_name,
+              hero_display_mode:        d.hero_display_mode || prev.hero_display_mode,
+              theme_mode:               d.theme_mode || prev.theme_mode,
+              ga_id:                    d.ga_id ?? prev.ga_id,
+              fb_pixel_id:              d.fb_pixel_id ?? prev.fb_pixel_id,
+              meta_title:               d.meta_title ?? prev.meta_title,
+              meta_description:         d.meta_description ?? prev.meta_description,
+              meta_keywords:            d.meta_keywords ?? prev.meta_keywords,
+              google_site_verification: d.google_site_verification ?? prev.google_site_verification,
+              font_color_primary:       d.font_color_primary || prev.font_color_primary,
+              font_color_secondary:     d.font_color_secondary || prev.font_color_secondary,
+              card_background_color:    d.card_background_color || prev.card_background_color,
+              block_background_color:   d.block_background_color || prev.block_background_color,
+              page_background_color:    d.page_background_color || prev.page_background_color,
+              border_color:             d.border_color || prev.border_color,
+              logo_height:              d.logo_height || prev.logo_height,
+              logo_height_mobile:       d.logo_height_mobile || prev.logo_height_mobile,
+              logo_padding_x:           d.logo_padding_x ?? prev.logo_padding_x,
+              logo_padding_y:           d.logo_padding_y ?? prev.logo_padding_y,
+              google_reviews_widget:    d.google_reviews_widget ?? prev.google_reviews_widget,
+              support_whatsapp:         d.support_whatsapp ?? prev.support_whatsapp,
+            };
             updateMetaTags(updated);
-            if (updated.ga_id) injectScripts(updated.ga_id, updated.fb_pixel_id);
+            injectScripts(updated.ga_id, updated.fb_pixel_id);
             applySettingsToDOM(updated);
-            if (typeof window !== 'undefined') {
-              localStorage.setItem('site_settings', JSON.stringify(updated));
-            }
+            localStorage.setItem(SETTINGS_CACHE_KEY, JSON.stringify(updated));
             return updated;
           });
         }
@@ -418,22 +283,14 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <SettingsContext.Provider value={{ ...settings, updateSettings, refreshSettings }}>
+    <SettingsContext.Provider value={settings}>
       {children}
     </SettingsContext.Provider>
   );
-
 }
 
 export const useSettings = () => {
   const context = useContext(SettingsContext);
-  if (!context) {
-    return {
-      ...DEFAULT_SETTINGS,
-      updateSettings: async () => {},
-      refreshSettings: async () => {},
-    };
-
-  }
+  if (!context) return DEFAULT_SETTINGS;
   return context;
 };
