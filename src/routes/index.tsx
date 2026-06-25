@@ -379,10 +379,10 @@ function Index() {
           
           {show_secondary_banner && (
             <SecondaryBanner 
-              title={secondary_banner_title} 
-              subtitle={secondary_banner_subtitle}
-              imageUrl={secondary_banner_image}
-              linkUrl={secondary_banner_link}
+              title={secondary_banner_title ?? ""} 
+              subtitle={secondary_banner_subtitle ?? ""}
+              imageUrl={secondary_banner_image ?? ""}
+              linkUrl={secondary_banner_link ?? ""}
             />
           )}
 

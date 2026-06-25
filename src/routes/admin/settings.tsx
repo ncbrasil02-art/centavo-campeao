@@ -285,7 +285,7 @@ function AdminSettings() {
       if (publicError) throw publicError;
       
       // Force global settings refresh
-      await refreshSettings();
+      await refreshSettings?.();
 
 
 

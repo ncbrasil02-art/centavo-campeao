@@ -165,7 +165,7 @@ export function NarrationSettings() {
   async function handleUpdateMarquee() {
     setLoading(true);
     try {
-      await updateSettings({
+      await updateSettings?.({
         marquee_text: localMarqueeText,
         marquee_enabled: localMarqueeEnabled
       });
