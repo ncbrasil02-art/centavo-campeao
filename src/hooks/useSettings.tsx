@@ -31,7 +31,7 @@ interface SiteSettings {
   logo_padding_y: number;
   google_reviews_widget: string;
   support_whatsapp: string;
-  hero_display_mode: 'phrases' | 'banners' | 'products';
+  // hero_display_mode declared above
   // Optional/legacy fields used across the app
   sound_enabled?: boolean;
   narration_enabled?: boolean;
