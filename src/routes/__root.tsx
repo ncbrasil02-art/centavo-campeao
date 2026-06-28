@@ -190,6 +190,8 @@ import { Toaster } from "@/components/ui/sonner";
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isAdmin = pathname.startsWith("/admin");
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -201,6 +203,7 @@ function RootComponent() {
         <PWAInstallPrompt />
         <WhatsAppButton />
         <SocialProofNotifications />
+        {!isAdmin && <SupportChatWidget />}
         <Outlet />
 
 
