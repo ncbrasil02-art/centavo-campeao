@@ -264,41 +264,44 @@ function AdminProducts() {
                 </DialogTitle>
               </DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4 py-4">
-                {!editingProduct && (
-                  <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 space-y-2">
-                    <Label className="text-xs uppercase font-black tracking-wider text-primary">
-                      Importar Produto (lojas VTEX)
-                    </Label>
-                    <div className="flex gap-2">
-                      <Input
-                        placeholder="Cole o link do produto (ex: compracerta.com.br/.../p)"
-
-                        value={mlUrl}
-                        onChange={(e) => setMlUrl(e.target.value)}
-                        className="bg-white/5 border-white/10 text-xs"
-                        disabled={importing}
-                      />
-
+                <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 space-y-2">
+                  <Label className="text-xs uppercase font-black tracking-wider text-primary">
+                    Importar da URL (lojas VTEX)
+                  </Label>
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Cole o link do produto (ex: compracerta.com.br/.../p)"
+                      value={mlUrl}
+                      onChange={(e) => setMlUrl(e.target.value)}
+                      className="bg-white/5 border-white/10 text-xs"
+                      disabled={importing}
+                    />
+                    {!editingProduct && (
                       <Button
                         type="button"
-                        onClick={handleImportFromML}
+                        onClick={() => handleImportFromML(false)}
                         disabled={importing}
                         className="bg-primary font-bold text-xs whitespace-nowrap"
                       >
-                        {importing ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : (
-                          <>
-                            <Download className="w-4 h-4 mr-1" /> Importar
-                          </>
-                        )}
+                        {importing ? <Loader2 className="w-4 h-4 animate-spin" /> : (<><Download className="w-4 h-4 mr-1" /> Tudo</>)}
                       </Button>
-                    </div>
-                    <p className="text-[10px] text-white/40">
-                      Importa título, preço, descrição e até 6 imagens automaticamente.
-                    </p>
+                    )}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => handleImportFromML(true)}
+                      disabled={importing}
+                      className="border-primary/40 text-primary font-bold text-xs whitespace-nowrap"
+                    >
+                      {importing ? <Loader2 className="w-4 h-4 animate-spin" /> : (<><ImageIcon className="w-4 h-4 mr-1" /> Só imagens</>)}
+                    </Button>
                   </div>
-                )}
+                  <p className="text-[10px] text-white/40">
+                    {editingProduct
+                      ? "Cole a URL do produto na loja para substituir as imagens atuais pelas originais."
+                      : "Importa título, preço, descrição e até 6 imagens automaticamente."}
+                  </p>
+                </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>Nome do Produto</Label>
