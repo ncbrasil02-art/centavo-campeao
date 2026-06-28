@@ -134,13 +134,6 @@ export const sendSupportMessage = createServerFn({ method: "POST" })
         ],
       }),
     });
-        messages: [
-          { role: "system", content: SYSTEM_PROMPT },
-          ...prior,
-          { role: "user", content: data.message },
-        ],
-      }),
-    });
 
     if (!aiRes.ok) {
       const errText = await aiRes.text().catch(() => "");
