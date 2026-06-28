@@ -98,6 +98,25 @@ export const sendSupportMessage = createServerFn({ method: "POST" })
       content: data.message,
     });
 
+    // Load active FAQs as knowledge base
+    const { data: faqs } = await supabaseAdmin
+      .from("support_faqs")
+      .select("question, answer, category")
+      .eq("active", true)
+      .order("sort_order", { ascending: true })
+      .limit(100);
+
+    const faqBlock =
+      faqs && faqs.length > 0
+        ? "\n\nBASE DE CONHECIMENTO (perguntas e respostas oficiais cadastradas pelo administrador — use como FONTE PRIMÁRIA quando relevante; cite a resposta de forma natural, sem ler a pergunta de volta):\n" +
+          faqs
+            .map(
+              (f: any, i: number) =>
+                `${i + 1}. ${f.category ? `[${f.category}] ` : ""}P: ${f.question}\nR: ${f.answer}`
+            )
+            .join("\n\n")
+        : "";
+
     // Call Lovable AI Gateway
     const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -109,7 +128,7 @@ export const sendSupportMessage = createServerFn({ method: "POST" })
       body: JSON.stringify({
         model: "google/gemini-3-flash-preview",
         messages: [
-          { role: "system", content: SYSTEM_PROMPT },
+          { role: "system", content: SYSTEM_PROMPT + faqBlock },
           ...prior,
           { role: "user", content: data.message },
         ],

@@ -40,6 +40,7 @@ export function AdminSidebar() {
     { label: "Banners", href: "/admin/banners", icon: ImageIcon },
     { label: "Depoimentos", href: "/admin/testimonials", icon: MessageSquare },
     { label: "Atendimentos IA", href: "/admin/support-chats", icon: MessageCircle },
+    { label: "FAQ da Fernanda", href: "/admin/support-faqs", icon: MessageSquare },
     { label: "Configurações", href: "/admin/settings", icon: Settings },
   ];
 
