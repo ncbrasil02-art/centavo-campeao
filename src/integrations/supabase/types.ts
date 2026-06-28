@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_audit_logs: {
+        Row: {
+          action: string
+          admin_id: string | null
+          created_at: string
+          details: Json | null
+          id: string
+          ip_address: string | null
+          target_id: string | null
+          target_type: string | null
+        }
+        Insert: {
+          action: string
+          admin_id?: string | null
+          created_at?: string
+          details?: Json | null
+          id?: string
+          ip_address?: string | null
+          target_id?: string | null
+          target_type?: string | null
+        }
+        Update: {
+          action?: string
+          admin_id?: string | null
+          created_at?: string
+          details?: Json | null
+          id?: string
+          ip_address?: string | null
+          target_id?: string | null
+          target_type?: string | null
+        }
+        Relationships: []
+      }
       admin_settings: {
         Row: {
           created_at: string | null
@@ -1333,6 +1366,10 @@ export type Database = {
         Args: { p_campaign_id: string }
         Returns: Json
       }
+      admin_get_audit_logs: {
+        Args: { p_limit?: number; p_offset?: number }
+        Returns: Json[]
+      }
       admin_get_profile: {
         Args: { p_id: string }
         Returns: {
@@ -1450,6 +1487,15 @@ export type Database = {
         Returns: Json
       }
       is_admin: { Args: never; Returns: boolean }
+      log_admin_action: {
+        Args: {
+          p_action: string
+          p_details?: Json
+          p_target_id?: string
+          p_target_type?: string
+        }
+        Returns: undefined
+      }
       open_support_ticket: {
         Args: { p_body: string; p_subject: string }
         Returns: Json
