@@ -259,16 +259,17 @@ function AdminProducts() {
                 {!editingProduct && (
                   <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 space-y-2">
                     <Label className="text-xs uppercase font-black tracking-wider text-primary">
-                      Importar do Mercado Livre
+                      Importar da Magazine Luiza
                     </Label>
                     <div className="flex gap-2">
                       <Input
-                        placeholder="Cole o link do produto (ex: mercadolivre.com.br/...-MLB-1234567890-...)"
+                        placeholder="Cole o link do produto (ex: magazineluiza.com.br/...)"
                         value={mlUrl}
                         onChange={(e) => setMlUrl(e.target.value)}
                         className="bg-white/5 border-white/10 text-xs"
                         disabled={importing}
                       />
+
                       <Button
                         type="button"
                         onClick={handleImportFromML}
