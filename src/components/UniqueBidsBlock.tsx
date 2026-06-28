@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, ArrowRight, Target } from "lucide-react";
 import { useTimeSync } from "@/hooks/useTimeSync";
-import { ProductImageSlideshow } from "@/components/ProductImageSlideshow";
+import { FALLBACK_PRODUCT_IMAGE } from "@/lib/constants";
 
 const sb = supabase as any;
 const brl = (n: number) =>
@@ -62,10 +62,11 @@ export function UniqueBidsBlock() {
             >
               <Link to="/unique-bids/$id" params={{ id: c.id }} className="block">
                 <div className="aspect-square bg-muted relative overflow-hidden">
-                  <ProductImageSlideshow
-                    images={c.product?.images}
+                  <img
+                    src={c.product?.images?.[0] || FALLBACK_PRODUCT_IMAGE}
                     alt={c.title}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    onError={(e) => ((e.target as HTMLImageElement).src = FALLBACK_PRODUCT_IMAGE)}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
 
