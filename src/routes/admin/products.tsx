@@ -45,56 +45,63 @@ function AdminProducts() {
     images: [] as string[]
   });
 
-  async function handleImportFromML() {
+  async function uploadImagesToStorage(urls: string[]): Promise<string[]> {
+    const uploaded: string[] = [];
+    const picks = (urls || []).slice(0, 6);
+    for (let i = 0; i < picks.length; i++) {
+      const url = picks[i];
+      try {
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const blob = await resp.blob();
+        const ctype = blob.type || "image/jpeg";
+        const ext = (ctype.split("/")[1] || "jpg").replace(/[^a-z0-9]/gi, "") || "jpg";
+        const rand = (crypto as any).randomUUID ? crypto.randomUUID() : `${Date.now()}-${i}`;
+        const filePath = `products/${rand}.${ext}`;
+        const { error: upErr } = await supabase.storage
+          .from("site-assets")
+          .upload(filePath, blob, { cacheControl: "3600", upsert: true, contentType: ctype });
+        if (upErr) throw upErr;
+        const { data: { publicUrl } } = supabase.storage.from("site-assets").getPublicUrl(filePath);
+        uploaded.push(publicUrl);
+      } catch (err) {
+        console.warn("Falha ao copiar imagem, mantendo URL original:", url, err);
+        uploaded.push(url);
+      }
+    }
+    return uploaded;
+  }
+
+  async function handleImportFromML(imagesOnly = false) {
     if (!mlUrl.trim()) {
       toast.error("Cole o link do produto");
       return;
     }
     if (!/\/p(\/|$|\?)/i.test(mlUrl)) {
       toast.error("Link inválido. Use o link direto do produto (termina em /p)");
-
       return;
     }
     setImporting(true);
     try {
       const { importFromMagalu } = await import("@/lib/magalu-import.functions");
       const result = await importFromMagalu({ data: { url: mlUrl.trim() } });
+      const uploaded = await uploadImagesToStorage(result.images || []);
 
-      // Baixar imagens e subir no nosso Storage
-      const uploaded: string[] = [];
-      const picks = (result.images || []).slice(0, 6);
-      for (let i = 0; i < picks.length; i++) {
-        const url = picks[i];
-        try {
-          const resp = await fetch(url);
-          if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-          const blob = await resp.blob();
-          const ctype = blob.type || "image/jpeg";
-          const ext = (ctype.split("/")[1] || "jpg").replace(/[^a-z0-9]/gi, "") || "jpg";
-          const rand = (crypto as any).randomUUID ? crypto.randomUUID() : `${Date.now()}-${i}`;
-          const filePath = `products/${rand}.${ext}`;
-          const { error: upErr } = await supabase.storage
-            .from("site-assets")
-            .upload(filePath, blob, { cacheControl: "3600", upsert: true, contentType: ctype });
-          if (upErr) throw upErr;
-          const { data: { publicUrl } } = supabase.storage.from("site-assets").getPublicUrl(filePath);
-          uploaded.push(publicUrl);
-        } catch (err) {
-          console.warn("Falha ao copiar imagem, mantendo URL original:", url, err);
-          uploaded.push(url);
-        }
+      if (imagesOnly) {
+        setFormData((prev) => ({ ...prev, images: uploaded }));
+        toast.success(`${uploaded.length} imagens importadas`);
+      } else {
+        setFormData({
+          name: result.name,
+          description: result.description,
+          market_value: result.price,
+          category: result.category,
+          images: uploaded,
+        });
+        toast.success(`Importado: ${result.name || "produto"} (${uploaded.length} imagens)`);
       }
-
-      setFormData({
-        name: result.name,
-        description: result.description,
-        market_value: result.price,
-        category: result.category,
-        images: uploaded,
-      });
-      toast.success(`Importado: ${result.name || "produto"} (${uploaded.length} imagens)`);
     } catch (e: any) {
-      console.error("Magalu import error:", e);
+      console.error("Import error:", e);
       toast.error(`Erro ao importar: ${e?.message || "desconhecido"}`);
     } finally {
       setImporting(false);
@@ -257,41 +264,44 @@ function AdminProducts() {
                 </DialogTitle>
               </DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4 py-4">
-                {!editingProduct && (
-                  <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 space-y-2">
-                    <Label className="text-xs uppercase font-black tracking-wider text-primary">
-                      Importar Produto (lojas VTEX)
-                    </Label>
-                    <div className="flex gap-2">
-                      <Input
-                        placeholder="Cole o link do produto (ex: compracerta.com.br/.../p)"
-
-                        value={mlUrl}
-                        onChange={(e) => setMlUrl(e.target.value)}
-                        className="bg-white/5 border-white/10 text-xs"
-                        disabled={importing}
-                      />
-
+                <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 space-y-2">
+                  <Label className="text-xs uppercase font-black tracking-wider text-primary">
+                    Importar da URL (lojas VTEX)
+                  </Label>
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Cole o link do produto (ex: compracerta.com.br/.../p)"
+                      value={mlUrl}
+                      onChange={(e) => setMlUrl(e.target.value)}
+                      className="bg-white/5 border-white/10 text-xs"
+                      disabled={importing}
+                    />
+                    {!editingProduct && (
                       <Button
                         type="button"
-                        onClick={handleImportFromML}
+                        onClick={() => handleImportFromML(false)}
                         disabled={importing}
                         className="bg-primary font-bold text-xs whitespace-nowrap"
                       >
-                        {importing ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : (
-                          <>
-                            <Download className="w-4 h-4 mr-1" /> Importar
-                          </>
-                        )}
+                        {importing ? <Loader2 className="w-4 h-4 animate-spin" /> : (<><Download className="w-4 h-4 mr-1" /> Tudo</>)}
                       </Button>
-                    </div>
-                    <p className="text-[10px] text-white/40">
-                      Importa título, preço, descrição e até 6 imagens automaticamente.
-                    </p>
+                    )}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => handleImportFromML(true)}
+                      disabled={importing}
+                      className="border-primary/40 text-primary font-bold text-xs whitespace-nowrap"
+                    >
+                      {importing ? <Loader2 className="w-4 h-4 animate-spin" /> : (<><ImageIcon className="w-4 h-4 mr-1" /> Só imagens</>)}
+                    </Button>
                   </div>
-                )}
+                  <p className="text-[10px] text-white/40">
+                    {editingProduct
+                      ? "Cole a URL do produto na loja para substituir as imagens atuais pelas originais."
+                      : "Importa título, preço, descrição e até 6 imagens automaticamente."}
+                  </p>
+                </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>Nome do Produto</Label>
