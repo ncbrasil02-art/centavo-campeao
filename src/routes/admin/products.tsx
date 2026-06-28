@@ -45,56 +45,63 @@ function AdminProducts() {
     images: [] as string[]
   });
 
-  async function handleImportFromML() {
+  async function uploadImagesToStorage(urls: string[]): Promise<string[]> {
+    const uploaded: string[] = [];
+    const picks = (urls || []).slice(0, 6);
+    for (let i = 0; i < picks.length; i++) {
+      const url = picks[i];
+      try {
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const blob = await resp.blob();
+        const ctype = blob.type || "image/jpeg";
+        const ext = (ctype.split("/")[1] || "jpg").replace(/[^a-z0-9]/gi, "") || "jpg";
+        const rand = (crypto as any).randomUUID ? crypto.randomUUID() : `${Date.now()}-${i}`;
+        const filePath = `products/${rand}.${ext}`;
+        const { error: upErr } = await supabase.storage
+          .from("site-assets")
+          .upload(filePath, blob, { cacheControl: "3600", upsert: true, contentType: ctype });
+        if (upErr) throw upErr;
+        const { data: { publicUrl } } = supabase.storage.from("site-assets").getPublicUrl(filePath);
+        uploaded.push(publicUrl);
+      } catch (err) {
+        console.warn("Falha ao copiar imagem, mantendo URL original:", url, err);
+        uploaded.push(url);
+      }
+    }
+    return uploaded;
+  }
+
+  async function handleImportFromML(imagesOnly = false) {
     if (!mlUrl.trim()) {
       toast.error("Cole o link do produto");
       return;
     }
     if (!/\/p(\/|$|\?)/i.test(mlUrl)) {
       toast.error("Link inválido. Use o link direto do produto (termina em /p)");
-
       return;
     }
     setImporting(true);
     try {
       const { importFromMagalu } = await import("@/lib/magalu-import.functions");
       const result = await importFromMagalu({ data: { url: mlUrl.trim() } });
+      const uploaded = await uploadImagesToStorage(result.images || []);
 
-      // Baixar imagens e subir no nosso Storage
-      const uploaded: string[] = [];
-      const picks = (result.images || []).slice(0, 6);
-      for (let i = 0; i < picks.length; i++) {
-        const url = picks[i];
-        try {
-          const resp = await fetch(url);
-          if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-          const blob = await resp.blob();
-          const ctype = blob.type || "image/jpeg";
-          const ext = (ctype.split("/")[1] || "jpg").replace(/[^a-z0-9]/gi, "") || "jpg";
-          const rand = (crypto as any).randomUUID ? crypto.randomUUID() : `${Date.now()}-${i}`;
-          const filePath = `products/${rand}.${ext}`;
-          const { error: upErr } = await supabase.storage
-            .from("site-assets")
-            .upload(filePath, blob, { cacheControl: "3600", upsert: true, contentType: ctype });
-          if (upErr) throw upErr;
-          const { data: { publicUrl } } = supabase.storage.from("site-assets").getPublicUrl(filePath);
-          uploaded.push(publicUrl);
-        } catch (err) {
-          console.warn("Falha ao copiar imagem, mantendo URL original:", url, err);
-          uploaded.push(url);
-        }
+      if (imagesOnly) {
+        setFormData((prev) => ({ ...prev, images: uploaded }));
+        toast.success(`${uploaded.length} imagens importadas`);
+      } else {
+        setFormData({
+          name: result.name,
+          description: result.description,
+          market_value: result.price,
+          category: result.category,
+          images: uploaded,
+        });
+        toast.success(`Importado: ${result.name || "produto"} (${uploaded.length} imagens)`);
       }
-
-      setFormData({
-        name: result.name,
-        description: result.description,
-        market_value: result.price,
-        category: result.category,
-        images: uploaded,
-      });
-      toast.success(`Importado: ${result.name || "produto"} (${uploaded.length} imagens)`);
     } catch (e: any) {
-      console.error("Magalu import error:", e);
+      console.error("Import error:", e);
       toast.error(`Erro ao importar: ${e?.message || "desconhecido"}`);
     } finally {
       setImporting(false);
