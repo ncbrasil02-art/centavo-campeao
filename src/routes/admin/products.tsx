@@ -107,14 +107,40 @@ function AdminProducts() {
         } catch {}
       }
 
+      // Baixar imagens e subir no nosso Storage para não depender do CDN do ML
+      const uploaded: string[] = [];
+      const picks = pictures.slice(0, 6);
+      for (let i = 0; i < picks.length; i++) {
+        const url = picks[i];
+        try {
+          const resp = await fetch(url);
+          if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+          const blob = await resp.blob();
+          const ctype = blob.type || "image/jpeg";
+          const ext = (ctype.split("/")[1] || "jpg").replace(/[^a-z0-9]/gi, "") || "jpg";
+          const rand = (crypto as any).randomUUID ? crypto.randomUUID() : `${Date.now()}-${i}`;
+          const filePath = `products/${rand}.${ext}`;
+          const { error: upErr } = await supabase.storage
+            .from("site-assets")
+            .upload(filePath, blob, { cacheControl: "3600", upsert: true, contentType: ctype });
+          if (upErr) throw upErr;
+          const { data: { publicUrl } } = supabase.storage.from("site-assets").getPublicUrl(filePath);
+          uploaded.push(publicUrl);
+        } catch (err) {
+          console.warn("Falha ao copiar imagem ML, mantendo URL original:", url, err);
+          uploaded.push(url);
+        }
+      }
+
       setFormData({
         name: title,
         description,
         market_value: price,
         category,
-        images: pictures.slice(0, 6),
+        images: uploaded,
       });
-      toast.success(`Importado: ${title || "produto"} (${pictures.length} imagens)`);
+      toast.success(`Importado: ${title || "produto"} (${uploaded.length} imagens)`);
+
     } catch (e: any) {
       console.error("ML import error:", e);
       toast.error(`Erro ao importar: ${e?.message || "desconhecido"}`);
