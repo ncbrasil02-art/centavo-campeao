@@ -181,6 +181,8 @@ import { PromotionalMessages } from "@/components/PromotionalMessages";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { SocialProofNotifications } from "@/components/SocialProofNotifications";
+import { SupportChatWidget } from "@/components/SupportChatWidget";
+import { useRouterState } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
 
 
