@@ -260,11 +260,12 @@ function AdminProducts() {
                 {!editingProduct && (
                   <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 space-y-2">
                     <Label className="text-xs uppercase font-black tracking-wider text-primary">
-                      Importar da Magazine Luiza
+                      Importar Produto (lojas VTEX)
                     </Label>
                     <div className="flex gap-2">
                       <Input
-                        placeholder="Cole o link do produto (ex: magazineluiza.com.br/...)"
+                        placeholder="Cole o link do produto (ex: compracerta.com.br/.../p)"
+
                         value={mlUrl}
                         onChange={(e) => setMlUrl(e.target.value)}
                         className="bg-white/5 border-white/10 text-xs"
