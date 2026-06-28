@@ -92,13 +92,12 @@ const run = async () => {
     await expectUnauthorized(`rpc:${fn}`, () => sb.rpc(fn, args));
   }
   for (const t of privateTables) {
-    await expectUnauthorized(`select:${t}`, async () => {
-      const { data, error } = await sb.from(t).select("*").limit(1);
-      // tabela privada: ou dá erro de permissão, ou retorna 0 linhas (RLS sem match)
-      if (!error && Array.isArray(data) && data.length > 0) {
-        return { error: null, data };
-      }
-      return { error: error ?? new Error("rls-empty"), data };
+    const { data, error } = await sb.from(t).select("*").limit(1);
+    const leaked = !error && Array.isArray(data) && data.length > 0;
+    results.push({
+      name: `select:${t}`,
+      ok: !leaked,
+      detail: leaked ? `LEAK: ${data.length} linha(s) visíveis a anon` : error ? "permission denied" : "RLS vazio",
     });
   }
 
