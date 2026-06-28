@@ -886,6 +886,77 @@ export type Database = {
         }
         Relationships: []
       }
+      support_chat_messages: {
+        Row: {
+          chat_id: string
+          content: string
+          created_at: string
+          id: string
+          role: string
+          session_id: string
+        }
+        Insert: {
+          chat_id: string
+          content: string
+          created_at?: string
+          id?: string
+          role: string
+          session_id: string
+        }
+        Update: {
+          chat_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          role?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_chat_messages_chat_id_fkey"
+            columns: ["chat_id"]
+            isOneToOne: false
+            referencedRelation: "support_chats"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      support_chats: {
+        Row: {
+          created_at: string
+          handoff_whatsapp: boolean
+          id: string
+          last_message_at: string
+          message_count: number
+          session_id: string
+          updated_at: string
+          user_id: string | null
+          visitor_name: string | null
+        }
+        Insert: {
+          created_at?: string
+          handoff_whatsapp?: boolean
+          id?: string
+          last_message_at?: string
+          message_count?: number
+          session_id: string
+          updated_at?: string
+          user_id?: string | null
+          visitor_name?: string | null
+        }
+        Update: {
+          created_at?: string
+          handoff_whatsapp?: boolean
+          id?: string
+          last_message_at?: string
+          message_count?: number
+          session_id?: string
+          updated_at?: string
+          user_id?: string | null
+          visitor_name?: string | null
+        }
+        Relationships: []
+      }
       support_messages: {
         Row: {
           body: string
