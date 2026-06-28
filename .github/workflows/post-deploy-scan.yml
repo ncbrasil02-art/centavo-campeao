@@ -1,0 +1,35 @@
+name: Post-Deploy Security Scan
+
+on:
+  workflow_run:
+    workflows: ["Deploy to Hostinger"]
+    types: [completed]
+  push:
+    branches: [main]
+
+jobs:
+  scan:
+    if: ${{ github.event_name == 'push' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Dependency audit (high+)
+        run: bun audit --audit-level=high
+        continue-on-error: false
+
+      - name: Secret scan (gitleaks)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Notify on failure
+        if: failure()
+        run: echo "::error::Post-deploy security scan failed. Review findings before promoting build."
