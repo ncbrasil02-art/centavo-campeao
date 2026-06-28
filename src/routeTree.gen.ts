@@ -26,6 +26,7 @@ import { Route as AuctionsIdRouteImport } from './routes/auctions.$id'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminUniqueBidsRouteImport } from './routes/admin/unique-bids'
 import { Route as AdminTestimonialsRouteImport } from './routes/admin/testimonials'
+import { Route as AdminSupportFaqsRouteImport } from './routes/admin/support-faqs'
 import { Route as AdminSupportChatsRouteImport } from './routes/admin/support-chats'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as AdminSalesRouteImport } from './routes/admin/sales'
@@ -122,6 +123,11 @@ const AdminTestimonialsRoute = AdminTestimonialsRouteImport.update({
   path: '/testimonials',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminSupportFaqsRoute = AdminSupportFaqsRouteImport.update({
+  id: '/support-faqs',
+  path: '/support-faqs',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminSupportChatsRoute = AdminSupportChatsRouteImport.update({
   id: '/support-chats',
   path: '/support-chats',
@@ -194,6 +200,7 @@ export interface FileRoutesByFullPath {
   '/admin/sales': typeof AdminSalesRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/support-chats': typeof AdminSupportChatsRoute
+  '/admin/support-faqs': typeof AdminSupportFaqsRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
   '/admin/unique-bids': typeof AdminUniqueBidsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -222,6 +229,7 @@ export interface FileRoutesByTo {
   '/admin/sales': typeof AdminSalesRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/support-chats': typeof AdminSupportChatsRoute
+  '/admin/support-faqs': typeof AdminSupportFaqsRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
   '/admin/unique-bids': typeof AdminUniqueBidsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -252,6 +260,7 @@ export interface FileRoutesById {
   '/admin/sales': typeof AdminSalesRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/support-chats': typeof AdminSupportChatsRoute
+  '/admin/support-faqs': typeof AdminSupportFaqsRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
   '/admin/unique-bids': typeof AdminUniqueBidsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -283,6 +292,7 @@ export interface FileRouteTypes {
     | '/admin/sales'
     | '/admin/settings'
     | '/admin/support-chats'
+    | '/admin/support-faqs'
     | '/admin/testimonials'
     | '/admin/unique-bids'
     | '/admin/users'
@@ -311,6 +321,7 @@ export interface FileRouteTypes {
     | '/admin/sales'
     | '/admin/settings'
     | '/admin/support-chats'
+    | '/admin/support-faqs'
     | '/admin/testimonials'
     | '/admin/unique-bids'
     | '/admin/users'
@@ -340,6 +351,7 @@ export interface FileRouteTypes {
     | '/admin/sales'
     | '/admin/settings'
     | '/admin/support-chats'
+    | '/admin/support-faqs'
     | '/admin/testimonials'
     | '/admin/unique-bids'
     | '/admin/users'
@@ -486,6 +498,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminTestimonialsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/support-faqs': {
+      id: '/admin/support-faqs'
+      path: '/support-faqs'
+      fullPath: '/admin/support-faqs'
+      preLoaderRoute: typeof AdminSupportFaqsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/support-chats': {
       id: '/admin/support-chats'
       path: '/support-chats'
@@ -570,6 +589,7 @@ interface AdminRouteChildren {
   AdminSalesRoute: typeof AdminSalesRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminSupportChatsRoute: typeof AdminSupportChatsRoute
+  AdminSupportFaqsRoute: typeof AdminSupportFaqsRoute
   AdminTestimonialsRoute: typeof AdminTestimonialsRoute
   AdminUniqueBidsRoute: typeof AdminUniqueBidsRoute
   AdminUsersRoute: typeof AdminUsersRoute
@@ -587,6 +607,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminSalesRoute: AdminSalesRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminSupportChatsRoute: AdminSupportChatsRoute,
+  AdminSupportFaqsRoute: AdminSupportFaqsRoute,
   AdminTestimonialsRoute: AdminTestimonialsRoute,
   AdminUniqueBidsRoute: AdminUniqueBidsRoute,
   AdminUsersRoute: AdminUsersRoute,
