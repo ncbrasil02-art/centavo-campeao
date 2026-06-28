@@ -11,7 +11,7 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Plus, Package, Edit, Trash2, Upload, Loader2, Image as ImageIcon } from "lucide-react";
+import { Plus, Package, Edit, Trash2, Upload, Loader2, Image as ImageIcon, Download } from "lucide-react";
 import { toast } from "sonner";
 import { 
   Dialog, 
