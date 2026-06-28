@@ -26,6 +26,7 @@ import { Route as AuctionsIdRouteImport } from './routes/auctions.$id'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminUniqueBidsRouteImport } from './routes/admin/unique-bids'
 import { Route as AdminTestimonialsRouteImport } from './routes/admin/testimonials'
+import { Route as AdminSupportChatsRouteImport } from './routes/admin/support-chats'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
 import { Route as AdminSalesRouteImport } from './routes/admin/sales'
 import { Route as AdminRobotsRouteImport } from './routes/admin/robots'
@@ -121,6 +122,11 @@ const AdminTestimonialsRoute = AdminTestimonialsRouteImport.update({
   path: '/testimonials',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminSupportChatsRoute = AdminSupportChatsRouteImport.update({
+  id: '/support-chats',
+  path: '/support-chats',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminSettingsRoute = AdminSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -187,6 +193,7 @@ export interface FileRoutesByFullPath {
   '/admin/robots': typeof AdminRobotsRoute
   '/admin/sales': typeof AdminSalesRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/support-chats': typeof AdminSupportChatsRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
   '/admin/unique-bids': typeof AdminUniqueBidsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -214,6 +221,7 @@ export interface FileRoutesByTo {
   '/admin/robots': typeof AdminRobotsRoute
   '/admin/sales': typeof AdminSalesRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/support-chats': typeof AdminSupportChatsRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
   '/admin/unique-bids': typeof AdminUniqueBidsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -243,6 +251,7 @@ export interface FileRoutesById {
   '/admin/robots': typeof AdminRobotsRoute
   '/admin/sales': typeof AdminSalesRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/support-chats': typeof AdminSupportChatsRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
   '/admin/unique-bids': typeof AdminUniqueBidsRoute
   '/admin/users': typeof AdminUsersRoute
@@ -273,6 +282,7 @@ export interface FileRouteTypes {
     | '/admin/robots'
     | '/admin/sales'
     | '/admin/settings'
+    | '/admin/support-chats'
     | '/admin/testimonials'
     | '/admin/unique-bids'
     | '/admin/users'
@@ -300,6 +310,7 @@ export interface FileRouteTypes {
     | '/admin/robots'
     | '/admin/sales'
     | '/admin/settings'
+    | '/admin/support-chats'
     | '/admin/testimonials'
     | '/admin/unique-bids'
     | '/admin/users'
@@ -328,6 +339,7 @@ export interface FileRouteTypes {
     | '/admin/robots'
     | '/admin/sales'
     | '/admin/settings'
+    | '/admin/support-chats'
     | '/admin/testimonials'
     | '/admin/unique-bids'
     | '/admin/users'
@@ -474,6 +486,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminTestimonialsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/support-chats': {
+      id: '/admin/support-chats'
+      path: '/support-chats'
+      fullPath: '/admin/support-chats'
+      preLoaderRoute: typeof AdminSupportChatsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/settings': {
       id: '/admin/settings'
       path: '/settings'
@@ -550,6 +569,7 @@ interface AdminRouteChildren {
   AdminRobotsRoute: typeof AdminRobotsRoute
   AdminSalesRoute: typeof AdminSalesRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminSupportChatsRoute: typeof AdminSupportChatsRoute
   AdminTestimonialsRoute: typeof AdminTestimonialsRoute
   AdminUniqueBidsRoute: typeof AdminUniqueBidsRoute
   AdminUsersRoute: typeof AdminUsersRoute
@@ -566,6 +586,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminRobotsRoute: AdminRobotsRoute,
   AdminSalesRoute: AdminSalesRoute,
   AdminSettingsRoute: AdminSettingsRoute,
+  AdminSupportChatsRoute: AdminSupportChatsRoute,
   AdminTestimonialsRoute: AdminTestimonialsRoute,
   AdminUniqueBidsRoute: AdminUniqueBidsRoute,
   AdminUsersRoute: AdminUsersRoute,
