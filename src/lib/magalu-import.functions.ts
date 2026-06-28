@@ -25,23 +25,6 @@ function stripHtml(html: string): string {
     .trim();
 }
 
-function findProductNode(node: any): any | null {
-  if (!node) return null;
-  if (Array.isArray(node)) {
-    for (const n of node) {
-      const f = findProductNode(n);
-      if (f) return f;
-    }
-    return null;
-  }
-  if (typeof node === "object") {
-    const t = node["@type"];
-    if (t === "Product" || (Array.isArray(t) && t.includes("Product"))) return node;
-    if (node["@graph"]) return findProductNode(node["@graph"]);
-  }
-  return null;
-}
-
 export const importFromMagalu = createServerFn({ method: "POST" })
   .inputValidator((data: { url: string }) => {
     if (!data?.url || typeof data.url !== "string") {
@@ -50,60 +33,48 @@ export const importFromMagalu = createServerFn({ method: "POST" })
     return data;
   })
   .handler(async ({ data }): Promise<ImportResult> => {
-    const res = await fetch(data.url, {
+    const u = new URL(data.url.trim());
+    // VTEX product URLs end with /p (optionally followed by query)
+    // Pega o último segmento de path antes de /p
+    const parts = u.pathname.split("/").filter(Boolean);
+    const pIdx = parts.lastIndexOf("p");
+    if (pIdx < 1) {
+      throw new Error("Link inválido. Use o link direto do produto (termina em /p).");
+    }
+    const slug = parts[pIdx - 1];
+    const apiUrl = `${u.origin}/api/catalog_system/pub/products/search/${slug}/p`;
+
+    const res = await fetch(apiUrl, {
       headers: {
+        Accept: "application/json",
         "User-Agent":
           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        "Accept-Language": "pt-BR,pt;q=0.9,en;q=0.8",
-        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
       },
     });
-    if (!res.ok) throw new Error(`Falha ao carregar página (${res.status})`);
-    const html = await res.text();
-
-    // Parse all JSON-LD blocks
-    const ldRegex = /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
-    let product: any = null;
-    let m: RegExpExecArray | null;
-    while ((m = ldRegex.exec(html)) !== null) {
-      try {
-        const json = JSON.parse(m[1].trim());
-        const p = findProductNode(json);
-        if (p) {
-          product = p;
-          break;
-        }
-      } catch {
-        // ignore malformed blocks
-      }
+    if (!res.ok) throw new Error(`Falha ao carregar produto (${res.status})`);
+    const arr = await res.json();
+    if (!Array.isArray(arr) || arr.length === 0) {
+      throw new Error("Produto não encontrado.");
     }
+    const p = arr[0];
+    const item = (p.items && p.items[0]) || {};
+    const seller = (item.sellers && item.sellers[0]) || {};
+    const offer = seller.commertialOffer || {};
 
-    if (!product) {
-      throw new Error("Produto não encontrado na página. Cole o link direto do produto.");
-    }
+    const name: string = p.productName || p.productTitle || "";
+    const description = stripHtml(p.description || p.metaTagDescription || "");
+    const price = Number(offer.Price ?? offer.ListPrice ?? 0) || 0;
 
-    const name: string = product.name || "";
-    let description: string = product.description || "";
-    description = stripHtml(description);
+    const images: string[] = (item.images || [])
+      .map((i: any) => i.imageUrl)
+      .filter(Boolean)
+      .slice(0, 6);
 
-    // Images
-    let imgs: string[] = [];
-    const im = product.image;
-    if (Array.isArray(im)) imgs = im.filter((x) => typeof x === "string");
-    else if (typeof im === "string") imgs = [im];
-    else if (im && typeof im === "object" && im.url) imgs = [im.url];
-    imgs = imgs.map((u) => (u.startsWith("//") ? `https:${u}` : u)).slice(0, 6);
+    const cats: string[] = p.categories || [];
+    const category =
+      (cats[0] || "").split("/").filter(Boolean).slice(-1)[0] ||
+      p.brand ||
+      "";
 
-    // Price (offers can be object or array)
-    let price = 0;
-    const offers = product.offers;
-    const pick = Array.isArray(offers) ? offers[0] : offers;
-    if (pick) {
-      const p = pick.price ?? pick.lowPrice ?? pick.highPrice;
-      if (p != null) price = Number(p) || 0;
-    }
-
-    const category: string = product.category || product.brand?.name || "";
-
-    return { name, description, price, images: imgs, category };
+    return { name, description, price, images, category };
   });
