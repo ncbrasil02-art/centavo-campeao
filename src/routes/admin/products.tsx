@@ -45,71 +45,23 @@ function AdminProducts() {
     images: [] as string[]
   });
 
-  function extractMlId(input: string): string | null {
-    const s = input.trim();
-    // Catalog product: /p/MLB12345 or MLB12345 (no dash, with 'p/')
-    const catalog = s.match(/\/p\/(MLB[U]?\d+)/i);
-    if (catalog) return `CATALOG:${catalog[1].toUpperCase()}`;
-    // Item: MLB-1234567890 or MLB1234567890
-    const item = s.match(/(MLB[U]?)[-]?(\d{6,})/i);
-    if (item) return `ITEM:${item[1].toUpperCase()}${item[2]}`;
-    return null;
-  }
-
   async function handleImportFromML() {
     if (!mlUrl.trim()) {
-      toast.error("Cole o link do produto do Mercado Livre");
+      toast.error("Cole o link do produto da Magazine Luiza");
       return;
     }
-    const ref = extractMlId(mlUrl);
-    if (!ref) {
-      toast.error("Não consegui identificar o ID do produto no link");
+    if (!/magazineluiza\.com\.br|magalu\.com/i.test(mlUrl)) {
+      toast.error("Cole um link válido da Magazine Luiza (magazineluiza.com.br)");
       return;
     }
     setImporting(true);
     try {
-      const [kind, id] = ref.split(":");
-      const base = "https://api.mercadolibre.com";
+      const { importFromMagalu } = await import("@/lib/magalu-import.functions");
+      const result = await importFromMagalu({ data: { url: mlUrl.trim() } });
 
-      let title = "";
-      let price = 0;
-      let pictures: string[] = [];
-      let category = "";
-      let itemIdForDesc: string | null = null;
-
-      if (kind === "CATALOG") {
-        const r = await fetch(`${base}/products/${id}`);
-        if (!r.ok) throw new Error(`Produto de catálogo não encontrado (${r.status})`);
-        const j = await r.json();
-        title = j.name || j.title || "";
-        price = Number(j.buy_box_winner?.price ?? j.price ?? 0) || 0;
-        pictures = (j.pictures || []).map((p: any) => p.url || p.secure_url).filter(Boolean);
-        category = j.domain_id || "";
-      } else {
-        const r = await fetch(`${base}/items/${id}`);
-        if (!r.ok) throw new Error(`Item não encontrado (${r.status}). Verifique o link.`);
-        const j = await r.json();
-        title = j.title || "";
-        price = Number(j.price ?? 0) || 0;
-        pictures = (j.pictures || []).map((p: any) => p.secure_url || p.url).filter(Boolean);
-        category = j.domain_id || j.category_id || "";
-        itemIdForDesc = j.id;
-      }
-
-      let description = "";
-      if (itemIdForDesc) {
-        try {
-          const rd = await fetch(`${base}/items/${itemIdForDesc}/description`);
-          if (rd.ok) {
-            const jd = await rd.json();
-            description = jd.plain_text || jd.text || "";
-          }
-        } catch {}
-      }
-
-      // Baixar imagens e subir no nosso Storage para não depender do CDN do ML
+      // Baixar imagens e subir no nosso Storage
       const uploaded: string[] = [];
-      const picks = pictures.slice(0, 6);
+      const picks = (result.images || []).slice(0, 6);
       for (let i = 0; i < picks.length; i++) {
         const url = picks[i];
         try {
@@ -127,27 +79,27 @@ function AdminProducts() {
           const { data: { publicUrl } } = supabase.storage.from("site-assets").getPublicUrl(filePath);
           uploaded.push(publicUrl);
         } catch (err) {
-          console.warn("Falha ao copiar imagem ML, mantendo URL original:", url, err);
+          console.warn("Falha ao copiar imagem, mantendo URL original:", url, err);
           uploaded.push(url);
         }
       }
 
       setFormData({
-        name: title,
-        description,
-        market_value: price,
-        category,
+        name: result.name,
+        description: result.description,
+        market_value: result.price,
+        category: result.category,
         images: uploaded,
       });
-      toast.success(`Importado: ${title || "produto"} (${uploaded.length} imagens)`);
-
+      toast.success(`Importado: ${result.name || "produto"} (${uploaded.length} imagens)`);
     } catch (e: any) {
-      console.error("ML import error:", e);
+      console.error("Magalu import error:", e);
       toast.error(`Erro ao importar: ${e?.message || "desconhecido"}`);
     } finally {
       setImporting(false);
     }
   }
+
 
   useEffect(() => {
     fetchProducts();
@@ -307,16 +259,17 @@ function AdminProducts() {
                 {!editingProduct && (
                   <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 space-y-2">
                     <Label className="text-xs uppercase font-black tracking-wider text-primary">
-                      Importar do Mercado Livre
+                      Importar da Magazine Luiza
                     </Label>
                     <div className="flex gap-2">
                       <Input
-                        placeholder="Cole o link do produto (ex: mercadolivre.com.br/...-MLB-1234567890-...)"
+                        placeholder="Cole o link do produto (ex: magazineluiza.com.br/...)"
                         value={mlUrl}
                         onChange={(e) => setMlUrl(e.target.value)}
                         className="bg-white/5 border-white/10 text-xs"
                         disabled={importing}
                       />
+
                       <Button
                         type="button"
                         onClick={handleImportFromML}
