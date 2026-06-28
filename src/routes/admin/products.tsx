@@ -47,11 +47,12 @@ function AdminProducts() {
 
   async function handleImportFromML() {
     if (!mlUrl.trim()) {
-      toast.error("Cole o link do produto da Magazine Luiza");
+      toast.error("Cole o link do produto");
       return;
     }
-    if (!/magazineluiza\.com\.br|magalu\.com/i.test(mlUrl)) {
-      toast.error("Cole um link válido da Magazine Luiza (magazineluiza.com.br)");
+    if (!/\/p(\/|$|\?)/i.test(mlUrl)) {
+      toast.error("Link inválido. Use o link direto do produto (termina em /p)");
+
       return;
     }
     setImporting(true);
