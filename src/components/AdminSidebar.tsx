@@ -8,6 +8,7 @@ import {
   History,
   Package,
   MessageSquare,
+  MessageCircle,
   Image as ImageIcon,
   LogOut,
   ChevronRight,
