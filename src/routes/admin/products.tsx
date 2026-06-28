@@ -11,7 +11,7 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Plus, Package, Edit, Trash2, Upload, Loader2, Image as ImageIcon } from "lucide-react";
+import { Plus, Package, Edit, Trash2, Upload, Loader2, Image as ImageIcon, Download } from "lucide-react";
 import { toast } from "sonner";
 import { 
   Dialog, 
@@ -35,6 +35,8 @@ function AdminProducts() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
   const [uploading, setUploading] = useState(false);
+  const [mlUrl, setMlUrl] = useState("");
+  const [importing, setImporting] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -42,6 +44,84 @@ function AdminProducts() {
     category: "",
     images: [] as string[]
   });
+
+  function extractMlId(input: string): string | null {
+    const s = input.trim();
+    // Catalog product: /p/MLB12345 or MLB12345 (no dash, with 'p/')
+    const catalog = s.match(/\/p\/(MLB[U]?\d+)/i);
+    if (catalog) return `CATALOG:${catalog[1].toUpperCase()}`;
+    // Item: MLB-1234567890 or MLB1234567890
+    const item = s.match(/(MLB[U]?)[-]?(\d{6,})/i);
+    if (item) return `ITEM:${item[1].toUpperCase()}${item[2]}`;
+    return null;
+  }
+
+  async function handleImportFromML() {
+    if (!mlUrl.trim()) {
+      toast.error("Cole o link do produto do Mercado Livre");
+      return;
+    }
+    const ref = extractMlId(mlUrl);
+    if (!ref) {
+      toast.error("Não consegui identificar o ID do produto no link");
+      return;
+    }
+    setImporting(true);
+    try {
+      const [kind, id] = ref.split(":");
+      const base = "https://api.mercadolibre.com";
+
+      let title = "";
+      let price = 0;
+      let pictures: string[] = [];
+      let category = "";
+      let itemIdForDesc: string | null = null;
+
+      if (kind === "CATALOG") {
+        const r = await fetch(`${base}/products/${id}`);
+        if (!r.ok) throw new Error(`Produto de catálogo não encontrado (${r.status})`);
+        const j = await r.json();
+        title = j.name || j.title || "";
+        price = Number(j.buy_box_winner?.price ?? j.price ?? 0) || 0;
+        pictures = (j.pictures || []).map((p: any) => p.url || p.secure_url).filter(Boolean);
+        category = j.domain_id || "";
+      } else {
+        const r = await fetch(`${base}/items/${id}`);
+        if (!r.ok) throw new Error(`Item não encontrado (${r.status}). Verifique o link.`);
+        const j = await r.json();
+        title = j.title || "";
+        price = Number(j.price ?? 0) || 0;
+        pictures = (j.pictures || []).map((p: any) => p.secure_url || p.url).filter(Boolean);
+        category = j.domain_id || j.category_id || "";
+        itemIdForDesc = j.id;
+      }
+
+      let description = "";
+      if (itemIdForDesc) {
+        try {
+          const rd = await fetch(`${base}/items/${itemIdForDesc}/description`);
+          if (rd.ok) {
+            const jd = await rd.json();
+            description = jd.plain_text || jd.text || "";
+          }
+        } catch {}
+      }
+
+      setFormData({
+        name: title,
+        description,
+        market_value: price,
+        category,
+        images: pictures.slice(0, 6),
+      });
+      toast.success(`Importado: ${title || "produto"} (${pictures.length} imagens)`);
+    } catch (e: any) {
+      console.error("ML import error:", e);
+      toast.error(`Erro ao importar: ${e?.message || "desconhecido"}`);
+    } finally {
+      setImporting(false);
+    }
+  }
 
   useEffect(() => {
     fetchProducts();
@@ -198,6 +278,39 @@ function AdminProducts() {
                 </DialogTitle>
               </DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4 py-4">
+                {!editingProduct && (
+                  <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 space-y-2">
+                    <Label className="text-xs uppercase font-black tracking-wider text-primary">
+                      Importar do Mercado Livre
+                    </Label>
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Cole o link do produto (ex: mercadolivre.com.br/...-MLB-1234567890-...)"
+                        value={mlUrl}
+                        onChange={(e) => setMlUrl(e.target.value)}
+                        className="bg-white/5 border-white/10 text-xs"
+                        disabled={importing}
+                      />
+                      <Button
+                        type="button"
+                        onClick={handleImportFromML}
+                        disabled={importing}
+                        className="bg-primary font-bold text-xs whitespace-nowrap"
+                      >
+                        {importing ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <>
+                            <Download className="w-4 h-4 mr-1" /> Importar
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                    <p className="text-[10px] text-white/40">
+                      Importa título, preço, descrição e até 6 imagens automaticamente.
+                    </p>
+                  </div>
+                )}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>Nome do Produto</Label>
