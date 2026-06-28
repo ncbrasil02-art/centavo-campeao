@@ -181,6 +181,8 @@ import { PromotionalMessages } from "@/components/PromotionalMessages";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { SocialProofNotifications } from "@/components/SocialProofNotifications";
+import { SupportChatWidget } from "@/components/SupportChatWidget";
+import { useRouterState } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
 
 
@@ -188,6 +190,8 @@ import { Toaster } from "@/components/ui/sonner";
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isAdmin = pathname.startsWith("/admin");
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -199,6 +203,7 @@ function RootComponent() {
         <PWAInstallPrompt />
         <WhatsAppButton />
         <SocialProofNotifications />
+        {!isAdmin && <SupportChatWidget />}
         <Outlet />
 
 
