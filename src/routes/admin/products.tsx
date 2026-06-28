@@ -35,6 +35,8 @@ function AdminProducts() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
   const [uploading, setUploading] = useState(false);
+  const [mlUrl, setMlUrl] = useState("");
+  const [importing, setImporting] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -42,6 +44,84 @@ function AdminProducts() {
     category: "",
     images: [] as string[]
   });
+
+  function extractMlId(input: string): string | null {
+    const s = input.trim();
+    // Catalog product: /p/MLB12345 or MLB12345 (no dash, with 'p/')
+    const catalog = s.match(/\/p\/(MLB[U]?\d+)/i);
+    if (catalog) return `CATALOG:${catalog[1].toUpperCase()}`;
+    // Item: MLB-1234567890 or MLB1234567890
+    const item = s.match(/(MLB[U]?)[-]?(\d{6,})/i);
+    if (item) return `ITEM:${item[1].toUpperCase()}${item[2]}`;
+    return null;
+  }
+
+  async function handleImportFromML() {
+    if (!mlUrl.trim()) {
+      toast.error("Cole o link do produto do Mercado Livre");
+      return;
+    }
+    const ref = extractMlId(mlUrl);
+    if (!ref) {
+      toast.error("Não consegui identificar o ID do produto no link");
+      return;
+    }
+    setImporting(true);
+    try {
+      const [kind, id] = ref.split(":");
+      const base = "https://api.mercadolibre.com";
+
+      let title = "";
+      let price = 0;
+      let pictures: string[] = [];
+      let category = "";
+      let itemIdForDesc: string | null = null;
+
+      if (kind === "CATALOG") {
+        const r = await fetch(`${base}/products/${id}`);
+        if (!r.ok) throw new Error(`Produto de catálogo não encontrado (${r.status})`);
+        const j = await r.json();
+        title = j.name || j.title || "";
+        price = Number(j.buy_box_winner?.price ?? j.price ?? 0) || 0;
+        pictures = (j.pictures || []).map((p: any) => p.url || p.secure_url).filter(Boolean);
+        category = j.domain_id || "";
+      } else {
+        const r = await fetch(`${base}/items/${id}`);
+        if (!r.ok) throw new Error(`Item não encontrado (${r.status}). Verifique o link.`);
+        const j = await r.json();
+        title = j.title || "";
+        price = Number(j.price ?? 0) || 0;
+        pictures = (j.pictures || []).map((p: any) => p.secure_url || p.url).filter(Boolean);
+        category = j.domain_id || j.category_id || "";
+        itemIdForDesc = j.id;
+      }
+
+      let description = "";
+      if (itemIdForDesc) {
+        try {
+          const rd = await fetch(`${base}/items/${itemIdForDesc}/description`);
+          if (rd.ok) {
+            const jd = await rd.json();
+            description = jd.plain_text || jd.text || "";
+          }
+        } catch {}
+      }
+
+      setFormData({
+        name: title,
+        description,
+        market_value: price,
+        category,
+        images: pictures.slice(0, 6),
+      });
+      toast.success(`Importado: ${title || "produto"} (${pictures.length} imagens)`);
+    } catch (e: any) {
+      console.error("ML import error:", e);
+      toast.error(`Erro ao importar: ${e?.message || "desconhecido"}`);
+    } finally {
+      setImporting(false);
+    }
+  }
 
   useEffect(() => {
     fetchProducts();
