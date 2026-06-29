@@ -12,7 +12,7 @@ import { Card } from "@/components/ui/card";
 import { Users, Star, Trophy, ArrowRight, Play, Clock, Sparkles, ChevronLeft, ChevronRight, Gavel, Loader2, Volume2, VolumeX } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import useEmblaCarousel from 'embla-carousel-react';
-// import Autoplay from 'embla-carousel-autoplay';h
+// import Autoplay from 'embla-carousel-autoplay';
 
 
 import { DemoAuctionBlock } from "./DemoAuctionBlock";
