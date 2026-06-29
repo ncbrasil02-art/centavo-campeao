@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { useTimeSync } from "@/hooks/useTimeSync";
 import { useSettings } from "@/hooks/useSettings";
 import { supabase } from "@/integrations/supabase/client";
+import { TENANT_ID } from "@/lib/tenant";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
@@ -11,7 +12,7 @@ import { Card } from "@/components/ui/card";
 import { Users, Star, Trophy, ArrowRight, Play, Clock, Sparkles, ChevronLeft, ChevronRight, Gavel, Loader2, Volume2, VolumeX } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import useEmblaCarousel from 'embla-carousel-react';
-// import Autoplay from 'embla-carousel-autoplay';
+// import Autoplay from 'embla-carousel-autoplay';h
 
 
 import { DemoAuctionBlock } from "./DemoAuctionBlock";
@@ -68,7 +69,8 @@ export function Hero() {
       .from("app_phrases")
       .select("text")
       .eq("type", "hero")
-      .eq("active", true);
+      .eq("active", true)
+      .eq("tenant_id", TENANT_ID);
     
     if (data && data.length > 0) {
       setPhrases(data.map(p => p.text));
@@ -230,6 +232,7 @@ export function Hero() {
         .from("banners")
         .select("*")
         .eq("active", true)
+        .eq("tenant_id", TENANT_ID)
         .order("order_index", { ascending: true });
       
       if (error) {
