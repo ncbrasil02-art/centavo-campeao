@@ -119,6 +119,7 @@ function AdminProducts() {
       const { data, error } = await supabase
         .from("products")
         .select("*")
+        .eq("tenant_id", TENANT_ID)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
