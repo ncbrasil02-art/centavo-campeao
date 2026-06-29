@@ -152,7 +152,7 @@ function AdminAuctions() {
 
   async function fetchInitialData() {
     try {
-      const { data, error } = await supabase.from("products").select("*").limit(200).order('name');
+      const { data, error } = await supabase.from("products").select("*").eq("tenant_id", TENANT_ID).limit(200).order('name');
       if (error) throw error;
       setProducts(data || []);
     } catch (error: any) {
@@ -180,6 +180,7 @@ function AdminAuctions() {
           )
         `, { count: 'exact' });
 
+      query = query.eq("tenant_id", TENANT_ID);
       
       if (statusFilter !== "all") {
         query = query.eq("status", statusFilter);
@@ -190,6 +191,7 @@ function AdminAuctions() {
         const { data: matchedProducts } = await supabase
           .from("products")
           .select("id")
+          .eq("tenant_id", TENANT_ID)
           .ilike('name', `%${searchTerm}%`);
         
         if (matchedProducts && matchedProducts.length > 0) {
@@ -372,8 +374,8 @@ function AdminAuctions() {
           .insert([{ 
             ...payload,
             current_price: 0.00,
-            bid_count: 0
-
+            bid_count: 0,
+            tenant_id: TENANT_ID
           }])
           .select()
           .single();
