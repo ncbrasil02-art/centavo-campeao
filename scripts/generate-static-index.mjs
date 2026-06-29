@@ -3,12 +3,12 @@ import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
 
 const siteUrl = process.env.SITE_URL || "https://sistemaparaleilaocentavos.site/";
-const serverEntryUrl = pathToFileURL(resolve("dist/server/server.js")).href;
+const serverEntryUrl = pathToFileURL(resolve(".output/server/index.js")).href;
 const serverEntry = await import(serverEntryUrl);
 const handler = serverEntry.default ?? serverEntry;
 
 if (!handler || typeof handler.fetch !== "function") {
-  throw new Error("dist/server/index.js does not export a fetch handler");
+  throw new Error(".output/server/index.js does not export a fetch handler");
 }
 
 let currentUrl = siteUrl;
@@ -35,7 +35,7 @@ if (!html.includes("/assets/")) {
   throw new Error("Static index render did not include built client assets");
 }
 
-await mkdir("dist/client", { recursive: true });
-await writeFile("dist/client/index.html", html);
+await mkdir(".output/public", { recursive: true });
+await writeFile(".output/public/index.html", html);
 
 console.log(`Generated dist/client/index.html from ${currentUrl}`);
