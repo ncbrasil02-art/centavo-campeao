@@ -57,6 +57,7 @@ function AdminTestimonials() {
       const { data, error } = await supabase
         .from("testimonials")
         .select("*")
+        .eq("tenant_id", TENANT_ID)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
