@@ -51,6 +51,7 @@ function AdminPackages() {
       const { data, error } = await supabase
         .from("bid_packages")
         .select("*")
+        .eq("tenant_id", TENANT_ID)
         .order("price", { ascending: true });
 
       if (error) throw error;
