@@ -62,6 +62,7 @@ function AdminBanners() {
       const { data, error } = await supabase
         .from("banners")
         .select("*")
+        .eq("tenant_id", TENANT_ID)
         .order("order_index", { ascending: true });
 
       if (error) throw error;
