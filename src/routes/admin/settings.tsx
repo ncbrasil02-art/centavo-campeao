@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
+import { TENANT_ID } from "@/lib/tenant";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -304,7 +305,7 @@ function AdminSettings() {
       } else {
         const { error: adminError } = await supabase
           .from("admin_settings")
-          .insert({ mercado_pago_access_token });
+          .insert({ mercado_pago_access_token, tenant_id: TENANT_ID });
         if (adminError) throw adminError;
       }
 

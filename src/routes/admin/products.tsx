@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
+import { TENANT_ID } from "@/lib/tenant";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
@@ -193,7 +194,7 @@ function AdminProducts() {
       } else {
         const { error } = await supabase
           .from("products")
-          .insert([payload]);
+          .insert([{ ...payload, tenant_id: TENANT_ID }]);
         if (error) throw error;
         toast.success("Produto/Lote criado");
       }

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { TENANT_ID } from "@/lib/tenant";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -208,7 +209,8 @@ export function AuctionClaimPanel({ auctionId, winnerData }: { auctionId: string
         media_type: testimonialMedia?.type || 'text',
         status: 'pending',
         active: false,
-        rating: 5
+        rating: 5,
+        tenant_id: TENANT_ID
       };
 
       const { error } = await supabase

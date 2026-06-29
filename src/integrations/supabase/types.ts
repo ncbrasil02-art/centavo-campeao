@@ -52,18 +52,21 @@ export type Database = {
           created_at: string | null
           id: string
           mercado_pago_access_token: string | null
+          tenant_id: string
           updated_at: string | null
         }
         Insert: {
           created_at?: string | null
           id?: string
           mercado_pago_access_token?: string | null
+          tenant_id: string
           updated_at?: string | null
         }
         Update: {
           created_at?: string | null
           id?: string
           mercado_pago_access_token?: string | null
+          tenant_id?: string
           updated_at?: string | null
         }
         Relationships: []
@@ -73,6 +76,7 @@ export type Database = {
           active: boolean | null
           created_at: string | null
           id: string
+          tenant_id: string
           text: string
           type: string
         }
@@ -80,6 +84,7 @@ export type Database = {
           active?: boolean | null
           created_at?: string | null
           id?: string
+          tenant_id: string
           text: string
           type: string
         }
@@ -87,6 +92,7 @@ export type Database = {
           active?: boolean | null
           created_at?: string | null
           id?: string
+          tenant_id?: string
           text?: string
           type?: string
         }
@@ -152,6 +158,7 @@ export type Database = {
           start_time: string | null
           status: string | null
           target_winner: string | null
+          tenant_id: string
           timer_duration: number | null
         }
         Insert: {
@@ -171,6 +178,7 @@ export type Database = {
           start_time?: string | null
           status?: string | null
           target_winner?: string | null
+          tenant_id: string
           timer_duration?: number | null
         }
         Update: {
@@ -190,6 +198,7 @@ export type Database = {
           start_time?: string | null
           status?: string | null
           target_winner?: string | null
+          tenant_id?: string
           timer_duration?: number | null
         }
         Relationships: [
@@ -230,6 +239,7 @@ export type Database = {
           show_button: boolean | null
           start_at: string | null
           subtitle: string | null
+          tenant_id: string
           title: string | null
           transition_duration: number | null
         }
@@ -246,6 +256,7 @@ export type Database = {
           show_button?: boolean | null
           start_at?: string | null
           subtitle?: string | null
+          tenant_id: string
           title?: string | null
           transition_duration?: number | null
         }
@@ -262,6 +273,7 @@ export type Database = {
           show_button?: boolean | null
           start_at?: string | null
           subtitle?: string | null
+          tenant_id?: string
           title?: string | null
           transition_duration?: number | null
         }
@@ -275,6 +287,7 @@ export type Database = {
           image_url: string | null
           name: string
           price: number
+          tenant_id: string
         }
         Insert: {
           bid_amount: number
@@ -283,6 +296,7 @@ export type Database = {
           image_url?: string | null
           name: string
           price: number
+          tenant_id: string
         }
         Update: {
           bid_amount?: number
@@ -291,6 +305,7 @@ export type Database = {
           image_url?: string | null
           name?: string
           price?: number
+          tenant_id?: string
         }
         Relationships: []
       }
@@ -413,6 +428,7 @@ export type Database = {
           order_index: number | null
           product_image: string
           product_name: string
+          tenant_id: string
           timer_seconds: number | null
         }
         Insert: {
@@ -427,6 +443,7 @@ export type Database = {
           order_index?: number | null
           product_image: string
           product_name: string
+          tenant_id: string
           timer_seconds?: number | null
         }
         Update: {
@@ -441,6 +458,7 @@ export type Database = {
           order_index?: number | null
           product_image?: string
           product_name?: string
+          tenant_id?: string
           timer_seconds?: number | null
         }
         Relationships: []
@@ -451,18 +469,21 @@ export type Database = {
           id: string
           is_active: boolean | null
           template_text: string
+          tenant_id: string
         }
         Insert: {
           created_at?: string | null
           id?: string
           is_active?: boolean | null
           template_text: string
+          tenant_id: string
         }
         Update: {
           created_at?: string | null
           id?: string
           is_active?: boolean | null
           template_text?: string
+          tenant_id?: string
         }
         Relationships: []
       }
@@ -474,6 +495,7 @@ export type Database = {
           is_active: boolean | null
           mention_future_auctions: boolean | null
           phrase: string
+          tenant_id: string
           updated_at: string | null
         }
         Insert: {
@@ -483,6 +505,7 @@ export type Database = {
           is_active?: boolean | null
           mention_future_auctions?: boolean | null
           phrase: string
+          tenant_id: string
           updated_at?: string | null
         }
         Update: {
@@ -492,6 +515,7 @@ export type Database = {
           is_active?: boolean | null
           mention_future_auctions?: boolean | null
           phrase?: string
+          tenant_id?: string
           updated_at?: string | null
         }
         Relationships: []
@@ -506,6 +530,7 @@ export type Database = {
           market_value: number
           name: string
           slug: string | null
+          tenant_id: string
         }
         Insert: {
           category?: string | null
@@ -516,6 +541,7 @@ export type Database = {
           market_value: number
           name: string
           slug?: string | null
+          tenant_id: string
         }
         Update: {
           category?: string | null
@@ -526,6 +552,7 @@ export type Database = {
           market_value?: number
           name?: string
           slug?: string | null
+          tenant_id?: string
         }
         Relationships: []
       }
@@ -1068,6 +1095,7 @@ export type Database = {
           name: string
           rating: number | null
           status: string | null
+          tenant_id: string
           user_id: string | null
         }
         Insert: {
@@ -1082,6 +1110,7 @@ export type Database = {
           name: string
           rating?: number | null
           status?: string | null
+          tenant_id: string
           user_id?: string | null
         }
         Update: {
@@ -1096,6 +1125,7 @@ export type Database = {
           name?: string
           rating?: number | null
           status?: string | null
+          tenant_id?: string
           user_id?: string | null
         }
         Relationships: [

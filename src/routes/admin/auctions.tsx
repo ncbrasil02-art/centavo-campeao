@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
+import { TENANT_ID } from "@/lib/tenant";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
@@ -303,7 +304,8 @@ function AdminAuctions() {
             name: formData.new_product_name,
             description: formData.new_product_description,
             market_value: formData.new_product_market_value,
-            images: formData.new_product_images
+            images: formData.new_product_images,
+            tenant_id: TENANT_ID
           }])
           .select()
           .single();
@@ -588,7 +590,8 @@ function AdminAuctions() {
               status: 'scheduled',
               current_price: 0.01,
               bid_count: 0,
-              robot_enabled: true
+              robot_enabled: true,
+              tenant_id: TENANT_ID
             });
             productIndex++;
           }

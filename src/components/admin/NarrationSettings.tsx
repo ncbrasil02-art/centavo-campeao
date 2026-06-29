@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { TENANT_ID } from "@/lib/tenant";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -46,7 +47,7 @@ export function NarrationSettings() {
     setLoading(true);
     const { error } = await supabase
       .from("narration_phrases")
-      .insert({ phrase: newPhrase.trim(), category: 'encouragement' });
+      .insert({ phrase: newPhrase.trim(), category: 'encouragement', tenant_id: TENANT_ID });
     
     if (error) {
       toast.error("Erro ao adicionar frase");
@@ -63,7 +64,7 @@ export function NarrationSettings() {
     setLoading(true);
     const { error } = await supabase
       .from("app_phrases")
-      .insert({ text: newAppPhrase.trim(), type: 'incentive', active: true });
+      .insert({ text: newAppPhrase.trim(), type: 'incentive', active: true, tenant_id: TENANT_ID });
     
     if (error) {
       toast.error("Erro ao adicionar frase");
@@ -80,7 +81,7 @@ export function NarrationSettings() {
     setLoading(true);
     const { error } = await supabase
       .from("future_auction_templates")
-      .insert({ template_text: newTemplate.trim(), is_active: true });
+      .insert({ template_text: newTemplate.trim(), is_active: true, tenant_id: TENANT_ID });
     
     if (error) {
       toast.error("Erro ao adicionar template");
