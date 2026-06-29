@@ -28,7 +28,7 @@ jobs:
             echo ">>> Tentativa $i de $MAX..."
             if rsync -avz --delete \
               -e "ssh -p 65002 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o ConnectTimeout=30" \
-              dist/client/ \
+              .output/public/ \
               "${{ secrets.FTP_USER }}@${{ secrets.FTP_HOST }}:/home/u386043061/domains/centavodomilhao.online/public_html/"; then
               echo "Deploy OK na tentativa $i"
               exit 0
