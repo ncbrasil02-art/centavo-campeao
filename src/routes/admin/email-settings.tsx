@@ -37,28 +37,82 @@ type Template = {
   enabled: boolean;
 };
 
+type TemplateMeta = {
+  label: string;
+  description: string;
+  variables: { name: string; example: string; hint: string }[];
+};
+
+const TEMPLATE_META: Record<string, TemplateMeta> = {
+  welcome: {
+    label: "Cadastro / Confirmação de e-mail",
+    description:
+      "Enviado logo após o cadastro. Deve conter o link {{link}} para confirmar a conta.",
+    variables: [
+      { name: "name", example: "João Silva", hint: "Nome do usuário" },
+      { name: "link", example: "https://seu-site.com/auth/confirm?token=abc123", hint: "Link de confirmação" },
+    ],
+  },
+  password_reset: {
+    label: "Recuperação de senha",
+    description: "Enviado quando o usuário pede redefinição de senha.",
+    variables: [
+      { name: "link", example: "https://seu-site.com/auth/reset?token=abc123", hint: "Link de redefinição" },
+    ],
+  },
+  email_confirmation: {
+    label: "Reenvio de confirmação de e-mail",
+    description: "Usado para reenviar o link de confirmação de e-mail.",
+    variables: [
+      { name: "name", example: "João Silva", hint: "Nome do usuário" },
+      { name: "link", example: "https://seu-site.com/auth/confirm?token=abc123", hint: "Link de confirmação" },
+    ],
+  },
+  auction_won: {
+    label: "Vencedor de leilão",
+    description: "Notifica o vencedor de um leilão arrematado.",
+    variables: [
+      { name: "name", example: "João Silva", hint: "Nome" },
+      { name: "product", example: "iPhone 15", hint: "Produto" },
+      { name: "price", example: "0,47", hint: "Valor final em R$" },
+    ],
+  },
+};
+
 const DEFAULT_TEMPLATES: Omit<Template, "tenant_id">[] = [
   {
     template_key: "welcome",
-    subject: "Bem-vindo(a) à nossa plataforma!",
-    html_body: "<h2>Olá, {{name}}!</h2><p>Sua conta foi criada com sucesso.</p>",
+    subject: "Bem-vindo(a)! Confirme seu e-mail",
+    html_body:
+      '<div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px">\n  <h2>Olá, {{name}}!</h2>\n  <p>Sua conta foi criada. Clique no botão abaixo para confirmar seu e-mail:</p>\n  <p style="text-align:center;margin:24px 0">\n    <a href="{{link}}" style="background:#f59e0b;color:#000;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:bold">Confirmar minha conta</a>\n  </p>\n  <p style="font-size:12px;color:#666">Se o botão não funcionar, copie e cole o link:<br/>{{link}}</p>\n</div>',
     enabled: true,
   },
   {
     template_key: "password_reset",
     subject: "Redefinição de senha",
     html_body:
-      "<h2>Redefinir senha</h2><p>Clique no link para redefinir: <a href=\"{{link}}\">{{link}}</a></p>",
+      '<div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px">\n  <h2>Redefinir sua senha</h2>\n  <p>Recebemos uma solicitação para redefinir sua senha. Clique no botão abaixo:</p>\n  <p style="text-align:center;margin:24px 0">\n    <a href="{{link}}" style="background:#f59e0b;color:#000;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:bold">Redefinir senha</a>\n  </p>\n  <p style="font-size:12px;color:#666">Se você não solicitou, ignore este e-mail.<br/>Link direto: {{link}}</p>\n</div>',
+    enabled: true,
+  },
+  {
+    template_key: "email_confirmation",
+    subject: "Confirme seu e-mail",
+    html_body:
+      '<div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px">\n  <h2>Olá, {{name}}!</h2>\n  <p>Confirme seu e-mail clicando no link abaixo:</p>\n  <p style="text-align:center;margin:24px 0">\n    <a href="{{link}}" style="background:#f59e0b;color:#000;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:bold">Confirmar e-mail</a>\n  </p>\n</div>',
     enabled: true,
   },
   {
     template_key: "auction_won",
     subject: "Parabéns! Você arrematou o leilão",
     html_body:
-      "<h2>Você venceu!</h2><p>Olá {{name}}, você arrematou <b>{{product}}</b> por R$ {{price}}.</p>",
+      '<div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px">\n  <h2>Você venceu! 🎉</h2>\n  <p>Olá {{name}}, você arrematou <b>{{product}}</b> por R$ {{price}}.</p>\n</div>',
     enabled: true,
   },
 ];
+
+function renderPreview(tpl: string, vars: Record<string, string>) {
+  return tpl.replace(/\{\{\s*(\w+)\s*\}\}/g, (_, k) => vars[k] ?? `{{${k}}}`);
+}
 
 function EmailSettingsPage() {
   const [config, setConfig] = useState<Config>({
