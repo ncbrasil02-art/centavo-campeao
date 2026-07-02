@@ -69,6 +69,8 @@ async function sendViaSmtp2Go(params: {
   if (!cfg || !cfg.enabled) throw new Error("E-mail não configurado para este tenant");
   if (!tpl || !tpl.enabled) throw new Error(`Template ${params.templateKey} indisponível`);
 
+
+  assertVariablesProvided(params.templateKey, tpl.subject, tpl.html_body, params.variables);
   const subject = renderTemplate(tpl.subject, params.variables);
   const html = renderTemplate(tpl.html_body, params.variables);
   const from = cfg.from_name ? `${cfg.from_name} <${cfg.from_email}>` : cfg.from_email;
