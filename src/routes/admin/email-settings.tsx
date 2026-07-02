@@ -342,54 +342,112 @@ function EmailSettingsPage() {
         </TabsContent>
 
         <TabsContent value="templates" className="space-y-4">
-          {templates.map((t, i) => (
-            <Card key={t.id ?? t.template_key}>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle className="text-base">
-                  <code className="text-primary">{t.template_key}</code>
-                </CardTitle>
-                <div className="flex items-center gap-3">
-                  <Switch
-                    checked={t.enabled}
-                    onCheckedChange={(v) => {
-                      const next = [...templates];
-                      next[i] = { ...t, enabled: v };
-                      setTemplates(next);
-                    }}
-                  />
-                  <Button size="sm" variant="destructive" onClick={() => deleteTemplate(t)}>
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div>
-                  <Label>Assunto</Label>
-                  <Input
-                    value={t.subject}
-                    onChange={(e) => {
-                      const next = [...templates];
-                      next[i] = { ...t, subject: e.target.value };
-                      setTemplates(next);
-                    }}
-                  />
-                </div>
-                <div>
-                  <Label>HTML (use {"{{variavel}}"})</Label>
-                  <Textarea
-                    rows={6}
-                    value={t.html_body}
-                    onChange={(e) => {
-                      const next = [...templates];
-                      next[i] = { ...t, html_body: e.target.value };
-                      setTemplates(next);
-                    }}
-                  />
-                </div>
-                <Button size="sm" onClick={() => saveTemplate(t)}>Salvar template</Button>
-              </CardContent>
-            </Card>
-          ))}
+          <p className="text-xs text-white/60">
+            Edite o assunto e o HTML de cada tipo de e-mail. Use variáveis no formato{" "}
+            <code className="text-primary">{"{{nome}}"}</code>. A prévia à direita é atualizada em tempo real com dados de exemplo.
+          </p>
+          {templates.map((t, i) => {
+            const meta = TEMPLATE_META[t.template_key];
+            const sampleVars = Object.fromEntries(
+              (meta?.variables ?? []).map((v) => [v.name, v.example]),
+            );
+            return (
+              <Card key={t.id ?? t.template_key}>
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <div>
+                    <CardTitle className="text-base text-white">
+                      {meta?.label ?? t.template_key}
+                    </CardTitle>
+                    <p className="text-xs text-white/50 mt-1">
+                      <code className="text-primary">{t.template_key}</code>
+                      {meta?.description ? ` — ${meta.description}` : ""}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Switch
+                      checked={t.enabled}
+                      onCheckedChange={(v) => {
+                        const next = [...templates];
+                        next[i] = { ...t, enabled: v };
+                        setTemplates(next);
+                      }}
+                    />
+                    {!meta && (
+                      <Button size="sm" variant="destructive" onClick={() => deleteTemplate(t)}>
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    )}
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {meta && meta.variables.length > 0 && (
+                    <div>
+                      <Label className="text-xs">Variáveis disponíveis</Label>
+                      <div className="flex flex-wrap gap-2 mt-1">
+                        {meta.variables.map((v) => (
+                          <button
+                            key={v.name}
+                            type="button"
+                            title={`${v.hint} — clique para copiar`}
+                            onClick={() => {
+                              navigator.clipboard.writeText(`{{${v.name}}}`);
+                              toast.success(`{{${v.name}}} copiado`);
+                            }}
+                            className="text-xs px-2 py-1 rounded bg-primary/10 border border-primary/30 text-primary hover:bg-primary/20"
+                          >
+                            {`{{${v.name}}}`} <span className="opacity-60">— {v.hint}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-3">
+                      <div>
+                        <Label>Assunto</Label>
+                        <Input
+                          value={t.subject}
+                          onChange={(e) => {
+                            const next = [...templates];
+                            next[i] = { ...t, subject: e.target.value };
+                            setTemplates(next);
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <Label>HTML</Label>
+                        <Textarea
+                          rows={12}
+                          className="font-mono text-xs"
+                          value={t.html_body}
+                          onChange={(e) => {
+                            const next = [...templates];
+                            next[i] = { ...t, html_body: e.target.value };
+                            setTemplates(next);
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-xs">Prévia (com dados de exemplo)</Label>
+                      <div className="rounded border border-white/10 bg-white/5 p-2">
+                        <div className="text-xs text-white/60 pb-2 border-b border-white/10 mb-2">
+                          <b>Assunto:</b> {renderPreview(t.subject, sampleVars)}
+                        </div>
+                        <iframe
+                          title={`preview-${t.template_key}`}
+                          sandbox=""
+                          className="w-full h-72 rounded bg-white"
+                          srcDoc={renderPreview(t.html_body, sampleVars)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <Button size="sm" onClick={() => saveTemplate(t)}>Salvar template</Button>
+                </CardContent>
+              </Card>
+            );
+          })}
           <Button
             variant="outline"
             onClick={() =>
@@ -399,9 +457,11 @@ function EmailSettingsPage() {
               ])
             }
           >
-            + Adicionar template
+            + Adicionar template customizado
           </Button>
         </TabsContent>
+
+
 
         <TabsContent value="logs">
           <Card>
