@@ -72,6 +72,7 @@ async function coreSend(input: z.infer<typeof sendInput>) {
       .eq("template_key", input.templateKey)
       .maybeSingle();
     if (!tpl?.enabled) throw new Error(`Template ${input.templateKey} não encontrado ou desativado`);
+    assertVariablesProvided(input.templateKey, tpl.subject, tpl.html_body, input.variables);
     subject = renderTemplate(tpl.subject, input.variables);
     html = renderTemplate(tpl.html_body, input.variables);
   }
