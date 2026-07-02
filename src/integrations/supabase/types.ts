@@ -1082,6 +1082,111 @@ export type Database = {
         }
         Relationships: []
       }
+      tenant_email_configs: {
+        Row: {
+          api_key: string
+          created_at: string
+          enabled: boolean
+          from_email: string
+          from_name: string
+          provider: string
+          reply_to: string | null
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          api_key: string
+          created_at?: string
+          enabled?: boolean
+          from_email: string
+          from_name?: string
+          provider?: string
+          reply_to?: string | null
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          api_key?: string
+          created_at?: string
+          enabled?: boolean
+          from_email?: string
+          from_name?: string
+          provider?: string
+          reply_to?: string | null
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      tenant_email_logs: {
+        Row: {
+          created_at: string
+          error: string | null
+          id: string
+          provider_response: Json | null
+          status: string
+          subject: string | null
+          template_key: string | null
+          tenant_id: string
+          to_email: string
+        }
+        Insert: {
+          created_at?: string
+          error?: string | null
+          id?: string
+          provider_response?: Json | null
+          status: string
+          subject?: string | null
+          template_key?: string | null
+          tenant_id: string
+          to_email: string
+        }
+        Update: {
+          created_at?: string
+          error?: string | null
+          id?: string
+          provider_response?: Json | null
+          status?: string
+          subject?: string | null
+          template_key?: string | null
+          tenant_id?: string
+          to_email?: string
+        }
+        Relationships: []
+      }
+      tenant_email_templates: {
+        Row: {
+          created_at: string
+          enabled: boolean
+          html_body: string
+          id: string
+          subject: string
+          template_key: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean
+          html_body: string
+          id?: string
+          subject: string
+          template_key: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean
+          html_body?: string
+          id?: string
+          subject?: string
+          template_key?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       testimonials: {
         Row: {
           active: boolean | null

@@ -14,6 +14,7 @@ import {
   ChevronRight,
   ClipboardCheck,
   Target,
+  Mail,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -41,6 +42,7 @@ export function AdminSidebar() {
     { label: "Depoimentos", href: "/admin/testimonials", icon: MessageSquare },
     { label: "Atendimentos IA", href: "/admin/support-chats", icon: MessageCircle },
     { label: "FAQ da Fernanda", href: "/admin/support-faqs", icon: MessageSquare },
+    { label: "E-mails (SMTP2Go)", href: "/admin/email-settings", icon: Mail },
     { label: "Configurações", href: "/admin/settings", icon: Settings },
   ];
 
