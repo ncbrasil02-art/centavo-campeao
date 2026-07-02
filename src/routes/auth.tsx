@@ -15,6 +15,12 @@ import { toast } from "sonner";
 import { Gavel, Mail, Lock, User, Phone, MapPin, Hash, Camera, Info, LogIn } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSettings } from "@/hooks/useSettings";
+import { TENANT_ID } from "@/lib/tenant";
+import {
+  sendWelcomeEmail,
+  sendPasswordResetEmail,
+  sendSignupConfirmationEmail,
+} from "@/lib/auth-emails.functions";
 
 const authSearchSchema = z.object({
   register: z.union([z.string(), z.boolean()]).optional(),
