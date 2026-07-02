@@ -15,6 +15,12 @@ import { toast } from "sonner";
 import { Gavel, Mail, Lock, User, Phone, MapPin, Hash, Camera, Info, LogIn } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSettings } from "@/hooks/useSettings";
+import { TENANT_ID } from "@/lib/tenant";
+import {
+  sendWelcomeEmail,
+  sendPasswordResetEmail,
+  sendSignupConfirmationEmail,
+} from "@/lib/auth-emails.functions";
 
 const authSearchSchema = z.object({
   register: z.union([z.string(), z.boolean()]).optional(),
@@ -115,10 +121,24 @@ function AuthPage() {
 
       if (data.user) {
         toast.success("Cadastro realizado com sucesso!");
-        if (data.session) {
-          navigate({ to: "/" });
-        } else {
-          toast.info("Por favor, verifique seu e-mail para ativar a conta.");
+        // Dispara e-mails via SMTP2Go (não bloqueia o fluxo se falhar)
+        try {
+          if (data.session) {
+            await sendWelcomeEmail({ data: { tenantId: TENANT_ID, to: email, name: fullName } });
+            navigate({ to: "/" });
+          } else {
+            await sendSignupConfirmationEmail({
+              data: {
+                tenantId: TENANT_ID,
+                to: email,
+                name: fullName,
+                redirectTo: `${window.location.origin}/`,
+              },
+            });
+            toast.info("Enviamos um e-mail para confirmar sua conta.");
+          }
+        } catch (err: any) {
+          console.warn("Falha ao enviar e-mail via SMTP2Go:", err?.message);
         }
       }
     } catch (error: any) {
@@ -154,10 +174,13 @@ function AuthPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
-        redirectTo: `${window.location.origin}/auth?reset=true`,
+      await sendPasswordResetEmail({
+        data: {
+          tenantId: TENANT_ID,
+          to: resetEmail,
+          redirectTo: `${window.location.origin}/auth?reset=true`,
+        },
       });
-      if (error) throw error;
       toast.success("E-mail de recuperação enviado!");
     } catch (error: any) {
       toast.error(error.message);
