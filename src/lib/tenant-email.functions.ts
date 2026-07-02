@@ -11,6 +11,40 @@ const sendInput = z.object({
   variables: z.record(z.string()).optional(),
 });
 
+const REQUIRED_VARS: Record<string, string[]> = {
+  welcome: ["link"],
+  password_reset: ["link"],
+  email_confirmation: ["link"],
+  auction_won: ["name", "product", "price"],
+};
+
+function assertVariablesProvided(
+  templateKey: string | undefined,
+  subject: string,
+  html: string,
+  vars: Record<string, string> = {},
+) {
+  if (!templateKey) return;
+  const required = REQUIRED_VARS[templateKey] ?? [];
+  const content = `${subject}\n${html}`;
+  const missingInTemplate = required.filter(
+    (v) => !new RegExp(`\\{\\{\\s*${v}\\s*\\}\\}`).test(content),
+  );
+  if (missingInTemplate.length) {
+    throw new Error(
+      `Template "${templateKey}" não contém as variáveis obrigatórias: ${missingInTemplate
+        .map((v) => `{{${v}}}`)
+        .join(", ")}`,
+    );
+  }
+  const missingValues = required.filter((v) => !vars[v] || !String(vars[v]).trim());
+  if (missingValues.length) {
+    throw new Error(
+      `Valores ausentes para variáveis obrigatórias: ${missingValues.join(", ")}`,
+    );
+  }
+}
+
 function renderTemplate(tpl: string, vars: Record<string, string> = {}) {
   return tpl.replace(/\{\{\s*(\w+)\s*\}\}/g, (_, k) => vars[k] ?? "");
 }
