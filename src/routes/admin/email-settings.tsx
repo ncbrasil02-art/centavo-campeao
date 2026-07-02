@@ -37,28 +37,82 @@ type Template = {
   enabled: boolean;
 };
 
+type TemplateMeta = {
+  label: string;
+  description: string;
+  variables: { name: string; example: string; hint: string }[];
+};
+
+const TEMPLATE_META: Record<string, TemplateMeta> = {
+  welcome: {
+    label: "Cadastro / Confirmação de e-mail",
+    description:
+      "Enviado logo após o cadastro. Deve conter o link {{link}} para confirmar a conta.",
+    variables: [
+      { name: "name", example: "João Silva", hint: "Nome do usuário" },
+      { name: "link", example: "https://seu-site.com/auth/confirm?token=abc123", hint: "Link de confirmação" },
+    ],
+  },
+  password_reset: {
+    label: "Recuperação de senha",
+    description: "Enviado quando o usuário pede redefinição de senha.",
+    variables: [
+      { name: "link", example: "https://seu-site.com/auth/reset?token=abc123", hint: "Link de redefinição" },
+    ],
+  },
+  email_confirmation: {
+    label: "Reenvio de confirmação de e-mail",
+    description: "Usado para reenviar o link de confirmação de e-mail.",
+    variables: [
+      { name: "name", example: "João Silva", hint: "Nome do usuário" },
+      { name: "link", example: "https://seu-site.com/auth/confirm?token=abc123", hint: "Link de confirmação" },
+    ],
+  },
+  auction_won: {
+    label: "Vencedor de leilão",
+    description: "Notifica o vencedor de um leilão arrematado.",
+    variables: [
+      { name: "name", example: "João Silva", hint: "Nome" },
+      { name: "product", example: "iPhone 15", hint: "Produto" },
+      { name: "price", example: "0,47", hint: "Valor final em R$" },
+    ],
+  },
+};
+
 const DEFAULT_TEMPLATES: Omit<Template, "tenant_id">[] = [
   {
     template_key: "welcome",
-    subject: "Bem-vindo(a) à nossa plataforma!",
-    html_body: "<h2>Olá, {{name}}!</h2><p>Sua conta foi criada com sucesso.</p>",
+    subject: "Bem-vindo(a)! Confirme seu e-mail",
+    html_body:
+      '<div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px">\n  <h2>Olá, {{name}}!</h2>\n  <p>Sua conta foi criada. Clique no botão abaixo para confirmar seu e-mail:</p>\n  <p style="text-align:center;margin:24px 0">\n    <a href="{{link}}" style="background:#f59e0b;color:#000;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:bold">Confirmar minha conta</a>\n  </p>\n  <p style="font-size:12px;color:#666">Se o botão não funcionar, copie e cole o link:<br/>{{link}}</p>\n</div>',
     enabled: true,
   },
   {
     template_key: "password_reset",
     subject: "Redefinição de senha",
     html_body:
-      "<h2>Redefinir senha</h2><p>Clique no link para redefinir: <a href=\"{{link}}\">{{link}}</a></p>",
+      '<div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px">\n  <h2>Redefinir sua senha</h2>\n  <p>Recebemos uma solicitação para redefinir sua senha. Clique no botão abaixo:</p>\n  <p style="text-align:center;margin:24px 0">\n    <a href="{{link}}" style="background:#f59e0b;color:#000;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:bold">Redefinir senha</a>\n  </p>\n  <p style="font-size:12px;color:#666">Se você não solicitou, ignore este e-mail.<br/>Link direto: {{link}}</p>\n</div>',
+    enabled: true,
+  },
+  {
+    template_key: "email_confirmation",
+    subject: "Confirme seu e-mail",
+    html_body:
+      '<div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px">\n  <h2>Olá, {{name}}!</h2>\n  <p>Confirme seu e-mail clicando no link abaixo:</p>\n  <p style="text-align:center;margin:24px 0">\n    <a href="{{link}}" style="background:#f59e0b;color:#000;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:bold">Confirmar e-mail</a>\n  </p>\n</div>',
     enabled: true,
   },
   {
     template_key: "auction_won",
     subject: "Parabéns! Você arrematou o leilão",
     html_body:
-      "<h2>Você venceu!</h2><p>Olá {{name}}, você arrematou <b>{{product}}</b> por R$ {{price}}.</p>",
+      '<div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px">\n  <h2>Você venceu! 🎉</h2>\n  <p>Olá {{name}}, você arrematou <b>{{product}}</b> por R$ {{price}}.</p>\n</div>',
     enabled: true,
   },
 ];
+
+function renderPreview(tpl: string, vars: Record<string, string>) {
+  return tpl.replace(/\{\{\s*(\w+)\s*\}\}/g, (_, k) => vars[k] ?? `{{${k}}}`);
+}
 
 function EmailSettingsPage() {
   const [config, setConfig] = useState<Config>({
@@ -87,11 +141,16 @@ function EmailSettingsPage() {
         supabase.from("tenant_email_logs").select("*").eq("tenant_id", TENANT_ID).order("created_at", { ascending: false }).limit(30),
       ]);
       if (cfg) setConfig(cfg as Config);
-      setTemplates(
-        tpls && tpls.length > 0
-          ? (tpls as Template[])
-          : DEFAULT_TEMPLATES.map((t) => ({ ...t, tenant_id: TENANT_ID })),
-      );
+      const saved = (tpls as Template[]) ?? [];
+      const merged: Template[] = DEFAULT_TEMPLATES.map((d) => {
+        const found = saved.find((s) => s.template_key === d.template_key);
+        return found ?? { ...d, tenant_id: TENANT_ID };
+      });
+      // Anexa qualquer template customizado que não esteja na lista padrão
+      for (const s of saved) {
+        if (!merged.find((m) => m.template_key === s.template_key)) merged.push(s);
+      }
+      setTemplates(merged);
       setLogs(lgs ?? []);
       setLoading(false);
     })();
@@ -283,54 +342,112 @@ function EmailSettingsPage() {
         </TabsContent>
 
         <TabsContent value="templates" className="space-y-4">
-          {templates.map((t, i) => (
-            <Card key={t.id ?? t.template_key}>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle className="text-base">
-                  <code className="text-primary">{t.template_key}</code>
-                </CardTitle>
-                <div className="flex items-center gap-3">
-                  <Switch
-                    checked={t.enabled}
-                    onCheckedChange={(v) => {
-                      const next = [...templates];
-                      next[i] = { ...t, enabled: v };
-                      setTemplates(next);
-                    }}
-                  />
-                  <Button size="sm" variant="destructive" onClick={() => deleteTemplate(t)}>
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div>
-                  <Label>Assunto</Label>
-                  <Input
-                    value={t.subject}
-                    onChange={(e) => {
-                      const next = [...templates];
-                      next[i] = { ...t, subject: e.target.value };
-                      setTemplates(next);
-                    }}
-                  />
-                </div>
-                <div>
-                  <Label>HTML (use {"{{variavel}}"})</Label>
-                  <Textarea
-                    rows={6}
-                    value={t.html_body}
-                    onChange={(e) => {
-                      const next = [...templates];
-                      next[i] = { ...t, html_body: e.target.value };
-                      setTemplates(next);
-                    }}
-                  />
-                </div>
-                <Button size="sm" onClick={() => saveTemplate(t)}>Salvar template</Button>
-              </CardContent>
-            </Card>
-          ))}
+          <p className="text-xs text-white/60">
+            Edite o assunto e o HTML de cada tipo de e-mail. Use variáveis no formato{" "}
+            <code className="text-primary">{"{{nome}}"}</code>. A prévia à direita é atualizada em tempo real com dados de exemplo.
+          </p>
+          {templates.map((t, i) => {
+            const meta = TEMPLATE_META[t.template_key];
+            const sampleVars = Object.fromEntries(
+              (meta?.variables ?? []).map((v) => [v.name, v.example]),
+            );
+            return (
+              <Card key={t.id ?? t.template_key}>
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <div>
+                    <CardTitle className="text-base text-white">
+                      {meta?.label ?? t.template_key}
+                    </CardTitle>
+                    <p className="text-xs text-white/50 mt-1">
+                      <code className="text-primary">{t.template_key}</code>
+                      {meta?.description ? ` — ${meta.description}` : ""}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Switch
+                      checked={t.enabled}
+                      onCheckedChange={(v) => {
+                        const next = [...templates];
+                        next[i] = { ...t, enabled: v };
+                        setTemplates(next);
+                      }}
+                    />
+                    {!meta && (
+                      <Button size="sm" variant="destructive" onClick={() => deleteTemplate(t)}>
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    )}
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {meta && meta.variables.length > 0 && (
+                    <div>
+                      <Label className="text-xs">Variáveis disponíveis</Label>
+                      <div className="flex flex-wrap gap-2 mt-1">
+                        {meta.variables.map((v) => (
+                          <button
+                            key={v.name}
+                            type="button"
+                            title={`${v.hint} — clique para copiar`}
+                            onClick={() => {
+                              navigator.clipboard.writeText(`{{${v.name}}}`);
+                              toast.success(`{{${v.name}}} copiado`);
+                            }}
+                            className="text-xs px-2 py-1 rounded bg-primary/10 border border-primary/30 text-primary hover:bg-primary/20"
+                          >
+                            {`{{${v.name}}}`} <span className="opacity-60">— {v.hint}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-3">
+                      <div>
+                        <Label>Assunto</Label>
+                        <Input
+                          value={t.subject}
+                          onChange={(e) => {
+                            const next = [...templates];
+                            next[i] = { ...t, subject: e.target.value };
+                            setTemplates(next);
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <Label>HTML</Label>
+                        <Textarea
+                          rows={12}
+                          className="font-mono text-xs"
+                          value={t.html_body}
+                          onChange={(e) => {
+                            const next = [...templates];
+                            next[i] = { ...t, html_body: e.target.value };
+                            setTemplates(next);
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-xs">Prévia (com dados de exemplo)</Label>
+                      <div className="rounded border border-white/10 bg-white/5 p-2">
+                        <div className="text-xs text-white/60 pb-2 border-b border-white/10 mb-2">
+                          <b>Assunto:</b> {renderPreview(t.subject, sampleVars)}
+                        </div>
+                        <iframe
+                          title={`preview-${t.template_key}`}
+                          sandbox=""
+                          className="w-full h-72 rounded bg-white"
+                          srcDoc={renderPreview(t.html_body, sampleVars)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <Button size="sm" onClick={() => saveTemplate(t)}>Salvar template</Button>
+                </CardContent>
+              </Card>
+            );
+          })}
           <Button
             variant="outline"
             onClick={() =>
@@ -340,9 +457,11 @@ function EmailSettingsPage() {
               ])
             }
           >
-            + Adicionar template
+            + Adicionar template customizado
           </Button>
         </TabsContent>
+
+
 
         <TabsContent value="logs">
           <Card>
