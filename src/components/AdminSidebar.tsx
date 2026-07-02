@@ -14,6 +14,7 @@ import {
   ChevronRight,
   ClipboardCheck,
   Target,
+  Mail,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
