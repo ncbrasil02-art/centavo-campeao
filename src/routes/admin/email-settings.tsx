@@ -141,11 +141,16 @@ function EmailSettingsPage() {
         supabase.from("tenant_email_logs").select("*").eq("tenant_id", TENANT_ID).order("created_at", { ascending: false }).limit(30),
       ]);
       if (cfg) setConfig(cfg as Config);
-      setTemplates(
-        tpls && tpls.length > 0
-          ? (tpls as Template[])
-          : DEFAULT_TEMPLATES.map((t) => ({ ...t, tenant_id: TENANT_ID })),
-      );
+      const saved = (tpls as Template[]) ?? [];
+      const merged: Template[] = DEFAULT_TEMPLATES.map((d) => {
+        const found = saved.find((s) => s.template_key === d.template_key);
+        return found ?? { ...d, tenant_id: TENANT_ID };
+      });
+      // Anexa qualquer template customizado que não esteja na lista padrão
+      for (const s of saved) {
+        if (!merged.find((m) => m.template_key === s.template_key)) merged.push(s);
+      }
+      setTemplates(merged);
       setLogs(lgs ?? []);
       setLoading(false);
     })();
