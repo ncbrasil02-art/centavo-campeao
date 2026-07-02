@@ -188,6 +188,13 @@ function EmailSettingsPage() {
   }
 
   async function saveTemplate(t: Template) {
+    const missing = findMissingVars(t.template_key, t.subject, t.html_body);
+    if (missing.length) {
+      toast.error(
+        `Variáveis obrigatórias ausentes: ${missing.map((v) => `{{${v}}}`).join(", ")}`,
+      );
+      return;
+    }
     const payload = { ...t, tenant_id: TENANT_ID, updated_at: new Date().toISOString() };
     const { error } = await supabase
       .from("tenant_email_templates")
