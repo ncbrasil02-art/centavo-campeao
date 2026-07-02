@@ -174,10 +174,13 @@ function AuthPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
-        redirectTo: `${window.location.origin}/auth?reset=true`,
+      await sendPasswordResetEmail({
+        data: {
+          tenantId: TENANT_ID,
+          to: resetEmail,
+          redirectTo: `${window.location.origin}/auth?reset=true`,
+        },
       });
-      if (error) throw error;
       toast.success("E-mail de recuperação enviado!");
     } catch (error: any) {
       toast.error(error.message);
