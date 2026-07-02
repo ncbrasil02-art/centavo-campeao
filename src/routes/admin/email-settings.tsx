@@ -127,13 +127,24 @@ function EmailSettingsPage() {
     toast.success("Template removido");
   }
 
+  const [testResult, setTestResult] = useState<{
+    ok: boolean;
+    error?: string;
+    log?: any;
+    at: string;
+  } | null>(null);
+
   async function handleTest() {
     if (!testEmail) return toast.error("Informe um e-mail de destino");
     setSending(true);
+    setTestResult(null);
     try {
-      await sendTest({ data: { tenantId: TENANT_ID, to: testEmail } });
-      toast.success("E-mail de teste enviado!");
+      const res: any = await sendTest({ data: { tenantId: TENANT_ID, to: testEmail } });
+      setTestResult({ ...res, at: new Date().toLocaleString("pt-BR") });
+      if (res?.ok) toast.success("E-mail de teste enviado!");
+      else toast.error(res?.error ?? "Falha no envio");
     } catch (e: any) {
+      setTestResult({ ok: false, error: e?.message ?? "Erro ao enviar", at: new Date().toLocaleString("pt-BR") });
       toast.error(e?.message ?? "Erro ao enviar");
     } finally {
       setSending(false);
@@ -215,17 +226,58 @@ function EmailSettingsPage() {
 
           <Card>
             <CardHeader><CardTitle>Enviar e-mail de teste</CardTitle></CardHeader>
-            <CardContent className="flex gap-2">
-              <Input
-                type="email"
-                placeholder="seu@email.com"
-                value={testEmail}
-                onChange={(e) => setTestEmail(e.target.value)}
-              />
-              <Button onClick={handleTest} disabled={sending}>
-                {sending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Send className="w-4 h-4 mr-2" />}
-                Enviar teste
-              </Button>
+            <CardContent className="space-y-3">
+              <p className="text-xs text-white/60">
+                Dispara um e-mail simples pela sua conta SMTP2Go, mostra o status HTTP e a resposta bruta da API — útil para diagnosticar API key inválida, remetente não verificado, domínio bloqueado etc.
+              </p>
+              <div className="flex gap-2">
+                <Input
+                  type="email"
+                  placeholder="seu@email.com"
+                  value={testEmail}
+                  onChange={(e) => setTestEmail(e.target.value)}
+                />
+                <Button onClick={handleTest} disabled={sending}>
+                  {sending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Send className="w-4 h-4 mr-2" />}
+                  Enviar teste
+                </Button>
+              </div>
+
+              {testResult && (
+                <div
+                  className={`rounded-md border p-3 text-sm space-y-2 ${
+                    testResult.ok
+                      ? "border-green-500/40 bg-green-500/10 text-green-200"
+                      : "border-red-500/40 bg-red-500/10 text-red-200"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <b>{testResult.ok ? "✅ Envio aceito pelo SMTP2Go" : "❌ Falha no envio"}</b>
+                    <span className="text-xs opacity-70">{testResult.at}</span>
+                  </div>
+                  {testResult.error && (
+                    <div>
+                      <div className="text-xs uppercase opacity-70">Erro</div>
+                      <code className="block break-all">{testResult.error}</code>
+                    </div>
+                  )}
+                  {testResult.log?.provider_response && (
+                    <details>
+                      <summary className="cursor-pointer text-xs opacity-80">Resposta bruta do SMTP2Go</summary>
+                      <pre className="mt-2 max-h-64 overflow-auto rounded bg-black/40 p-2 text-[11px] text-white/80">
+{JSON.stringify(testResult.log.provider_response, null, 2)}
+                      </pre>
+                    </details>
+                  )}
+                  {!testResult.ok && (
+                    <ul className="list-disc pl-5 text-xs opacity-80">
+                      <li>Verifique se a <b>API Key</b> começa com <code>api-</code> e está ativa.</li>
+                      <li>O <b>e-mail remetente</b> precisa estar em <i>Verified Senders</i> no SMTP2Go.</li>
+                      <li>Confira o <b>Envio ativado</b> logo acima.</li>
+                    </ul>
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>

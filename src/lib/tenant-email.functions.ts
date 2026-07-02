@@ -88,10 +88,34 @@ export const sendTestTenantEmail = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { data: isAdmin } = await context.supabase.rpc("is_admin");
     if (!isAdmin) throw new Error("Apenas administradores podem enviar e-mails de teste");
-    return coreSend({
-      tenantId: data.tenantId,
-      to: data.to,
-      subject: "Teste de envio – SMTP2Go",
-      html: `<div style="font-family:Arial,sans-serif;padding:24px"><h2>Funcionou! 🎉</h2><p>E-mail de teste enviado via SMTP2Go.</p></div>`,
-    });
+    try {
+      await coreSend({
+        tenantId: data.tenantId,
+        to: data.to,
+        subject: "Teste de envio – SMTP2Go",
+        html: `<div style="font-family:Arial,sans-serif;padding:24px"><h2>Funcionou! 🎉</h2><p>E-mail de teste enviado via SMTP2Go em ${new Date().toLocaleString("pt-BR")}.</p></div>`,
+      });
+      // Buscar o último log para retornar detalhes ao painel
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const { data: log } = await supabaseAdmin
+        .from("tenant_email_logs")
+        .select("status, provider_response, error, created_at, subject, to_email")
+        .eq("tenant_id", data.tenantId)
+        .eq("to_email", data.to)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      return { ok: true, log };
+    } catch (err: any) {
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const { data: log } = await supabaseAdmin
+        .from("tenant_email_logs")
+        .select("status, provider_response, error, created_at, subject, to_email")
+        .eq("tenant_id", data.tenantId)
+        .eq("to_email", data.to)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      return { ok: false, error: err?.message ?? "Falha desconhecida", log };
+    }
   });
