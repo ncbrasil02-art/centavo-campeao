@@ -127,13 +127,24 @@ function EmailSettingsPage() {
     toast.success("Template removido");
   }
 
+  const [testResult, setTestResult] = useState<{
+    ok: boolean;
+    error?: string;
+    log?: any;
+    at: string;
+  } | null>(null);
+
   async function handleTest() {
     if (!testEmail) return toast.error("Informe um e-mail de destino");
     setSending(true);
+    setTestResult(null);
     try {
-      await sendTest({ data: { tenantId: TENANT_ID, to: testEmail } });
-      toast.success("E-mail de teste enviado!");
+      const res: any = await sendTest({ data: { tenantId: TENANT_ID, to: testEmail } });
+      setTestResult({ ...res, at: new Date().toLocaleString("pt-BR") });
+      if (res?.ok) toast.success("E-mail de teste enviado!");
+      else toast.error(res?.error ?? "Falha no envio");
     } catch (e: any) {
+      setTestResult({ ok: false, error: e?.message ?? "Erro ao enviar", at: new Date().toLocaleString("pt-BR") });
       toast.error(e?.message ?? "Erro ao enviar");
     } finally {
       setSending(false);
