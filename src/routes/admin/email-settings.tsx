@@ -40,8 +40,29 @@ type Template = {
 type TemplateMeta = {
   label: string;
   description: string;
-  variables: { name: string; example: string; hint: string }[];
+  variables: { name: string; example: string; hint: string; required?: boolean }[];
 };
+
+/** Variáveis obrigatórias por template — devem aparecer no assunto ou corpo. */
+const REQUIRED_VARS: Record<string, string[]> = {
+  welcome: ["link"],
+  password_reset: ["link"],
+  email_confirmation: ["link"],
+  auction_won: ["name", "product", "price"],
+};
+
+/** Retorna a lista de variáveis obrigatórias ausentes no template. */
+export function findMissingVars(
+  templateKey: string,
+  subject: string,
+  html: string,
+): string[] {
+  const required = REQUIRED_VARS[templateKey] ?? [];
+  const content = `${subject}\n${html}`;
+  return required.filter(
+    (v) => !new RegExp(`\\{\\{\\s*${v}\\s*\\}\\}`).test(content),
+  );
+}
 
 const TEMPLATE_META: Record<string, TemplateMeta> = {
   welcome: {
