@@ -121,10 +121,24 @@ function AuthPage() {
 
       if (data.user) {
         toast.success("Cadastro realizado com sucesso!");
-        if (data.session) {
-          navigate({ to: "/" });
-        } else {
-          toast.info("Por favor, verifique seu e-mail para ativar a conta.");
+        // Dispara e-mails via SMTP2Go (não bloqueia o fluxo se falhar)
+        try {
+          if (data.session) {
+            await sendWelcomeEmail({ data: { tenantId: TENANT_ID, to: email, name: fullName } });
+            navigate({ to: "/" });
+          } else {
+            await sendSignupConfirmationEmail({
+              data: {
+                tenantId: TENANT_ID,
+                to: email,
+                name: fullName,
+                redirectTo: `${window.location.origin}/`,
+              },
+            });
+            toast.info("Enviamos um e-mail para confirmar sua conta.");
+          }
+        } catch (err: any) {
+          console.warn("Falha ao enviar e-mail via SMTP2Go:", err?.message);
         }
       }
     } catch (error: any) {
