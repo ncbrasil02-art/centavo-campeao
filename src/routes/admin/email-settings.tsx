@@ -169,10 +169,11 @@ function EmailSettingsPage() {
 
   useEffect(() => {
     (async () => {
-      const [{ data: cfg }, { data: tpls }, { data: lgs }] = await Promise.all([
+      const [{ data: cfg }, { data: tpls }, { data: lgs }, { data: ss }] = await Promise.all([
         supabase.from("tenant_email_configs").select("*").eq("tenant_id", TENANT_ID).maybeSingle(),
         supabase.from("tenant_email_templates").select("*").eq("tenant_id", TENANT_ID).order("template_key"),
         supabase.from("tenant_email_logs").select("*").eq("tenant_id", TENANT_ID).order("created_at", { ascending: false }).limit(30),
+        supabase.from("site_settings").select("site_name, logo_url").eq("tenant_id", TENANT_ID).maybeSingle(),
       ]);
       if (cfg) setConfig(cfg as Config);
       const saved = (tpls as Template[]) ?? [];
@@ -180,12 +181,18 @@ function EmailSettingsPage() {
         const found = saved.find((s) => s.template_key === d.template_key);
         return found ?? { ...d, tenant_id: TENANT_ID };
       });
-      // Anexa qualquer template customizado que não esteja na lista padrão
       for (const s of saved) {
         if (!merged.find((m) => m.template_key === s.template_key)) merged.push(s);
       }
       setTemplates(merged);
       setLogs(lgs ?? []);
+      const origin = typeof window !== "undefined" ? window.location.origin : "";
+      setBrand({
+        site_name: (ss as any)?.site_name ?? "",
+        logo_url: (ss as any)?.logo_url ?? "",
+        site_url: origin,
+      });
+      setPreviewLink(`${origin}/auth/confirm?token=exemplo-token-123`);
       setLoading(false);
     })();
   }, []);
