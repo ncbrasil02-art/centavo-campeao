@@ -157,6 +157,13 @@ function EmailSettingsPage() {
   const [saving, setSaving] = useState(false);
   const [testEmail, setTestEmail] = useState("");
   const [sending, setSending] = useState(false);
+  const [brand, setBrand] = useState<TenantBrand>({
+    site_name: "",
+    logo_url: "",
+    site_url: typeof window !== "undefined" ? window.location.origin : "",
+  });
+  const [previewLink, setPreviewLink] = useState("");
+  const [previewName, setPreviewName] = useState("João Silva");
 
   const sendTest = useServerFn(sendTestTenantEmail);
 
