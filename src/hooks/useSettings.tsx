@@ -234,6 +234,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
           logo_padding_y:           data.logo_padding_y ?? 0,
           google_reviews_widget:    data.google_reviews_widget || "",
           support_whatsapp:         data.support_whatsapp || "",
+          privacy_policy:           data.privacy_policy || "",
+          terms_of_use:             data.terms_of_use || "",
         };
 
         setSettings(fetched);
