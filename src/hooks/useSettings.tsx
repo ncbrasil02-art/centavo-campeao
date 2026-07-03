@@ -234,6 +234,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
           logo_padding_y:           data.logo_padding_y ?? 0,
           google_reviews_widget:    data.google_reviews_widget || "",
           support_whatsapp:         data.support_whatsapp || "",
+          privacy_policy:           data.privacy_policy || "",
+          terms_of_use:             data.terms_of_use || "",
         };
 
         setSettings(fetched);
@@ -292,6 +294,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
               logo_padding_y:           d.logo_padding_y ?? prev.logo_padding_y,
               google_reviews_widget:    d.google_reviews_widget ?? prev.google_reviews_widget,
               support_whatsapp:         d.support_whatsapp ?? prev.support_whatsapp,
+              privacy_policy:           d.privacy_policy ?? prev.privacy_policy,
+              terms_of_use:             d.terms_of_use ?? prev.terms_of_use,
             };
             updateMetaTags(updated);
             injectScripts(updated.ga_id, updated.fb_pixel_id);
