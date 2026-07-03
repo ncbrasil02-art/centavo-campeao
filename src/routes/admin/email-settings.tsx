@@ -392,13 +392,48 @@ function EmailSettingsPage() {
         <TabsContent value="templates" className="space-y-4">
           <p className="text-xs text-white/60">
             Edite o assunto e o HTML de cada tipo de e-mail. Use variáveis no formato{" "}
-            <code className="text-primary">{"{{nome}}"}</code>. A prévia à direita é atualizada em tempo real com dados de exemplo.
+            <code className="text-primary">{"{{nome}}"}</code>. A prévia à direita usa os
+            dados reais deste tenant (remetente, nome do site, logo) para você comparar antes de enviar.
           </p>
+
+          <Card>
+            <CardHeader><CardTitle className="text-base">Dados reais deste tenant (usados na prévia)</CardTitle></CardHeader>
+            <CardContent className="grid md:grid-cols-2 gap-3 text-sm">
+              <div>
+                <Label className="text-xs">Remetente</Label>
+                <div className="text-white/80 truncate">
+                  {config.from_name || <i className="text-white/40">sem nome</i>}{" "}
+                  &lt;{config.from_email || <i className="text-white/40">sem e-mail</i>}&gt;
+                </div>
+              </div>
+              <div>
+                <Label className="text-xs">Nome do site / Logo</Label>
+                <div className="flex items-center gap-2">
+                  {brand.logo_url && <img src={brand.logo_url} alt="" className="h-6 w-auto bg-white/5 rounded p-0.5" />}
+                  <span className="text-white/80">{brand.site_name || <i className="text-white/40">definir em Configurações</i>}</span>
+                </div>
+              </div>
+              <div>
+                <Label className="text-xs">Nome do destinatário (prévia)</Label>
+                <Input value={previewName} onChange={(e) => setPreviewName(e.target.value)} />
+              </div>
+              <div>
+                <Label className="text-xs">Link (prévia — substitui {"{{link}}"})</Label>
+                <Input value={previewLink} onChange={(e) => setPreviewLink(e.target.value)} placeholder={`${brand.site_url}/auth/confirm?token=...`} />
+              </div>
+            </CardContent>
+          </Card>
+
           {templates.map((t, i) => {
             const meta = TEMPLATE_META[t.template_key];
-            const sampleVars = Object.fromEntries(
-              (meta?.variables ?? []).map((v) => [v.name, v.example]),
-            );
+            const sampleVars: Record<string, string> = {
+              ...Object.fromEntries((meta?.variables ?? []).map((v) => [v.name, v.example])),
+              name: previewName,
+              link: previewLink,
+              site_name: brand.site_name,
+              site_url: brand.site_url,
+              logo_url: brand.logo_url,
+            };
             return (
               <Card key={t.id ?? t.template_key}>
                 <CardHeader className="flex flex-row items-center justify-between">
