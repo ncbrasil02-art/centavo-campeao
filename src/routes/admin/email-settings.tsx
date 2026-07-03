@@ -512,10 +512,11 @@ function EmailSettingsPage() {
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-xs">Prévia (com dados de exemplo)</Label>
+                      <Label className="text-xs">Prévia (dados reais do tenant)</Label>
                       <div className="rounded border border-white/10 bg-white/5 p-2">
-                        <div className="text-xs text-white/60 pb-2 border-b border-white/10 mb-2">
-                          <b>Assunto:</b> {renderPreview(t.subject, sampleVars)}
+                        <div className="text-xs text-white/60 pb-2 border-b border-white/10 mb-2 space-y-0.5">
+                          <div><b>De:</b> {config.from_name} &lt;{config.from_email}&gt;</div>
+                          <div><b>Assunto:</b> {renderPreview(t.subject, sampleVars)}</div>
                         </div>
                         <iframe
                           title={`preview-${t.template_key}`}
