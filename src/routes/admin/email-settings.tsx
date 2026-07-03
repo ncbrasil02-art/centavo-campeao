@@ -135,6 +135,12 @@ function renderPreview(tpl: string, vars: Record<string, string>) {
   return tpl.replace(/\{\{\s*(\w+)\s*\}\}/g, (_, k) => vars[k] ?? `{{${k}}}`);
 }
 
+type TenantBrand = {
+  site_name: string;
+  logo_url: string;
+  site_url: string;
+};
+
 function EmailSettingsPage() {
   const [config, setConfig] = useState<Config>({
     tenant_id: TENANT_ID,
@@ -151,15 +157,23 @@ function EmailSettingsPage() {
   const [saving, setSaving] = useState(false);
   const [testEmail, setTestEmail] = useState("");
   const [sending, setSending] = useState(false);
+  const [brand, setBrand] = useState<TenantBrand>({
+    site_name: "",
+    logo_url: "",
+    site_url: typeof window !== "undefined" ? window.location.origin : "",
+  });
+  const [previewLink, setPreviewLink] = useState("");
+  const [previewName, setPreviewName] = useState("João Silva");
 
   const sendTest = useServerFn(sendTestTenantEmail);
 
   useEffect(() => {
     (async () => {
-      const [{ data: cfg }, { data: tpls }, { data: lgs }] = await Promise.all([
+      const [{ data: cfg }, { data: tpls }, { data: lgs }, { data: ss }] = await Promise.all([
         supabase.from("tenant_email_configs").select("*").eq("tenant_id", TENANT_ID).maybeSingle(),
         supabase.from("tenant_email_templates").select("*").eq("tenant_id", TENANT_ID).order("template_key"),
         supabase.from("tenant_email_logs").select("*").eq("tenant_id", TENANT_ID).order("created_at", { ascending: false }).limit(30),
+        supabase.from("site_settings").select("site_name, logo_url").eq("tenant_id", TENANT_ID).maybeSingle(),
       ]);
       if (cfg) setConfig(cfg as Config);
       const saved = (tpls as Template[]) ?? [];
@@ -167,12 +181,18 @@ function EmailSettingsPage() {
         const found = saved.find((s) => s.template_key === d.template_key);
         return found ?? { ...d, tenant_id: TENANT_ID };
       });
-      // Anexa qualquer template customizado que não esteja na lista padrão
       for (const s of saved) {
         if (!merged.find((m) => m.template_key === s.template_key)) merged.push(s);
       }
       setTemplates(merged);
       setLogs(lgs ?? []);
+      const origin = typeof window !== "undefined" ? window.location.origin : "";
+      setBrand({
+        site_name: (ss as any)?.site_name ?? "",
+        logo_url: (ss as any)?.logo_url ?? "",
+        site_url: origin,
+      });
+      setPreviewLink(`${origin}/auth/confirm?token=exemplo-token-123`);
       setLoading(false);
     })();
   }, []);
@@ -372,13 +392,48 @@ function EmailSettingsPage() {
         <TabsContent value="templates" className="space-y-4">
           <p className="text-xs text-white/60">
             Edite o assunto e o HTML de cada tipo de e-mail. Use variáveis no formato{" "}
-            <code className="text-primary">{"{{nome}}"}</code>. A prévia à direita é atualizada em tempo real com dados de exemplo.
+            <code className="text-primary">{"{{nome}}"}</code>. A prévia à direita usa os
+            dados reais deste tenant (remetente, nome do site, logo) para você comparar antes de enviar.
           </p>
+
+          <Card>
+            <CardHeader><CardTitle className="text-base">Dados reais deste tenant (usados na prévia)</CardTitle></CardHeader>
+            <CardContent className="grid md:grid-cols-2 gap-3 text-sm">
+              <div>
+                <Label className="text-xs">Remetente</Label>
+                <div className="text-white/80 truncate">
+                  {config.from_name || <i className="text-white/40">sem nome</i>}{" "}
+                  &lt;{config.from_email || <i className="text-white/40">sem e-mail</i>}&gt;
+                </div>
+              </div>
+              <div>
+                <Label className="text-xs">Nome do site / Logo</Label>
+                <div className="flex items-center gap-2">
+                  {brand.logo_url && <img src={brand.logo_url} alt="" className="h-6 w-auto bg-white/5 rounded p-0.5" />}
+                  <span className="text-white/80">{brand.site_name || <i className="text-white/40">definir em Configurações</i>}</span>
+                </div>
+              </div>
+              <div>
+                <Label className="text-xs">Nome do destinatário (prévia)</Label>
+                <Input value={previewName} onChange={(e) => setPreviewName(e.target.value)} />
+              </div>
+              <div>
+                <Label className="text-xs">Link (prévia — substitui {"{{link}}"})</Label>
+                <Input value={previewLink} onChange={(e) => setPreviewLink(e.target.value)} placeholder={`${brand.site_url}/auth/confirm?token=...`} />
+              </div>
+            </CardContent>
+          </Card>
+
           {templates.map((t, i) => {
             const meta = TEMPLATE_META[t.template_key];
-            const sampleVars = Object.fromEntries(
-              (meta?.variables ?? []).map((v) => [v.name, v.example]),
-            );
+            const sampleVars: Record<string, string> = {
+              ...Object.fromEntries((meta?.variables ?? []).map((v) => [v.name, v.example])),
+              name: previewName,
+              link: previewLink,
+              site_name: brand.site_name,
+              site_url: brand.site_url,
+              logo_url: brand.logo_url,
+            };
             return (
               <Card key={t.id ?? t.template_key}>
                 <CardHeader className="flex flex-row items-center justify-between">
@@ -457,10 +512,11 @@ function EmailSettingsPage() {
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-xs">Prévia (com dados de exemplo)</Label>
+                      <Label className="text-xs">Prévia (dados reais do tenant)</Label>
                       <div className="rounded border border-white/10 bg-white/5 p-2">
-                        <div className="text-xs text-white/60 pb-2 border-b border-white/10 mb-2">
-                          <b>Assunto:</b> {renderPreview(t.subject, sampleVars)}
+                        <div className="text-xs text-white/60 pb-2 border-b border-white/10 mb-2 space-y-0.5">
+                          <div><b>De:</b> {config.from_name} &lt;{config.from_email}&gt;</div>
+                          <div><b>Assunto:</b> {renderPreview(t.subject, sampleVars)}</div>
                         </div>
                         <iframe
                           title={`preview-${t.template_key}`}
