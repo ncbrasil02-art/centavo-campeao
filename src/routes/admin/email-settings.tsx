@@ -135,6 +135,12 @@ function renderPreview(tpl: string, vars: Record<string, string>) {
   return tpl.replace(/\{\{\s*(\w+)\s*\}\}/g, (_, k) => vars[k] ?? `{{${k}}}`);
 }
 
+type TenantBrand = {
+  site_name: string;
+  logo_url: string;
+  site_url: string;
+};
+
 function EmailSettingsPage() {
   const [config, setConfig] = useState<Config>({
     tenant_id: TENANT_ID,
