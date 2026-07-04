@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import { MessageCircle, X, Send, Loader2, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSettings } from "@/hooks/useSettings";
-import { sendSupportMessage, getSupportHistory } from "@/lib/support-chat.functions";
+import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 
 type Msg = { role: "user" | "assistant"; content: string };
@@ -33,15 +32,14 @@ export function SupportChatWidget() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const send = useServerFn(sendSupportMessage);
-  const loadHistory = useServerFn(getSupportHistory);
-
   // Load history when first opened
   useEffect(() => {
     if (!open || loadedHistory) return;
     const sid = getSessionId();
-    loadHistory({ data: { sessionId: sid } })
-      .then((res: any) => {
+    supabase.functions
+      .invoke("chat-support", { body: { action: "history", sessionId: sid } })
+      .then(({ data: res, error }) => {
+        if (error) throw error;
         if (res?.messages?.length) {
           setMessages(res.messages);
           setHandoff(!!res.handoff);
@@ -64,7 +62,7 @@ export function SupportChatWidget() {
         ]);
       })
       .finally(() => setLoadedHistory(true));
-  }, [open, loadedHistory, loadHistory]);
+  }, [open, loadedHistory]);
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -83,10 +81,13 @@ export function SupportChatWidget() {
     setSending(true);
     try {
       const sid = getSessionId();
-      const res: any = await send({ data: { sessionId: sid, message: text } });
+      const { data: res, error } = await supabase.functions.invoke("chat-support", {
+        body: { action: "send", sessionId: sid, message: text },
+      });
+      if (error) throw error;
       setMessages((m) => [...m, { role: "assistant", content: res.reply }]);
       if (res.handoff) setHandoff(true);
-    } catch (err: any) {
+    } catch (err) {
       setMessages((m) => [
         ...m,
         { role: "assistant", content: `Tive um problema: ${err?.message || "erro desconhecido"}. Tente novamente.` },
