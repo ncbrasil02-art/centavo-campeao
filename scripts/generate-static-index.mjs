@@ -8,11 +8,15 @@ const serverEntry = await import(serverEntryUrl);
 const handler = serverEntry.default ?? serverEntry;
 
 if (!handler || typeof handler.fetch !== "function") {
-  throw new Error(".output/server/index.js does not export a fetch handler");
+  throw new Error(".output/server/index.mjs does not export a fetch handler");
 }
 
+// Mock Cloudflare ExecutionContext for Node.js SSR rendering
+const mockCtx = { waitUntil: () => {}, passThroughOnException: () => {} };
+mockCtx.context = mockCtx;
+
 let currentUrl = siteUrl;
-let response = await handler.fetch(new Request(currentUrl), {}, {});
+let response = await handler.fetch(new Request(currentUrl), {}, mockCtx);
 
 for (let redirects = 0; response.status >= 300 && response.status < 400 && redirects < 5; redirects++) {
   const location = response.headers.get("location");
@@ -22,7 +26,7 @@ for (let redirects = 0; response.status >= 300 && response.status < 400 && redir
   }
 
   currentUrl = new URL(location, currentUrl).href;
-  response = await handler.fetch(new Request(currentUrl), {}, {});
+  response = await handler.fetch(new Request(currentUrl), {}, mockCtx);
 }
 
 const html = await response.text();
@@ -38,4 +42,4 @@ if (!html.includes("/assets/")) {
 await mkdir(".output/public", { recursive: true });
 await writeFile(".output/public/index.html", html);
 
-console.log(`Generated dist/client/index.html from ${currentUrl}`);
+console.log(`Generated .output/public/index.html from ${currentUrl}`);
