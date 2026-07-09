@@ -5,13 +5,13 @@ import { TENANT_ID } from "@/lib/tenant";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Label } from "@/components/ui/label";h
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { 
   Settings, 
   Save, 
-  Palette, 
+  Palette, h
   CreditCard, 
   Layout, 
   Upload, 
@@ -140,7 +140,8 @@ function AdminSettings() {
       const { data: publicData, error: publicError } = await supabase
         .from("site_settings")
         .select("*")
-        .single();
+        .eq("tenant_id", TENANT_ID)
+                .single();
 
       if (publicError) throw publicError;
 
@@ -148,7 +149,8 @@ function AdminSettings() {
       const { data: adminData, error: adminError } = await supabase
         .from("admin_settings")
         .select("mercado_pago_access_token")
-        .maybeSingle();
+.eq("tenant_id", TENANT_ID)
+                .maybeSingle();
 
       // If adminData is missing, it's not an error, just means it hasn't been set yet
       
@@ -294,6 +296,7 @@ function AdminSettings() {
       const { data: existingAdminData } = await supabase
         .from("admin_settings")
         .select("id")
+        .eq("tenant_id", TENANT_ID)
         .maybeSingle();
 
       if (existingAdminData) {
