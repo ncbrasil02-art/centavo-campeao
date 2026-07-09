@@ -1,0 +1,43 @@
+name: Deploy LanceCerto (Manual)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build
+        run: bun run build:hostinger
+
+      - name: Deploy via SSH para lancecerto.site
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          MAX=5
+          DELAY=30
+          for i in $(seq 1 $MAX); do
+            echo ">>> Tentativa $i de $MAX..."
+            if rsync -avz --delete \
+              -e "ssh -p 65002 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o ConnectTimeout=30" \
+              .output/public/ \
+              "${{ secrets.FTP_USER }}@${{ secrets.FTP_HOST }}:/home/u386043061/domains/lancecerto.site/public_html/"; then
+              echo "Deploy OK na tentativa $i"
+              exit 0
+            fi
+            [ $i -lt $MAX ] && echo "Aguardando $DELAY segundos..." && sleep $DELAY
+          done
+          echo "ERRO: todas as $MAX tentativas falharam"
+          exit 1
