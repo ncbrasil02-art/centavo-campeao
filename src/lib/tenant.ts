@@ -4,19 +4,19 @@
 
 const DOMAIN_TENANT_MAP: Record<string, string> = {
   // ── Domínios de produção ───────────────────────────────────────
-  'centavodomilhao.online':      'centavodomilhao',
-  'www.centavodomilhao.online':  'centavodomilhao',
+  'centavodomilhao.online':     'centavodomilhao',
+  'www.centavodomilhao.online': 'centavodomilhao',
+
+  // ── lancecerto.site ────────────────────────────────────────────
+  'lancecerto.site':            'lancecerto',
+  'www.lancecerto.site':        'lancecerto',
 
   // ── Preview / staging Lovable ──────────────────────────────────
   'centavo-campeao.lovable.app': 'centavodomilhao',
 
   // ── Desenvolvimento local ──────────────────────────────────────
-  'localhost':   'centavodomilhao',
-  '127.0.0.1':  'centavodomilhao',
-
-  // ── Novos domínios: descomente e ajuste ────────────────────────
-  // 'novosite.com.br':     'novosite',
-  // 'www.novosite.com.br': 'novosite',
+  'localhost':  'centavodomilhao',
+  '127.0.0.1': 'centavodomilhao',
 };
 
 function resolveTenantId(): string {
