@@ -38,7 +38,6 @@ import { Route as AdminEmailSettingsRouteImport } from './routes/admin/email-set
 import { Route as AdminClaimsRouteImport } from './routes/admin/claims'
 import { Route as AdminBannersRouteImport } from './routes/admin/banners'
 import { Route as AdminAuctionsRouteImport } from './routes/admin/auctions'
-import { Route as ApiPublicSetupAdminRouteImport } from './routes/api/public/setup-admin'
 
 const TermsOfUseRoute = TermsOfUseRouteImport.update({
   id: '/terms-of-use',
@@ -185,11 +184,6 @@ const AdminAuctionsRoute = AdminAuctionsRouteImport.update({
   path: '/auctions',
   getParentRoute: () => AdminRoute,
 } as any)
-const ApiPublicSetupAdminRoute = ApiPublicSetupAdminRouteImport.update({
-  id: '/api/public/setup-admin',
-  path: '/api/public/setup-admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -221,7 +215,6 @@ export interface FileRoutesByFullPath {
   '/sitemap/xml': typeof SitemapXmlRoute
   '/unique-bids/$id': typeof UniqueBidsIdRoute
   '/admin/': typeof AdminIndexRoute
-  '/api/public/setup-admin': typeof ApiPublicSetupAdminRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -252,7 +245,6 @@ export interface FileRoutesByTo {
   '/sitemap/xml': typeof SitemapXmlRoute
   '/unique-bids/$id': typeof UniqueBidsIdRoute
   '/admin': typeof AdminIndexRoute
-  '/api/public/setup-admin': typeof ApiPublicSetupAdminRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -285,7 +277,6 @@ export interface FileRoutesById {
   '/sitemap/xml': typeof SitemapXmlRoute
   '/unique-bids/$id': typeof UniqueBidsIdRoute
   '/admin/': typeof AdminIndexRoute
-  '/api/public/setup-admin': typeof ApiPublicSetupAdminRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -319,7 +310,6 @@ export interface FileRouteTypes {
     | '/sitemap/xml'
     | '/unique-bids/$id'
     | '/admin/'
-    | '/api/public/setup-admin'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -350,7 +340,6 @@ export interface FileRouteTypes {
     | '/sitemap/xml'
     | '/unique-bids/$id'
     | '/admin'
-    | '/api/public/setup-admin'
   id:
     | '__root__'
     | '/'
@@ -382,7 +371,6 @@ export interface FileRouteTypes {
     | '/sitemap/xml'
     | '/unique-bids/$id'
     | '/admin/'
-    | '/api/public/setup-admin'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -399,7 +387,6 @@ export interface RootRouteChildren {
   AuctionsIdRoute: typeof AuctionsIdRoute
   SitemapXmlRoute: typeof SitemapXmlRoute
   UniqueBidsIdRoute: typeof UniqueBidsIdRoute
-  ApiPublicSetupAdminRoute: typeof ApiPublicSetupAdminRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -607,13 +594,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuctionsRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/api/public/setup-admin': {
-      id: '/api/public/setup-admin'
-      path: '/api/public/setup-admin'
-      fullPath: '/api/public/setup-admin'
-      preLoaderRoute: typeof ApiPublicSetupAdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -671,7 +651,6 @@ const rootRouteChildren: RootRouteChildren = {
   AuctionsIdRoute: AuctionsIdRoute,
   SitemapXmlRoute: SitemapXmlRoute,
   UniqueBidsIdRoute: UniqueBidsIdRoute,
-  ApiPublicSetupAdminRoute: ApiPublicSetupAdminRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
