@@ -90,7 +90,7 @@ export function SupportChatWidget() {
     } catch (err) {
       setMessages((m) => [
         ...m,
-        { role: "assistant", content: `Tive um problema: ${err?.message || "erro desconhecido"}. Tente novamente.` },
+        { role: "assistant", content: `Tive um problema: ${(err as any)?.message || "erro desconhecido"}. Tente novamente.` },
       ]);
     } finally {
       setSending(false);
