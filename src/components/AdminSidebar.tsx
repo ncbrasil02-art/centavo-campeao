@@ -54,7 +54,7 @@ export function AdminSidebar() {
   return (
     <aside className="w-64 min-h-screen bg-zinc-950 border-r border-white/5 flex flex-col sticky top-0">
       <div className="p-6 border-b border-white/5">
-        <Link to="/" className="flex items-center gap-2">
+        <Link to="/" search={{}} className="flex items-center gap-2">
           {logo_url ? (
             <img src={logo_url} alt={site_name} style={{ height: `${(logo_height || 40) * 0.8}px` }} className="object-contain" />
           ) : (

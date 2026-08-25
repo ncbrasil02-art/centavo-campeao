@@ -178,7 +178,7 @@ function AdminRobotsPage() {
           
           <div className="flex gap-4">
             <Button variant="outline" className="border-white/10 hover:bg-white/5" asChild>
-              <Link to="/"><LayoutDashboard className="w-4 h-4 mr-2" /> Dashboard</Link>
+              <Link to="/" search={{}}><LayoutDashboard className="w-4 h-4 mr-2" /> Dashboard</Link>
             </Button>
           </div>
         </div>

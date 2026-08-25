@@ -14,7 +14,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           {/* Brand & Social */}
           <div className="space-y-6">
-            <Link to="/" className="flex items-center gap-2 group">
+            <Link to="/" search={{}} className="flex items-center gap-2 group">
               {logo_url ? (
                 <img 
                   src={logo_url} 
@@ -64,7 +64,7 @@ export function Footer() {
           <div className="space-y-6">
             <h4 className="text-xs font-black uppercase tracking-widest text-primary">Links Úteis</h4>
             <nav className="grid grid-cols-2 gap-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-              <Link to="/" className="hover:text-primary transition-colors">Leilões</Link>
+              <Link to="/" search={{}} className="hover:text-primary transition-colors">Leilões</Link>
               <Link to="/how-it-works" className="hover:text-primary transition-colors">Como Funciona</Link>
               <Link to="/ranking" className="hover:text-primary transition-colors">Ranking</Link>
               <Link to="/packages" className="hover:text-primary transition-colors">Comprar Lances</Link>

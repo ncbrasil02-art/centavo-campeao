@@ -4,6 +4,7 @@ import { AdminSidebar } from "@/components/AdminSidebar";
 import { Navbar } from "@/components/Navbar";
 
 export const Route = createFileRoute("/admin")({
+  ssr: false,
   beforeLoad: async ({ location }) => {
     console.log("Admin route beforeLoad, location:", location.href);
     const { data: { session } } = await supabase.auth.getSession();
@@ -32,6 +33,7 @@ export const Route = createFileRoute("/admin")({
       console.log("User is not an admin, redirecting to /");
       throw redirect({
         to: "/",
+        search: {},
       });
     }
   },

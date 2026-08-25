@@ -23,6 +23,7 @@ export function Navbar() {
   const navigate = useNavigate();
   const search = useSearch({ strict: false }) as any;
   const isDemo = search.demo === "true" || search.demo === true;
+  const homeSearch: { demo?: boolean } = isDemo ? { demo: true } : {};
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -80,7 +81,7 @@ export function Navbar() {
     await supabase.auth.signOut();
     localStorage.removeItem('site_settings');
     setIsMenuOpen(false);
-    navigate({ to: "/" });
+    navigate({ to: "/", search: {} });
   };
 
   return (
@@ -113,7 +114,7 @@ export function Navbar() {
       )}
       <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md text-foreground">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <Link to="/" search={isDemo ? { demo: true } : undefined} className="flex items-center gap-2 group">
+        <Link to="/" search={homeSearch} className="flex items-center gap-2 group">
           {logo_url ? (
             <div 
               style={{ 
@@ -158,7 +159,7 @@ export function Navbar() {
               {currentTimeStr}
             </span>
           </div>
-          <Link to="/" search={isDemo ? { demo: true } : undefined} className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Leilões</Link>
+          <Link to="/" search={homeSearch} className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Leilões</Link>
           <Link to="/how-it-works" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Como Funciona</Link>
           <Link to="/ranking" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Ranking</Link>
           <Link to="/packages" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Comprar Lances</Link>

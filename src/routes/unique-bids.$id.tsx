@@ -126,7 +126,7 @@ function UniqueBidPage() {
         <Navbar />
         <div className="container mx-auto px-4 py-20 text-center">
           <h1 className="text-2xl font-bold">Campanha não encontrada.</h1>
-          <Link to="/" className="text-primary underline mt-4 inline-block">Voltar</Link>
+          <Link to="/" search={{}} className="text-primary underline mt-4 inline-block">Voltar</Link>
         </div>
       </div>
     );
@@ -139,7 +139,7 @@ function UniqueBidPage() {
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <Navbar />
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 flex-1">
-        <Link to="/" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4 sm:mb-6">
+        <Link to="/" search={{}} className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4 sm:mb-6">
           <ArrowLeft className="w-4 h-4 mr-1" /> Voltar
         </Link>
 
