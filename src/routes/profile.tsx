@@ -105,7 +105,7 @@ function ProfilePage() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    navigate({ to: "/" });
+    navigate({ to: "/", search: {} });
   };
 
   if (loading && !profile) {

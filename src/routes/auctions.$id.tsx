@@ -296,7 +296,7 @@ function AuctionPage() {
 
     if (error || !data) {
       toast.error("Leilão não encontrado.");
-      navigate({ to: "/" });
+      navigate({ to: "/", search: {} });
     } else {
       setAuction(data);
       // Initialize timeLeft immediately
@@ -396,7 +396,7 @@ function AuctionPage() {
       
       <main className="container mx-auto px-4 py-8 md:py-12">
         <div className="flex items-center gap-2 mb-8 text-muted-foreground hover:text-foreground transition-colors">
-          <Link to="/" className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest">
+          <Link to="/" search={{}} className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest">
             <ArrowLeft className="w-4 h-4" />
             Voltar para leilões
           </Link>

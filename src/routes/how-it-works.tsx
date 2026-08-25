@@ -143,7 +143,7 @@ function HowItWorks() {
                 <Link to="/auth">Criar minha conta agora</Link>
               </Button>
               <Button size="lg" variant="outline" className="h-16 px-10 text-xl font-black uppercase italic border-white/10 hover:bg-white/5" asChild>
-                <Link to="/">Ver leilões ativos</Link>
+                <Link to="/" search={{}}>Ver leilões ativos</Link>
               </Button>
             </div>
           </div>

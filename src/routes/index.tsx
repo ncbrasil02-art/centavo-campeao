@@ -20,19 +20,20 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
+type IndexSearch = { demo?: boolean };
+
 export const Route = createFileRoute("/")({
   component: IndexWrapper,
-  validateSearch: (search: Record<string, unknown>) => {
-    return {
-      demo: search.demo === "true" || search.demo === true,
-    };
+  validateSearch: (search: Record<string, unknown>): IndexSearch => {
+    const demo = search.demo === true;
+    return demo ? { demo: true } : {};
   },
 });
 
 function IndexWrapper() {
   const { sales_page_enabled } = useSettings();
   const search = Route.useSearch();
-  const demo = search.demo === "true" || search.demo === true;
+  const demo = search.demo === true;
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 

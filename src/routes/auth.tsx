@@ -36,6 +36,7 @@ export const Route = createFileRoute("/auth")({
     if (session) {
       throw redirect({
         to: "/",
+        search: {},
       });
     }
   },
@@ -125,7 +126,7 @@ function AuthPage() {
         try {
           if (data.session) {
             await sendWelcomeEmail({ data: { tenantId: TENANT_ID, to: email, name: fullName } });
-            navigate({ to: "/" });
+            navigate({ to: "/", search: {} });
           } else {
             await sendSignupConfirmationEmail({
               data: {
@@ -162,7 +163,7 @@ function AuthPage() {
       
       toast.success("Bem-vindo de volta!");
       const redirectPath = search.redirect || "/";
-      navigate({ to: redirectPath.startsWith('http') ? "/" : (redirectPath as any) });
+      navigate(redirectPath.startsWith('http') ? { to: "/", search: {} } : { to: redirectPath as any });
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -257,7 +258,7 @@ function AuthPage() {
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 relative overflow-hidden">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[100px] -z-10"></div>
       
-      <Link to="/" className="flex items-center gap-2 mb-8 group">
+      <Link to="/" search={{}} className="flex items-center gap-2 mb-8 group">
         {renderLogo()}
       </Link>
 
