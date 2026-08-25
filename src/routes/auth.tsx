@@ -163,7 +163,11 @@ function AuthPage() {
       
       toast.success("Bem-vindo de volta!");
       const redirectPath = search.redirect || "/";
-      navigate(redirectPath.startsWith('http') ? { to: "/", search: {} } : { to: redirectPath as any });
+      if (redirectPath.startsWith("http") || redirectPath === "/") {
+        navigate({ to: "/", search: {} });
+      } else {
+        navigate({ to: redirectPath as any });
+      }
     } catch (error: any) {
       toast.error(error.message);
     } finally {
