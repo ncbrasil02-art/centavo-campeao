@@ -23,7 +23,7 @@ export function Navbar() {
   const navigate = useNavigate();
   const search = useSearch({ strict: false }) as any;
   const isDemo = search.demo === "true" || search.demo === true;
-  const homeSearch = isDemo ? { demo: true } : {};
+  const homeSearch: { demo?: boolean } = isDemo ? { demo: true } : {};
 
   useEffect(() => {
     const timer = setInterval(() => {
