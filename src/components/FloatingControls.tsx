@@ -146,7 +146,7 @@ export function FloatingControls() {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="mb-4 w-72 overflow-hidden rounded-[24px] border border-white/10 bg-zinc-900/95 p-4 shadow-2xl backdrop-blur-xl"
+              className="mb-4 w-72 overflow-hidden rounded-[24px] neon-panel p-4"
             >
               <div className="mb-4 flex items-center justify-between border-b border-white/5 pb-2">
                 <span className="text-[10px] font-black uppercase tracking-widest text-white/40">Painel de Controle</span>
@@ -227,7 +227,7 @@ export function FloatingControls() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsOpen(!isOpen)}
-          className={`flex h-14 w-14 items-center justify-center rounded-full shadow-[0_10px_40px_rgba(0,0,0,0.5)] transition-all ${isOpen ? 'bg-primary text-primary-foreground' : 'bg-zinc-900/80 border border-white/10 text-primary backdrop-blur-md opacity-80 hover:opacity-100 hover:scale-110'}`}
+          className={`flex h-14 w-14 items-center justify-center rounded-full shadow-[0_10px_40px_color-mix(in_srgb,var(--background),transparent_25%)] transition-all ${isOpen ? 'bg-primary text-primary-foreground' : 'bg-card/90 border border-primary/20 text-primary backdrop-blur-md opacity-80 hover:opacity-100 hover:scale-110'}`}
         >
           {isOpen ? <X className="h-7 w-7" /> : <Settings2 className="h-7 w-7" />}
           {!isOpen && (

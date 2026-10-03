@@ -140,13 +140,13 @@ function PackagesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-white">
+    <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       <main className="container mx-auto px-4 py-20">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <Badge variant="outline" className="mb-4 border-primary/30 bg-primary/10 text-primary uppercase">CRÉDITOS</Badge>
           <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-6 italic">Turbine seus <span className="text-primary">lances!</span></h1>
-          <p className="text-white/40 text-lg leading-relaxed">
+          <p className="text-muted-foreground text-lg leading-relaxed">
             Escolha o pacote que melhor se adapta à sua estratégia. Créditos liberados após confirmação do pagamento.
           </p>
         </div>
@@ -154,14 +154,14 @@ function PackagesPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
           {loading ? (
             Array(5).fill(0).map((_, i) => (
-              <div key={i} className="h-[400px] rounded-2xl bg-white/5 animate-pulse"></div>
+              <div key={i} className="h-[400px] rounded-2xl bg-muted/60 animate-pulse"></div>
             ))
           ) : (
             packages.map((pkg) => {
               const isPopular = pkg.bid_amount >= 250;
               const perBid = pkg.price / pkg.bid_amount;
               return (
-                <Card key={pkg.id} className={`relative overflow-hidden bg-white/5 border-white/10 group transition-all duration-300 hover:border-primary/50 hover:bg-white/10 ${isPopular ? 'border-primary/40 lg:scale-105 shadow-[0_0_30px_-10px_hsl(var(--primary)/0.5)]' : ''}`}>
+                <Card key={pkg.id} className={`relative overflow-hidden neon-panel group transition-all duration-300 hover:border-primary/60 hover:bg-primary/10 ${isPopular ? 'border-primary/60 lg:scale-105 shadow-[0_0_36px_-10px_color-mix(in_srgb,var(--primary),transparent_45%)]' : ''}`}>
                   {isPopular && (
                     <div className="absolute top-0 right-0 left-0 bg-primary py-1 text-[10px] font-black text-primary-foreground text-center uppercase tracking-widest flex items-center justify-center gap-1">
                       <Sparkles className="w-3 h-3" /> Mais Popular
@@ -172,14 +172,14 @@ function PackagesPage() {
                       <Zap className="w-8 h-8 text-primary" />
                     </div>
                     <CardTitle className="text-xl">{pkg.name}</CardTitle>
-                    <CardDescription className="text-white/60">{pkg.bid_amount} lances</CardDescription>
+                    <CardDescription className="text-muted-foreground">{pkg.bid_amount} lances</CardDescription>
                   </CardHeader>
                   <CardContent className="text-center py-6">
-                    <div className="text-3xl font-black text-white">R$ {pkg.price.toFixed(2)}</div>
-                    <div className="text-xs text-white/40 mt-1">R$ {perBid.toFixed(2)} por lance</div>
+                    <div className="text-3xl font-black text-foreground">R$ {pkg.price.toFixed(2)}</div>
+                    <div className="text-xs text-muted-foreground mt-1">R$ {perBid.toFixed(2)} por lance</div>
                   </CardContent>
                   <CardFooter>
-                    <Button onClick={() => handlePurchaseClick(pkg)} className="w-full bg-white/10 hover:bg-primary hover:text-primary-foreground text-white font-bold h-12 transition-all">
+                    <Button onClick={() => handlePurchaseClick(pkg)} className="w-full bg-primary/15 hover:bg-primary text-foreground hover:text-primary-foreground font-bold h-12 border border-primary/20">
                       COMPRAR AGORA
                     </Button>
                   </CardFooter>
@@ -190,12 +190,12 @@ function PackagesPage() {
         </div>
 
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent className="bg-zinc-900 border-white/10 text-white sm:max-w-[425px]">
+          <DialogContent className="bg-popover border-border text-foreground sm:max-w-[425px]">
             <DialogHeader>
               <DialogTitle className="text-2xl font-black uppercase italic">
                 Finalizar <span className="text-primary">Compra</span>
               </DialogTitle>
-              <DialogDescription className="text-white/40">
+              <DialogDescription className="text-muted-foreground">
                 {buying?.name} — R$ {buying?.price.toFixed(2)} · {buying?.bid_amount} lances
               </DialogDescription>
             </DialogHeader>
@@ -213,7 +213,7 @@ function PackagesPage() {
 
                   <Button variant="outline" className="h-20 border-white/10 hover:border-primary hover:bg-white/5 flex flex-col items-center justify-center gap-1" onClick={handleCardPayment}>
                     <div className="flex items-center gap-2">
-                      <CreditCard className="w-5 h-5 text-blue-400" />
+                      <CreditCard className="w-5 h-5 text-secondary" />
                       <span className="font-bold">Cartão de Crédito</span>
                     </div>
                     <span className="text-[10px] text-white/40 uppercase font-black">Mercado Pago · até 12x</span>
@@ -280,11 +280,11 @@ function PackagesPage() {
 
 function Feature({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
   return (
-    <div className="flex gap-4 p-6 rounded-2xl bg-white/5 border border-white/10">
+    <div className="flex gap-4 p-6 rounded-2xl neon-panel">
       <div className="text-primary shrink-0">{icon}</div>
       <div>
         <h3 className="font-bold text-lg mb-1">{title}</h3>
-        <p className="text-white/40 text-sm">{description}</p>
+        <p className="text-muted-foreground text-sm">{description}</p>
       </div>
     </div>
   );

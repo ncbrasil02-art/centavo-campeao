@@ -274,23 +274,22 @@ function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 relative overflow-hidden">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[100px] -z-10"></div>
+    <div className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center p-4 relative overflow-hidden">
       
       <Link to="/" search={{}} className="flex items-center gap-2 mb-8 group">
         {renderLogo()}
       </Link>
 
-      <Card className="w-full max-w-md bg-white/5 border-white/10 backdrop-blur-xl relative">
+      <Card className="w-full max-w-md neon-panel relative">
         <div className="absolute -top-3 right-4 bg-primary/20 text-primary text-[8px] px-2 py-0.5 rounded-full border border-primary/30 uppercase font-black tracking-widest z-50">Versão 2.1 Atualizada</div>
         
         <CardHeader>
           <CardTitle className="text-2xl text-center">Acesse sua conta</CardTitle>
-          <CardDescription className="text-center text-white/60">Participe dos melhores leilões do Brasil</CardDescription>
+          <CardDescription className="text-center text-muted-foreground">Participe dos melhores leilões do Brasil</CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-white/5 mb-6">
+            <TabsList className="grid w-full grid-cols-2 bg-muted/70 mb-6">
               <TabsTrigger value="login">Login</TabsTrigger>
               <TabsTrigger value="register">Cadastro</TabsTrigger>
               {search.reset === "true" && <TabsTrigger value="reset">Nova Senha</TabsTrigger>}
@@ -335,7 +334,7 @@ function AuthPage() {
                       <DialogTrigger asChild>
                         <button type="button" className="text-xs text-primary hover:underline">Esqueci minha senha</button>
                       </DialogTrigger>
-                      <DialogContent className="bg-zinc-900 border-white/10 text-white">
+                      <DialogContent className="bg-popover border-border text-foreground">
                         <DialogHeader>
                           <DialogTitle>Recuperar Conta</DialogTitle>
                           <DialogDescription className="text-white/60">
@@ -434,7 +433,7 @@ function AuthPage() {
                     <SelectTrigger id="reg-gender" className="bg-white/5 border-white/10">
                       <SelectValue placeholder="Selecione seu gênero" />
                     </SelectTrigger>
-                    <SelectContent className="bg-zinc-800 border-white/10 text-white">
+                    <SelectContent className="bg-popover border-border text-foreground">
                       <SelectItem value="male">Masculino</SelectItem>
                       <SelectItem value="female">Feminino</SelectItem>
                       <SelectItem value="other">Outro</SelectItem>
@@ -465,7 +464,7 @@ function AuthPage() {
               <span className="w-full border-t border-white/10"></span>
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-[#1a1a1a] px-2 text-white/40">Ou continue com</span>
+              <span className="bg-card px-2 text-muted-foreground">Ou continue com</span>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4 w-full">
