@@ -104,6 +104,19 @@ export const Route = createRootRouteWithContext<{
         href: "/manifest.json",
       },
       {
+        rel: "preconnect",
+        href: "https://fonts.googleapis.com",
+      },
+      {
+        rel: "preconnect",
+        href: "https://fonts.gstatic.com",
+        crossOrigin: "anonymous",
+      },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Archivo+Black&family=Hind:wght@400;500;600;700&display=swap",
+      },
+      {
         rel: "icon",
         href: "https://jqwnzcuvslqpltjwawyr.supabase.co/storage/v1/object/public/site-assets/favicon-0.8740770155566795.png",
       },
