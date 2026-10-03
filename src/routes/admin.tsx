@@ -5,12 +5,20 @@ import { Navbar } from "@/components/Navbar";
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
+  head: () => ({
+    meta: [
+      { title: "Painel administrativo — Centavo Campeão" },
+      { name: "description", content: "Gerencie leilões, produtos e usuários do Centavo Campeão." },
+      { property: "og:title", content: "Painel administrativo — Centavo Campeão" },
+      { property: "og:description", content: "Gerencie leilões, produtos e usuários do Centavo Campeão." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
   beforeLoad: async ({ location }) => {
-    console.log("Admin route beforeLoad, location:", location.href);
-    const { data: { session } } = await supabase.auth.getSession();
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
     
-    if (!session) {
-      console.log("No session found in admin route, redirecting to /auth");
+    if (userError || !user) {
       throw redirect({
         to: "/auth",
         search: {
@@ -19,18 +27,12 @@ export const Route = createFileRoute("/admin")({
       });
     }
 
-    // Check if user is admin
-    const { data: profile } = await supabase.rpc("get_my_profile").maybeSingle() as any;
-
-    console.log("User profile admin status:", profile?.is_admin, "User ID:", session.user.id);
-
-    // Permit based on is_admin flag OR the known admin IDs
-    const isAdmin = profile?.is_admin || 
-                   session.user.id === 'cdf027bb-f239-4ba0-b8a9-7bf52341df4b' || 
-                   session.user.id === 'ad8443eb-d096-46ad-ba39-07abdba01fdb';
+    const { data: isAdmin, error: roleError } = await supabase.rpc("check_is_admin");
+    if (roleError) {
+      throw new Error("Não foi possível confirmar sua permissão administrativa. Tente entrar novamente.");
+    }
 
     if (!isAdmin) {
-      console.log("User is not an admin, redirecting to /");
       throw redirect({
         to: "/",
         search: {},

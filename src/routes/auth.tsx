@@ -31,13 +31,13 @@ const authSearchSchema = z.object({
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (search) => authSearchSchema.parse(search),
-  beforeLoad: async () => {
+  beforeLoad: async ({ search }) => {
     const { data: { session } } = await supabase.auth.getSession();
     if (session) {
-      throw redirect({
-        to: "/",
-        search: {},
-      });
+      const destination = getPostLoginDestination(search.redirect);
+      throw redirect(destination === "/admin"
+        ? { to: "/admin" }
+        : { to: "/", search: {} });
     }
   },
   component: AuthPage,
@@ -54,6 +54,21 @@ const PREDEFINED_AVATARS = [
   "https://api.dicebear.com/7.x/avataaars/svg?seed=Buster",
   "https://api.dicebear.com/7.x/avataaars/svg?seed=Cookie",
 ];
+
+function getPostLoginDestination(rawDestination?: string): "/" | "/admin" {
+  if (!rawDestination || typeof window === "undefined") return "/";
+
+  try {
+    const destination = new URL(rawDestination, window.location.origin);
+    if (destination.origin === window.location.origin && destination.pathname.startsWith("/admin")) {
+      return "/admin";
+    }
+  } catch {
+    return "/";
+  }
+
+  return "/";
+}
 
 function AuthPage() {
   const [loading, setLoading] = useState(false);
@@ -162,11 +177,11 @@ function AuthPage() {
       if (error) throw error;
       
       toast.success("Bem-vindo de volta!");
-      const redirectPath = search.redirect || "/";
-      if (redirectPath.startsWith("http") || redirectPath === "/") {
-        navigate({ to: "/", search: {} });
+      const destination = getPostLoginDestination(search.redirect);
+      if (destination === "/admin") {
+        navigate({ to: "/admin" });
       } else {
-        navigate({ to: redirectPath as any });
+        navigate({ to: "/", search: {} });
       }
     } catch (error: any) {
       toast.error(error.message);
