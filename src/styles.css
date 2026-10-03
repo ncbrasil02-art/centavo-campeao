@@ -133,6 +133,32 @@ aside:has(a[href*="lovable.dev"]) {
   --color-glass: var(--glass);
   --color-glass-foreground: var(--glass-foreground);
   --color-glass-border: var(--glass-border);
+  --color-unique-deep: var(--unique-deep);
+  --color-unique-card: var(--unique-card);
+  --color-unique-panel: var(--unique-panel);
+  --color-unique-surface: var(--unique-surface);
+  --color-unique-accent: var(--unique-accent);
+  --color-unique-live: var(--unique-live);
+  --color-unique-foreground: var(--unique-foreground);
+  --color-unique-muted: var(--unique-muted);
+  --color-unique-line: var(--unique-line);
+  --font-unique-display: "Archivo Black", sans-serif;
+  --font-unique-body: "Hind", sans-serif;
+  --shadow-unique: 0 22px 60px color-mix(in oklab, var(--unique-deep) 72%, transparent);
+  --shadow-unique-accent: 0 12px 30px color-mix(in oklab, var(--unique-accent) 45%, transparent);
+}
+
+.unique-experience {
+  --unique-deep: oklch(0.2443 0.1391 288.97);
+  --unique-card: oklch(0.31 0.17 290.2);
+  --unique-panel: oklch(0.37 0.2 290.3 / 0.72);
+  --unique-surface: oklch(0.4356 0.2415 290.4);
+  --unique-accent: oklch(0.5612 0.275 295.66);
+  --unique-live: oklch(0.72 0.23 339);
+  --unique-foreground: oklch(0.9653 0.019 299.07);
+  --unique-muted: oklch(0.82 0.05 296);
+  --unique-line: oklch(0.9653 0.019 299.07 / 0.16);
+  font-family: var(--font-unique-body);
 }
 
 @layer base {
@@ -156,6 +182,11 @@ aside:has(a[href*="lovable.dev"]) {
   100% { transform: translateX(-50%); }
 }
 
+@keyframes unique-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
 @keyframes neon-pulse {
   0%, 100% { opacity: 1; filter: drop-shadow(0 0 5px var(--primary)) drop-shadow(0 0 10px var(--primary)); }
   50% { opacity: 0.8; filter: drop-shadow(0 0 2px var(--primary)) drop-shadow(0 0 5px var(--primary)); }
@@ -172,6 +203,20 @@ aside:has(a[href*="lovable.dev"]) {
 
 .animate-marquee {
   animation: marquee 20s linear infinite;
+}
+
+.animate-unique-marquee {
+  animation: unique-marquee 24s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-unique-marquee,
+  .animate-float,
+  .animate-float-slow,
+  .animate-float-medium,
+  .animate-neon-pulse {
+    animation: none;
+  }
 }
 
 .animate-neon-pulse {
