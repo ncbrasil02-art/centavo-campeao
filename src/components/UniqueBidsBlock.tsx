@@ -256,12 +256,12 @@ export function UniqueBidsBlock() {
         </div>
 
         {live.length > 0 && (
-          <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-2">
+          <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-2 lg:grid-cols-3">
             {live.map((campaign) => <CampaignCard campaign={campaign} key={campaign.id} />)}
           </div>
         )}
 
-        <div className="mx-auto mt-8 grid max-w-5xl gap-4 md:grid-cols-3">
+        <div className="mx-auto mt-8 grid max-w-6xl gap-4 md:grid-cols-3">
           <div className="rounded-lg border border-unique-line bg-unique-panel p-5 md:col-span-2">
             <div className="mb-4 flex items-center justify-between gap-3">
               <div>

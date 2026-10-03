@@ -180,13 +180,13 @@ export const LandingPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans selection:bg-primary selection:text-black">
+    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary selection:text-primary-foreground">
       {/* Header */}
-      <header className="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-xl border-b border-white/5">
+      <header className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-xl border-b border-border">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
-              <span className="font-black text-black italic text-xl">NC</span>
+              <span className="font-black text-primary-foreground italic text-xl">NC</span>
             </div>
             <h1 className="text-2xl font-black italic uppercase tracking-tighter">NC BRASIL</h1>
           </div>
@@ -200,12 +200,12 @@ export const LandingPage = () => {
 
           <Button 
             onClick={handleCTA}
-            className="hidden md:flex bg-primary hover:bg-primary/90 text-black font-black italic uppercase tracking-tighter px-6 h-12 rounded-full"
+            className="hidden md:flex bg-primary hover:bg-primary/90 text-primary-foreground font-black italic uppercase tracking-tighter px-6 h-12 rounded-full"
           >
             Ver demonstração
           </Button>
 
-          <button className="md:hidden text-white" onClick={handleCTA}>
+          <button className="md:hidden text-foreground" onClick={handleCTA}>
             <Plus className="w-8 h-8" />
           </button>
         </div>
@@ -253,7 +253,7 @@ export const LandingPage = () => {
                   <div className="flex flex-col sm:flex-row gap-4">
                     <Button 
                       onClick={handleCTA}
-                      className="h-16 px-10 bg-primary hover:bg-primary/90 text-black font-black italic uppercase text-xl rounded-full group"
+                      className="h-16 px-10 bg-primary hover:bg-primary/90 text-primary-foreground font-black italic uppercase text-xl rounded-full group"
                     >
                       Ver Demonstração
                       <ArrowRight className="ml-2 w-6 h-6 transition-transform group-hover:translate-x-2" />

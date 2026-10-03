@@ -151,15 +151,15 @@ aside:has(a[href*="lovable.dev"]) {
 }
 
 .unique-experience {
-  --unique-deep: oklch(0.2443 0.1391 288.97);
-  --unique-card: oklch(0.31 0.17 290.2);
-  --unique-panel: oklch(0.37 0.2 290.3 / 0.72);
-  --unique-surface: oklch(0.4356 0.2415 290.4);
-  --unique-accent: oklch(0.5612 0.275 295.66);
-  --unique-live: oklch(0.72 0.23 339);
-  --unique-foreground: oklch(0.9653 0.019 299.07);
-  --unique-muted: oklch(0.82 0.05 296);
-  --unique-line: oklch(0.9653 0.019 299.07 / 0.16);
+  --unique-deep: #05020d;
+  --unique-card: #0d071f;
+  --unique-panel: oklch(0.22 0.09 293 / 0.82);
+  --unique-surface: #180d33;
+  --unique-accent: #8b5cf6;
+  --unique-live: #d946ef;
+  --unique-foreground: #f5f3ff;
+  --unique-muted: #b9add3;
+  --unique-line: oklch(0.68 0.18 294 / 0.24);
   font-family: var(--font-unique-body);
 }
 
