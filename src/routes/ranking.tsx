@@ -37,7 +37,7 @@ function RankingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-white selection:bg-primary selection:text-primary-foreground flex flex-col">
+    <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-primary-foreground flex flex-col">
       <Navbar />
       
       <main className="flex-1 py-12">
@@ -81,7 +81,7 @@ function RankingPage() {
               </div>
 
               {/* Table Style List */}
-              <div className="bg-white/[0.02] border border-white/5 rounded-[32px] overflow-hidden">
+              <div className="neon-panel rounded-[28px] overflow-hidden">
                 <div className="grid grid-cols-12 gap-4 p-6 border-b border-white/5 text-[10px] font-black uppercase tracking-widest text-white/30 italic">
                   <div className="col-span-1 text-center">POS</div>
                   <div className="col-span-5 sm:col-span-6">USUÁRIO</div>

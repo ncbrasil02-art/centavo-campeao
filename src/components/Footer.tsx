@@ -7,7 +7,7 @@ export function Footer() {
   const { site_name, logo_url, logo_height, support_whatsapp } = useSettings();
 
   return (
-    <footer className="relative mt-20 border-t border-border bg-card/50 backdrop-blur-xl overflow-hidden">
+    <footer className="relative mt-20 border-t border-primary/20 bg-card/80 backdrop-blur-xl overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent"></div>
       
       <div className="container mx-auto px-4 py-12">

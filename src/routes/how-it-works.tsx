@@ -16,15 +16,15 @@ export const Route = createFileRoute('/how-it-works')({
 
 function Step({ icon, step, title, desc }: { icon: React.ReactNode, step: string, title: string, desc: string }) {
   return (
-    <div className="group relative p-8 rounded-[40px] bg-white/[0.03] border border-white/5 hover:border-primary/30 transition-all duration-500 hover:-translate-y-2">
-      <div className="absolute -top-6 -left-6 w-14 h-14 rounded-2xl bg-primary flex items-center justify-center text-black font-black text-2xl shadow-xl shadow-primary/20 rotate-[-12deg] group-hover:rotate-0 transition-transform">
+    <div className="group relative p-8 rounded-[28px] neon-panel hover:border-primary/50 transition-all duration-500 hover:-translate-y-2">
+      <div className="absolute -top-6 -left-6 w-14 h-14 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground font-black text-2xl shadow-xl shadow-primary/20 rotate-[-12deg] group-hover:rotate-0 transition-transform">
         {step}
       </div>
       <div className="mb-6 text-primary group-hover:scale-110 transition-transform duration-500 origin-left">
         {icon}
       </div>
-      <h3 className="text-xl font-black text-white italic uppercase tracking-tighter mb-4">{title}</h3>
-      <p className="text-white/60 leading-relaxed">{desc}</p>
+      <h3 className="text-xl font-black text-foreground italic uppercase tracking-tighter mb-4">{title}</h3>
+      <p className="text-muted-foreground leading-relaxed">{desc}</p>
     </div>
   );
 }
@@ -48,7 +48,7 @@ function HowItWorks() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background text-white flex flex-col">
+    <div className="min-h-screen bg-background text-foreground flex flex-col">
       <Navbar />
       
       <main className="flex-1 py-20 lg:py-32">

@@ -13,16 +13,16 @@ export interface ColorPalette {
 
 export const DARK_PALETTES: ColorPalette[] = [
   {
-    name: "Neon Night",
+    name: "Grade Neon",
     theme: 'dark',
     primary: "#8B5CF6",
-    secondary: "#7C3AED",
-    background: "#09090b",
-    card: "#18181b",
-    block: "#27272a",
-    foreground: "#ffffff",
-    mutedForeground: "#a1a1aa",
-    border: "#3f3f46"
+    secondary: "#D946EF",
+    background: "#05020D",
+    card: "#0D071F",
+    block: "#180D33",
+    foreground: "#F5F3FF",
+    mutedForeground: "#B9ADD3",
+    border: "#34205A"
   },
   {
     name: "Cyberpunk",
