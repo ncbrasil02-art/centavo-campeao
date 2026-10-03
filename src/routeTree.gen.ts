@@ -9,74 +9,39 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as FinishedAuctionsRouteImport } from './routes/finished-auctions'
-import { Route as HowItWorksRouteImport } from './routes/how-it-works'
-import { Route as PackagesRouteImport } from './routes/packages'
-import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
-import { Route as ProfileRouteImport } from './routes/profile'
-import { Route as RankingRouteImport } from './routes/ranking'
 import { Route as TermsOfUseRouteImport } from './routes/terms-of-use'
+import { Route as RankingRouteImport } from './routes/ranking'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
+import { Route as PackagesRouteImport } from './routes/packages'
+import { Route as HowItWorksRouteImport } from './routes/how-it-works'
+import { Route as FinishedAuctionsRouteImport } from './routes/finished-auctions'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
-import { Route as AdminAuctionsRouteImport } from './routes/admin/auctions'
-import { Route as AdminBannersRouteImport } from './routes/admin/banners'
-import { Route as AdminClaimsRouteImport } from './routes/admin/claims'
-import { Route as AdminEmailSettingsRouteImport } from './routes/admin/email-settings'
-import { Route as AdminPackagesRouteImport } from './routes/admin/packages'
-import { Route as AdminPhrasesRouteImport } from './routes/admin/phrases'
-import { Route as AdminProductsRouteImport } from './routes/admin/products'
-import { Route as AdminRobotsRouteImport } from './routes/admin/robots'
-import { Route as AdminSalesRouteImport } from './routes/admin/sales'
-import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
-import { Route as AdminSupportChatsRouteImport } from './routes/admin/support-chats'
-import { Route as AdminSupportFaqsRouteImport } from './routes/admin/support-faqs'
-import { Route as AdminTestimonialsRouteImport } from './routes/admin/testimonials'
-import { Route as AdminUniqueBidsRouteImport } from './routes/admin/unique-bids'
-import { Route as AdminUsersRouteImport } from './routes/admin/users'
-import { Route as AuctionsIdRouteImport } from './routes/auctions.$id'
-import { Route as SitemapXmlRouteImport } from './routes/sitemap.xml'
 import { Route as UniqueBidsIdRouteImport } from './routes/unique-bids.$id'
+import { Route as SitemapXmlRouteImport } from './routes/sitemap.xml'
+import { Route as AuctionsIdRouteImport } from './routes/auctions.$id'
+import { Route as AdminUsersRouteImport } from './routes/admin/users'
+import { Route as AdminUniqueBidsRouteImport } from './routes/admin/unique-bids'
+import { Route as AdminTestimonialsRouteImport } from './routes/admin/testimonials'
+import { Route as AdminSupportFaqsRouteImport } from './routes/admin/support-faqs'
+import { Route as AdminSupportChatsRouteImport } from './routes/admin/support-chats'
+import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
+import { Route as AdminSalesRouteImport } from './routes/admin/sales'
+import { Route as AdminRobotsRouteImport } from './routes/admin/robots'
+import { Route as AdminProductsRouteImport } from './routes/admin/products'
+import { Route as AdminPhrasesRouteImport } from './routes/admin/phrases'
+import { Route as AdminPackagesRouteImport } from './routes/admin/packages'
+import { Route as AdminEmailSettingsRouteImport } from './routes/admin/email-settings'
+import { Route as AdminClaimsRouteImport } from './routes/admin/claims'
+import { Route as AdminBannersRouteImport } from './routes/admin/banners'
+import { Route as AdminAuctionsRouteImport } from './routes/admin/auctions'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FinishedAuctionsRoute = FinishedAuctionsRouteImport.update({
-  id: '/finished-auctions',
-  path: '/finished-auctions',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HowItWorksRoute = HowItWorksRouteImport.update({
-  id: '/how-it-works',
-  path: '/how-it-works',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PackagesRoute = PackagesRouteImport.update({
-  id: '/packages',
-  path: '/packages',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
-  id: '/privacy-policy',
-  path: '/privacy-policy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProfileRoute = ProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
+const TermsOfUseRoute = TermsOfUseRouteImport.update({
+  id: '/terms-of-use',
+  path: '/terms-of-use',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RankingRoute = RankingRouteImport.update({
@@ -84,9 +49,44 @@ const RankingRoute = RankingRouteImport.update({
   path: '/ranking',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TermsOfUseRoute = TermsOfUseRouteImport.update({
-  id: '/terms-of-use',
-  path: '/terms-of-use',
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PackagesRoute = PackagesRouteImport.update({
+  id: '/packages',
+  path: '/packages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HowItWorksRoute = HowItWorksRouteImport.update({
+  id: '/how-it-works',
+  path: '/how-it-works',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FinishedAuctionsRoute = FinishedAuctionsRouteImport.update({
+  id: '/finished-auctions',
+  path: '/finished-auctions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -94,84 +94,9 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminAuctionsRoute = AdminAuctionsRouteImport.update({
-  id: '/auctions',
-  path: '/auctions',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminBannersRoute = AdminBannersRouteImport.update({
-  id: '/banners',
-  path: '/banners',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminClaimsRoute = AdminClaimsRouteImport.update({
-  id: '/claims',
-  path: '/claims',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminEmailSettingsRoute = AdminEmailSettingsRouteImport.update({
-  id: '/email-settings',
-  path: '/email-settings',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminPackagesRoute = AdminPackagesRouteImport.update({
-  id: '/packages',
-  path: '/packages',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminPhrasesRoute = AdminPhrasesRouteImport.update({
-  id: '/phrases',
-  path: '/phrases',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminProductsRoute = AdminProductsRouteImport.update({
-  id: '/products',
-  path: '/products',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminRobotsRoute = AdminRobotsRouteImport.update({
-  id: '/robots',
-  path: '/robots',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminSalesRoute = AdminSalesRouteImport.update({
-  id: '/sales',
-  path: '/sales',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminSettingsRoute = AdminSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminSupportChatsRoute = AdminSupportChatsRouteImport.update({
-  id: '/support-chats',
-  path: '/support-chats',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminSupportFaqsRoute = AdminSupportFaqsRouteImport.update({
-  id: '/support-faqs',
-  path: '/support-faqs',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminTestimonialsRoute = AdminTestimonialsRouteImport.update({
-  id: '/testimonials',
-  path: '/testimonials',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminUniqueBidsRoute = AdminUniqueBidsRouteImport.update({
-  id: '/unique-bids',
-  path: '/unique-bids',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminUsersRoute = AdminUsersRouteImport.update({
-  id: '/users',
-  path: '/users',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AuctionsIdRoute = AuctionsIdRouteImport.update({
-  id: '/auctions/$id',
-  path: '/auctions/$id',
+const UniqueBidsIdRoute = UniqueBidsIdRouteImport.update({
+  id: '/unique-bids/$id',
+  path: '/unique-bids/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapXmlRoute = SitemapXmlRouteImport.update({
@@ -179,10 +104,85 @@ const SitemapXmlRoute = SitemapXmlRouteImport.update({
   path: '/sitemap/xml',
   getParentRoute: () => rootRouteImport,
 } as any)
-const UniqueBidsIdRoute = UniqueBidsIdRouteImport.update({
-  id: '/unique-bids/$id',
-  path: '/unique-bids/$id',
+const AuctionsIdRoute = AuctionsIdRouteImport.update({
+  id: '/auctions/$id',
+  path: '/auctions/$id',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUniqueBidsRoute = AdminUniqueBidsRouteImport.update({
+  id: '/unique-bids',
+  path: '/unique-bids',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTestimonialsRoute = AdminTestimonialsRouteImport.update({
+  id: '/testimonials',
+  path: '/testimonials',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSupportFaqsRoute = AdminSupportFaqsRouteImport.update({
+  id: '/support-faqs',
+  path: '/support-faqs',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSupportChatsRoute = AdminSupportChatsRouteImport.update({
+  id: '/support-chats',
+  path: '/support-chats',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSalesRoute = AdminSalesRouteImport.update({
+  id: '/sales',
+  path: '/sales',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRobotsRoute = AdminRobotsRouteImport.update({
+  id: '/robots',
+  path: '/robots',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminProductsRoute = AdminProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPhrasesRoute = AdminPhrasesRouteImport.update({
+  id: '/phrases',
+  path: '/phrases',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPackagesRoute = AdminPackagesRouteImport.update({
+  id: '/packages',
+  path: '/packages',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminEmailSettingsRoute = AdminEmailSettingsRouteImport.update({
+  id: '/email-settings',
+  path: '/email-settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminClaimsRoute = AdminClaimsRouteImport.update({
+  id: '/claims',
+  path: '/claims',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBannersRoute = AdminBannersRouteImport.update({
+  id: '/banners',
+  path: '/banners',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAuctionsRoute = AdminAuctionsRouteImport.update({
+  id: '/auctions',
+  path: '/auctions',
+  getParentRoute: () => AdminRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -391,60 +391,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/finished-auctions': {
-      id: '/finished-auctions'
-      path: '/finished-auctions'
-      fullPath: '/finished-auctions'
-      preLoaderRoute: typeof FinishedAuctionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/how-it-works': {
-      id: '/how-it-works'
-      path: '/how-it-works'
-      fullPath: '/how-it-works'
-      preLoaderRoute: typeof HowItWorksRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/packages': {
-      id: '/packages'
-      path: '/packages'
-      fullPath: '/packages'
-      preLoaderRoute: typeof PackagesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/privacy-policy': {
-      id: '/privacy-policy'
-      path: '/privacy-policy'
-      fullPath: '/privacy-policy'
-      preLoaderRoute: typeof PrivacyPolicyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileRouteImport
+    '/terms-of-use': {
+      id: '/terms-of-use'
+      path: '/terms-of-use'
+      fullPath: '/terms-of-use'
+      preLoaderRoute: typeof TermsOfUseRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ranking': {
@@ -454,11 +405,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RankingRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/terms-of-use': {
-      id: '/terms-of-use'
-      path: '/terms-of-use'
-      fullPath: '/terms-of-use'
-      preLoaderRoute: typeof TermsOfUseRouteImport
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/packages': {
+      id: '/packages'
+      path: '/packages'
+      fullPath: '/packages'
+      preLoaderRoute: typeof PackagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/how-it-works': {
+      id: '/how-it-works'
+      path: '/how-it-works'
+      fullPath: '/how-it-works'
+      preLoaderRoute: typeof HowItWorksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/finished-auctions': {
+      id: '/finished-auctions'
+      path: '/finished-auctions'
+      fullPath: '/finished-auctions'
+      preLoaderRoute: typeof FinishedAuctionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -468,116 +468,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/auctions': {
-      id: '/admin/auctions'
-      path: '/auctions'
-      fullPath: '/admin/auctions'
-      preLoaderRoute: typeof AdminAuctionsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/banners': {
-      id: '/admin/banners'
-      path: '/banners'
-      fullPath: '/admin/banners'
-      preLoaderRoute: typeof AdminBannersRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/claims': {
-      id: '/admin/claims'
-      path: '/claims'
-      fullPath: '/admin/claims'
-      preLoaderRoute: typeof AdminClaimsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/email-settings': {
-      id: '/admin/email-settings'
-      path: '/email-settings'
-      fullPath: '/admin/email-settings'
-      preLoaderRoute: typeof AdminEmailSettingsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/packages': {
-      id: '/admin/packages'
-      path: '/packages'
-      fullPath: '/admin/packages'
-      preLoaderRoute: typeof AdminPackagesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/phrases': {
-      id: '/admin/phrases'
-      path: '/phrases'
-      fullPath: '/admin/phrases'
-      preLoaderRoute: typeof AdminPhrasesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/products': {
-      id: '/admin/products'
-      path: '/products'
-      fullPath: '/admin/products'
-      preLoaderRoute: typeof AdminProductsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/robots': {
-      id: '/admin/robots'
-      path: '/robots'
-      fullPath: '/admin/robots'
-      preLoaderRoute: typeof AdminRobotsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/sales': {
-      id: '/admin/sales'
-      path: '/sales'
-      fullPath: '/admin/sales'
-      preLoaderRoute: typeof AdminSalesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/settings': {
-      id: '/admin/settings'
-      path: '/settings'
-      fullPath: '/admin/settings'
-      preLoaderRoute: typeof AdminSettingsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/support-chats': {
-      id: '/admin/support-chats'
-      path: '/support-chats'
-      fullPath: '/admin/support-chats'
-      preLoaderRoute: typeof AdminSupportChatsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/support-faqs': {
-      id: '/admin/support-faqs'
-      path: '/support-faqs'
-      fullPath: '/admin/support-faqs'
-      preLoaderRoute: typeof AdminSupportFaqsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/testimonials': {
-      id: '/admin/testimonials'
-      path: '/testimonials'
-      fullPath: '/admin/testimonials'
-      preLoaderRoute: typeof AdminTestimonialsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/unique-bids': {
-      id: '/admin/unique-bids'
-      path: '/unique-bids'
-      fullPath: '/admin/unique-bids'
-      preLoaderRoute: typeof AdminUniqueBidsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/users': {
-      id: '/admin/users'
-      path: '/users'
-      fullPath: '/admin/users'
-      preLoaderRoute: typeof AdminUsersRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/auctions/$id': {
-      id: '/auctions/$id'
-      path: '/auctions/$id'
-      fullPath: '/auctions/$id'
-      preLoaderRoute: typeof AuctionsIdRouteImport
+    '/unique-bids/$id': {
+      id: '/unique-bids/$id'
+      path: '/unique-bids/$id'
+      fullPath: '/unique-bids/$id'
+      preLoaderRoute: typeof UniqueBidsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap/xml': {
@@ -587,12 +482,117 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapXmlRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/unique-bids/$id': {
-      id: '/unique-bids/$id'
-      path: '/unique-bids/$id'
-      fullPath: '/unique-bids/$id'
-      preLoaderRoute: typeof UniqueBidsIdRouteImport
+    '/auctions/$id': {
+      id: '/auctions/$id'
+      path: '/auctions/$id'
+      fullPath: '/auctions/$id'
+      preLoaderRoute: typeof AuctionsIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/unique-bids': {
+      id: '/admin/unique-bids'
+      path: '/unique-bids'
+      fullPath: '/admin/unique-bids'
+      preLoaderRoute: typeof AdminUniqueBidsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/testimonials': {
+      id: '/admin/testimonials'
+      path: '/testimonials'
+      fullPath: '/admin/testimonials'
+      preLoaderRoute: typeof AdminTestimonialsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/support-faqs': {
+      id: '/admin/support-faqs'
+      path: '/support-faqs'
+      fullPath: '/admin/support-faqs'
+      preLoaderRoute: typeof AdminSupportFaqsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/support-chats': {
+      id: '/admin/support-chats'
+      path: '/support-chats'
+      fullPath: '/admin/support-chats'
+      preLoaderRoute: typeof AdminSupportChatsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/sales': {
+      id: '/admin/sales'
+      path: '/sales'
+      fullPath: '/admin/sales'
+      preLoaderRoute: typeof AdminSalesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/robots': {
+      id: '/admin/robots'
+      path: '/robots'
+      fullPath: '/admin/robots'
+      preLoaderRoute: typeof AdminRobotsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/products': {
+      id: '/admin/products'
+      path: '/products'
+      fullPath: '/admin/products'
+      preLoaderRoute: typeof AdminProductsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/phrases': {
+      id: '/admin/phrases'
+      path: '/phrases'
+      fullPath: '/admin/phrases'
+      preLoaderRoute: typeof AdminPhrasesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/packages': {
+      id: '/admin/packages'
+      path: '/packages'
+      fullPath: '/admin/packages'
+      preLoaderRoute: typeof AdminPackagesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/email-settings': {
+      id: '/admin/email-settings'
+      path: '/email-settings'
+      fullPath: '/admin/email-settings'
+      preLoaderRoute: typeof AdminEmailSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/claims': {
+      id: '/admin/claims'
+      path: '/claims'
+      fullPath: '/admin/claims'
+      preLoaderRoute: typeof AdminClaimsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/banners': {
+      id: '/admin/banners'
+      path: '/banners'
+      fullPath: '/admin/banners'
+      preLoaderRoute: typeof AdminBannersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/auctions': {
+      id: '/admin/auctions'
+      path: '/auctions'
+      fullPath: '/admin/auctions'
+      preLoaderRoute: typeof AdminAuctionsRouteImport
+      parentRoute: typeof AdminRoute
     }
   }
 }
